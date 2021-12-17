@@ -1,0 +1,33 @@
+Godot Engine v3.4.stable.official.206ba70f4 - https://godotengine.org
+Using GLES3 video driver
+OpenGL ES 3.0 Renderer: NVIDIA GeForce GTX 1050 Ti/PCIe/SSE2
+OpenGL ES Batching: ON
+	OPTIONS
+	max_join_item_commands 16
+	colored_vertex_format_threshold 0.25
+	batch_buffer_size 16384
+	light_scissor_area_threshold 1
+	item_reordering_lookahead 4
+	light_max_join_items 32
+	single_rect_fallback False
+	debug_flash False
+	diagnose_frame False
+WASAPI: wFormatTag = 65534
+WASAPI: nChannels = 2
+WASAPI: nSamplesPerSec = 48000
+WASAPI: nAvgBytesPerSec = 384000
+WASAPI: nBlockAlign = 8
+WASAPI: wBitsPerSample = 32
+WASAPI: cbSize = 22
+WASAPI: detected 2 channels
+WASAPI: audio buffer frames: 1962 calculated latency: 44ms
+ 
+CORE API HASH: 15843999809385478705
+EDITOR API HASH: 5561212406590411750
+Loaded builtin certs
+Loading resource: C:/Users/Riccardo/AppData/Roaming/Godot/editor_settings-3.tres
+EditorSettings: Load OK!
+EditorSettings: Save OK!
+ERROR: Condition "default_certs != nullptr" is true.
+   at: load_default_certificates (modules/mbedtls/crypto_mbedtls.cpp:314) - Condition "default_certs != nullptr" is true.
+EditorSettings: Save OK!

@@ -10,16 +10,14 @@ config_version=4
 
 [application]
 
-config/name="TheWorld_Viewer"
-run/main_scene="res://Game.tscn"
+config/name="Godot Proj"
+run/main_scene="res://Main.tscn"
 config/icon="res://icon.png"
 
-[display]
+[autoload]
 
-window/size/width=1280
-window/size/height=720
-window/stretch/mode="2d"
-window/stretch/aspect="keep"
+Globals="*res://init/Globals.gd"
+Init="*res://init/init.gd"
 
 [physics]
 
@@ -27,5 +25,4 @@ common/enable_pause_aware_picking=true
 
 [rendering]
 
-environment/default_clear_color=Color( 0.278431, 0.176471, 0.235294, 1 )
 environment/default_environment="res://default_env.tres"

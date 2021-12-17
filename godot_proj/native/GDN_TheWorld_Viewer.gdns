@@ -1,0 +1,8 @@
+[gd_resource type="NativeScript" load_steps=2 format=2]
+
+[ext_resource path="res://native/GDN_TheWorld_Viewer.gdnlib" type="GDNativeLibrary" id=1]
+
+[resource]
+resource_name = "GDN_TheWorld_Viewer"
+class_name = "GDN_TheWorld_Viewer"
+library = ExtResource( 1 )
