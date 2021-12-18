@@ -17,7 +17,6 @@ config/icon="res://icon.png"
 [autoload]
 
 Globals="*res://init/Globals.gd"
-Init="*res://init/init.gd"
 
 [physics]
 
