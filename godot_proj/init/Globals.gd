@@ -8,12 +8,15 @@ var bitmap_resolution : int
 var lod_max_depth : int
 var num_lods : int
 
+var _result : bool
+
 #const QUAD_SIZE := 2								# coordinate spaziali
 #const CHUNK_QUAD_COUNT := 50
 #const CHUNK_SIZE = QUAD_SIZE * CHUNK_QUAD_COUNT		# coordinate spaziali
 
 func _ready():
-	var _result = connect("tree_exiting", self, "exitFunct",[])
+	#var _result = connect("tree_exiting", self, "exitFunct",[])
+	assert(connect("tree_exiting", self, "exitFunct",[]) == 0)
 	GDNTheWorldViewer.set_debug_enabled(Globals.debug_enabled)
 	debug_print("Debug Enabled!")
 	
@@ -31,6 +34,9 @@ func _ready():
 		var verticesPerSide = chunks * num_vertices_per_chunk_side
 		GDNTheWorldViewer.debug_print("lod (" + str(lod) + ") - Num chunks per bitmap side = " + str(chunks) + " - Grid step in WUs = " + str(grid_step) + " - Num vertices per side = " + str(verticesPerSide) + " + 1 - Size of the side in WUs = " + str(verticesPerSide * grid_step))
 
+	var w = get_tree().get_root().find_node("World", true, false)
+	_result = GDNTheWorldViewer.init(w)
+	
 func GDN():
 	return GDNTheWorldViewer
 
