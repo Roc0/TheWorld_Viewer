@@ -36,6 +36,7 @@ func _ready():
 
 	var w = get_tree().get_root().find_node("World", true, false)
 	_result = GDNTheWorldViewer.init(w)
+	GDNTheWorldViewer.set_initial_world_viewer_pos(1195425.176295, 5465512.560295)
 	
 func GDN():
 	return GDNTheWorldViewer
