@@ -35,6 +35,7 @@ func _ready():
 		GDNTheWorldViewer.debug_print("lod (" + str(lod) + ") - Num chunks per bitmap side = " + str(chunks) + " - Grid step in WUs = " + str(grid_step) + " - Num vertices per side = " + str(verticesPerSide) + " + 1 - Size of the side in WUs = " + str(verticesPerSide * grid_step))
 
 	var w = get_tree().get_root().find_node("World", true, false)
+	#_result = GDNTheWorldViewer.init(w, 1195425.176295 + 100, 5465512.560295 +100, 0)
 	_result = GDNTheWorldViewer.init(w, 1195425.176295, 5465512.560295, 0)
 	
 func GDN():

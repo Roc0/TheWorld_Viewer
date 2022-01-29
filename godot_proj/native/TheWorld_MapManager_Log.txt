@@ -30,3 +30,66 @@
 2022-01-22 18:58:23.491 INFO  [21436] [TheWorld_MapManager::utils::~utils@51] *****************
 2022-01-22 18:58:23.491 INFO  [21436] [TheWorld_MapManager::utils::~utils@52] Log Deinitilized!
 2022-01-22 18:58:23.492 INFO  [21436] [TheWorld_MapManager::utils::~utils@53] *****************
+2022-01-22 22:17:15.053 INFO  [20100] [TheWorld_MapManager::utils::init@43] 
+
+2022-01-22 22:17:15.054 INFO  [20100] [TheWorld_MapManager::utils::init@44] ***************
+2022-01-22 22:17:15.054 INFO  [20100] [TheWorld_MapManager::utils::init@45] Log initilized!
+2022-01-22 22:17:15.054 INFO  [20100] [TheWorld_MapManager::utils::init@46] ***************
+2022-01-22 22:17:15.565 INFO  [20100] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 42849 - (X x Z): 207 x 207 - Found in DB: 42025 duration = 383 ms
+2022-01-22 22:17:53.225 INFO  [20100] [TheWorld_MapManager::utils::~utils@51] *****************
+2022-01-22 22:17:53.225 INFO  [20100] [TheWorld_MapManager::utils::~utils@52] Log Deinitilized!
+2022-01-22 22:17:53.225 INFO  [20100] [TheWorld_MapManager::utils::~utils@53] *****************
+2022-01-22 22:18:41.567 INFO  [20140] [TheWorld_MapManager::utils::init@43] 
+
+2022-01-22 22:18:41.567 INFO  [20140] [TheWorld_MapManager::utils::init@44] ***************
+2022-01-22 22:18:41.568 INFO  [20140] [TheWorld_MapManager::utils::init@45] Log initilized!
+2022-01-22 22:18:41.568 INFO  [20140] [TheWorld_MapManager::utils::init@46] ***************
+2022-01-22 22:18:41.883 INFO  [20140] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 42849 - (X x Z): 207 x 207 - Found in DB: 42025 duration = 190 ms
+2022-01-22 22:19:02.689 INFO  [20140] [TheWorld_MapManager::utils::~utils@51] *****************
+2022-01-22 22:19:02.689 INFO  [20140] [TheWorld_MapManager::utils::~utils@52] Log Deinitilized!
+2022-01-22 22:19:02.689 INFO  [20140] [TheWorld_MapManager::utils::~utils@53] *****************
+2022-01-22 22:21:01.144 INFO  [8100] [TheWorld_MapManager::utils::init@43] 
+
+2022-01-22 22:21:01.144 INFO  [8100] [TheWorld_MapManager::utils::init@44] ***************
+2022-01-22 22:21:01.144 INFO  [8100] [TheWorld_MapManager::utils::init@45] Log initilized!
+2022-01-22 22:21:01.144 INFO  [8100] [TheWorld_MapManager::utils::init@46] ***************
+2022-01-22 22:21:01.459 INFO  [8100] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 42849 - (X x Z): 207 x 207 - Found in DB: 42025 duration = 189 ms
+2022-01-22 22:21:32.793 INFO  [8100] [TheWorld_MapManager::utils::~utils@51] *****************
+2022-01-22 22:21:32.793 INFO  [8100] [TheWorld_MapManager::utils::~utils@52] Log Deinitilized!
+2022-01-22 22:21:32.793 INFO  [8100] [TheWorld_MapManager::utils::~utils@53] *****************
+2022-01-22 22:22:23.077 INFO  [19308] [TheWorld_MapManager::utils::init@43] 
+
+2022-01-22 22:22:23.077 INFO  [19308] [TheWorld_MapManager::utils::init@44] ***************
+2022-01-22 22:22:23.077 INFO  [19308] [TheWorld_MapManager::utils::init@45] Log initilized!
+2022-01-22 22:22:23.077 INFO  [19308] [TheWorld_MapManager::utils::init@46] ***************
+2022-01-22 22:22:23.415 INFO  [19308] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 42849 - (X x Z): 207 x 207 - Found in DB: 42025 duration = 216 ms
+2022-01-22 22:22:27.050 INFO  [19308] [TheWorld_MapManager::utils::~utils@51] *****************
+2022-01-22 22:22:27.050 INFO  [19308] [TheWorld_MapManager::utils::~utils@52] Log Deinitilized!
+2022-01-22 22:22:27.050 INFO  [19308] [TheWorld_MapManager::utils::~utils@53] *****************
+2022-01-22 22:23:05.134 INFO  [18752] [TheWorld_MapManager::utils::init@43] 
+
+2022-01-22 22:23:05.134 INFO  [18752] [TheWorld_MapManager::utils::init@44] ***************
+2022-01-22 22:23:05.134 INFO  [18752] [TheWorld_MapManager::utils::init@45] Log initilized!
+2022-01-22 22:23:05.134 INFO  [18752] [TheWorld_MapManager::utils::init@46] ***************
+2022-01-22 22:23:05.450 INFO  [18752] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 42849 - (X x Z): 207 x 207 - Found in DB: 42025 duration = 190 ms
+2022-01-22 22:23:24.623 INFO  [18752] [TheWorld_MapManager::utils::~utils@51] *****************
+2022-01-22 22:23:24.623 INFO  [18752] [TheWorld_MapManager::utils::~utils@52] Log Deinitilized!
+2022-01-22 22:23:24.623 INFO  [18752] [TheWorld_MapManager::utils::~utils@53] *****************
+2022-01-22 22:23:36.084 INFO  [11228] [TheWorld_MapManager::utils::init@43] 
+
+2022-01-22 22:23:36.084 INFO  [11228] [TheWorld_MapManager::utils::init@44] ***************
+2022-01-22 22:23:36.084 INFO  [11228] [TheWorld_MapManager::utils::init@45] Log initilized!
+2022-01-22 22:23:36.084 INFO  [11228] [TheWorld_MapManager::utils::init@46] ***************
+2022-01-22 22:23:36.410 INFO  [11228] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 42849 - (X x Z): 207 x 207 - Found in DB: 42025 duration = 200 ms
+2022-01-22 22:23:38.068 INFO  [11228] [TheWorld_MapManager::utils::~utils@51] *****************
+2022-01-22 22:23:38.068 INFO  [11228] [TheWorld_MapManager::utils::~utils@52] Log Deinitilized!
+2022-01-22 22:23:38.068 INFO  [11228] [TheWorld_MapManager::utils::~utils@53] *****************
+2022-01-22 22:24:02.242 INFO  [11228] [TheWorld_MapManager::utils::init@43] 
+
+2022-01-22 22:24:02.242 INFO  [11228] [TheWorld_MapManager::utils::init@44] ***************
+2022-01-22 22:24:02.242 INFO  [11228] [TheWorld_MapManager::utils::init@45] Log initilized!
+2022-01-22 22:24:02.242 INFO  [11228] [TheWorld_MapManager::utils::init@46] ***************
+2022-01-22 22:24:02.556 INFO  [11228] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 42849 - (X x Z): 207 x 207 - Found in DB: 42025 duration = 192 ms
+2022-01-22 22:24:16.089 INFO  [11228] [TheWorld_MapManager::utils::~utils@51] *****************
+2022-01-22 22:24:16.089 INFO  [11228] [TheWorld_MapManager::utils::~utils@52] Log Deinitilized!
+2022-01-22 22:24:16.089 INFO  [11228] [TheWorld_MapManager::utils::~utils@53] *****************
