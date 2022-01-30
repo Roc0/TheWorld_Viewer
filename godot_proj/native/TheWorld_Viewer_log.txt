@@ -312,3 +312,444 @@
 2022-01-29 15:54:05.299 INFO  [8664] [godot::GDN_TheWorld_Globals::~GDN_TheWorld_Globals@36] *****************
 2022-01-29 15:54:05.299 INFO  [8664] [godot::GDN_TheWorld_Globals::~GDN_TheWorld_Globals@37] Log Terminated!
 2022-01-29 15:54:05.299 INFO  [8664] [godot::GDN_TheWorld_Globals::~GDN_TheWorld_Globals@38] *****************
+2022-01-30 16:19:54.925 INFO  [30324] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@21] 
+
+2022-01-30 16:19:55.153 INFO  [30324] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] ***************
+2022-01-30 16:19:55.372 INFO  [30324] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@23] Log initilized!
+2022-01-30 16:19:55.898 INFO  [30324] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@24] ***************
+2022-01-30 16:19:57.586 INFO  [30324] [TheWorld_MapManager::utils::init@47] 
+
+2022-01-30 16:19:57.586 INFO  [30324] [TheWorld_MapManager::utils::init@48] ***************
+2022-01-30 16:19:57.586 INFO  [30324] [TheWorld_MapManager::utils::init@49] Log initilized!
+2022-01-30 16:19:57.586 INFO  [30324] [TheWorld_MapManager::utils::init@50] ***************
+2022-01-30 16:44:19.546 INFO  [4404] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@21] 
+
+2022-01-30 16:44:19.716 INFO  [4404] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] ***************
+2022-01-30 16:44:19.938 INFO  [4404] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@23] Log initilized!
+2022-01-30 16:44:20.159 INFO  [4404] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@24] ***************
+2022-01-30 16:44:20.377 INFO  [4404] [TheWorld_MapManager::utils::init@47] 
+
+2022-01-30 16:44:20.377 INFO  [4404] [TheWorld_MapManager::utils::init@48] ***************
+2022-01-30 16:44:20.377 INFO  [4404] [TheWorld_MapManager::utils::init@49] Log initilized!
+2022-01-30 16:44:20.377 INFO  [4404] [TheWorld_MapManager::utils::init@50] ***************
+2022-01-30 16:45:01.353 INFO  [4404] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing ...
+2022-01-30 16:53:33.424 INFO  [12100] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@21] 
+
+2022-01-30 16:53:33.425 INFO  [12100] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] ***************
+2022-01-30 16:53:33.425 INFO  [12100] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@23] Log initilized!
+2022-01-30 16:53:33.425 INFO  [12100] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@24] ***************
+2022-01-30 16:53:33.425 INFO  [12100] [TheWorld_MapManager::utils::init@47] 
+
+2022-01-30 16:53:33.425 INFO  [12100] [TheWorld_MapManager::utils::init@48] ***************
+2022-01-30 16:53:33.425 INFO  [12100] [TheWorld_MapManager::utils::init@49] Log initilized!
+2022-01-30 16:53:33.425 INFO  [12100] [TheWorld_MapManager::utils::init@50] ***************
+2022-01-30 16:53:33.427 INFO  [12100] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing ...
+2022-01-30 16:55:23.536 INFO  [23436] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@21] 
+
+2022-01-30 16:55:25.273 INFO  [23436] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] ***************
+2022-01-30 16:55:25.493 INFO  [23436] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@23] Log initilized!
+2022-01-30 16:55:26.172 INFO  [23436] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@24] ***************
+2022-01-30 16:55:38.609 INFO  [23436] [TheWorld_MapManager::utils::init@47] 
+
+2022-01-30 16:55:38.609 INFO  [23436] [TheWorld_MapManager::utils::init@48] ***************
+2022-01-30 16:55:38.610 INFO  [23436] [TheWorld_MapManager::utils::init@49] Log initilized!
+2022-01-30 16:55:38.610 INFO  [23436] [TheWorld_MapManager::utils::init@50] ***************
+2022-01-30 16:56:02.571 INFO  [23436] [godot::GDN_TheWorld_MainNode::init@78] TheWorld Main Node Initializing ...
+2022-01-30 16:56:51.939 INFO  [23436] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing ...
+2022-01-30 17:04:26.148 INFO  [31908] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@21] 
+
+2022-01-30 17:04:26.369 INFO  [31908] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] ***************
+2022-01-30 17:04:26.587 INFO  [31908] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@23] Log initilized!
+2022-01-30 17:04:26.808 INFO  [31908] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@24] ***************
+2022-01-30 17:04:27.082 INFO  [31908] [TheWorld_MapManager::utils::init@47] 
+
+2022-01-30 17:04:27.082 INFO  [31908] [TheWorld_MapManager::utils::init@48] ***************
+2022-01-30 17:04:27.082 INFO  [31908] [TheWorld_MapManager::utils::init@49] Log initilized!
+2022-01-30 17:04:27.082 INFO  [31908] [TheWorld_MapManager::utils::init@50] ***************
+2022-01-30 17:05:16.827 INFO  [31908] [godot::GDN_TheWorld_MainNode::init@82] TheWorld Main Node Initializing ...
+2022-01-30 17:05:22.503 INFO  [31908] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing ...
+2022-01-30 17:08:53.635 INFO  [31832] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@21] 
+
+2022-01-30 17:08:53.635 INFO  [31832] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] ***************
+2022-01-30 17:08:53.635 INFO  [31832] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@23] Log initilized!
+2022-01-30 17:08:53.635 INFO  [31832] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@24] ***************
+2022-01-30 17:08:53.636 INFO  [31832] [TheWorld_MapManager::utils::init@47] 
+
+2022-01-30 17:08:53.636 INFO  [31832] [TheWorld_MapManager::utils::init@48] ***************
+2022-01-30 17:08:53.636 INFO  [31832] [TheWorld_MapManager::utils::init@49] Log initilized!
+2022-01-30 17:08:53.636 INFO  [31832] [TheWorld_MapManager::utils::init@50] ***************
+2022-01-30 17:09:00.797 INFO  [31832] [godot::GDN_TheWorld_MainNode::init@82] TheWorld Main Node Initializing ...
+2022-01-30 17:09:06.662 INFO  [31832] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing ...
+2022-01-30 17:09:48.146 INFO  [31832] [godot::GDN_TheWorld_Globals::debugPrint@69] Debug Enabled!
+2022-01-30 17:09:54.143 INFO  [31832] [godot::GDN_TheWorld_Globals::debugPrint@69] Bitmap resolution = 1024 + 1
+2022-01-30 17:09:57.335 INFO  [31832] [godot::GDN_TheWorld_Globals::debugPrint@69] Num vertices per chunk side = 32 + 1
+2022-01-30 17:10:01.450 INFO  [31832] [godot::GDN_TheWorld_Globals::debugPrint@69] Lod max depth = 5 - Num lods = 6
+2022-01-30 17:10:03.833 INFO  [31832] [godot::GDN_TheWorld_Globals::debugPrint@69] lod (0) - Num chunks per bitmap side = 32 - Grid step in WUs = 5 - Num vertices per side = 1024 + 1 - Size of the side in WUs = 5120
+2022-01-30 17:10:03.836 INFO  [31832] [godot::GDN_TheWorld_Globals::debugPrint@69] lod (1) - Num chunks per bitmap side = 16 - Grid step in WUs = 10 - Num vertices per side = 512 + 1 - Size of the side in WUs = 5120
+2022-01-30 17:10:03.838 INFO  [31832] [godot::GDN_TheWorld_Globals::debugPrint@69] lod (2) - Num chunks per bitmap side = 8 - Grid step in WUs = 20 - Num vertices per side = 256 + 1 - Size of the side in WUs = 5120
+2022-01-30 17:10:03.840 INFO  [31832] [godot::GDN_TheWorld_Globals::debugPrint@69] lod (3) - Num chunks per bitmap side = 4 - Grid step in WUs = 40 - Num vertices per side = 128 + 1 - Size of the side in WUs = 5120
+2022-01-30 17:10:03.842 INFO  [31832] [godot::GDN_TheWorld_Globals::debugPrint@69] lod (4) - Num chunks per bitmap side = 2 - Grid step in WUs = 80 - Num vertices per side = 64 + 1 - Size of the side in WUs = 5120
+2022-01-30 17:10:03.844 INFO  [31832] [godot::GDN_TheWorld_Globals::debugPrint@69] lod (5) - Num chunks per bitmap side = 1 - Grid step in WUs = 160 - Num vertices per side = 32 + 1 - Size of the side in WUs = 5120
+2022-01-30 17:12:27.421 INFO  [11064] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@21] 
+
+2022-01-30 17:12:27.422 INFO  [11064] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] ***************
+2022-01-30 17:12:27.422 INFO  [11064] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@23] Log initilized!
+2022-01-30 17:12:27.422 INFO  [11064] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@24] ***************
+2022-01-30 17:12:27.422 INFO  [11064] [TheWorld_MapManager::utils::init@47] 
+
+2022-01-30 17:12:27.422 INFO  [11064] [TheWorld_MapManager::utils::init@48] ***************
+2022-01-30 17:12:27.422 INFO  [11064] [TheWorld_MapManager::utils::init@49] Log initilized!
+2022-01-30 17:12:27.422 INFO  [11064] [TheWorld_MapManager::utils::init@50] ***************
+2022-01-30 17:12:37.260 INFO  [11064] [godot::GDN_TheWorld_MainNode::init@82] TheWorld Main Node Initializing ...
+2022-01-30 17:12:40.343 INFO  [11064] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing ...
+2022-01-30 17:13:29.694 INFO  [21264] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@21] 
+
+2022-01-30 17:13:29.695 INFO  [21264] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] ***************
+2022-01-30 17:13:29.695 INFO  [21264] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@23] Log initilized!
+2022-01-30 17:13:29.695 INFO  [21264] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@24] ***************
+2022-01-30 17:13:29.695 INFO  [21264] [TheWorld_MapManager::utils::init@47] 
+
+2022-01-30 17:13:29.695 INFO  [21264] [TheWorld_MapManager::utils::init@48] ***************
+2022-01-30 17:13:29.695 INFO  [21264] [TheWorld_MapManager::utils::init@49] Log initilized!
+2022-01-30 17:13:29.695 INFO  [21264] [TheWorld_MapManager::utils::init@50] ***************
+2022-01-30 17:13:29.697 INFO  [21264] [godot::GDN_TheWorld_MainNode::init@82] TheWorld Main Node Initializing ...
+2022-01-30 17:13:29.697 INFO  [21264] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing ...
+2022-01-30 17:23:22.207 INFO  [23192] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@21] 
+
+2022-01-30 17:23:22.207 INFO  [23192] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] ***************
+2022-01-30 17:23:22.207 INFO  [23192] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@23] Log initilized!
+2022-01-30 17:23:22.207 INFO  [23192] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@24] ***************
+2022-01-30 17:23:22.207 INFO  [23192] [TheWorld_MapManager::utils::init@47] 
+
+2022-01-30 17:23:22.207 INFO  [23192] [TheWorld_MapManager::utils::init@48] ***************
+2022-01-30 17:23:22.207 INFO  [23192] [TheWorld_MapManager::utils::init@49] Log initilized!
+2022-01-30 17:23:22.207 INFO  [23192] [TheWorld_MapManager::utils::init@50] ***************
+2022-01-30 17:23:22.210 INFO  [23192] [godot::GDN_TheWorld_MainNode::init@82] TheWorld Main Node Initializing ...
+2022-01-30 17:23:37.941 INFO  [23192] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing ...
+2022-01-30 17:28:42.835 INFO  [32220] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] 
+
+2022-01-30 17:28:42.835 INFO  [32220] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@23] ***************
+2022-01-30 17:28:42.835 INFO  [32220] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@24] Log initilized!
+2022-01-30 17:28:42.835 INFO  [32220] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@25] ***************
+2022-01-30 17:28:42.836 INFO  [32220] [TheWorld_MapManager::utils::init@47] 
+
+2022-01-30 17:28:42.836 INFO  [32220] [TheWorld_MapManager::utils::init@48] ***************
+2022-01-30 17:28:42.836 INFO  [32220] [TheWorld_MapManager::utils::init@49] Log initilized!
+2022-01-30 17:28:42.836 INFO  [32220] [TheWorld_MapManager::utils::init@50] ***************
+2022-01-30 17:28:42.839 INFO  [32220] [godot::GDN_TheWorld_MainNode::init@82] TheWorld Main Node Initializing ...
+2022-01-30 17:28:46.141 INFO  [32220] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing ...
+2022-01-30 17:29:16.313 INFO  [32220] [godot::GDN_TheWorld_Globals::debugPrint@69] Debug Enabled!
+2022-01-30 17:29:28.520 INFO  [32220] [godot::GDN_TheWorld_Globals::debugPrint@69] Bitmap resolution = 1024 + 1
+2022-01-30 17:29:44.830 INFO  [32220] [godot::GDN_TheWorld_Globals::debugPrint@69] Num vertices per chunk side = 32 + 1
+2022-01-30 17:30:00.405 INFO  [32220] [godot::GDN_TheWorld_Globals::debugPrint@69] Lod max depth = 5 - Num lods = 6
+2022-01-30 17:31:16.951 INFO  [34372] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] 
+
+2022-01-30 17:31:16.951 INFO  [34372] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@23] ***************
+2022-01-30 17:31:16.951 INFO  [34372] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@24] Log initilized!
+2022-01-30 17:31:16.951 INFO  [34372] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@25] ***************
+2022-01-30 17:31:16.951 INFO  [34372] [TheWorld_MapManager::utils::init@47] 
+
+2022-01-30 17:31:16.951 INFO  [34372] [TheWorld_MapManager::utils::init@48] ***************
+2022-01-30 17:31:16.951 INFO  [34372] [TheWorld_MapManager::utils::init@49] Log initilized!
+2022-01-30 17:31:16.951 INFO  [34372] [TheWorld_MapManager::utils::init@50] ***************
+2022-01-30 17:31:16.953 INFO  [34372] [godot::GDN_TheWorld_MainNode::init@82] TheWorld Main Node Initializing ...
+2022-01-30 17:31:18.369 INFO  [34372] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing ...
+2022-01-30 17:36:53.813 INFO  [21492] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] 
+
+2022-01-30 17:36:53.813 INFO  [21492] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@23] ***************
+2022-01-30 17:36:53.813 INFO  [21492] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@24] Log initilized!
+2022-01-30 17:36:53.813 INFO  [21492] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@25] ***************
+2022-01-30 17:36:53.813 INFO  [21492] [TheWorld_MapManager::utils::init@47] 
+
+2022-01-30 17:36:53.814 INFO  [21492] [TheWorld_MapManager::utils::init@48] ***************
+2022-01-30 17:36:53.814 INFO  [21492] [TheWorld_MapManager::utils::init@49] Log initilized!
+2022-01-30 17:36:53.814 INFO  [21492] [TheWorld_MapManager::utils::init@50] ***************
+2022-01-30 17:36:53.816 INFO  [21492] [godot::GDN_TheWorld_MainNode::init@82] TheWorld Main Node Initializing ...
+2022-01-30 17:36:56.857 INFO  [21492] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing ...
+2022-01-30 17:38:44.234 INFO  [21492] [godot::GDN_TheWorld_Globals::debugPrint@69] Debug Enabled!
+2022-01-30 17:38:46.644 INFO  [21492] [godot::GDN_TheWorld_Globals::debugPrint@69] Bitmap resolution = 1024 + 1
+2022-01-30 17:39:45.567 INFO  [21492] [godot::GDN_TheWorld_Globals::debugPrint@69] Num vertices per chunk side = 32 + 1
+2022-01-30 17:39:51.177 INFO  [21492] [godot::GDN_TheWorld_Globals::debugPrint@69] Lod max depth = 5 - Num lods = 6
+2022-01-30 17:39:54.702 INFO  [21492] [godot::GDN_TheWorld_Globals::debugPrint@69] lod (0) - Num chunks per bitmap side = 32 - Grid step in WUs = 5 - Num vertices per side = 1024 + 1 - Size of the side in WUs = 5120
+2022-01-30 17:40:00.904 INFO  [21492] [godot::GDN_TheWorld_Globals::debugPrint@69] lod (1) - Num chunks per bitmap side = 16 - Grid step in WUs = 10 - Num vertices per side = 512 + 1 - Size of the side in WUs = 5120
+2022-01-30 17:40:03.015 INFO  [21492] [godot::GDN_TheWorld_Globals::debugPrint@69] lod (2) - Num chunks per bitmap side = 8 - Grid step in WUs = 20 - Num vertices per side = 256 + 1 - Size of the side in WUs = 5120
+2022-01-30 17:40:04.571 INFO  [21492] [godot::GDN_TheWorld_Globals::debugPrint@69] lod (3) - Num chunks per bitmap side = 4 - Grid step in WUs = 40 - Num vertices per side = 128 + 1 - Size of the side in WUs = 5120
+2022-01-30 17:40:06.230 INFO  [21492] [godot::GDN_TheWorld_Globals::debugPrint@69] lod (4) - Num chunks per bitmap side = 2 - Grid step in WUs = 80 - Num vertices per side = 64 + 1 - Size of the side in WUs = 5120
+2022-01-30 17:40:10.786 INFO  [21492] [godot::GDN_TheWorld_Globals::debugPrint@69] lod (5) - Num chunks per bitmap side = 1 - Grid step in WUs = 160 - Num vertices per side = 32 + 1 - Size of the side in WUs = 5120
+2022-01-30 17:41:17.751 INFO  [21492] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 562499 duration = 24629 ms
+2022-01-30 17:42:50.856 INFO  [21492] [godot::GDN_TheWorld_Globals::debugPrint@69] Globals: exitFunct!
+2022-01-30 17:42:50.882 INFO  [21492] [TheWorld_MapManager::utils::~utils@55] *****************
+2022-01-30 17:42:50.882 INFO  [21492] [TheWorld_MapManager::utils::~utils@56] Log Terminated!
+2022-01-30 17:42:50.882 INFO  [21492] [TheWorld_MapManager::utils::~utils@57] *****************
+2022-01-30 17:42:50.882 INFO  [21492] [godot::GDN_TheWorld_Globals::~GDN_TheWorld_Globals@43] *****************
+2022-01-30 17:42:50.882 INFO  [21492] [godot::GDN_TheWorld_Globals::~GDN_TheWorld_Globals@44] Log Terminated!
+2022-01-30 17:42:50.882 INFO  [21492] [godot::GDN_TheWorld_Globals::~GDN_TheWorld_Globals@45] *****************
+2022-01-30 17:56:29.522 INFO  [32624] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@20] 
+
+2022-01-30 17:56:29.523 INFO  [32624] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@21] ***************
+2022-01-30 17:56:29.523 INFO  [32624] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] Log initilized!
+2022-01-30 17:56:29.523 INFO  [32624] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@23] ***************
+2022-01-30 17:56:29.523 INFO  [32624] [TheWorld_MapManager::utils::init@47] 
+
+2022-01-30 17:56:29.523 INFO  [32624] [TheWorld_MapManager::utils::init@48] ***************
+2022-01-30 17:56:29.523 INFO  [32624] [TheWorld_MapManager::utils::init@49] Log initilized!
+2022-01-30 17:56:29.523 INFO  [32624] [TheWorld_MapManager::utils::init@50] ***************
+2022-01-30 17:56:29.525 INFO  [32624] [godot::GDN_TheWorld_MainNode::init@80] TheWorld Main Node Initializing ...
+2022-01-30 17:56:29.525 INFO  [32624] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing ...
+2022-01-30 17:56:37.195 INFO  [32624] [godot::GDN_TheWorld_Globals::debugPrint@71] Debug Enabled!
+2022-01-30 17:56:48.559 INFO  [32624] [godot::GDN_TheWorld_Globals::debugPrint@71] Bitmap resolution = 1024 + 1
+2022-01-30 17:56:48.562 INFO  [32624] [godot::GDN_TheWorld_Globals::debugPrint@71] Num vertices per chunk side = 32 + 1
+2022-01-30 17:56:48.563 INFO  [32624] [godot::GDN_TheWorld_Globals::debugPrint@71] Lod max depth = 5 - Num lods = 6
+2022-01-30 17:56:48.566 INFO  [32624] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (0) - Num chunks per bitmap side = 32 - Grid step in WUs = 5 - Num vertices per side = 1024 + 1 - Size of the side in WUs = 5120
+2022-01-30 17:56:48.568 INFO  [32624] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (1) - Num chunks per bitmap side = 16 - Grid step in WUs = 10 - Num vertices per side = 512 + 1 - Size of the side in WUs = 5120
+2022-01-30 17:56:48.570 INFO  [32624] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (2) - Num chunks per bitmap side = 8 - Grid step in WUs = 20 - Num vertices per side = 256 + 1 - Size of the side in WUs = 5120
+2022-01-30 17:56:48.573 INFO  [32624] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (3) - Num chunks per bitmap side = 4 - Grid step in WUs = 40 - Num vertices per side = 128 + 1 - Size of the side in WUs = 5120
+2022-01-30 17:56:48.575 INFO  [32624] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (4) - Num chunks per bitmap side = 2 - Grid step in WUs = 80 - Num vertices per side = 64 + 1 - Size of the side in WUs = 5120
+2022-01-30 17:56:48.578 INFO  [32624] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (5) - Num chunks per bitmap side = 1 - Grid step in WUs = 160 - Num vertices per side = 32 + 1 - Size of the side in WUs = 5120
+2022-01-30 17:56:51.284 INFO  [32624] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 591361 duration = 2706 ms
+2022-01-30 18:04:37.215 INFO  [21824] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@20] 
+
+2022-01-30 18:04:37.216 INFO  [21824] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@21] ***************
+2022-01-30 18:04:37.216 INFO  [21824] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] Log initilized!
+2022-01-30 18:04:37.216 INFO  [21824] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@23] ***************
+2022-01-30 18:04:37.216 INFO  [21824] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@25] TheWorld Globals Initializing...
+2022-01-30 18:04:37.216 INFO  [21824] [TheWorld_MapManager::utils::init@47] 
+
+2022-01-30 18:04:37.217 INFO  [21824] [TheWorld_MapManager::utils::init@48] ***************
+2022-01-30 18:04:37.217 INFO  [21824] [TheWorld_MapManager::utils::init@49] Log initilized!
+2022-01-30 18:04:37.217 INFO  [21824] [TheWorld_MapManager::utils::init@50] ***************
+2022-01-30 18:04:37.220 INFO  [21824] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@38] TheWorld Globals Initialized!
+2022-01-30 18:04:37.220 INFO  [21824] [godot::GDN_TheWorld_MainNode::init@80] TheWorld Main Node Initializing...
+2022-01-30 18:04:37.221 INFO  [21824] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing...
+2022-01-30 18:04:37.306 INFO  [21824] [godot::GDN_TheWorld_Viewer::init@65] TheWorld Viewer Initialized!
+2022-01-30 18:04:37.306 INFO  [21824] [godot::GDN_TheWorld_MainNode::init@93] TheWorld Main Node Initialized!
+2022-01-30 18:04:45.276 INFO  [21824] [godot::GDN_TheWorld_Globals::debugPrint@71] Debug Enabled!
+2022-01-30 18:04:45.277 INFO  [21824] [godot::GDN_TheWorld_Globals::debugPrint@71] Bitmap resolution = 1024 + 1
+2022-01-30 18:04:45.278 INFO  [21824] [godot::GDN_TheWorld_Globals::debugPrint@71] Num vertices per chunk side = 32 + 1
+2022-01-30 18:04:45.280 INFO  [21824] [godot::GDN_TheWorld_Globals::debugPrint@71] Lod max depth = 5 - Num lods = 6
+2022-01-30 18:04:45.282 INFO  [21824] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (0) - Num chunks per bitmap side = 32 - Grid step in WUs = 5 - Num vertices per side = 1024 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:04:45.285 INFO  [21824] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (1) - Num chunks per bitmap side = 16 - Grid step in WUs = 10 - Num vertices per side = 512 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:04:45.288 INFO  [21824] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (2) - Num chunks per bitmap side = 8 - Grid step in WUs = 20 - Num vertices per side = 256 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:04:45.292 INFO  [21824] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (3) - Num chunks per bitmap side = 4 - Grid step in WUs = 40 - Num vertices per side = 128 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:04:45.294 INFO  [21824] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (4) - Num chunks per bitmap side = 2 - Grid step in WUs = 80 - Num vertices per side = 64 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:04:45.296 INFO  [21824] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (5) - Num chunks per bitmap side = 1 - Grid step in WUs = 160 - Num vertices per side = 32 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:04:47.961 INFO  [21824] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 591361 duration = 2665 ms
+2022-01-30 18:07:43.948 INFO  [25812] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@20] ***************
+2022-01-30 18:07:43.949 INFO  [25812] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@21] Log initilized!
+2022-01-30 18:07:43.949 INFO  [25812] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] ***************
+2022-01-30 18:07:43.949 INFO  [25812] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@24] TheWorld Globals Initializing...
+2022-01-30 18:07:43.949 INFO  [25812] [TheWorld_MapManager::utils::init@47] ***************
+2022-01-30 18:07:43.949 INFO  [25812] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-01-30 18:07:43.949 INFO  [25812] [TheWorld_MapManager::utils::init@49] ***************
+2022-01-30 18:07:43.951 INFO  [25812] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@37] TheWorld Globals Initialized!
+2022-01-30 18:07:43.951 INFO  [25812] [godot::GDN_TheWorld_MainNode::init@80] TheWorld Main Node Initializing...
+2022-01-30 18:07:43.951 INFO  [25812] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing...
+2022-01-30 18:07:44.041 INFO  [25812] [godot::GDN_TheWorld_Viewer::init@65] TheWorld Viewer Initialized!
+2022-01-30 18:07:44.042 INFO  [25812] [godot::GDN_TheWorld_MainNode::init@93] TheWorld Main Node Initialized!
+2022-01-30 18:07:44.043 INFO  [25812] [godot::GDN_TheWorld_Globals::debugPrint@71] Debug Enabled!
+2022-01-30 18:07:44.044 INFO  [25812] [godot::GDN_TheWorld_Globals::debugPrint@71] Bitmap resolution = 1024 + 1
+2022-01-30 18:07:44.046 INFO  [25812] [godot::GDN_TheWorld_Globals::debugPrint@71] Num vertices per chunk side = 32 + 1
+2022-01-30 18:07:44.046 INFO  [25812] [godot::GDN_TheWorld_Globals::debugPrint@71] Lod max depth = 5 - Num lods = 6
+2022-01-30 18:07:44.049 INFO  [25812] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (0) - Num chunks per bitmap side = 32 - Grid step in WUs = 5 - Num vertices per side = 1024 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:07:44.051 INFO  [25812] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (1) - Num chunks per bitmap side = 16 - Grid step in WUs = 10 - Num vertices per side = 512 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:07:44.053 INFO  [25812] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (2) - Num chunks per bitmap side = 8 - Grid step in WUs = 20 - Num vertices per side = 256 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:07:44.056 INFO  [25812] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (3) - Num chunks per bitmap side = 4 - Grid step in WUs = 40 - Num vertices per side = 128 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:07:44.058 INFO  [25812] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (4) - Num chunks per bitmap side = 2 - Grid step in WUs = 80 - Num vertices per side = 64 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:07:44.060 INFO  [25812] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (5) - Num chunks per bitmap side = 1 - Grid step in WUs = 160 - Num vertices per side = 32 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:07:46.852 INFO  [25812] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 591361 duration = 2792 ms
+2022-01-30 18:08:27.410 INFO  [35900] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@20] ***************
+2022-01-30 18:08:27.411 INFO  [35900] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@21] Log initilized!
+2022-01-30 18:08:27.411 INFO  [35900] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] ***************
+2022-01-30 18:08:27.411 INFO  [35900] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@24] TheWorld Globals Initializing...
+2022-01-30 18:08:27.411 INFO  [35900] [TheWorld_MapManager::utils::init@47] ***************
+2022-01-30 18:08:27.411 INFO  [35900] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-01-30 18:08:27.411 INFO  [35900] [TheWorld_MapManager::utils::init@49] ***************
+2022-01-30 18:08:27.413 INFO  [35900] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@37] TheWorld Globals Initialized!
+2022-01-30 18:08:27.413 INFO  [35900] [godot::GDN_TheWorld_MainNode::init@80] TheWorld Main Node Initializing...
+2022-01-30 18:08:27.413 INFO  [35900] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing...
+2022-01-30 18:08:27.495 INFO  [35900] [godot::GDN_TheWorld_Viewer::init@65] TheWorld Viewer Initialized!
+2022-01-30 18:08:27.495 INFO  [35900] [godot::GDN_TheWorld_MainNode::init@93] TheWorld Main Node Initialized!
+2022-01-30 18:08:27.497 INFO  [35900] [godot::GDN_TheWorld_Globals::debugPrint@71] Debug Enabled!
+2022-01-30 18:08:27.498 INFO  [35900] [godot::GDN_TheWorld_Globals::debugPrint@71] Bitmap resolution = 1024 + 1
+2022-01-30 18:08:27.499 INFO  [35900] [godot::GDN_TheWorld_Globals::debugPrint@71] Num vertices per chunk side = 32 + 1
+2022-01-30 18:08:27.500 INFO  [35900] [godot::GDN_TheWorld_Globals::debugPrint@71] Lod max depth = 5 - Num lods = 6
+2022-01-30 18:08:27.502 INFO  [35900] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (0) - Num chunks per bitmap side = 32 - Grid step in WUs = 5 - Num vertices per side = 1024 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:08:27.504 INFO  [35900] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (1) - Num chunks per bitmap side = 16 - Grid step in WUs = 10 - Num vertices per side = 512 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:08:27.506 INFO  [35900] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (2) - Num chunks per bitmap side = 8 - Grid step in WUs = 20 - Num vertices per side = 256 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:08:27.508 INFO  [35900] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (3) - Num chunks per bitmap side = 4 - Grid step in WUs = 40 - Num vertices per side = 128 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:08:27.510 INFO  [35900] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (4) - Num chunks per bitmap side = 2 - Grid step in WUs = 80 - Num vertices per side = 64 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:08:27.512 INFO  [35900] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (5) - Num chunks per bitmap side = 1 - Grid step in WUs = 160 - Num vertices per side = 32 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:08:30.192 INFO  [35900] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 591361 duration = 2679 ms
+2022-01-30 18:09:25.847 INFO  [35900] [godot::GDN_TheWorld_Globals::debugPrint@71] Globals: exitFunct!
+2022-01-30 18:09:34.666 INFO  [35900] [TheWorld_MapManager::utils::~utils@54] *****************
+2022-01-30 18:09:34.666 INFO  [35900] [TheWorld_MapManager::utils::~utils@55] Log Terminated!
+2022-01-30 18:09:34.666 INFO  [35900] [TheWorld_MapManager::utils::~utils@56] *****************
+2022-01-30 18:09:34.666 INFO  [35900] [godot::GDN_TheWorld_Globals::~GDN_TheWorld_Globals@44] *****************
+2022-01-30 18:09:34.666 INFO  [35900] [godot::GDN_TheWorld_Globals::~GDN_TheWorld_Globals@45] Log Terminated!
+2022-01-30 18:09:34.666 INFO  [35900] [godot::GDN_TheWorld_Globals::~GDN_TheWorld_Globals@46] *****************
+2022-01-30 18:13:58.868 INFO  [23384] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@20] ***************
+2022-01-30 18:13:58.869 INFO  [23384] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@21] Log initilized!
+2022-01-30 18:13:58.869 INFO  [23384] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] ***************
+2022-01-30 18:13:58.869 INFO  [23384] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@24] TheWorld Globals Initializing...
+2022-01-30 18:13:58.869 INFO  [23384] [TheWorld_MapManager::utils::init@47] ***************
+2022-01-30 18:13:58.869 INFO  [23384] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-01-30 18:13:58.869 INFO  [23384] [TheWorld_MapManager::utils::init@49] ***************
+2022-01-30 18:13:58.871 INFO  [23384] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@37] TheWorld Globals Initialized!
+2022-01-30 18:13:58.871 INFO  [23384] [godot::GDN_TheWorld_MainNode::init@80] TheWorld Main Node Initializing...
+2022-01-30 18:13:58.871 INFO  [23384] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing...
+2022-01-30 18:13:58.956 INFO  [23384] [godot::GDN_TheWorld_Viewer::init@65] TheWorld Viewer Initialized!
+2022-01-30 18:13:58.957 INFO  [23384] [godot::GDN_TheWorld_MainNode::init@93] TheWorld Main Node Initialized!
+2022-01-30 18:14:37.711 INFO  [19188] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@20] ***************
+2022-01-30 18:14:37.712 INFO  [19188] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@21] Log initilized!
+2022-01-30 18:14:37.712 INFO  [19188] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] ***************
+2022-01-30 18:14:37.712 INFO  [19188] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@24] TheWorld Globals Initializing...
+2022-01-30 18:14:37.712 INFO  [19188] [TheWorld_MapManager::utils::init@47] ***************
+2022-01-30 18:14:37.712 INFO  [19188] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-01-30 18:14:37.712 INFO  [19188] [TheWorld_MapManager::utils::init@49] ***************
+2022-01-30 18:14:37.713 INFO  [19188] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@37] TheWorld Globals Initialized!
+2022-01-30 18:14:37.714 INFO  [19188] [godot::GDN_TheWorld_MainNode::init@80] TheWorld Main Node Initializing...
+2022-01-30 18:14:37.714 INFO  [19188] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing...
+2022-01-30 18:14:37.795 INFO  [19188] [godot::GDN_TheWorld_Viewer::init@65] TheWorld Viewer Initialized!
+2022-01-30 18:14:37.795 INFO  [19188] [godot::GDN_TheWorld_MainNode::init@93] TheWorld Main Node Initialized!
+2022-01-30 18:17:11.728 INFO  [21872] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@20] ***************
+2022-01-30 18:17:11.728 INFO  [21872] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@21] Log initilized!
+2022-01-30 18:17:11.728 INFO  [21872] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] ***************
+2022-01-30 18:17:11.728 INFO  [21872] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@24] TheWorld Globals Initializing...
+2022-01-30 18:17:11.728 INFO  [21872] [TheWorld_MapManager::utils::init@47] ***************
+2022-01-30 18:17:11.729 INFO  [21872] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-01-30 18:17:11.729 INFO  [21872] [TheWorld_MapManager::utils::init@49] ***************
+2022-01-30 18:17:11.731 INFO  [21872] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@37] TheWorld Globals Initialized!
+2022-01-30 18:17:11.731 INFO  [21872] [godot::GDN_TheWorld_MainNode::init@80] TheWorld Main Node Initializing...
+2022-01-30 18:17:11.731 INFO  [21872] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing...
+2022-01-30 18:17:11.819 INFO  [21872] [godot::GDN_TheWorld_Viewer::init@65] TheWorld Viewer Initialized!
+2022-01-30 18:17:11.819 INFO  [21872] [godot::GDN_TheWorld_MainNode::init@93] TheWorld Main Node Initialized!
+2022-01-30 18:17:28.540 INFO  [21872] [godot::GDN_TheWorld_Globals::debugPrint@71] Debug Enabled!
+2022-01-30 18:17:28.541 INFO  [21872] [godot::GDN_TheWorld_Globals::debugPrint@71] Bitmap resolution = 1024 + 1
+2022-01-30 18:17:28.543 INFO  [21872] [godot::GDN_TheWorld_Globals::debugPrint@71] Num vertices per chunk side = 32 + 1
+2022-01-30 18:17:28.544 INFO  [21872] [godot::GDN_TheWorld_Globals::debugPrint@71] Lod max depth = 5 - Num lods = 6
+2022-01-30 18:17:28.547 INFO  [21872] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (0) - Num chunks per bitmap side = 32 - Grid step in WUs = 5 - Num vertices per side = 1024 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:17:28.550 INFO  [21872] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (1) - Num chunks per bitmap side = 16 - Grid step in WUs = 10 - Num vertices per side = 512 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:17:28.552 INFO  [21872] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (2) - Num chunks per bitmap side = 8 - Grid step in WUs = 20 - Num vertices per side = 256 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:17:28.555 INFO  [21872] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (3) - Num chunks per bitmap side = 4 - Grid step in WUs = 40 - Num vertices per side = 128 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:17:28.557 INFO  [21872] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (4) - Num chunks per bitmap side = 2 - Grid step in WUs = 80 - Num vertices per side = 64 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:17:28.560 INFO  [21872] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (5) - Num chunks per bitmap side = 1 - Grid step in WUs = 160 - Num vertices per side = 32 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:18:17.100 INFO  [34576] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@20] ***************
+2022-01-30 18:18:17.100 INFO  [34576] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@21] Log initilized!
+2022-01-30 18:18:17.100 INFO  [34576] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] ***************
+2022-01-30 18:18:17.100 INFO  [34576] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@24] TheWorld Globals Initializing...
+2022-01-30 18:18:17.100 INFO  [34576] [TheWorld_MapManager::utils::init@47] ***************
+2022-01-30 18:18:17.101 INFO  [34576] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-01-30 18:18:17.101 INFO  [34576] [TheWorld_MapManager::utils::init@49] ***************
+2022-01-30 18:18:17.102 INFO  [34576] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@37] TheWorld Globals Initialized!
+2022-01-30 18:18:17.102 INFO  [34576] [godot::GDN_TheWorld_MainNode::init@80] TheWorld Main Node Initializing...
+2022-01-30 18:18:17.102 INFO  [34576] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing...
+2022-01-30 18:18:17.191 INFO  [34576] [godot::GDN_TheWorld_Viewer::init@65] TheWorld Viewer Initialized!
+2022-01-30 18:18:17.191 INFO  [34576] [godot::GDN_TheWorld_MainNode::init@93] TheWorld Main Node Initialized!
+2022-01-30 18:18:25.524 INFO  [34576] [godot::GDN_TheWorld_Globals::debugPrint@71] Debug Enabled!
+2022-01-30 18:18:25.525 INFO  [34576] [godot::GDN_TheWorld_Globals::debugPrint@71] Bitmap resolution = 1024 + 1
+2022-01-30 18:18:25.526 INFO  [34576] [godot::GDN_TheWorld_Globals::debugPrint@71] Num vertices per chunk side = 32 + 1
+2022-01-30 18:18:25.527 INFO  [34576] [godot::GDN_TheWorld_Globals::debugPrint@71] Lod max depth = 5 - Num lods = 6
+2022-01-30 18:18:25.530 INFO  [34576] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (0) - Num chunks per bitmap side = 32 - Grid step in WUs = 5 - Num vertices per side = 1024 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:18:25.533 INFO  [34576] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (1) - Num chunks per bitmap side = 16 - Grid step in WUs = 10 - Num vertices per side = 512 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:18:25.535 INFO  [34576] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (2) - Num chunks per bitmap side = 8 - Grid step in WUs = 20 - Num vertices per side = 256 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:18:25.537 INFO  [34576] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (3) - Num chunks per bitmap side = 4 - Grid step in WUs = 40 - Num vertices per side = 128 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:18:25.539 INFO  [34576] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (4) - Num chunks per bitmap side = 2 - Grid step in WUs = 80 - Num vertices per side = 64 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:18:25.541 INFO  [34576] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (5) - Num chunks per bitmap side = 1 - Grid step in WUs = 160 - Num vertices per side = 32 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:18:28.291 INFO  [34576] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 591361 duration = 2750 ms
+2022-01-30 18:18:40.493 INFO  [34576] [godot::GDN_TheWorld_Globals::debugPrint@71] Globals: exitFunct!
+2022-01-30 18:18:43.641 INFO  [34576] [TheWorld_MapManager::utils::~utils@54] *****************
+2022-01-30 18:18:43.641 INFO  [34576] [TheWorld_MapManager::utils::~utils@55] Log Terminated!
+2022-01-30 18:18:43.641 INFO  [34576] [TheWorld_MapManager::utils::~utils@56] *****************
+2022-01-30 18:18:43.641 INFO  [34576] [godot::GDN_TheWorld_Globals::~GDN_TheWorld_Globals@44] *****************
+2022-01-30 18:18:43.641 INFO  [34576] [godot::GDN_TheWorld_Globals::~GDN_TheWorld_Globals@45] Log Terminated!
+2022-01-30 18:18:43.641 INFO  [34576] [godot::GDN_TheWorld_Globals::~GDN_TheWorld_Globals@46] *****************
+2022-01-30 18:21:10.416 INFO  [23004] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@20] ***************
+2022-01-30 18:21:10.417 INFO  [23004] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@21] Log initilized!
+2022-01-30 18:21:10.417 INFO  [23004] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] ***************
+2022-01-30 18:21:10.417 INFO  [23004] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@24] TheWorld Globals Initializing...
+2022-01-30 18:21:10.417 INFO  [23004] [TheWorld_MapManager::utils::init@47] ***************
+2022-01-30 18:21:10.417 INFO  [23004] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-01-30 18:21:10.417 INFO  [23004] [TheWorld_MapManager::utils::init@49] ***************
+2022-01-30 18:21:10.420 INFO  [23004] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@37] TheWorld Globals Initialized!
+2022-01-30 18:21:10.420 INFO  [23004] [godot::GDN_TheWorld_MainNode::init@80] TheWorld Main Node Initializing...
+2022-01-30 18:21:10.420 INFO  [23004] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing...
+2022-01-30 18:21:10.503 INFO  [23004] [godot::GDN_TheWorld_Viewer::init@65] TheWorld Viewer Initialized!
+2022-01-30 18:21:10.503 INFO  [23004] [godot::GDN_TheWorld_MainNode::init@93] TheWorld Main Node Initialized!
+2022-01-30 18:21:19.085 INFO  [23004] [godot::GDN_TheWorld_Globals::debugPrint@71] Debug Enabled!
+2022-01-30 18:21:19.087 INFO  [23004] [godot::GDN_TheWorld_Globals::debugPrint@71] Bitmap resolution = 1024 + 1
+2022-01-30 18:21:19.088 INFO  [23004] [godot::GDN_TheWorld_Globals::debugPrint@71] Num vertices per chunk side = 32 + 1
+2022-01-30 18:21:19.088 INFO  [23004] [godot::GDN_TheWorld_Globals::debugPrint@71] Lod max depth = 5 - Num lods = 6
+2022-01-30 18:21:19.091 INFO  [23004] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (0) - Num chunks per bitmap side = 32 - Grid step in WUs = 5 - Num vertices per side = 1024 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:21:19.094 INFO  [23004] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (1) - Num chunks per bitmap side = 16 - Grid step in WUs = 10 - Num vertices per side = 512 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:21:19.096 INFO  [23004] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (2) - Num chunks per bitmap side = 8 - Grid step in WUs = 20 - Num vertices per side = 256 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:21:19.098 INFO  [23004] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (3) - Num chunks per bitmap side = 4 - Grid step in WUs = 40 - Num vertices per side = 128 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:21:19.102 INFO  [23004] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (4) - Num chunks per bitmap side = 2 - Grid step in WUs = 80 - Num vertices per side = 64 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:21:19.105 INFO  [23004] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (5) - Num chunks per bitmap side = 1 - Grid step in WUs = 160 - Num vertices per side = 32 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:21:21.798 INFO  [23004] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 591361 duration = 2693 ms
+2022-01-30 18:21:28.711 INFO  [23004] [godot::GDN_TheWorld_Globals::debugPrint@71] Globals: exitFunct!
+2022-01-30 18:21:29.933 INFO  [23004] [TheWorld_MapManager::utils::~utils@54] *****************
+2022-01-30 18:21:29.933 INFO  [23004] [TheWorld_MapManager::utils::~utils@55] Log Terminated!
+2022-01-30 18:21:29.933 INFO  [23004] [TheWorld_MapManager::utils::~utils@56] *****************
+2022-01-30 18:21:29.933 INFO  [23004] [godot::GDN_TheWorld_Globals::~GDN_TheWorld_Globals@44] *****************
+2022-01-30 18:21:29.933 INFO  [23004] [godot::GDN_TheWorld_Globals::~GDN_TheWorld_Globals@45] Log Terminated!
+2022-01-30 18:21:29.933 INFO  [23004] [godot::GDN_TheWorld_Globals::~GDN_TheWorld_Globals@46] *****************
+2022-01-30 18:24:16.020 INFO  [22092] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@20] ***************
+2022-01-30 18:24:16.020 INFO  [22092] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@21] Log initilized!
+2022-01-30 18:24:16.021 INFO  [22092] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] ***************
+2022-01-30 18:24:16.021 INFO  [22092] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@24] TheWorld Globals Initializing...
+2022-01-30 18:24:16.021 INFO  [22092] [TheWorld_MapManager::utils::init@47] ***************
+2022-01-30 18:24:16.021 INFO  [22092] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-01-30 18:24:16.021 INFO  [22092] [TheWorld_MapManager::utils::init@49] ***************
+2022-01-30 18:24:16.023 INFO  [22092] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@37] TheWorld Globals Initialized!
+2022-01-30 18:24:16.024 INFO  [22092] [godot::GDN_TheWorld_MainNode::init@80] TheWorld Main Node Initializing...
+2022-01-30 18:24:16.024 INFO  [22092] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing...
+2022-01-30 18:24:16.106 INFO  [22092] [godot::GDN_TheWorld_Viewer::init@65] TheWorld Viewer Initialized!
+2022-01-30 18:24:16.106 INFO  [22092] [godot::GDN_TheWorld_MainNode::init@93] TheWorld Main Node Initialized!
+2022-01-30 18:24:32.221 INFO  [22092] [godot::GDN_TheWorld_Globals::debugPrint@71] Debug Enabled!
+2022-01-30 18:24:32.223 INFO  [22092] [godot::GDN_TheWorld_Globals::debugPrint@71] Bitmap resolution = 1024 + 1
+2022-01-30 18:24:32.224 INFO  [22092] [godot::GDN_TheWorld_Globals::debugPrint@71] Num vertices per chunk side = 32 + 1
+2022-01-30 18:24:32.225 INFO  [22092] [godot::GDN_TheWorld_Globals::debugPrint@71] Lod max depth = 5 - Num lods = 6
+2022-01-30 18:24:32.227 INFO  [22092] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (0) - Num chunks per bitmap side = 32 - Grid step in WUs = 5 - Num vertices per side = 1024 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:24:32.230 INFO  [22092] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (1) - Num chunks per bitmap side = 16 - Grid step in WUs = 10 - Num vertices per side = 512 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:24:32.232 INFO  [22092] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (2) - Num chunks per bitmap side = 8 - Grid step in WUs = 20 - Num vertices per side = 256 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:24:32.235 INFO  [22092] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (3) - Num chunks per bitmap side = 4 - Grid step in WUs = 40 - Num vertices per side = 128 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:24:32.237 INFO  [22092] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (4) - Num chunks per bitmap side = 2 - Grid step in WUs = 80 - Num vertices per side = 64 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:24:32.241 INFO  [22092] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (5) - Num chunks per bitmap side = 1 - Grid step in WUs = 160 - Num vertices per side = 32 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:24:34.952 INFO  [22092] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 591361 duration = 2710 ms
+2022-01-30 18:24:38.077 INFO  [22092] [godot::GDN_TheWorld_Globals::debugPrint@71] Globals: exitFunct!
+2022-01-30 18:24:39.657 INFO  [22092] [TheWorld_MapManager::utils::~utils@54] *****************
+2022-01-30 18:24:39.657 INFO  [22092] [TheWorld_MapManager::utils::~utils@55] Log Terminated!
+2022-01-30 18:24:39.658 INFO  [22092] [TheWorld_MapManager::utils::~utils@56] *****************
+2022-01-30 18:24:39.658 INFO  [22092] [godot::GDN_TheWorld_Globals::~GDN_TheWorld_Globals@44] *****************
+2022-01-30 18:24:39.658 INFO  [22092] [godot::GDN_TheWorld_Globals::~GDN_TheWorld_Globals@45] Log Terminated!
+2022-01-30 18:24:39.658 INFO  [22092] [godot::GDN_TheWorld_Globals::~GDN_TheWorld_Globals@46] *****************
+2022-01-30 18:27:04.776 INFO  [19548] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@20] ***************
+2022-01-30 18:27:04.776 INFO  [19548] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@21] Log initilized!
+2022-01-30 18:27:04.776 INFO  [19548] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@22] ***************
+2022-01-30 18:27:04.777 INFO  [19548] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@24] TheWorld Globals Initializing...
+2022-01-30 18:27:04.777 INFO  [19548] [TheWorld_MapManager::utils::init@47] ***************
+2022-01-30 18:27:04.777 INFO  [19548] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-01-30 18:27:04.777 INFO  [19548] [TheWorld_MapManager::utils::init@49] ***************
+2022-01-30 18:27:04.779 INFO  [19548] [godot::GDN_TheWorld_Globals::GDN_TheWorld_Globals@37] TheWorld Globals Initialized!
+2022-01-30 18:27:04.779 INFO  [19548] [godot::GDN_TheWorld_MainNode::init@80] TheWorld Main Node Initializing...
+2022-01-30 18:27:04.779 INFO  [19548] [godot::GDN_TheWorld_Viewer::init@55] TheWorld Viewer Initializing...
+2022-01-30 18:27:04.862 INFO  [19548] [godot::GDN_TheWorld_Viewer::init@65] TheWorld Viewer Initialized!
+2022-01-30 18:27:04.862 INFO  [19548] [godot::GDN_TheWorld_MainNode::init@93] TheWorld Main Node Initialized!
+2022-01-30 18:27:04.863 INFO  [19548] [godot::GDN_TheWorld_Globals::debugPrint@71] Debug Enabled!
+2022-01-30 18:27:04.864 INFO  [19548] [godot::GDN_TheWorld_Globals::debugPrint@71] Bitmap resolution = 1024 + 1
+2022-01-30 18:27:04.865 INFO  [19548] [godot::GDN_TheWorld_Globals::debugPrint@71] Num vertices per chunk side = 32 + 1
+2022-01-30 18:27:04.866 INFO  [19548] [godot::GDN_TheWorld_Globals::debugPrint@71] Lod max depth = 5 - Num lods = 6
+2022-01-30 18:27:04.868 INFO  [19548] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (0) - Num chunks per bitmap side = 32 - Grid step in WUs = 5 - Num vertices per side = 1024 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:27:04.870 INFO  [19548] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (1) - Num chunks per bitmap side = 16 - Grid step in WUs = 10 - Num vertices per side = 512 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:27:04.873 INFO  [19548] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (2) - Num chunks per bitmap side = 8 - Grid step in WUs = 20 - Num vertices per side = 256 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:27:04.876 INFO  [19548] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (3) - Num chunks per bitmap side = 4 - Grid step in WUs = 40 - Num vertices per side = 128 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:27:04.878 INFO  [19548] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (4) - Num chunks per bitmap side = 2 - Grid step in WUs = 80 - Num vertices per side = 64 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:27:04.880 INFO  [19548] [godot::GDN_TheWorld_Globals::debugPrint@71] lod (5) - Num chunks per bitmap side = 1 - Grid step in WUs = 160 - Num vertices per side = 32 + 1 - Size of the side in WUs = 5120
+2022-01-30 18:27:07.597 INFO  [19548] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 591361 duration = 2716 ms
+2022-01-30 18:27:10.305 INFO  [19548] [godot::GDN_TheWorld_Globals::debugPrint@71] Globals: exitFunct!
+2022-01-30 18:27:10.322 INFO  [19548] [TheWorld_MapManager::utils::~utils@54] *****************
+2022-01-30 18:27:10.322 INFO  [19548] [TheWorld_MapManager::utils::~utils@55] Log Terminated!
+2022-01-30 18:27:10.322 INFO  [19548] [TheWorld_MapManager::utils::~utils@56] *****************
+2022-01-30 18:27:10.322 INFO  [19548] [godot::GDN_TheWorld_Globals::~GDN_TheWorld_Globals@44] *****************
+2022-01-30 18:27:10.323 INFO  [19548] [godot::GDN_TheWorld_Globals::~GDN_TheWorld_Globals@45] Log Terminated!
+2022-01-30 18:27:10.323 INFO  [19548] [godot::GDN_TheWorld_Globals::~GDN_TheWorld_Globals@46] *****************
