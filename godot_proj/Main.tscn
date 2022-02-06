@@ -2,4 +2,4 @@
 
 [node name="Main" type="Node"]
 
-[node name="TheWorld_MainNode" type="Spatial" parent="."]
+[node name="TheWorld_Main" type="Spatial" parent="."]
