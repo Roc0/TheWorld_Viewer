@@ -7,9 +7,8 @@ var num_vertices_per_chunk_side : int
 var bitmap_resolution : int
 var lod_max_depth : int
 var num_lods : int
-
 var _result : bool
-
+var world_viewer_initialized : bool = false
 
 func _ready():
 	assert(connect("tree_exiting", self, "exitFunct",[]) == 0)
@@ -36,8 +35,6 @@ func _ready():
 		var grid_step : float = GDN_globals().get_grid_step_in_wu(lod)
 		var verticesPerSide = chunks * num_vertices_per_chunk_side
 		debug_print("lod (" + str(lod) + ") - Num chunks per bitmap side = " + str(chunks) + " - Grid step in WUs = " + str(grid_step) + " - Num vertices per side = " + str(verticesPerSide) + " + 1 - Size of the side in WUs = " + str(verticesPerSide * grid_step))
-
-	GDN_viewer().set_initial_world_viewer_pos(1195425.176295 + 100, 5465512.560295 +100, 0)
 
 func GDN_main():
 	return GDNTheWorldMain
@@ -71,5 +68,8 @@ func quit_app() -> void:
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
+func _process(delta):
+	if (not world_viewer_initialized):
+		GDN_viewer().reset_initial_world_viewer_pos(1195425.176295 + 100, 5465512.560295 +100, 0)		
+		world_viewer_initialized = true
 #	pass
