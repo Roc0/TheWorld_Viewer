@@ -10,8 +10,16 @@ var num_lods : int
 var _result : bool
 var world_viewer_initialized : bool = false
 
+var initialViewerPos := Vector3(1195425.176295 + 100, 0, 5465512.560295 +100)
+var initiaCameraDistanceFromTerrain = 20
+var initialLevel := 0
+
+var sun : DirectionalLight = null
+
 func _ready():
-	assert(connect("tree_exiting", self, "exitFunct",[]) == 0)
+	assert(connect("tree_exiting", self, "exit_funct",[]) == 0)
+	
+	sun = get_tree().get_root().find_node("Sun", true, false)
 	
 	var m = get_tree().get_root().find_node("Main", true, false)
 	var w = get_tree().get_root().find_node("TheWorld_Main", true, false)
@@ -54,7 +62,7 @@ func get_chunks_per_bitmap_side(var lod : int) -> int:
 func get_grid_step_in_wu(var lod : int) -> float:
 	return GDN_globals().get_grid_step_in_wu(lod)
 
-func exitFunct():
+func exit_funct():
 	GDN_main().deinit()
 
 
@@ -66,10 +74,15 @@ func quit_app() -> void:
 	debug_print ("Quitting ...")
 	get_tree().quit()
 
+func intialize_viewer() -> void:
+	GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initiaCameraDistanceFromTerrain, initialLevel)
+	OS.window_maximized = true
+	#if sun != null:
+	#	sun.Transform.origin = Vector3(initialViewerPos.x, 100, initialViewerPos.z)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if (not world_viewer_initialized):
-		GDN_viewer().reset_initial_world_viewer_pos(1195425.176295 + 100, 5465512.560295 +100, 0)		
+	if not world_viewer_initialized:
+		intialize_viewer()
 		world_viewer_initialized = true
 #	pass

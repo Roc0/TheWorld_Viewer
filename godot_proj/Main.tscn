@@ -3,3 +3,5 @@
 [node name="Main" type="Node"]
 
 [node name="TheWorld_Main" type="Spatial" parent="."]
+
+[node name="Sun" type="DirectionalLight" parent="TheWorld_Main"]
