@@ -1,7 +1,26 @@
-[gd_scene format=2]
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://utils/DebugStats.gd" type="Script" id=1]
+[ext_resource path="res://main/TheWorld_Main.gd" type="Script" id=2]
 
 [node name="Main" type="Node"]
 
 [node name="TheWorld_Main" type="Spatial" parent="."]
+script = ExtResource( 2 )
 
 [node name="Sun" type="DirectionalLight" parent="TheWorld_Main"]
+
+[node name="DebugStats" type="MarginContainer" parent="TheWorld_Main"]
+margin_right = 40.0
+margin_bottom = 40.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Column" type="VBoxContainer" parent="TheWorld_Main/DebugStats"]
+margin_right = 40.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
