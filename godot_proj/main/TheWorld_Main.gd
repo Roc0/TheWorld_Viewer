@@ -9,6 +9,9 @@ var init_world_thread : Thread
 var world_initalized : bool = false
 var request_to_quit_pending : bool = false
 var fps := 0.0
+var chunk_grid_global_pos : Vector3
+var active_camera_global_rot : Vector3
+var active_camera_global_pos : Vector3
 
 func _ready():
 	pass
@@ -36,12 +39,21 @@ func _process(delta):
 		return
 	if not world_initalized:
 		return
+		
+	chunk_grid_global_pos = Globals.GDN_viewer().global_transform.origin
+	var current_camera = get_viewport().get_camera()
+	if current_camera:
+		active_camera_global_rot = current_camera.global_transform.basis.get_euler()
+		active_camera_global_pos = current_camera.global_transform.origin
 			
 func enter_world():
 	Globals.debug_print("Entering world...")
 	OS.window_maximized = true
-	set_debug_window(false)
+	set_debug_window(true)
 	$DebugStats.add_property(self, "fps", "")
+	$DebugStats.add_property(self, "chunk_grid_global_pos", "")
+	$DebugStats.add_property(self, "active_camera_global_rot", "")
+	$DebugStats.add_property(self, "active_camera_global_pos", "")
 	world_initalized = false
 	init_world_thread = Thread.new()
 	init_world_thread.start(self, "_init_world")
@@ -52,6 +64,9 @@ func exit_world():
 	if world_entered:
 		Globals.debug_print("Exiting world...")
 		$DebugStats.remove_property(self, "fps")
+		$DebugStats.remove_property(self, "chunk_grid_global_pos")
+		$DebugStats.remove_property(self, "active_camera_global_rot")
+		$DebugStats.remove_property(self, "active_camera_global_pos")
 		if init_world_thread.is_active():
 			init_world_thread.wait_to_finish()
 		world_initalized = false
