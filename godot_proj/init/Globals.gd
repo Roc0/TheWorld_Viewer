@@ -3,6 +3,7 @@ extends Node
 var debug_enabled : bool = true
 var GDNTheWorldMain = preload("res://native/GDN_TheWorld_Viewer.gdns").new()
 var GDNTheWorldGlobals : Node = null
+var GDNTheWorldViewer : Node = null
 
 var num_vertices_per_chunk_side : int
 var bitmap_resolution : int
@@ -50,7 +51,9 @@ func GDN_globals():
 	return GDNTheWorldGlobals
 
 func GDN_viewer():
-	return GDN_globals().viewer(true)
+	if GDNTheWorldViewer == null:
+		GDNTheWorldViewer = GDN_globals().viewer(true)
+	return GDNTheWorldViewer
 
 func debug_print(var text : String):
 	GDN_globals().debug_print(text)
