@@ -25,6 +25,8 @@ func _input(event):
 				set_debug_window(true)
 		elif event.is_action_pressed("ui_cancel"):
 			request_to_quit_pending = true
+		elif event.is_action_pressed("ui_dump"):
+			Globals.GDN_viewer().dump_required()
 				
 func _process(delta):
 	fps = Engine.get_frames_per_second()
