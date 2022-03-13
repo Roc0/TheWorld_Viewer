@@ -2,8 +2,8 @@ extends Spatial
 
 var debug_window_Active : bool = false
 var world_entered : bool = false
-var initialViewerPos := Vector3(1195425.176295 + 100, 0, 5465512.560295 +100)
-var initiaCameraDistanceFromTerrain = 20
+var initialViewerPos := Vector3(1195425.176295 + 200, 0, 5465512.560295 +200)
+var initiaCameraDistanceFromTerrain = 200
 var initialLevel := 0
 var init_world_thread : Thread
 var world_initalized : bool = false
@@ -86,7 +86,7 @@ func set_debug_window(active : bool) -> void:
 func _init_world() -> void:
 	Globals.debug_print("Initializing world...")
 	Globals.GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initiaCameraDistanceFromTerrain, initialLevel)
-	Globals.debug_print("World initializatoin completed...")
+	Globals.debug_print("World initialization completed...")
 	world_initalized = true
 	
 func force_app_to_quit() -> void:

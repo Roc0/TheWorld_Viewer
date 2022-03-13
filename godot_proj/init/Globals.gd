@@ -27,7 +27,7 @@ func _ready():
 
 	printTerrainDimensions()
 	
-func _notification(what):
+func _notification(_what):
 	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
