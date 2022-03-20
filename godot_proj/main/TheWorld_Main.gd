@@ -8,10 +8,12 @@ var initialLevel := 0
 var init_world_thread : Thread
 var world_initalized : bool = false
 var request_to_quit_pending : bool = false
+var scene_initialized : bool = false
 var fps := 0.0
 var chunk_grid_global_pos : Vector3
 var active_camera_global_rot : Vector3
 var active_camera_global_pos : Vector3
+var cameraChunkId : String = ""
 
 func _ready():
 	pass
@@ -28,7 +30,7 @@ func _input(event):
 		elif event.is_action_pressed("ui_dump"):
 			Globals.GDN_viewer().dump_required()
 				
-func _process(delta):
+func _process(_delta):
 	fps = Engine.get_frames_per_second()
 	
 	if init_world_thread.is_alive():
@@ -41,9 +43,23 @@ func _process(delta):
 		return
 	if not world_initalized:
 		return
-		
+	
+	var current_camera := get_viewport().get_camera()
+
+	if not scene_initialized:
+		#var cube_mesh = $MeshProva.mesh as CubeMesh
+		#var pos := Vector3(initialViewerPos.x, 800, initialViewerPos.z)
+		#$MeshProva.transform.origin = pos
+		#current_camera.look_at_from_position(pos + cube_mesh.size * 5, pos, Vector3.UP)
+		scene_initialized = true	
+	
+	var _cameraChunkId = Globals.GDN_viewer().get_camera_chunk_id()
+	if (_cameraChunkId != cameraChunkId):
+		var camera_chunk_t : Transform = Globals.GDN_viewer().get_camera_chunk_global_transform()
+		$MeshProva.global_transform = camera_chunk_t
+		cameraChunkId = _cameraChunkId
+
 	chunk_grid_global_pos = Globals.GDN_viewer().global_transform.origin
-	var current_camera = get_viewport().get_camera()
 	if current_camera:
 		active_camera_global_rot = current_camera.global_transform.basis.get_euler()
 		active_camera_global_pos = current_camera.global_transform.origin
@@ -58,7 +74,9 @@ func enter_world():
 	$DebugStats.add_property(self, "active_camera_global_pos", "")
 	world_initalized = false
 	init_world_thread = Thread.new()
-	init_world_thread.start(self, "_init_world")
+	var err := init_world_thread.start(self, "_init_world")
+	if err:
+		Globals.debug_print("Start _init_world failure!")
 	world_entered = true
 	Globals.debug_print("World entered...")
 	
