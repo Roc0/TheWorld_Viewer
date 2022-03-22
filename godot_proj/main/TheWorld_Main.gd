@@ -49,9 +49,6 @@ func _process(_delta):
 	if not scene_initialized:
 		var cube_mesh = $MeshProva.mesh as CubeMesh
 		cube_mesh.size = Vector3(1, 1, 1)
-		#var pos := Vector3(initialViewerPos.x, 800, initialViewerPos.z)
-		#$MeshProva.transform.origin = pos
-		#current_camera.look_at_from_position(pos + cube_mesh.size * 5, pos, Vector3.UP)
 		scene_initialized = true	
 	
 	var _cameraChunkId = Globals.GDN_viewer().get_camera_chunk_id()
@@ -59,7 +56,8 @@ func _process(_delta):
 		var camera_chunk_t : Transform = Globals.GDN_viewer().get_camera_chunk_global_transform()
 		var displ : Vector3 = Vector3(camera_chunk_t.basis.x.x, camera_chunk_t.basis.y.y, camera_chunk_t.basis.z.z) / 2
 		camera_chunk_t.origin += displ
-		$MeshProva.global_transform = camera_chunk_t
+		#$MeshProva.global_transform = camera_chunk_t
+		#current_camera.look_at_from_position($MeshProva.global_transform.origin + cube_mesh.size * 5, $MeshProva.global_transform.origin, Vector3.UP)
 		cameraChunkId = _cameraChunkId
 
 	chunk_grid_global_pos = Globals.GDN_viewer().global_transform.origin
