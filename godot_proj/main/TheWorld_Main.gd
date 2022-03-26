@@ -49,17 +49,16 @@ func _process(_delta):
 	var current_camera := get_viewport().get_camera()
 	var viewer = Globals.GDN_viewer()
 	if not scene_initialized:
-		var cube_mesh = $MeshProva.mesh as CubeMesh
-		cube_mesh.size = Vector3(1, 1, 1)
+		#var cube_mesh = $MeshProva.mesh as CubeMesh
+		#cube_mesh.size = Vector3(1, 1, 1)
 		scene_initialized = true	
 	
 	var _cameraChunkId = viewer.get_camera_chunk_id()
 	if (_cameraChunkId != cameraChunkId):
-		var camera_chunk_t : Transform = Globals.GDN_viewer().get_camera_chunk_global_transform_of_aabb()
-		var displ : Vector3 = Vector3(camera_chunk_t.basis.x.x, camera_chunk_t.basis.y.y, camera_chunk_t.basis.z.z) / 2
-		camera_chunk_t.origin += displ
+		#var camera_chunk_t : Transform = Globals.GDN_viewer().get_camera_chunk_global_transform_of_aabb()
+		#var displ : Vector3 = Vector3(camera_chunk_t.basis.x.x, camera_chunk_t.basis.y.y, camera_chunk_t.basis.z.z) / 2
+		#camera_chunk_t.origin += displ
 		#$MeshProva.global_transform = camera_chunk_t
-		#current_camera.look_at_from_position($MeshProva.global_transform.origin + cube_mesh.size * 5, $MeshProva.global_transform.origin, Vector3.UP)
 		cameraChunkId = _cameraChunkId
 
 	chunk_grid_global_pos = Globals.GDN_viewer().global_transform.origin
@@ -80,6 +79,7 @@ func enter_world():
 	$DebugStats.add_property(self, "active_camera_global_pos", "")
 	$DebugStats.add_property(self, "num_splits", "")
 	$DebugStats.add_property(self, "num_joins", "")
+	$DebugStats.add_property(self, "cameraChunkId", "")
 	world_initalized = false
 	init_world_thread = Thread.new()
 	var err := init_world_thread.start(self, "_init_world")
@@ -97,6 +97,7 @@ func exit_world():
 		$DebugStats.remove_property(self, "active_camera_global_pos")
 		$DebugStats.remove_property(self, "num_splits")
 		$DebugStats.remove_property(self, "num_joins")
+		$DebugStats.remove_property(self, "cameraChunkId")
 		if init_world_thread.is_active():
 			init_world_thread.wait_to_finish()
 		world_initalized = false
