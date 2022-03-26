@@ -13,6 +13,8 @@ var fps := 0.0
 var chunk_grid_global_pos : Vector3
 var active_camera_global_rot : Vector3
 var active_camera_global_pos : Vector3
+var num_splits : int
+var num_joins : int
 var cameraChunkId : String = ""
 
 func _ready():
@@ -45,15 +47,15 @@ func _process(_delta):
 		return
 	
 	var current_camera := get_viewport().get_camera()
-
+	var viewer = Globals.GDN_viewer()
 	if not scene_initialized:
 		var cube_mesh = $MeshProva.mesh as CubeMesh
 		cube_mesh.size = Vector3(1, 1, 1)
 		scene_initialized = true	
 	
-	var _cameraChunkId = Globals.GDN_viewer().get_camera_chunk_id()
+	var _cameraChunkId = viewer.get_camera_chunk_id()
 	if (_cameraChunkId != cameraChunkId):
-		var camera_chunk_t : Transform = Globals.GDN_viewer().get_camera_chunk_global_transform()
+		var camera_chunk_t : Transform = Globals.GDN_viewer().get_camera_chunk_global_transform_of_aabb()
 		var displ : Vector3 = Vector3(camera_chunk_t.basis.x.x, camera_chunk_t.basis.y.y, camera_chunk_t.basis.z.z) / 2
 		camera_chunk_t.origin += displ
 		#$MeshProva.global_transform = camera_chunk_t
@@ -64,7 +66,10 @@ func _process(_delta):
 	if current_camera:
 		active_camera_global_rot = current_camera.global_transform.basis.get_euler()
 		active_camera_global_pos = current_camera.global_transform.origin
-			
+	
+	num_splits = viewer.get_num_splits()
+	num_joins = viewer.get_num_joins()
+		
 func enter_world():
 	Globals.debug_print("Entering world...")
 	OS.window_maximized = true
@@ -73,6 +78,8 @@ func enter_world():
 	$DebugStats.add_property(self, "chunk_grid_global_pos", "")
 	$DebugStats.add_property(self, "active_camera_global_rot", "")
 	$DebugStats.add_property(self, "active_camera_global_pos", "")
+	$DebugStats.add_property(self, "num_splits", "")
+	$DebugStats.add_property(self, "num_joins", "")
 	world_initalized = false
 	init_world_thread = Thread.new()
 	var err := init_world_thread.start(self, "_init_world")
@@ -88,6 +95,8 @@ func exit_world():
 		$DebugStats.remove_property(self, "chunk_grid_global_pos")
 		$DebugStats.remove_property(self, "active_camera_global_rot")
 		$DebugStats.remove_property(self, "active_camera_global_pos")
+		$DebugStats.remove_property(self, "num_splits")
+		$DebugStats.remove_property(self, "num_joins")
 		if init_world_thread.is_active():
 			init_world_thread.wait_to_finish()
 		world_initalized = false
