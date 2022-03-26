@@ -31,6 +31,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="MeshProva" type="MeshInstance" parent="TheWorld_Main"]
+[node name="MeshProva_ToRemove" type="MeshInstance" parent="TheWorld_Main"]
 mesh = SubResource( 1 )
 material/0 = SubResource( 2 )
