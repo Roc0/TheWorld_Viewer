@@ -22,8 +22,8 @@ func _ready():
 	world_main_node = get_tree().get_root().find_node("TheWorld_Main", true, false)
 	GDN_main().init(main_node, world_main_node)
 
-	GDN_globals().set_debug_enabled(Globals.debug_enabled)
-	debug_print("Debug Enabled!")
+	#GDN_globals().set_debug_enabled(Globals.debug_enabled)
+	#debug_print("Debug Enabled!")
 
 	printTerrainDimensions()
 	
