@@ -15,6 +15,8 @@ var active_camera_global_rot : Vector3
 var active_camera_global_pos : Vector3
 var num_splits : int
 var num_joins : int
+var num_chunks : int
+var debug_draw_mode : String
 var cameraChunkId : String = ""
 
 func _ready():
@@ -68,16 +70,20 @@ func _process(_delta):
 	
 	num_splits = viewer.get_num_splits()
 	num_joins = viewer.get_num_joins()
+	num_chunks = viewer.get_num_chunks()
+	debug_draw_mode = viewer.get_debug_draw_mode()
 		
 func enter_world():
 	Globals.debug_print("Entering world...")
 	OS.window_maximized = true
 	set_debug_window(true)
 	$DebugStats.add_property(self, "fps", "")
+	$DebugStats.add_property(self, "debug_draw_mode", "")
 	$DebugStats.add_property(self, "chunk_grid_global_pos", "")
 	$DebugStats.add_property(self, "active_camera_global_rot", "")
 	$DebugStats.add_property(self, "active_camera_global_pos", "")
 	$DebugStats.add_property(self, "num_splits", "")
+	$DebugStats.add_property(self, "num_chunks", "")
 	$DebugStats.add_property(self, "num_joins", "")
 	$DebugStats.add_property(self, "cameraChunkId", "")
 	world_initalized = false
@@ -92,10 +98,12 @@ func exit_world():
 	if world_entered:
 		Globals.debug_print("Exiting world...")
 		$DebugStats.remove_property(self, "fps")
+		$DebugStats.remove_property(self, "debug_draw_mode")
 		$DebugStats.remove_property(self, "chunk_grid_global_pos")
 		$DebugStats.remove_property(self, "active_camera_global_rot")
 		$DebugStats.remove_property(self, "active_camera_global_pos")
 		$DebugStats.remove_property(self, "num_splits")
+		$DebugStats.remove_property(self, "num_chunks")
 		$DebugStats.remove_property(self, "num_joins")
 		$DebugStats.remove_property(self, "cameraChunkId")
 		if init_world_thread.is_active():
