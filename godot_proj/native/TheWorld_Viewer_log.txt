@@ -3844,3 +3844,204 @@
 2022-04-03 10:49:18.489 INFO  [4024] [godot::GDN_TheWorld_Globals::deinit@86] *****************
 2022-04-03 10:49:18.489 INFO  [4024] [godot::GDN_TheWorld_Globals::deinit@87] Log Terminated!
 2022-04-03 10:49:18.489 INFO  [4024] [godot::GDN_TheWorld_Globals::deinit@88] *****************
+2022-04-03 14:41:46.410 INFO  [15508] [godot::GDN_TheWorld_Globals::init@57] ***************
+2022-04-03 14:41:46.412 INFO  [15508] [godot::GDN_TheWorld_Globals::init@58] Log initilized!
+2022-04-03 14:41:46.412 INFO  [15508] [godot::GDN_TheWorld_Globals::init@59] ***************
+2022-04-03 14:41:46.412 INFO  [15508] [godot::GDN_TheWorld_Globals::init@61] TheWorld Globals Initializing...
+2022-04-03 14:41:46.412 INFO  [15508] [TheWorld_MapManager::utils::init@47] ***************
+2022-04-03 14:41:46.412 INFO  [15508] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-04-03 14:41:46.412 INFO  [15508] [TheWorld_MapManager::utils::init@49] ***************
+2022-04-03 14:41:46.418 INFO  [15508] [godot::GDN_TheWorld_Globals::init@68] TheWorld Globals Initialized!
+2022-04-03 14:41:46.418 INFO  [15508] [godot::GDN_TheWorld_MainNode::init@141] TheWorld Main Node Initializing...
+2022-04-03 14:41:46.419 INFO  [15508] [godot::GDN_TheWorld_Viewer::init@202] TheWorld Viewer Initializing...
+2022-04-03 14:41:46.505 INFO  [15508] [godot::GDN_TheWorld_Viewer::init@208] TheWorld Viewer Initialized!
+2022-04-03 14:41:46.505 INFO  [15508] [godot::GDN_TheWorld_MainNode::init@154] TheWorld Main Node Initialized!
+2022-04-03 14:41:49.825 INFO  [11268] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 606741 duration = 3027 ms
+2022-04-03 14:42:00.791 INFO  [15508] [godot::GDN_TheWorld_MainNode::deinit@37] TheWorld Main Node Deinitializing...
+2022-04-03 14:42:00.791 INFO  [15508] [godot::GDN_TheWorld_Viewer::deinit@70] TheWorld Viewer Deinitializing...
+2022-04-03 14:42:00.792 INFO  [15508] [godot::GDN_TheWorld_Viewer::deinit@76] TheWorld Viewer Deinitialized!
+2022-04-03 14:42:00.793 INFO  [15508] [godot::GDN_TheWorld_MainNode::deinit@62] TheWorld Main Node Deinitialized!
+2022-04-03 14:42:00.793 INFO  [15508] [godot::GDN_TheWorld_Globals::deinit@80] TheWorld Globals Deinitializing...
+2022-04-03 14:42:00.794 INFO  [15508] [TheWorld_MapManager::utils::~utils@54] *****************
+2022-04-03 14:42:00.794 INFO  [15508] [TheWorld_MapManager::utils::~utils@55] Log Terminated!
+2022-04-03 14:42:00.794 INFO  [15508] [TheWorld_MapManager::utils::~utils@56] *****************
+2022-04-03 14:42:00.794 INFO  [15508] [godot::GDN_TheWorld_Globals::deinit@84] TheWorld Globals Deinitialized!
+2022-04-03 14:42:00.794 INFO  [15508] [godot::GDN_TheWorld_Globals::deinit@86] *****************
+2022-04-03 14:42:00.794 INFO  [15508] [godot::GDN_TheWorld_Globals::deinit@87] Log Terminated!
+2022-04-03 14:42:00.794 INFO  [15508] [godot::GDN_TheWorld_Globals::deinit@88] *****************
+2022-04-03 14:42:10.700 INFO  [10044] [godot::GDN_TheWorld_Globals::init@57] ***************
+2022-04-03 14:42:10.700 INFO  [10044] [godot::GDN_TheWorld_Globals::init@58] Log initilized!
+2022-04-03 14:42:10.700 INFO  [10044] [godot::GDN_TheWorld_Globals::init@59] ***************
+2022-04-03 14:42:10.700 INFO  [10044] [godot::GDN_TheWorld_Globals::init@61] TheWorld Globals Initializing...
+2022-04-03 14:42:10.700 INFO  [10044] [TheWorld_MapManager::utils::init@47] ***************
+2022-04-03 14:42:10.701 INFO  [10044] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-04-03 14:42:10.701 INFO  [10044] [TheWorld_MapManager::utils::init@49] ***************
+2022-04-03 14:42:10.702 INFO  [10044] [godot::GDN_TheWorld_Globals::init@68] TheWorld Globals Initialized!
+2022-04-03 14:42:10.702 INFO  [10044] [godot::GDN_TheWorld_MainNode::init@141] TheWorld Main Node Initializing...
+2022-04-03 14:42:10.703 INFO  [10044] [godot::GDN_TheWorld_Viewer::init@202] TheWorld Viewer Initializing...
+2022-04-03 14:42:10.789 INFO  [10044] [godot::GDN_TheWorld_Viewer::init@208] TheWorld Viewer Initialized!
+2022-04-03 14:42:10.789 INFO  [10044] [godot::GDN_TheWorld_MainNode::init@154] TheWorld Main Node Initialized!
+2022-04-03 14:42:13.534 INFO  [7996] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 606741 duration = 2441 ms
+2022-04-03 14:58:37.698 INFO  [5752] [godot::GDN_TheWorld_Globals::init@57] ***************
+2022-04-03 14:58:37.699 INFO  [5752] [godot::GDN_TheWorld_Globals::init@58] Log initilized!
+2022-04-03 14:58:37.699 INFO  [5752] [godot::GDN_TheWorld_Globals::init@59] ***************
+2022-04-03 14:58:37.699 INFO  [5752] [godot::GDN_TheWorld_Globals::init@61] TheWorld Globals Initializing...
+2022-04-03 14:58:37.699 INFO  [5752] [TheWorld_MapManager::utils::init@47] ***************
+2022-04-03 14:58:37.699 INFO  [5752] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-04-03 14:58:37.699 INFO  [5752] [TheWorld_MapManager::utils::init@49] ***************
+2022-04-03 14:58:37.700 INFO  [5752] [godot::GDN_TheWorld_Globals::init@68] TheWorld Globals Initialized!
+2022-04-03 14:58:37.700 INFO  [5752] [godot::GDN_TheWorld_MainNode::init@141] TheWorld Main Node Initializing...
+2022-04-03 14:58:37.702 INFO  [5752] [godot::GDN_TheWorld_Viewer::init@202] TheWorld Viewer Initializing...
+2022-04-03 14:58:37.787 INFO  [5752] [godot::GDN_TheWorld_Viewer::init@208] TheWorld Viewer Initialized!
+2022-04-03 14:58:37.787 INFO  [5752] [godot::GDN_TheWorld_MainNode::init@154] TheWorld Main Node Initialized!
+2022-04-03 14:58:40.527 INFO  [2680] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 606741 duration = 2434 ms
+2022-04-03 15:00:42.383 INFO  [22228] [godot::GDN_TheWorld_Globals::init@57] ***************
+2022-04-03 15:00:42.384 INFO  [22228] [godot::GDN_TheWorld_Globals::init@58] Log initilized!
+2022-04-03 15:00:42.384 INFO  [22228] [godot::GDN_TheWorld_Globals::init@59] ***************
+2022-04-03 15:00:42.384 INFO  [22228] [godot::GDN_TheWorld_Globals::init@61] TheWorld Globals Initializing...
+2022-04-03 15:00:42.384 INFO  [22228] [TheWorld_MapManager::utils::init@47] ***************
+2022-04-03 15:00:42.384 INFO  [22228] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-04-03 15:00:42.384 INFO  [22228] [TheWorld_MapManager::utils::init@49] ***************
+2022-04-03 15:00:42.386 INFO  [22228] [godot::GDN_TheWorld_Globals::init@68] TheWorld Globals Initialized!
+2022-04-03 15:00:42.386 INFO  [22228] [godot::GDN_TheWorld_MainNode::init@141] TheWorld Main Node Initializing...
+2022-04-03 15:00:42.387 INFO  [22228] [godot::GDN_TheWorld_Viewer::init@202] TheWorld Viewer Initializing...
+2022-04-03 15:00:42.472 INFO  [22228] [godot::GDN_TheWorld_Viewer::init@208] TheWorld Viewer Initialized!
+2022-04-03 15:00:42.472 INFO  [22228] [godot::GDN_TheWorld_MainNode::init@154] TheWorld Main Node Initialized!
+2022-04-03 15:00:45.194 INFO  [22180] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 606741 duration = 2436 ms
+2022-04-03 15:03:35.276 INFO  [22228] [godot::GDN_TheWorld_MainNode::deinit@37] TheWorld Main Node Deinitializing...
+2022-04-03 15:03:35.276 INFO  [22228] [godot::GDN_TheWorld_Viewer::deinit@70] TheWorld Viewer Deinitializing...
+2022-04-03 15:03:35.277 INFO  [22228] [godot::GDN_TheWorld_Viewer::deinit@76] TheWorld Viewer Deinitialized!
+2022-04-03 15:03:35.278 INFO  [22228] [godot::GDN_TheWorld_MainNode::deinit@62] TheWorld Main Node Deinitialized!
+2022-04-03 15:03:35.278 INFO  [22228] [godot::GDN_TheWorld_Globals::deinit@80] TheWorld Globals Deinitializing...
+2022-04-03 15:03:35.279 INFO  [22228] [TheWorld_MapManager::utils::~utils@54] *****************
+2022-04-03 15:03:35.279 INFO  [22228] [TheWorld_MapManager::utils::~utils@55] Log Terminated!
+2022-04-03 15:03:35.279 INFO  [22228] [TheWorld_MapManager::utils::~utils@56] *****************
+2022-04-03 15:03:35.279 INFO  [22228] [godot::GDN_TheWorld_Globals::deinit@84] TheWorld Globals Deinitialized!
+2022-04-03 15:03:35.279 INFO  [22228] [godot::GDN_TheWorld_Globals::deinit@86] *****************
+2022-04-03 15:03:35.279 INFO  [22228] [godot::GDN_TheWorld_Globals::deinit@87] Log Terminated!
+2022-04-03 15:03:35.279 INFO  [22228] [godot::GDN_TheWorld_Globals::deinit@88] *****************
+2022-04-03 15:04:08.818 INFO  [22384] [godot::GDN_TheWorld_Globals::init@57] ***************
+2022-04-03 15:04:08.819 INFO  [22384] [godot::GDN_TheWorld_Globals::init@58] Log initilized!
+2022-04-03 15:04:08.819 INFO  [22384] [godot::GDN_TheWorld_Globals::init@59] ***************
+2022-04-03 15:04:08.819 INFO  [22384] [godot::GDN_TheWorld_Globals::init@61] TheWorld Globals Initializing...
+2022-04-03 15:04:08.819 INFO  [22384] [TheWorld_MapManager::utils::init@47] ***************
+2022-04-03 15:04:08.819 INFO  [22384] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-04-03 15:04:08.819 INFO  [22384] [TheWorld_MapManager::utils::init@49] ***************
+2022-04-03 15:04:08.821 INFO  [22384] [godot::GDN_TheWorld_Globals::init@68] TheWorld Globals Initialized!
+2022-04-03 15:04:08.821 INFO  [22384] [godot::GDN_TheWorld_MainNode::init@141] TheWorld Main Node Initializing...
+2022-04-03 15:04:08.822 INFO  [22384] [godot::GDN_TheWorld_Viewer::init@202] TheWorld Viewer Initializing...
+2022-04-03 15:04:08.908 INFO  [22384] [godot::GDN_TheWorld_Viewer::init@208] TheWorld Viewer Initialized!
+2022-04-03 15:04:08.908 INFO  [22384] [godot::GDN_TheWorld_MainNode::init@154] TheWorld Main Node Initialized!
+2022-04-03 15:04:11.633 INFO  [2572] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 606741 duration = 2435 ms
+2022-04-03 15:04:22.337 INFO  [22384] [godot::GDN_TheWorld_MainNode::deinit@37] TheWorld Main Node Deinitializing...
+2022-04-03 15:04:22.337 INFO  [22384] [godot::GDN_TheWorld_Viewer::deinit@70] TheWorld Viewer Deinitializing...
+2022-04-03 15:04:22.338 INFO  [22384] [godot::GDN_TheWorld_Viewer::deinit@76] TheWorld Viewer Deinitialized!
+2022-04-03 15:04:22.339 INFO  [22384] [godot::GDN_TheWorld_MainNode::deinit@62] TheWorld Main Node Deinitialized!
+2022-04-03 15:04:22.339 INFO  [22384] [godot::GDN_TheWorld_Globals::deinit@80] TheWorld Globals Deinitializing...
+2022-04-03 15:04:22.340 INFO  [22384] [TheWorld_MapManager::utils::~utils@54] *****************
+2022-04-03 15:04:22.340 INFO  [22384] [TheWorld_MapManager::utils::~utils@55] Log Terminated!
+2022-04-03 15:04:22.340 INFO  [22384] [TheWorld_MapManager::utils::~utils@56] *****************
+2022-04-03 15:04:22.340 INFO  [22384] [godot::GDN_TheWorld_Globals::deinit@84] TheWorld Globals Deinitialized!
+2022-04-03 15:04:22.340 INFO  [22384] [godot::GDN_TheWorld_Globals::deinit@86] *****************
+2022-04-03 15:04:22.340 INFO  [22384] [godot::GDN_TheWorld_Globals::deinit@87] Log Terminated!
+2022-04-03 15:04:22.340 INFO  [22384] [godot::GDN_TheWorld_Globals::deinit@88] *****************
+2022-04-03 15:11:28.565 INFO  [11860] [godot::GDN_TheWorld_Globals::init@57] ***************
+2022-04-03 15:11:28.565 INFO  [11860] [godot::GDN_TheWorld_Globals::init@58] Log initilized!
+2022-04-03 15:11:28.565 INFO  [11860] [godot::GDN_TheWorld_Globals::init@59] ***************
+2022-04-03 15:11:28.565 INFO  [11860] [godot::GDN_TheWorld_Globals::init@61] TheWorld Globals Initializing...
+2022-04-03 15:11:28.565 INFO  [11860] [TheWorld_MapManager::utils::init@47] ***************
+2022-04-03 15:11:28.566 INFO  [11860] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-04-03 15:11:28.566 INFO  [11860] [TheWorld_MapManager::utils::init@49] ***************
+2022-04-03 15:11:28.567 INFO  [11860] [godot::GDN_TheWorld_Globals::init@68] TheWorld Globals Initialized!
+2022-04-03 15:11:28.567 INFO  [11860] [godot::GDN_TheWorld_MainNode::init@141] TheWorld Main Node Initializing...
+2022-04-03 15:11:28.568 INFO  [11860] [godot::GDN_TheWorld_Viewer::init@202] TheWorld Viewer Initializing...
+2022-04-03 15:11:28.654 INFO  [11860] [godot::GDN_TheWorld_Viewer::init@208] TheWorld Viewer Initialized!
+2022-04-03 15:11:28.654 INFO  [11860] [godot::GDN_TheWorld_MainNode::init@154] TheWorld Main Node Initialized!
+2022-04-03 15:11:31.405 INFO  [17388] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 606741 duration = 2463 ms
+2022-04-03 15:15:36.419 INFO  [11860] [godot::GDN_TheWorld_MainNode::deinit@37] TheWorld Main Node Deinitializing...
+2022-04-03 15:15:36.419 INFO  [11860] [godot::GDN_TheWorld_Viewer::deinit@70] TheWorld Viewer Deinitializing...
+2022-04-03 15:15:36.420 INFO  [11860] [godot::GDN_TheWorld_Viewer::deinit@76] TheWorld Viewer Deinitialized!
+2022-04-03 15:15:36.420 INFO  [11860] [godot::GDN_TheWorld_MainNode::deinit@62] TheWorld Main Node Deinitialized!
+2022-04-03 15:15:36.420 INFO  [11860] [godot::GDN_TheWorld_Globals::deinit@80] TheWorld Globals Deinitializing...
+2022-04-03 15:15:36.421 INFO  [11860] [TheWorld_MapManager::utils::~utils@54] *****************
+2022-04-03 15:15:36.421 INFO  [11860] [TheWorld_MapManager::utils::~utils@55] Log Terminated!
+2022-04-03 15:15:36.421 INFO  [11860] [TheWorld_MapManager::utils::~utils@56] *****************
+2022-04-03 15:15:36.421 INFO  [11860] [godot::GDN_TheWorld_Globals::deinit@84] TheWorld Globals Deinitialized!
+2022-04-03 15:15:36.422 INFO  [11860] [godot::GDN_TheWorld_Globals::deinit@86] *****************
+2022-04-03 15:15:36.422 INFO  [11860] [godot::GDN_TheWorld_Globals::deinit@87] Log Terminated!
+2022-04-03 15:15:36.422 INFO  [11860] [godot::GDN_TheWorld_Globals::deinit@88] *****************
+2022-04-03 15:16:18.155 INFO  [18072] [godot::GDN_TheWorld_Globals::init@57] ***************
+2022-04-03 15:16:18.156 INFO  [18072] [godot::GDN_TheWorld_Globals::init@58] Log initilized!
+2022-04-03 15:16:18.156 INFO  [18072] [godot::GDN_TheWorld_Globals::init@59] ***************
+2022-04-03 15:16:18.156 INFO  [18072] [godot::GDN_TheWorld_Globals::init@61] TheWorld Globals Initializing...
+2022-04-03 15:16:18.156 INFO  [18072] [TheWorld_MapManager::utils::init@47] ***************
+2022-04-03 15:16:18.156 INFO  [18072] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-04-03 15:16:18.156 INFO  [18072] [TheWorld_MapManager::utils::init@49] ***************
+2022-04-03 15:16:18.158 INFO  [18072] [godot::GDN_TheWorld_Globals::init@68] TheWorld Globals Initialized!
+2022-04-03 15:16:18.158 INFO  [18072] [godot::GDN_TheWorld_MainNode::init@141] TheWorld Main Node Initializing...
+2022-04-03 15:16:18.160 INFO  [18072] [godot::GDN_TheWorld_Viewer::init@202] TheWorld Viewer Initializing...
+2022-04-03 15:16:18.246 INFO  [18072] [godot::GDN_TheWorld_Viewer::init@208] TheWorld Viewer Initialized!
+2022-04-03 15:16:18.246 INFO  [18072] [godot::GDN_TheWorld_MainNode::init@154] TheWorld Main Node Initialized!
+2022-04-03 15:16:20.969 INFO  [18380] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 606741 duration = 2427 ms
+2022-04-03 15:16:34.062 INFO  [18072] [godot::GDN_TheWorld_MainNode::deinit@37] TheWorld Main Node Deinitializing...
+2022-04-03 15:16:34.062 INFO  [18072] [godot::GDN_TheWorld_Viewer::deinit@70] TheWorld Viewer Deinitializing...
+2022-04-03 15:16:34.063 INFO  [18072] [godot::GDN_TheWorld_Viewer::deinit@76] TheWorld Viewer Deinitialized!
+2022-04-03 15:16:34.063 INFO  [18072] [godot::GDN_TheWorld_MainNode::deinit@62] TheWorld Main Node Deinitialized!
+2022-04-03 15:16:34.064 INFO  [18072] [godot::GDN_TheWorld_Globals::deinit@80] TheWorld Globals Deinitializing...
+2022-04-03 15:16:34.064 INFO  [18072] [TheWorld_MapManager::utils::~utils@54] *****************
+2022-04-03 15:16:34.064 INFO  [18072] [TheWorld_MapManager::utils::~utils@55] Log Terminated!
+2022-04-03 15:16:34.064 INFO  [18072] [TheWorld_MapManager::utils::~utils@56] *****************
+2022-04-03 15:16:34.064 INFO  [18072] [godot::GDN_TheWorld_Globals::deinit@84] TheWorld Globals Deinitialized!
+2022-04-03 15:16:34.064 INFO  [18072] [godot::GDN_TheWorld_Globals::deinit@86] *****************
+2022-04-03 15:16:34.064 INFO  [18072] [godot::GDN_TheWorld_Globals::deinit@87] Log Terminated!
+2022-04-03 15:16:34.065 INFO  [18072] [godot::GDN_TheWorld_Globals::deinit@88] *****************
+2022-04-03 15:18:19.769 INFO  [2252] [godot::GDN_TheWorld_Globals::init@57] ***************
+2022-04-03 15:18:19.770 INFO  [2252] [godot::GDN_TheWorld_Globals::init@58] Log initilized!
+2022-04-03 15:18:19.770 INFO  [2252] [godot::GDN_TheWorld_Globals::init@59] ***************
+2022-04-03 15:18:19.770 INFO  [2252] [godot::GDN_TheWorld_Globals::init@61] TheWorld Globals Initializing...
+2022-04-03 15:18:19.770 INFO  [2252] [TheWorld_MapManager::utils::init@47] ***************
+2022-04-03 15:18:19.770 INFO  [2252] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-04-03 15:18:19.770 INFO  [2252] [TheWorld_MapManager::utils::init@49] ***************
+2022-04-03 15:18:19.772 INFO  [2252] [godot::GDN_TheWorld_Globals::init@68] TheWorld Globals Initialized!
+2022-04-03 15:18:19.772 INFO  [2252] [godot::GDN_TheWorld_MainNode::init@141] TheWorld Main Node Initializing...
+2022-04-03 15:18:19.773 INFO  [2252] [godot::GDN_TheWorld_Viewer::init@202] TheWorld Viewer Initializing...
+2022-04-03 15:18:19.861 INFO  [2252] [godot::GDN_TheWorld_Viewer::init@208] TheWorld Viewer Initialized!
+2022-04-03 15:18:19.861 INFO  [2252] [godot::GDN_TheWorld_MainNode::init@154] TheWorld Main Node Initialized!
+2022-04-03 15:18:22.577 INFO  [5448] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 606741 duration = 2426 ms
+2022-04-03 15:18:23.394 INFO  [2252] [godot::GDN_TheWorld_MainNode::deinit@37] TheWorld Main Node Deinitializing...
+2022-04-03 15:18:23.395 INFO  [2252] [godot::GDN_TheWorld_Viewer::deinit@70] TheWorld Viewer Deinitializing...
+2022-04-03 15:18:23.395 INFO  [2252] [godot::GDN_TheWorld_Viewer::deinit@76] TheWorld Viewer Deinitialized!
+2022-04-03 15:18:23.396 INFO  [2252] [godot::GDN_TheWorld_MainNode::deinit@62] TheWorld Main Node Deinitialized!
+2022-04-03 15:18:23.396 INFO  [2252] [godot::GDN_TheWorld_Globals::deinit@80] TheWorld Globals Deinitializing...
+2022-04-03 15:18:23.397 INFO  [2252] [TheWorld_MapManager::utils::~utils@54] *****************
+2022-04-03 15:18:23.397 INFO  [2252] [TheWorld_MapManager::utils::~utils@55] Log Terminated!
+2022-04-03 15:18:23.397 INFO  [2252] [TheWorld_MapManager::utils::~utils@56] *****************
+2022-04-03 15:18:23.397 INFO  [2252] [godot::GDN_TheWorld_Globals::deinit@84] TheWorld Globals Deinitialized!
+2022-04-03 15:18:23.397 INFO  [2252] [godot::GDN_TheWorld_Globals::deinit@86] *****************
+2022-04-03 15:18:23.397 INFO  [2252] [godot::GDN_TheWorld_Globals::deinit@87] Log Terminated!
+2022-04-03 15:18:23.397 INFO  [2252] [godot::GDN_TheWorld_Globals::deinit@88] *****************
+2022-04-03 15:20:44.945 INFO  [23824] [godot::GDN_TheWorld_Globals::init@57] ***************
+2022-04-03 15:20:44.946 INFO  [23824] [godot::GDN_TheWorld_Globals::init@58] Log initilized!
+2022-04-03 15:20:44.946 INFO  [23824] [godot::GDN_TheWorld_Globals::init@59] ***************
+2022-04-03 15:20:44.946 INFO  [23824] [godot::GDN_TheWorld_Globals::init@61] TheWorld Globals Initializing...
+2022-04-03 15:20:44.946 INFO  [23824] [TheWorld_MapManager::utils::init@47] ***************
+2022-04-03 15:20:44.946 INFO  [23824] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-04-03 15:20:44.946 INFO  [23824] [TheWorld_MapManager::utils::init@49] ***************
+2022-04-03 15:20:44.948 INFO  [23824] [godot::GDN_TheWorld_Globals::init@68] TheWorld Globals Initialized!
+2022-04-03 15:20:44.948 INFO  [23824] [godot::GDN_TheWorld_MainNode::init@141] TheWorld Main Node Initializing...
+2022-04-03 15:20:44.949 INFO  [23824] [godot::GDN_TheWorld_Viewer::init@202] TheWorld Viewer Initializing...
+2022-04-03 15:20:45.035 INFO  [23824] [godot::GDN_TheWorld_Viewer::init@208] TheWorld Viewer Initialized!
+2022-04-03 15:20:45.035 INFO  [23824] [godot::GDN_TheWorld_MainNode::init@154] TheWorld Main Node Initialized!
+2022-04-03 15:20:47.769 INFO  [23980] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 606741 duration = 2440 ms
+2022-04-03 15:20:56.419 INFO  [23824] [godot::GDN_TheWorld_MainNode::deinit@37] TheWorld Main Node Deinitializing...
+2022-04-03 15:20:56.420 INFO  [23824] [godot::GDN_TheWorld_Viewer::deinit@70] TheWorld Viewer Deinitializing...
+2022-04-03 15:20:56.420 INFO  [23824] [godot::GDN_TheWorld_Viewer::deinit@76] TheWorld Viewer Deinitialized!
+2022-04-03 15:20:56.421 INFO  [23824] [godot::GDN_TheWorld_MainNode::deinit@62] TheWorld Main Node Deinitialized!
+2022-04-03 15:20:56.421 INFO  [23824] [godot::GDN_TheWorld_Globals::deinit@80] TheWorld Globals Deinitializing...
+2022-04-03 15:20:56.422 INFO  [23824] [TheWorld_MapManager::utils::~utils@54] *****************
+2022-04-03 15:20:56.422 INFO  [23824] [TheWorld_MapManager::utils::~utils@55] Log Terminated!
+2022-04-03 15:20:56.422 INFO  [23824] [TheWorld_MapManager::utils::~utils@56] *****************
+2022-04-03 15:20:56.422 INFO  [23824] [godot::GDN_TheWorld_Globals::deinit@84] TheWorld Globals Deinitialized!
+2022-04-03 15:20:56.422 INFO  [23824] [godot::GDN_TheWorld_Globals::deinit@86] *****************
+2022-04-03 15:20:56.422 INFO  [23824] [godot::GDN_TheWorld_Globals::deinit@87] Log Terminated!
+2022-04-03 15:20:56.422 INFO  [23824] [godot::GDN_TheWorld_Globals::deinit@88] *****************

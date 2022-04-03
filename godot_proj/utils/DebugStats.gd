@@ -42,7 +42,8 @@ func _process(_delta):
 		prop.set_label()
 		
 func add_property(object : Object, property : NodePath, display : String):
-	var label = Label.new()
+	var label := Label.new()
+	label.add_color_override("font_color", Color(1, 0, 0))
 	#label.set("custom_fonts/font", load("res://debug/roboto_16.tres"))
 	$Column.add_child(label)
 	props.append(Property.new(object, property, label, display))
