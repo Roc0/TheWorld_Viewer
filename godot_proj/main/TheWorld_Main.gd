@@ -17,8 +17,11 @@ var num_splits : int
 var num_joins : int
 var num_chunks : int
 var debug_draw_mode : String
-var cameraChunkId : String = ""
-
+var camera_chunk_id : String = ""
+var camera_chunk_x : String = ""
+var camera_chunk_h : String = ""
+var camera_chunk_z : String = ""
+		
 func _ready():
 	pass
 
@@ -56,12 +59,16 @@ func _process(_delta):
 		scene_initialized = true	
 	
 	var _cameraChunkId = viewer.get_camera_chunk_id()
-	if (_cameraChunkId != cameraChunkId):
+	if (_cameraChunkId != camera_chunk_id):
 		#var camera_chunk_t : Transform = Globals.GDN_viewer().get_camera_chunk_global_transform_of_aabb()
 		#var displ : Vector3 = Vector3(camera_chunk_t.basis.x.x, camera_chunk_t.basis.y.y, camera_chunk_t.basis.z.z) / 2
 		#camera_chunk_t.origin += displ
 		#$MeshProva.global_transform = camera_chunk_t
-		cameraChunkId = _cameraChunkId
+		var t : Transform = viewer.get_camera_chunk_global_transform_of_aabb()
+		camera_chunk_x = String(t.origin.x) + ":" + String(t.origin.x + t.basis.x.x)
+		camera_chunk_h = String(t.origin.y) + ":" + String(t.origin.y + t.basis.y.y)
+		camera_chunk_z = String(t.origin.z) + ":" + String(t.origin.z + t.basis.z.z)
+		camera_chunk_id = _cameraChunkId
 
 	chunk_grid_global_pos = Globals.GDN_viewer().global_transform.origin
 	if current_camera:
@@ -82,10 +89,13 @@ func enter_world():
 	$DebugStats.add_property(self, "chunk_grid_global_pos", "")
 	$DebugStats.add_property(self, "active_camera_global_rot", "")
 	$DebugStats.add_property(self, "active_camera_global_pos", "")
-	$DebugStats.add_property(self, "num_splits", "")
 	$DebugStats.add_property(self, "num_chunks", "")
+	$DebugStats.add_property(self, "num_splits", "")
 	$DebugStats.add_property(self, "num_joins", "")
-	$DebugStats.add_property(self, "cameraChunkId", "")
+	$DebugStats.add_property(self, "camera_chunk_id", "")
+	$DebugStats.add_property(self, "camera_chunk_x", "")
+	$DebugStats.add_property(self, "camera_chunk_z", "")
+	$DebugStats.add_property(self, "camera_chunk_h", "")
 	world_initalized = false
 	init_world_thread = Thread.new()
 	var err := init_world_thread.start(self, "_init_world")
@@ -102,10 +112,13 @@ func exit_world():
 		$DebugStats.remove_property(self, "chunk_grid_global_pos")
 		$DebugStats.remove_property(self, "active_camera_global_rot")
 		$DebugStats.remove_property(self, "active_camera_global_pos")
-		$DebugStats.remove_property(self, "num_splits")
 		$DebugStats.remove_property(self, "num_chunks")
+		$DebugStats.remove_property(self, "num_splits")
 		$DebugStats.remove_property(self, "num_joins")
-		$DebugStats.remove_property(self, "cameraChunkId")
+		$DebugStats.remove_property(self, "camera_chunk_id")
+		$DebugStats.remove_property(self, "camera_chunk_x")
+		$DebugStats.remove_property(self, "camera_chunk_z")
+		$DebugStats.remove_property(self, "camera_chunk_h")
 		if init_world_thread.is_active():
 			init_world_thread.wait_to_finish()
 		world_initalized = false
