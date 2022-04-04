@@ -17,10 +17,14 @@ var num_splits : int
 var num_joins : int
 var num_chunks : int
 var debug_draw_mode : String
+var chunk_debug_mode = -1
 var camera_chunk_id : String = ""
 var camera_chunk_x : String = ""
 var camera_chunk_h : String = ""
 var camera_chunk_z : String = ""
+var camera_chunk_debug_x : String = ""
+var camera_chunk_debug_h : String = ""
+var camera_chunk_debug_z : String = ""
 		
 func _ready():
 	pass
@@ -56,19 +60,27 @@ func _process(_delta):
 	if not scene_initialized:
 		#var cube_mesh = $MeshProva.mesh as CubeMesh
 		#cube_mesh.size = Vector3(1, 1, 1)
-		scene_initialized = true	
+		scene_initialized = true
 	
-	var _cameraChunkId = viewer.get_camera_chunk_id()
-	if (_cameraChunkId != camera_chunk_id):
+	var _chunk_debug_mode = viewer.get_chunk_debug_mode()
+	var _camera_chunk_id = viewer.get_camera_chunk_id()
+	if (_camera_chunk_id != camera_chunk_id or _chunk_debug_mode != chunk_debug_mode):
 		#var camera_chunk_t : Transform = Globals.GDN_viewer().get_camera_chunk_global_transform_of_aabb()
 		#var displ : Vector3 = Vector3(camera_chunk_t.basis.x.x, camera_chunk_t.basis.y.y, camera_chunk_t.basis.z.z) / 2
 		#camera_chunk_t.origin += displ
 		#$MeshProva.global_transform = camera_chunk_t
-		var t : Transform = viewer.get_camera_chunk_global_transform_of_aabb()
-		camera_chunk_x = String(t.origin.x) + ":" + String(t.origin.x + t.basis.x.x)
-		camera_chunk_h = String(t.origin.y) + ":" + String(t.origin.y + t.basis.y.y)
-		camera_chunk_z = String(t.origin.z) + ":" + String(t.origin.z + t.basis.z.z)
-		camera_chunk_id = _cameraChunkId
+		var t_aabb : AABB = viewer.get_camera_chunk_local_aabb()
+		var t_mesh : Transform = viewer.get_camera_chunk_mesh_global_transform_applied()
+		camera_chunk_x = String(t_mesh.origin.x) + ":" + String(t_mesh.origin.x + t_aabb.size.x)
+		camera_chunk_h = String(t_mesh.origin.y) + ":" + String(t_mesh.origin.y + t_aabb.size.y)
+		camera_chunk_z = String(t_mesh.origin.z) + ":" + String(t_mesh.origin.z + t_aabb.size.z)
+		t_aabb = viewer.get_camera_chunk_local_debug_aabb()
+		t_mesh = viewer.get_camera_chunk_debug_mesh_global_transform_applied()
+		camera_chunk_debug_x = String(t_mesh.origin.x) + ":" + String(t_mesh.origin.x + t_aabb.size.x)
+		camera_chunk_debug_h = String(t_mesh.origin.y) + ":" + String(t_mesh.origin.y + t_aabb.size.y)
+		camera_chunk_debug_z = String(t_mesh.origin.z) + ":" + String(t_mesh.origin.z + t_aabb.size.z)
+		chunk_debug_mode = _chunk_debug_mode
+		camera_chunk_id = _camera_chunk_id
 
 	chunk_grid_global_pos = Globals.GDN_viewer().global_transform.origin
 	if current_camera:
@@ -96,6 +108,9 @@ func enter_world():
 	$DebugStats.add_property(self, "camera_chunk_x", "")
 	$DebugStats.add_property(self, "camera_chunk_z", "")
 	$DebugStats.add_property(self, "camera_chunk_h", "")
+	$DebugStats.add_property(self, "camera_chunk_debug_x", "")
+	$DebugStats.add_property(self, "camera_chunk_debug_z", "")
+	$DebugStats.add_property(self, "camera_chunk_debug_h", "")
 	world_initalized = false
 	init_world_thread = Thread.new()
 	var err := init_world_thread.start(self, "_init_world")
@@ -119,6 +134,9 @@ func exit_world():
 		$DebugStats.remove_property(self, "camera_chunk_x")
 		$DebugStats.remove_property(self, "camera_chunk_z")
 		$DebugStats.remove_property(self, "camera_chunk_h")
+		$DebugStats.remove_property(self, "camera_chunk_debug_x")
+		$DebugStats.remove_property(self, "camera_chunk_debug_z")
+		$DebugStats.remove_property(self, "camera_chunk_debug_h")
 		if init_world_thread.is_active():
 			init_world_thread.wait_to_finish()
 		world_initalized = false
