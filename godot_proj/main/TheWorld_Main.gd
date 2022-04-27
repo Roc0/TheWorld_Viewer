@@ -163,7 +163,7 @@ func set_debug_window(active : bool) -> void:
 		
 func _init_world() -> void:
 	Globals.debug_print("Initializing world...")
-	Globals.GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initiaCameraDistanceFromTerrain, initialLevel)
+	Globals.GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initiaCameraDistanceFromTerrain, initialLevel, -1 , -1)
 	Globals.debug_print("World initialization completed...")
 	world_initalized = true
 	
