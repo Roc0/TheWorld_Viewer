@@ -1,0 +1,114 @@
+Godot Engine v3.4.2.stable.official.45eaa2daf - https://godotengine.org
+Using GLES3 video driver
+OpenGL ES 3.0 Renderer: GeForce GTX 560/PCIe/SSE2
+OpenGL ES Batching: ON
+	OPTIONS
+	max_join_item_commands 16
+	colored_vertex_format_threshold 0.25
+	batch_buffer_size 16384
+	light_scissor_area_threshold 1
+	item_reordering_lookahead 4
+	light_max_join_items 32
+	single_rect_fallback False
+	debug_flash False
+	diagnose_frame False
+WASAPI: wFormatTag = 65534
+WASAPI: nChannels = 2
+WASAPI: nSamplesPerSec = 48000
+WASAPI: nAvgBytesPerSec = 384000
+WASAPI: nBlockAlign = 8
+WASAPI: wBitsPerSample = 32
+WASAPI: cbSize = 22
+WASAPI: detected 2 channels
+WASAPI: audio buffer frames: 1962 calculated latency: 44ms
+ 
+CORE API HASH: 2238588822097579888
+EDITOR API HASH: 10291639213636549143
+Loading resource: res://default_env.tres
+Construct gdnative interface
+
+Destruct gdnative interface
+
+Class 'BulletPhysicsDirectBodyState' is not exposed, skipping.
+Class 'BulletPhysicsDirectSpaceState' is not exposed, skipping.
+Class 'BulletPhysicsServer' is not exposed, skipping.
+Class 'GDScriptNativeClass' is not exposed, skipping.
+Class 'IP_Unix' is not exposed, skipping.
+Class 'InputDefault' is not exposed, skipping.
+Class 'Physics2DDirectBodyStateSW' is not exposed, skipping.
+Class 'Physics2DDirectSpaceStateSW' is not exposed, skipping.
+Class 'Physics2DServerSW' is not exposed, skipping.
+Class 'ResourceImporterMP3' is not exposed, skipping.
+Class 'ResourceImporterOGGVorbis' is not exposed, skipping.
+Loading resource: C:/Users/utente/AppData/Roaming/Godot/editor_settings-3.tres
+EditorSettings: Load OK!
+Loading resource: res://init/Globals.gd
+Loading resource: res://native/GDN_TheWorld_Viewer.gdns
+Loading resource: res://native/GDN_TheWorld_Viewer.gdnlib
+Loaded builtin certs
+EditorSettings: Save OK!
+Loading resource: res://main/TheWorld_Main.gd
+Loading resource: res://Main.tscn
+Loading resource: res://utils/DebugStats.gd
+Godot Engine v3.4.2.stable.official.45eaa2daf - https://godotengine.org
+OpenGL ES 3.0 Renderer: GeForce GTX 560/PCIe/SSE2
+OpenGL ES Batching: ON
+ 
+DEBUG - Enter world
+DEBUG - Bitmap resolution = 1024 + 1
+DEBUG - Num vertices per chunk side = 32 + 1
+DEBUG - Lod max depth = 5 - Num lods = 6
+DEBUG - lod (0) - Num chunks per bitmap side = 32 - Grid step in WUs = 5 - Num vertices per side = 1024 + 1 - Size of the side in WUs = 5120
+DEBUG - lod (1) - Num chunks per bitmap side = 16 - Grid step in WUs = 10 - Num vertices per side = 512 + 1 - Size of the side in WUs = 5120
+DEBUG - lod (2) - Num chunks per bitmap side = 8 - Grid step in WUs = 20 - Num vertices per side = 256 + 1 - Size of the side in WUs = 5120
+DEBUG - lod (3) - Num chunks per bitmap side = 4 - Grid step in WUs = 40 - Num vertices per side = 128 + 1 - Size of the side in WUs = 5120
+DEBUG - lod (4) - Num chunks per bitmap side = 2 - Grid step in WUs = 80 - Num vertices per side = 64 + 1 - Size of the side in WUs = 5120
+DEBUG - lod (5) - Num chunks per bitmap side = 1 - Grid step in WUs = 160 - Num vertices per side = 32 + 1 - Size of the side in WUs = 5120
+DEBUG - GDN_TheWorld_Viewer::_ready
+DEBUG - GDN_TheWorld_MainNode::_ready
+DEBUG - GDN_TheWorld_Globals::_ready
+DEBUG - GDN_TheWorld_Camera::_ready
+DEBUG - Entering world...
+DEBUG - World entered...
+DEBUG - Initializing world...
+DEBUG - World initialization completed...
+DEBUG - Camera vertical on chunk (1:1) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 1099.130981 - Chunk Size in WUs = 2560.000000
+DEBUG - Updating terrain material params
+DEBUG - internalTransformGlobalCoord t=1, 0, 0, 0, 1, 0, 0, 0, 1 - 1193060, 0, 5463150
+DEBUG - setting shader_param=u_terrain_inverse_transform t=1, 0, 0, 0, 1, 0, 0, 0, 1 - -1193060, -0, -5463150
+DEBUG - setting shader_param=u_terrain_normal_basis b=1, 0, 0, 0, 1, 0, 0, 0, 1
+DEBUG - setting shader_param=u_terrain_heightmap
+DEBUG - setting shader_param=u_terrain_normalmap
+DEBUG - Camera vertical on chunk (2:2) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 853.446289 - MaxH = 1103.029175 - Chunk Size in WUs = 1280.000000
+DEBUG - Camera vertical on chunk (4:4) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 860.335083 - MaxH = 1081.315796 - Chunk Size in WUs = 640.000000
+DEBUG - Camera vertical on chunk (8:8) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 860.335083 - MaxH = 1000.514526 - Chunk Size in WUs = 320.000000
+DEBUG - Camera vertical on chunk (16:16) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 860.335083 - MaxH = 959.818665 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (4:3) - Chunk pos (Global) = 1195620.000000:5465070.000000 - MinH = 0.000000 - MaxH = 959.921936 - Chunk Size in WUs = 640.000000
+DEBUG - Camera vertical on chunk (16:16) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 860.335083 - MaxH = 959.818665 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (3:3) - Chunk pos (Global) = 1194980.000000:5465070.000000 - MinH = 0.000000 - MaxH = 874.471741 - Chunk Size in WUs = 640.000000
+DEBUG - Camera vertical on chunk (4:3) - Chunk pos (Global) = 1195620.000000:5465070.000000 - MinH = 0.000000 - MaxH = 959.921936 - Chunk Size in WUs = 640.000000
+DEBUG - Camera vertical on chunk (3:3) - Chunk pos (Global) = 1194980.000000:5465070.000000 - MinH = 0.000000 - MaxH = 874.471741 - Chunk Size in WUs = 640.000000
+DEBUG - Camera vertical on chunk (4:3) - Chunk pos (Global) = 1195620.000000:5465070.000000 - MinH = 0.000000 - MaxH = 959.921936 - Chunk Size in WUs = 640.000000
+DEBUG - Camera vertical on chunk (4:3) - Chunk pos (Global) = 1195620.000000:5465070.000000 - MinH = 0.000000 - MaxH = 959.921936 - Chunk Size in WUs = 640.000000
+DEBUG - Camera vertical on chunk (16:16) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 860.335083 - MaxH = 959.818665 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (16:17) - Chunk pos (Global) = 1195620.000000:5465870.000000 - MinH = 901.710022 - MaxH = 985.362488 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (16:16) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 860.335083 - MaxH = 959.818665 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (16:16) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 860.335083 - MaxH = 959.818665 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (16:17) - Chunk pos (Global) = 1195620.000000:5465870.000000 - MinH = 901.710022 - MaxH = 985.362488 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (8:8) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 860.335083 - MaxH = 1000.514526 - Chunk Size in WUs = 320.000000
+DEBUG - Camera vertical on chunk (4:4) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 860.335083 - MaxH = 1081.315796 - Chunk Size in WUs = 640.000000
+DEBUG - Camera vertical on chunk (8:7) - Chunk pos (Global) = 1195620.000000:5465390.000000 - MinH = 0.000000 - MaxH = 957.106995 - Chunk Size in WUs = 320.000000
+DEBUG - Camera vertical on chunk (4:4) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 860.335083 - MaxH = 1081.315796 - Chunk Size in WUs = 640.000000
+DEBUG - Exiting world...
+DEBUG - World exited...
+DEBUG - Exit world
+DEBUG - Quitting...
+DEBUG - GDN_TheWorld_Viewer::deinit DONE!
+DEBUG - GDN_TheWorld_Globals::deinit DONE!
+DEBUG - GDN_TheWorld_MainNode::deinit DONE!
+DEBUG - GDN_TheWorld_MainNode::_notification - Destroy Main Node
+DEBUG - GDN_TheWorld_Camera::_notification - Destroy Camera
+DEBUG - GDN_TheWorld_Viewer::_notification - Destroy Viewer
+DEBUG - GDN_TheWorld_Globals::_notification - Destroy Globals
+Running: D:/TheWorld/Client/TheWorld_Viewer/Godot_v3.4.2-stable_win64.exe --path D:/TheWorld/Client/TheWorld_Viewer/godot_proj --remote-debug 127.0.0.1:6007 --allow_focus_steal_pid 10892 --position 409,218 --breakpoints res://init/Globals.gd:4
+EditorSettings: Save OK!
