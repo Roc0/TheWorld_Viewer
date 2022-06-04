@@ -3,7 +3,7 @@ extends Spatial
 var debug_window_Active : bool = false
 var world_entered : bool = false
 var initialViewerPos := Vector3(1195425.176295 + 200, 0, 5465512.560295 +200)
-var initiaCameraDistanceFromTerrain = 200
+var initiaCameraDistanceFromTerrain = 10
 var initialLevel := 0
 var init_world_thread : Thread
 var world_initalized : bool = false
@@ -60,8 +60,16 @@ func _process(_delta):
 	var current_camera := get_viewport().get_camera()
 	var viewer = Globals.GDN_viewer()
 	if not scene_initialized:
-		#var cube_mesh = $MeshProva.mesh as CubeMesh
-		#cube_mesh.size = Vector3(1, 1, 1)
+		# DEBUGRIC
+		$CubeMeshTest.mesh.size = Vector3(1, 1, 1)
+		$CubeMeshTest.global_transform.origin = Vector3(initialViewerPos.x, initialViewerPos.y + 5, initialViewerPos.z)
+		$PlaneMeshTest.mesh.size = Vector2(10, 10)
+		$PlaneMeshTest.get_surface_material(0).set_shader_param("height_scale", 1.5)
+		$PlaneMeshTest.global_transform.origin = initialViewerPos
+		$OmniLightTest.global_transform.origin = Vector3(initialViewerPos.x, initialViewerPos.y + 5, initialViewerPos.z)
+		current_camera.global_transform.origin = Vector3(current_camera.global_transform.origin.x, initiaCameraDistanceFromTerrain, current_camera.global_transform.origin.z)
+		current_camera.look_at(initialViewerPos, Vector3(0, 1, 0))
+		# DEBUGRIC
 		scene_initialized = true
 	
 	var _chunk_debug_mode : String = viewer.get_chunk_debug_mode()
@@ -70,7 +78,7 @@ func _process(_delta):
 		#var cam_chunk_t : Transform = Globals.GDN_viewer().get_camera_chunk_global_transform_of_aabb()
 		#var displ : Vector3 = Vector3(cam_chunk_t.basis.x.x, cam_chunk_t.basis.y.y, cam_chunk_t.basis.z.z) / 2
 		#cam_chunk_t.origin += displ
-		#$MeshProva.global_transform = cam_chunk_t
+		#$CubeMeshTest.global_transform = cam_chunk_t
 		var t_aabb : AABB = viewer.get_camera_chunk_local_aabb()
 		var t_mesh : Transform = viewer.get_camera_chunk_mesh_global_transform_applied()
 		cam_chunk_mesh_pos_xzy = String(t_mesh.origin.x) + ":" + String(t_mesh.origin.z) + ":" + String(t_mesh.origin.y)
