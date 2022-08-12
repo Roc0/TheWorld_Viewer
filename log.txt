@@ -1,6 +1,6 @@
 Godot Engine v3.4.2.stable.official.45eaa2daf - https://godotengine.org
 Using GLES3 video driver
-OpenGL ES 3.0 Renderer: NVIDIA GeForce GTX 1050 Ti/PCIe/SSE2
+OpenGL ES 3.0 Renderer: GeForce GTX 560/PCIe/SSE2
 OpenGL ES Batching: ON
 	OPTIONS
 	max_join_item_commands 16
@@ -40,18 +40,18 @@ Class 'Physics2DDirectSpaceStateSW' is not exposed, skipping.
 Class 'Physics2DServerSW' is not exposed, skipping.
 Class 'ResourceImporterMP3' is not exposed, skipping.
 Class 'ResourceImporterOGGVorbis' is not exposed, skipping.
-Loading resource: C:/Users/Riccardo/AppData/Roaming/Godot/editor_settings-3.tres
+Loading resource: C:/Users/utente/AppData/Roaming/Godot/editor_settings-3.tres
 EditorSettings: Load OK!
 Loading resource: res://init/Globals.gd
 Loading resource: res://native/GDN_TheWorld_Viewer.gdns
 Loading resource: res://native/GDN_TheWorld_Viewer.gdnlib
 Loaded builtin certs
 EditorSettings: Save OK!
-Loading resource: res://utils/DebugStats.gd
 Loading resource: res://main/TheWorld_Main.gd
 Loading resource: res://Main.tscn
+Loading resource: res://utils/DebugStats.gd
 Godot Engine v3.4.2.stable.official.45eaa2daf - https://godotengine.org
-OpenGL ES 3.0 Renderer: NVIDIA GeForce GTX 1050 Ti/PCIe/SSE2
+OpenGL ES 3.0 Renderer: GeForce GTX 560/PCIe/SSE2
 OpenGL ES Batching: ON
  
 
@@ -102,20 +102,95 @@ DEBUG - GDN_TheWorld_Camera::_ready
 DEBUG - Entering world...
 DEBUG - World entered...
 DEBUG - Initializing world...
+DEBUG - Inizio SUPER DEBUGRIC!
+DEBUG - Fine SUPER DEBUGRIC!
 DEBUG - World initialization completed...
-DEBUG - Camera vertical on chunk (1:1) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 1099.130981 - Chunk Size in WUs = 2560.000000
+DEBUG - Camera vertical on chunk (1:1) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = -15.796875 - MaxH = 72.437500 - Chunk Size in WUs = 2560.000000
 DEBUG - Updating terrain material params
 DEBUG - internalTransformGlobalCoord t=1, 0, 0, 0, 1, 0, 0, 0, 1 - 1193060, 0, 5463150
 DEBUG - setting shader_param=u_terrain_inverse_transform t=1, 0, 0, 0, 1, 0, 0, 0, 1 - -1193060, -0, -5463150
 DEBUG - setting shader_param=u_terrain_normal_basis b=1, 0, 0, 0, 1, 0, 0, 0, 1
 DEBUG - setting shader_param=u_terrain_heightmap
 DEBUG - setting shader_param=u_terrain_normalmap
-DEBUG - Camera vertical on chunk (2:2) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 853.446289 - MaxH = 1103.029175 - Chunk Size in WUs = 1280.000000
-DEBUG - Camera vertical on chunk (4:4) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 860.335083 - MaxH = 1081.315796 - Chunk Size in WUs = 640.000000
-DEBUG - Exit world
-DEBUG - Quitting...
+DEBUG - Camera vertical on chunk (2:2) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = -16.812500 - MaxH = 68.562500 - Chunk Size in WUs = 1280.000000
+DEBUG - Camera vertical on chunk (4:4) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = -8.164062 - MaxH = 68.875000 - Chunk Size in WUs = 640.000000
+DEBUG - Camera vertical on chunk (8:8) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 11.617188 - MaxH = 69.187500 - Chunk Size in WUs = 320.000000
+DEBUG - Camera vertical on chunk (16:16) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 26.187500 - MaxH = 59.312500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (16:15) - Chunk pos (Global) = 1195620.000000:5465550.000000 - MinH = 25.906250 - MaxH = 49.937500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (16:16) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 26.187500 - MaxH = 59.312500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (16:14) - Chunk pos (Global) = 1195620.000000:5465390.000000 - MinH = 8.796875 - MaxH = 41.125000 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (16:15) - Chunk pos (Global) = 1195620.000000:5465550.000000 - MinH = 25.906250 - MaxH = 49.937500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (16:13) - Chunk pos (Global) = 1195620.000000:5465230.000000 - MinH = -1.937500 - MaxH = 18.828125 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (16:14) - Chunk pos (Global) = 1195620.000000:5465390.000000 - MinH = 8.796875 - MaxH = 41.125000 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (15:13) - Chunk pos (Global) = 1195460.000000:5465230.000000 - MinH = -12.140625 - MaxH = 18.109375 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (16:13) - Chunk pos (Global) = 1195620.000000:5465230.000000 - MinH = -1.937500 - MaxH = 18.828125 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (15:12) - Chunk pos (Global) = 1195460.000000:5465070.000000 - MinH = -0.080139 - MaxH = 48.187500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (15:13) - Chunk pos (Global) = 1195460.000000:5465230.000000 - MinH = -12.140625 - MaxH = 18.109375 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (14:12) - Chunk pos (Global) = 1195300.000000:5465070.000000 - MinH = 6.933594 - MaxH = 36.000000 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (15:12) - Chunk pos (Global) = 1195460.000000:5465070.000000 - MinH = -0.080139 - MaxH = 48.187500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (14:11) - Chunk pos (Global) = 1195300.000000:5464910.000000 - MinH = 28.171875 - MaxH = 40.562500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (14:12) - Chunk pos (Global) = 1195300.000000:5465070.000000 - MinH = 6.933594 - MaxH = 36.000000 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (13:11) - Chunk pos (Global) = 1195140.000000:5464910.000000 - MinH = 2.734375 - MaxH = 40.812500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (14:11) - Chunk pos (Global) = 1195300.000000:5464910.000000 - MinH = 28.171875 - MaxH = 40.562500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (13:10) - Chunk pos (Global) = 1195140.000000:5464750.000000 - MinH = 14.523438 - MaxH = 33.781250 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (13:11) - Chunk pos (Global) = 1195140.000000:5464910.000000 - MinH = 2.734375 - MaxH = 40.812500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (12:10) - Chunk pos (Global) = 1194980.000000:5464750.000000 - MinH = 4.988281 - MaxH = 26.921875 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (13:10) - Chunk pos (Global) = 1195140.000000:5464750.000000 - MinH = 14.523438 - MaxH = 33.781250 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (12:9) - Chunk pos (Global) = 1194980.000000:5464590.000000 - MinH = 6.921875 - MaxH = 48.343750 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (12:10) - Chunk pos (Global) = 1194980.000000:5464750.000000 - MinH = 4.988281 - MaxH = 26.921875 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (11:9) - Chunk pos (Global) = 1194820.000000:5464590.000000 - MinH = 6.964844 - MaxH = 25.609375 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (12:9) - Chunk pos (Global) = 1194980.000000:5464590.000000 - MinH = 6.921875 - MaxH = 48.343750 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (11:8) - Chunk pos (Global) = 1194820.000000:5464430.000000 - MinH = 6.566406 - MaxH = 36.312500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (11:9) - Chunk pos (Global) = 1194820.000000:5464590.000000 - MinH = 6.964844 - MaxH = 25.609375 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (10:8) - Chunk pos (Global) = 1194660.000000:5464430.000000 - MinH = 15.335938 - MaxH = 48.687500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (11:8) - Chunk pos (Global) = 1194820.000000:5464430.000000 - MinH = 6.566406 - MaxH = 36.312500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (10:7) - Chunk pos (Global) = 1194660.000000:5464270.000000 - MinH = 36.312500 - MaxH = 63.562500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (10:8) - Chunk pos (Global) = 1194660.000000:5464430.000000 - MinH = 15.335938 - MaxH = 48.687500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (5:3) - Chunk pos (Global) = 1194660.000000:5464110.000000 - MinH = 16.531250 - MaxH = 63.406250 - Chunk Size in WUs = 320.000000
+DEBUG - Camera vertical on chunk (4:3) - Chunk pos (Global) = 1194340.000000:5464110.000000 - MinH = 4.121094 - MaxH = 61.593750 - Chunk Size in WUs = 320.000000
+DEBUG - Camera vertical on chunk (5:3) - Chunk pos (Global) = 1194660.000000:5464110.000000 - MinH = 16.531250 - MaxH = 63.406250 - Chunk Size in WUs = 320.000000
+DEBUG - Camera vertical on chunk (9:6) - Chunk pos (Global) = 1194500.000000:5464110.000000 - MinH = 13.132812 - MaxH = 60.062500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (9:5) - Chunk pos (Global) = 1194500.000000:5463950.000000 - MinH = -0.677734 - MaxH = 45.156250 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (9:6) - Chunk pos (Global) = 1194500.000000:5464110.000000 - MinH = 13.132812 - MaxH = 60.062500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (8:5) - Chunk pos (Global) = 1194340.000000:5463950.000000 - MinH = -7.199219 - MaxH = 28.390625 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (9:5) - Chunk pos (Global) = 1194500.000000:5463950.000000 - MinH = -0.677734 - MaxH = 45.156250 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (8:4) - Chunk pos (Global) = 1194340.000000:5463790.000000 - MinH = -5.015625 - MaxH = 14.101562 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (8:5) - Chunk pos (Global) = 1194340.000000:5463950.000000 - MinH = -7.199219 - MaxH = 28.390625 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (7:4) - Chunk pos (Global) = 1194180.000000:5463790.000000 - MinH = 1.129883 - MaxH = 40.093750 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (8:4) - Chunk pos (Global) = 1194340.000000:5463790.000000 - MinH = -5.015625 - MaxH = 14.101562 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (6:4) - Chunk pos (Global) = 1194020.000000:5463790.000000 - MinH = 27.187500 - MaxH = 50.187500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (7:4) - Chunk pos (Global) = 1194180.000000:5463790.000000 - MinH = 1.129883 - MaxH = 40.093750 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (5:4) - Chunk pos (Global) = 1193860.000000:5463790.000000 - MinH = 36.687500 - MaxH = 66.562500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (6:4) - Chunk pos (Global) = 1194020.000000:5463790.000000 - MinH = 27.187500 - MaxH = 50.187500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (5:4) - Chunk pos (Global) = 1193860.000000:5463790.000000 - MinH = 36.687500 - MaxH = 66.562500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (5:5) - Chunk pos (Global) = 1193860.000000:5463950.000000 - MinH = 1.830078 - MaxH = 42.625000 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (5:5) - Chunk pos (Global) = 1193860.000000:5463950.000000 - MinH = 1.830078 - MaxH = 42.625000 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (5:6) - Chunk pos (Global) = 1193860.000000:5464110.000000 - MinH = -6.582031 - MaxH = 21.875000 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (5:6) - Chunk pos (Global) = 1193860.000000:5464110.000000 - MinH = -6.582031 - MaxH = 21.875000 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (5:7) - Chunk pos (Global) = 1193860.000000:5464270.000000 - MinH = -23.421875 - MaxH = 0.676270 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (4:7) - Chunk pos (Global) = 1193700.000000:5464270.000000 - MinH = -18.812500 - MaxH = 8.328125 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (5:7) - Chunk pos (Global) = 1193860.000000:5464270.000000 - MinH = -23.421875 - MaxH = 0.676270 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (4:7) - Chunk pos (Global) = 1193700.000000:5464270.000000 - MinH = -18.812500 - MaxH = 8.328125 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (5:7) - Chunk pos (Global) = 1193860.000000:5464270.000000 - MinH = -23.421875 - MaxH = 0.676270 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (5:6) - Chunk pos (Global) = 1193860.000000:5464110.000000 - MinH = -6.582031 - MaxH = 21.875000 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (5:7) - Chunk pos (Global) = 1193860.000000:5464270.000000 - MinH = -23.421875 - MaxH = 0.676270 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (5:6) - Chunk pos (Global) = 1193860.000000:5464110.000000 - MinH = -6.582031 - MaxH = 21.875000 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (6:6) - Chunk pos (Global) = 1194020.000000:5464110.000000 - MinH = 0.676270 - MaxH = 33.343750 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (6:5) - Chunk pos (Global) = 1194020.000000:5463950.000000 - MinH = 21.343750 - MaxH = 44.531250 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (6:6) - Chunk pos (Global) = 1194020.000000:5464110.000000 - MinH = 0.676270 - MaxH = 33.343750 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (6:4) - Chunk pos (Global) = 1194020.000000:5463790.000000 - MinH = 27.187500 - MaxH = 50.187500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (6:5) - Chunk pos (Global) = 1194020.000000:5463950.000000 - MinH = 21.343750 - MaxH = 44.531250 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (5:4) - Chunk pos (Global) = 1193860.000000:5463790.000000 - MinH = 36.687500 - MaxH = 66.562500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (6:4) - Chunk pos (Global) = 1194020.000000:5463790.000000 - MinH = 27.187500 - MaxH = 50.187500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (5:3) - Chunk pos (Global) = 1193860.000000:5463630.000000 - MinH = 27.593750 - MaxH = 73.062500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (5:4) - Chunk pos (Global) = 1193860.000000:5463790.000000 - MinH = 36.687500 - MaxH = 66.562500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (5:3) - Chunk pos (Global) = 1193860.000000:5463630.000000 - MinH = 27.593750 - MaxH = 73.062500 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (6:3) - Chunk pos (Global) = 1194020.000000:5463630.000000 - MinH = -4.488281 - MaxH = 45.500000 - Chunk Size in WUs = 160.000000
+DEBUG - Camera vertical on chunk (3:1) - Chunk pos (Global) = 1194020.000000:5463470.000000 - MinH = -17.187500 - MaxH = 45.500000 - Chunk Size in WUs = 320.000000
 DEBUG - Exiting world...
 DEBUG - World exited...
+DEBUG - Exit world
+DEBUG - Quitting...
 DEBUG - GDN_TheWorld_Viewer::deinit DONE!
 DEBUG - GDN_TheWorld_Globals::deinit DONE!
 DEBUG - GDN_TheWorld_MainNode::deinit DONE!
@@ -123,5 +198,5 @@ DEBUG - GDN_TheWorld_MainNode::_notification - Destroy Main Node
 DEBUG - GDN_TheWorld_Camera::_notification - Destroy Camera
 DEBUG - GDN_TheWorld_Viewer::_notification - Destroy Viewer
 DEBUG - GDN_TheWorld_Globals::_notification - Destroy Globals
-Running: D:/TheWorld/Client/TheWorld_Viewer/Godot_v3.4.2-stable_win64.exe --path D:/TheWorld/Client/TheWorld_Viewer/godot_proj --remote-debug 127.0.0.1:6007 --allow_focus_steal_pid 26380 --position 448,240 --breakpoints res://init/Globals.gd:4
+Running: D:/TheWorld/Client/TheWorld_Viewer/Godot_v3.4.2-stable_win64.exe --path D:/TheWorld/Client/TheWorld_Viewer/godot_proj --remote-debug 127.0.0.1:6007 --allow_focus_steal_pid 18500 --position 409,218 --breakpoints res://init/Globals.gd:4
 EditorSettings: Save OK!
