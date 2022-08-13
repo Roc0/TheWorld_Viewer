@@ -1,6 +1,6 @@
 Godot Engine v3.4.2.stable.official.45eaa2daf - https://godotengine.org
 Using GLES3 video driver
-OpenGL ES 3.0 Renderer: NVIDIA GeForce GTX 1050 Ti/PCIe/SSE2
+OpenGL ES 3.0 Renderer: GeForce GTX 560/PCIe/SSE2
 OpenGL ES Batching: ON
 	OPTIONS
 	max_join_item_commands 16
@@ -40,18 +40,18 @@ Class 'Physics2DDirectSpaceStateSW' is not exposed, skipping.
 Class 'Physics2DServerSW' is not exposed, skipping.
 Class 'ResourceImporterMP3' is not exposed, skipping.
 Class 'ResourceImporterOGGVorbis' is not exposed, skipping.
-Loading resource: C:/Users/Riccardo/AppData/Roaming/Godot/editor_settings-3.tres
+Loading resource: C:/Users/utente/AppData/Roaming/Godot/editor_settings-3.tres
 EditorSettings: Load OK!
 Loading resource: res://init/Globals.gd
 Loading resource: res://native/GDN_TheWorld_Viewer.gdns
 Loading resource: res://native/GDN_TheWorld_Viewer.gdnlib
 Loaded builtin certs
 EditorSettings: Save OK!
-Loading resource: res://utils/DebugStats.gd
 Loading resource: res://main/TheWorld_Main.gd
 Loading resource: res://Main.tscn
+Loading resource: res://utils/DebugStats.gd
 Godot Engine v3.4.2.stable.official.45eaa2daf - https://godotengine.org
-OpenGL ES 3.0 Renderer: NVIDIA GeForce GTX 1050 Ti/PCIe/SSE2
+OpenGL ES 3.0 Renderer: GeForce GTX 560/PCIe/SSE2
 OpenGL ES Batching: ON
  
 
@@ -102,20 +102,25 @@ DEBUG - GDN_TheWorld_Camera::_ready
 DEBUG - Entering world...
 DEBUG - World entered...
 DEBUG - Initializing world...
+DEBUG - Inizio SUPER DEBUGRIC!
+DEBUG - Fine SUPER DEBUGRIC!
 DEBUG - World initialization completed...
-DEBUG - Camera vertical on chunk (1:1) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 1099.130981 - Chunk Size in WUs = 2560.000000
+DEBUG - Camera vertical on chunk (1:1) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2560.000000
 DEBUG - Updating terrain material params
 DEBUG - internalTransformGlobalCoord t=1, 0, 0, 0, 1, 0, 0, 0, 1 - 1193060, 0, 5463150
 DEBUG - setting shader_param=u_terrain_inverse_transform t=1, 0, 0, 0, 1, 0, 0, 0, 1 - -1193060, -0, -5463150
 DEBUG - setting shader_param=u_terrain_normal_basis b=1, 0, 0, 0, 1, 0, 0, 0, 1
+DEBUG - setting shader_param=u_grid_step_in_wu grid_step=5.000000
 DEBUG - setting shader_param=u_terrain_heightmap
 DEBUG - setting shader_param=u_terrain_normalmap
-DEBUG - Camera vertical on chunk (2:2) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 853.446289 - MaxH = 1103.029175 - Chunk Size in WUs = 1280.000000
-DEBUG - Camera vertical on chunk (4:4) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 860.335083 - MaxH = 1081.315796 - Chunk Size in WUs = 640.000000
-DEBUG - Exit world
-DEBUG - Quitting...
+DEBUG - Camera vertical on chunk (2:2) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 1280.000000
+DEBUG - Camera vertical on chunk (4:4) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 640.000000
+DEBUG - Camera vertical on chunk (8:8) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 320.000000
+DEBUG - Camera vertical on chunk (16:16) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
 DEBUG - Exiting world...
 DEBUG - World exited...
+DEBUG - Exit world
+DEBUG - Quitting...
 DEBUG - GDN_TheWorld_Viewer::deinit DONE!
 DEBUG - GDN_TheWorld_Globals::deinit DONE!
 DEBUG - GDN_TheWorld_MainNode::deinit DONE!
@@ -123,5 +128,5 @@ DEBUG - GDN_TheWorld_MainNode::_notification - Destroy Main Node
 DEBUG - GDN_TheWorld_Camera::_notification - Destroy Camera
 DEBUG - GDN_TheWorld_Viewer::_notification - Destroy Viewer
 DEBUG - GDN_TheWorld_Globals::_notification - Destroy Globals
-Running: D:/TheWorld/Client/TheWorld_Viewer/Godot_v3.4.2-stable_win64.exe --path D:/TheWorld/Client/TheWorld_Viewer/godot_proj --remote-debug 127.0.0.1:6007 --allow_focus_steal_pid 26380 --position 448,240 --breakpoints res://init/Globals.gd:4
+Running: D:/TheWorld/Client/TheWorld_Viewer/Godot_v3.4.2-stable_win64.exe --path D:/TheWorld/Client/TheWorld_Viewer/godot_proj --remote-debug 127.0.0.1:6007 --allow_focus_steal_pid 19120 --position 409,218 --breakpoints res://init/Globals.gd:4
 EditorSettings: Save OK!

@@ -8,6 +8,7 @@ uniform sampler2D u_terrain_colormap;
 uniform sampler2D u_map; // This map will control color
 uniform mat4 u_terrain_inverse_transform;
 uniform mat3 u_terrain_normal_basis;
+uniform float u_grid_step_in_wu;
 
 varying float v_hole;
 
@@ -19,9 +20,12 @@ vec3 unpack_normal(vec4 rgba) {
 void vertex() {
 	vec4 wpos = WORLD_MATRIX * vec4(VERTEX, 1);
 	vec2 cell_coords = (u_terrain_inverse_transform * wpos).xz;
+	
+	cell_coords /= vec2(u_grid_step_in_wu);		// WARNING
+	
 	// Must add a half-offset so that we sample the center of pixels,
 	// otherwise bilinear filtering of the textures will give us mixed results (#183)
-	cell_coords += vec2(0.5);
+	//cell_coords += vec2(0.5);
 
 	// Normalized UV
 	UV = cell_coords / vec2(textureSize(u_terrain_heightmap, 0));
