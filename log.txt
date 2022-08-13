@@ -61,8 +61,8 @@ KEYBOARD MAPPING
 
 LEFT					==> A	MOUSE BUTTON LEFT
 RIGHT					==> D	MOUSE BUTTON LEFT
-FORWARD					==>	W	MOUSE BUTTON MID	MOUSE WHEEL UP
-BACKWARD				==>	S	MOUSE BUTTON MID	MOUSE WHEEL DOWN
+FORWARD					==>	W	MOUSE BUTTON MID	MOUSE WHEEL UP (WITH ALT MOVE ON MAP, WITHOUT MOVE FORWARD IN THE DIRECTION OF CAMERA)
+BACKWARD				==>	S	MOUSE BUTTON MID	MOUSE WHEEL DOWN (WITH ALT MOVE ON MAP, WITHOUT MOVE BACKWARD IN THE DIRECTION OF CAMERA)
 UP						==>	Q
 DOWN					==>	E
 
@@ -117,21 +117,6 @@ DEBUG - Camera vertical on chunk (2:2) - Chunk pos (Global) = 1195620.000000:546
 DEBUG - Camera vertical on chunk (4:4) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 640.000000
 DEBUG - Camera vertical on chunk (8:8) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 320.000000
 DEBUG - Camera vertical on chunk (16:16) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
-DEBUG - Camera vertical on chunk (8:8) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 320.000000
-DEBUG - Camera vertical on chunk (4:4) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 640.000000
-DEBUG - Camera vertical on chunk (4:3) - Chunk pos (Global) = 1195620.000000:5465070.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 640.000000
-DEBUG - Camera vertical on chunk (4:2) - Chunk pos (Global) = 1195620.000000:5464430.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 640.000000
-DEBUG - Camera vertical on chunk (4:1) - Chunk pos (Global) = 1195620.000000:5463790.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 640.000000
-DEBUG - Camera vertical on chunk (4:1) - Chunk pos (Global) = 1195620.000000:5463790.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 640.000000
-DEBUG - Camera vertical on chunk (4:2) - Chunk pos (Global) = 1195620.000000:5464430.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 640.000000
-DEBUG - Camera vertical on chunk (4:2) - Chunk pos (Global) = 1195620.000000:5464430.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 640.000000
-DEBUG - Camera vertical on chunk (4:3) - Chunk pos (Global) = 1195620.000000:5465070.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 640.000000
-DEBUG - Camera vertical on chunk (2:1) - Chunk pos (Global) = 1195620.000000:5464430.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 1280.000000
-DEBUG - Camera vertical on chunk (4:3) - Chunk pos (Global) = 1195620.000000:5465070.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 640.000000
-DEBUG - Camera vertical on chunk (2:1) - Chunk pos (Global) = 1195620.000000:5464430.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 1280.000000
-DEBUG - Camera vertical on chunk (4:3) - Chunk pos (Global) = 1195620.000000:5465070.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 640.000000
-DEBUG - Camera vertical on chunk (2:1) - Chunk pos (Global) = 1195620.000000:5464430.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 1280.000000
-DEBUG - Camera vertical on chunk (4:3) - Chunk pos (Global) = 1195620.000000:5465070.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 640.000000
 DEBUG - Exiting world...
 DEBUG - World exited...
 DEBUG - Exit world
@@ -143,5 +128,5 @@ DEBUG - GDN_TheWorld_MainNode::_notification - Destroy Main Node
 DEBUG - GDN_TheWorld_Camera::_notification - Destroy Camera
 DEBUG - GDN_TheWorld_Viewer::_notification - Destroy Viewer
 DEBUG - GDN_TheWorld_Globals::_notification - Destroy Globals
-Running: D:/TheWorld/Client/TheWorld_Viewer/Godot_v3.4.2-stable_win64.exe --path D:/TheWorld/Client/TheWorld_Viewer/godot_proj --remote-debug 127.0.0.1:6007 --allow_focus_steal_pid 9292 --position 409,218 --breakpoints res://init/Globals.gd:4
+Running: D:/TheWorld/Client/TheWorld_Viewer/Godot_v3.4.2-stable_win64.exe --path D:/TheWorld/Client/TheWorld_Viewer/godot_proj --remote-debug 127.0.0.1:6007 --allow_focus_steal_pid 2364 --position 409,218 --breakpoints res://init/Globals.gd:4
 EditorSettings: Save OK!

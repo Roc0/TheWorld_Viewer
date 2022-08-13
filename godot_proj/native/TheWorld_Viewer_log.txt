@@ -2630,3 +2630,608 @@
 2022-08-13 22:06:11.454 DEBUG [8424] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Camera::_notification - Destroy Camera
 2022-08-13 22:06:11.455 DEBUG [8424] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Viewer::_notification - Destroy Viewer
 2022-08-13 22:06:11.465 DEBUG [8424] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Globals::_notification - Destroy Globals
+2022-08-13 22:48:54.364 INFO  [12460] [godot::GDN_TheWorld_Globals::init@71] ***************
+2022-08-13 22:48:54.365 INFO  [12460] [godot::GDN_TheWorld_Globals::init@72] Log initilized!
+2022-08-13 22:48:54.365 INFO  [12460] [godot::GDN_TheWorld_Globals::init@73] ***************
+2022-08-13 22:48:54.365 INFO  [12460] [godot::GDN_TheWorld_Globals::init@75] TheWorld Globals Initializing...
+2022-08-13 22:48:54.366 INFO  [12460] [TheWorld_MapManager::utils::init@47] ***************
+2022-08-13 22:48:54.366 INFO  [12460] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-08-13 22:48:54.366 INFO  [12460] [TheWorld_MapManager::utils::init@49] ***************
+2022-08-13 22:48:54.370 INFO  [12460] [godot::GDN_TheWorld_Globals::init@84] TheWorld Globals Initialized!
+2022-08-13 22:48:54.371 INFO  [12460] [godot::GDN_TheWorld_MainNode::init@141] TheWorld Main Node Initializing...
+2022-08-13 22:48:54.371 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:48:54.371 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] ===========================================================================
+2022-08-13 22:48:54.372 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:48:54.372 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] KEYBOARD MAPPING
+2022-08-13 22:48:54.372 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:48:54.372 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] LEFT					==> A	MOUSE BUTTON LEFT
+2022-08-13 22:48:54.372 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] RIGHT					==> D	MOUSE BUTTON LEFT
+2022-08-13 22:48:54.373 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] FORWARD					==>	W	MOUSE BUTTON MID	MOUSE WHEEL UP
+2022-08-13 22:48:54.373 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] BACKWARD				==>	S	MOUSE BUTTON MID	MOUSE WHEEL DOWN
+2022-08-13 22:48:54.373 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] UP						==>	Q
+2022-08-13 22:48:54.373 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] DOWN					==>	E
+2022-08-13 22:48:54.374 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:48:54.374 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] SHIFT					==>	LOW MOVEMENT
+2022-08-13 22:48:54.374 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] CTRL-ALT-D				==> FAST MOVEMENT
+2022-08-13 22:48:54.375 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:48:54.375 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] ROTATE CAMERA			==>	MOUSE BUTTON RIGHT
+2022-08-13 22:48:54.375 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] SHIFT ORI CAMERA		==>	MOUSE BUTTON LEFT
+2022-08-13 22:48:54.375 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] SHIFT VERT CAMERA		==>	MOUSE BUTTON MID
+2022-08-13 22:48:54.375 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:48:54.376 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] TOGGLE DEBUG STATS		==>	CTRL-ALT-D
+2022-08-13 22:48:54.376 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] DUMP					==>	ALT-D
+2022-08-13 22:48:54.376 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:48:54.376 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] TOGGLE DEBUG VISIBILITY	==>	F1
+2022-08-13 22:48:54.377 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] ROTATE CHUNK DEBUG MODE	==>	F2
+2022-08-13 22:48:54.377 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] ROTATE DRAWING MODE		==>	F3
+2022-08-13 22:48:54.377 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] REFRESH VIEW			==>	F4
+2022-08-13 22:48:54.377 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:48:54.378 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] EXIT					==>	ESC
+2022-08-13 22:48:54.378 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:48:54.378 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] ===========================================================================
+2022-08-13 22:48:54.378 INFO  [12460] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:48:54.379 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Enter world
+2022-08-13 22:48:54.379 INFO  [12460] [godot::GDN_TheWorld_Viewer::init@274] TheWorld Viewer Initializing...
+2022-08-13 22:48:54.546 INFO  [12460] [godot::GDN_TheWorld_Viewer::init@282] TheWorld Viewer Initialized!
+2022-08-13 22:48:54.546 INFO  [12460] [godot::GDN_TheWorld_MainNode::init@154] TheWorld Main Node Initialized!
+2022-08-13 22:48:54.547 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Bitmap resolution = 1024 + 1
+2022-08-13 22:48:54.547 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Num vertices per chunk side = 32 + 1
+2022-08-13 22:48:54.547 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Lod max depth = 5 - Num lods = 6
+2022-08-13 22:48:54.547 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (0) - Num chunks per bitmap side = 32 - Grid step in WUs = 5 - Num vertices per side = 1024 + 1 - Size of the side in WUs = 5120
+2022-08-13 22:48:54.548 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (1) - Num chunks per bitmap side = 16 - Grid step in WUs = 10 - Num vertices per side = 512 + 1 - Size of the side in WUs = 5120
+2022-08-13 22:48:54.548 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (2) - Num chunks per bitmap side = 8 - Grid step in WUs = 20 - Num vertices per side = 256 + 1 - Size of the side in WUs = 5120
+2022-08-13 22:48:54.548 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (3) - Num chunks per bitmap side = 4 - Grid step in WUs = 40 - Num vertices per side = 128 + 1 - Size of the side in WUs = 5120
+2022-08-13 22:48:54.549 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (4) - Num chunks per bitmap side = 2 - Grid step in WUs = 80 - Num vertices per side = 64 + 1 - Size of the side in WUs = 5120
+2022-08-13 22:48:54.549 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (5) - Num chunks per bitmap side = 1 - Grid step in WUs = 160 - Num vertices per side = 32 + 1 - Size of the side in WUs = 5120
+2022-08-13 22:48:54.549 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Viewer::_ready
+2022-08-13 22:48:54.550 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_MainNode::_ready
+2022-08-13 22:48:54.550 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Globals::_ready
+2022-08-13 22:48:55.277 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Camera::_ready
+2022-08-13 22:48:55.278 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Entering world...
+2022-08-13 22:48:55.279 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - World entered...
+2022-08-13 22:48:55.280 DEBUG [18224] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Initializing world...
+2022-08-13 22:49:01.621 INFO  [18224] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 606741 duration = 6340 ms
+2022-08-13 22:49:01.621 DEBUG [18224] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Inizio SUPER DEBUGRIC!
+2022-08-13 22:49:01.718 DEBUG [18224] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Fine SUPER DEBUGRIC!
+2022-08-13 22:49:02.458 DEBUG [18224] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - World initialization completed...
+2022-08-13 22:49:02.480 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (1:1) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2560.000000
+2022-08-13 22:49:02.480 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Updating terrain material params
+2022-08-13 22:49:02.480 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - internalTransformGlobalCoord t=1, 0, 0, 0, 1, 0, 0, 0, 1 - 1193060, 0, 5463150
+2022-08-13 22:49:02.481 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - setting shader_param=u_terrain_inverse_transform t=1, 0, 0, 0, 1, 0, 0, 0, 1 - -1193060, -0, -5463150
+2022-08-13 22:49:02.481 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - setting shader_param=u_terrain_normal_basis b=1, 0, 0, 0, 1, 0, 0, 0, 1
+2022-08-13 22:49:02.481 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - setting shader_param=u_grid_step_in_wu grid_step=5.000000
+2022-08-13 22:49:02.482 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - setting shader_param=u_terrain_heightmap
+2022-08-13 22:49:02.482 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - setting shader_param=u_terrain_normalmap
+2022-08-13 22:49:02.508 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (2:2) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 1280.000000
+2022-08-13 22:49:02.513 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (4:4) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 640.000000
+2022-08-13 22:49:02.517 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (8:8) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 320.000000
+2022-08-13 22:49:02.527 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (16:16) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:49:27.823 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (15:16) - Chunk pos (Global) = 1195460.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:49:28.623 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (15:16) - Chunk pos (Global) = 1195460.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:49:28.623 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (16:16) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:49:28.723 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (16:15) - Chunk pos (Global) = 1195620.000000:5465550.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:49:29.490 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (16:15) - Chunk pos (Global) = 1195620.000000:5465550.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:49:29.490 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (16:16) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:49:29.590 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (15:16) - Chunk pos (Global) = 1195460.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:49:30.090 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (15:16) - Chunk pos (Global) = 1195460.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:49:30.090 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (15:17) - Chunk pos (Global) = 1195460.000000:5465870.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:49:31.306 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (15:16) - Chunk pos (Global) = 1195460.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:49:32.673 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (15:16) - Chunk pos (Global) = 1195460.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:49:32.673 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (15:17) - Chunk pos (Global) = 1195460.000000:5465870.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:49:33.773 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (15:16) - Chunk pos (Global) = 1195460.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:49:34.940 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (15:16) - Chunk pos (Global) = 1195460.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:49:34.940 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (15:17) - Chunk pos (Global) = 1195460.000000:5465870.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:50:29.202 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (15:16) - Chunk pos (Global) = 1195460.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:50:32.235 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Exiting world...
+2022-08-13 22:50:32.236 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - World exited...
+2022-08-13 22:50:32.252 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Exit world
+2022-08-13 22:50:32.252 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Quitting...
+2022-08-13 22:50:32.252 INFO  [12460] [godot::GDN_TheWorld_MainNode::deinit@37] TheWorld Main Node Deinitializing...
+2022-08-13 22:50:32.253 INFO  [12460] [godot::GDN_TheWorld_Viewer::deinit@84] TheWorld Viewer Deinitializing...
+2022-08-13 22:50:32.277 INFO  [12460] [godot::GDN_TheWorld_Viewer::deinit@91] TheWorld Viewer Deinitialized!
+2022-08-13 22:50:32.278 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Viewer::deinit DONE!
+2022-08-13 22:50:32.278 INFO  [12460] [godot::GDN_TheWorld_MainNode::deinit@62] TheWorld Main Node Deinitialized!
+2022-08-13 22:50:32.279 INFO  [12460] [godot::GDN_TheWorld_Globals::deinit@96] TheWorld Globals Deinitializing...
+2022-08-13 22:50:32.280 INFO  [12460] [TheWorld_MapManager::utils::~utils@54] *****************
+2022-08-13 22:50:32.280 INFO  [12460] [TheWorld_MapManager::utils::~utils@55] Log Terminated!
+2022-08-13 22:50:32.280 INFO  [12460] [TheWorld_MapManager::utils::~utils@56] *****************
+2022-08-13 22:50:32.280 INFO  [12460] [godot::GDN_TheWorld_Globals::deinit@100] TheWorld Globals Deinitialized!
+2022-08-13 22:50:32.280 INFO  [12460] [godot::GDN_TheWorld_Globals::deinit@102] *****************
+2022-08-13 22:50:32.281 INFO  [12460] [godot::GDN_TheWorld_Globals::deinit@103] Log Terminated!
+2022-08-13 22:50:32.281 INFO  [12460] [godot::GDN_TheWorld_Globals::deinit@104] *****************
+2022-08-13 22:50:32.281 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Globals::deinit DONE!
+2022-08-13 22:50:32.281 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_MainNode::deinit DONE!
+2022-08-13 22:50:32.282 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_MainNode::_notification - Destroy Main Node
+2022-08-13 22:50:32.282 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Camera::_notification - Destroy Camera
+2022-08-13 22:50:32.283 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Viewer::_notification - Destroy Viewer
+2022-08-13 22:50:32.291 DEBUG [12460] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Globals::_notification - Destroy Globals
+2022-08-13 22:51:05.466 INFO  [12108] [godot::GDN_TheWorld_Globals::init@71] ***************
+2022-08-13 22:51:05.467 INFO  [12108] [godot::GDN_TheWorld_Globals::init@72] Log initilized!
+2022-08-13 22:51:05.467 INFO  [12108] [godot::GDN_TheWorld_Globals::init@73] ***************
+2022-08-13 22:51:05.467 INFO  [12108] [godot::GDN_TheWorld_Globals::init@75] TheWorld Globals Initializing...
+2022-08-13 22:51:05.468 INFO  [12108] [TheWorld_MapManager::utils::init@47] ***************
+2022-08-13 22:51:05.468 INFO  [12108] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-08-13 22:51:05.468 INFO  [12108] [TheWorld_MapManager::utils::init@49] ***************
+2022-08-13 22:51:05.471 INFO  [12108] [godot::GDN_TheWorld_Globals::init@84] TheWorld Globals Initialized!
+2022-08-13 22:51:05.471 INFO  [12108] [godot::GDN_TheWorld_MainNode::init@141] TheWorld Main Node Initializing...
+2022-08-13 22:51:05.472 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:51:05.472 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] ===========================================================================
+2022-08-13 22:51:05.472 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:51:05.473 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] KEYBOARD MAPPING
+2022-08-13 22:51:05.473 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:51:05.473 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] LEFT					==> A	MOUSE BUTTON LEFT
+2022-08-13 22:51:05.473 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] RIGHT					==> D	MOUSE BUTTON LEFT
+2022-08-13 22:51:05.473 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] FORWARD					==>	W	MOUSE BUTTON MID	MOUSE WHEEL UP
+2022-08-13 22:51:05.474 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] BACKWARD				==>	S	MOUSE BUTTON MID	MOUSE WHEEL DOWN
+2022-08-13 22:51:05.474 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] UP						==>	Q
+2022-08-13 22:51:05.474 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] DOWN					==>	E
+2022-08-13 22:51:05.474 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:51:05.475 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] SHIFT					==>	LOW MOVEMENT
+2022-08-13 22:51:05.475 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] CTRL-ALT-D				==> FAST MOVEMENT
+2022-08-13 22:51:05.475 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:51:05.475 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] ROTATE CAMERA			==>	MOUSE BUTTON RIGHT
+2022-08-13 22:51:05.476 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] SHIFT ORI CAMERA		==>	MOUSE BUTTON LEFT
+2022-08-13 22:51:05.476 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] SHIFT VERT CAMERA		==>	MOUSE BUTTON MID
+2022-08-13 22:51:05.476 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:51:05.476 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] TOGGLE DEBUG STATS		==>	CTRL-ALT-D
+2022-08-13 22:51:05.477 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] DUMP					==>	ALT-D
+2022-08-13 22:51:05.477 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:51:05.477 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] TOGGLE DEBUG VISIBILITY	==>	F1
+2022-08-13 22:51:05.477 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] ROTATE CHUNK DEBUG MODE	==>	F2
+2022-08-13 22:51:05.478 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] ROTATE DRAWING MODE		==>	F3
+2022-08-13 22:51:05.478 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] REFRESH VIEW			==>	F4
+2022-08-13 22:51:05.478 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:51:05.478 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] EXIT					==>	ESC
+2022-08-13 22:51:05.478 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:51:05.479 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] ===========================================================================
+2022-08-13 22:51:05.479 INFO  [12108] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:51:05.479 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Enter world
+2022-08-13 22:51:05.479 INFO  [12108] [godot::GDN_TheWorld_Viewer::init@274] TheWorld Viewer Initializing...
+2022-08-13 22:51:05.651 INFO  [12108] [godot::GDN_TheWorld_Viewer::init@282] TheWorld Viewer Initialized!
+2022-08-13 22:51:05.651 INFO  [12108] [godot::GDN_TheWorld_MainNode::init@154] TheWorld Main Node Initialized!
+2022-08-13 22:51:05.651 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Bitmap resolution = 1024 + 1
+2022-08-13 22:51:05.652 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Num vertices per chunk side = 32 + 1
+2022-08-13 22:51:05.652 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Lod max depth = 5 - Num lods = 6
+2022-08-13 22:51:05.652 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (0) - Num chunks per bitmap side = 32 - Grid step in WUs = 5 - Num vertices per side = 1024 + 1 - Size of the side in WUs = 5120
+2022-08-13 22:51:05.653 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (1) - Num chunks per bitmap side = 16 - Grid step in WUs = 10 - Num vertices per side = 512 + 1 - Size of the side in WUs = 5120
+2022-08-13 22:51:05.653 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (2) - Num chunks per bitmap side = 8 - Grid step in WUs = 20 - Num vertices per side = 256 + 1 - Size of the side in WUs = 5120
+2022-08-13 22:51:05.653 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (3) - Num chunks per bitmap side = 4 - Grid step in WUs = 40 - Num vertices per side = 128 + 1 - Size of the side in WUs = 5120
+2022-08-13 22:51:05.654 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (4) - Num chunks per bitmap side = 2 - Grid step in WUs = 80 - Num vertices per side = 64 + 1 - Size of the side in WUs = 5120
+2022-08-13 22:51:05.654 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (5) - Num chunks per bitmap side = 1 - Grid step in WUs = 160 - Num vertices per side = 32 + 1 - Size of the side in WUs = 5120
+2022-08-13 22:51:05.654 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Viewer::_ready
+2022-08-13 22:51:05.655 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_MainNode::_ready
+2022-08-13 22:51:05.655 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Globals::_ready
+2022-08-13 22:51:06.127 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Camera::_ready
+2022-08-13 22:51:06.128 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Entering world...
+2022-08-13 22:51:06.130 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - World entered...
+2022-08-13 22:51:06.130 DEBUG [3052] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Initializing world...
+2022-08-13 22:51:12.560 INFO  [3052] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 606741 duration = 6430 ms
+2022-08-13 22:51:12.561 DEBUG [3052] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Inizio SUPER DEBUGRIC!
+2022-08-13 22:51:12.664 DEBUG [3052] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Fine SUPER DEBUGRIC!
+2022-08-13 22:51:13.433 DEBUG [3052] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - World initialization completed...
+2022-08-13 22:51:13.435 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (1:1) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2560.000000
+2022-08-13 22:51:13.435 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Updating terrain material params
+2022-08-13 22:51:13.435 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - internalTransformGlobalCoord t=1, 0, 0, 0, 1, 0, 0, 0, 1 - 1193060, 0, 5463150
+2022-08-13 22:51:13.436 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - setting shader_param=u_terrain_inverse_transform t=1, 0, 0, 0, 1, 0, 0, 0, 1 - -1193060, -0, -5463150
+2022-08-13 22:51:13.436 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - setting shader_param=u_terrain_normal_basis b=1, 0, 0, 0, 1, 0, 0, 0, 1
+2022-08-13 22:51:13.436 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - setting shader_param=u_grid_step_in_wu grid_step=5.000000
+2022-08-13 22:51:13.436 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - setting shader_param=u_terrain_heightmap
+2022-08-13 22:51:13.437 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - setting shader_param=u_terrain_normalmap
+2022-08-13 22:51:13.480 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (2:2) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 1280.000000
+2022-08-13 22:51:13.486 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (4:4) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 640.000000
+2022-08-13 22:51:13.491 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (8:8) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 320.000000
+2022-08-13 22:51:13.501 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (16:16) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:52:38.201 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Exit world
+2022-08-13 22:52:38.202 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Quitting...
+2022-08-13 22:52:38.202 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Exiting world...
+2022-08-13 22:52:38.203 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - World exited...
+2022-08-13 22:52:38.203 INFO  [12108] [godot::GDN_TheWorld_MainNode::deinit@37] TheWorld Main Node Deinitializing...
+2022-08-13 22:52:38.203 INFO  [12108] [godot::GDN_TheWorld_Viewer::deinit@84] TheWorld Viewer Deinitializing...
+2022-08-13 22:52:38.227 INFO  [12108] [godot::GDN_TheWorld_Viewer::deinit@91] TheWorld Viewer Deinitialized!
+2022-08-13 22:52:38.228 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Viewer::deinit DONE!
+2022-08-13 22:52:38.228 INFO  [12108] [godot::GDN_TheWorld_MainNode::deinit@62] TheWorld Main Node Deinitialized!
+2022-08-13 22:52:38.229 INFO  [12108] [godot::GDN_TheWorld_Globals::deinit@96] TheWorld Globals Deinitializing...
+2022-08-13 22:52:38.230 INFO  [12108] [TheWorld_MapManager::utils::~utils@54] *****************
+2022-08-13 22:52:38.230 INFO  [12108] [TheWorld_MapManager::utils::~utils@55] Log Terminated!
+2022-08-13 22:52:38.230 INFO  [12108] [TheWorld_MapManager::utils::~utils@56] *****************
+2022-08-13 22:52:38.230 INFO  [12108] [godot::GDN_TheWorld_Globals::deinit@100] TheWorld Globals Deinitialized!
+2022-08-13 22:52:38.231 INFO  [12108] [godot::GDN_TheWorld_Globals::deinit@102] *****************
+2022-08-13 22:52:38.231 INFO  [12108] [godot::GDN_TheWorld_Globals::deinit@103] Log Terminated!
+2022-08-13 22:52:38.231 INFO  [12108] [godot::GDN_TheWorld_Globals::deinit@104] *****************
+2022-08-13 22:52:38.231 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Globals::deinit DONE!
+2022-08-13 22:52:38.231 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_MainNode::deinit DONE!
+2022-08-13 22:52:38.232 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_MainNode::_notification - Destroy Main Node
+2022-08-13 22:52:38.232 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Camera::_notification - Destroy Camera
+2022-08-13 22:52:38.234 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Viewer::_notification - Destroy Viewer
+2022-08-13 22:52:38.242 DEBUG [12108] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Globals::_notification - Destroy Globals
+2022-08-13 22:53:34.045 INFO  [8992] [godot::GDN_TheWorld_Globals::init@71] ***************
+2022-08-13 22:53:34.046 INFO  [8992] [godot::GDN_TheWorld_Globals::init@72] Log initilized!
+2022-08-13 22:53:34.046 INFO  [8992] [godot::GDN_TheWorld_Globals::init@73] ***************
+2022-08-13 22:53:34.046 INFO  [8992] [godot::GDN_TheWorld_Globals::init@75] TheWorld Globals Initializing...
+2022-08-13 22:53:34.047 INFO  [8992] [TheWorld_MapManager::utils::init@47] ***************
+2022-08-13 22:53:34.047 INFO  [8992] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-08-13 22:53:34.047 INFO  [8992] [TheWorld_MapManager::utils::init@49] ***************
+2022-08-13 22:53:34.051 INFO  [8992] [godot::GDN_TheWorld_Globals::init@84] TheWorld Globals Initialized!
+2022-08-13 22:53:34.052 INFO  [8992] [godot::GDN_TheWorld_MainNode::init@141] TheWorld Main Node Initializing...
+2022-08-13 22:53:34.052 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:53:34.052 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] ===========================================================================
+2022-08-13 22:53:34.053 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:53:34.053 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] KEYBOARD MAPPING
+2022-08-13 22:53:34.053 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:53:34.053 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] LEFT					==> A	MOUSE BUTTON LEFT
+2022-08-13 22:53:34.054 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] RIGHT					==> D	MOUSE BUTTON LEFT
+2022-08-13 22:53:34.054 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] FORWARD					==>	W	MOUSE BUTTON MID	MOUSE WHEEL UP
+2022-08-13 22:53:34.054 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] BACKWARD				==>	S	MOUSE BUTTON MID	MOUSE WHEEL DOWN
+2022-08-13 22:53:34.054 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] UP						==>	Q
+2022-08-13 22:53:34.055 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] DOWN					==>	E
+2022-08-13 22:53:34.055 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:53:34.055 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] SHIFT					==>	LOW MOVEMENT
+2022-08-13 22:53:34.055 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] CTRL-ALT-D				==> FAST MOVEMENT
+2022-08-13 22:53:34.056 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:53:34.056 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] ROTATE CAMERA			==>	MOUSE BUTTON RIGHT
+2022-08-13 22:53:34.056 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] SHIFT ORI CAMERA		==>	MOUSE BUTTON LEFT
+2022-08-13 22:53:34.056 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] SHIFT VERT CAMERA		==>	MOUSE BUTTON MID
+2022-08-13 22:53:34.057 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:53:34.057 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] TOGGLE DEBUG STATS		==>	CTRL-ALT-D
+2022-08-13 22:53:34.057 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] DUMP					==>	ALT-D
+2022-08-13 22:53:34.057 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:53:34.058 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] TOGGLE DEBUG VISIBILITY	==>	F1
+2022-08-13 22:53:34.058 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] ROTATE CHUNK DEBUG MODE	==>	F2
+2022-08-13 22:53:34.058 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] ROTATE DRAWING MODE		==>	F3
+2022-08-13 22:53:34.058 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] REFRESH VIEW			==>	F4
+2022-08-13 22:53:34.059 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:53:34.059 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] EXIT					==>	ESC
+2022-08-13 22:53:34.059 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:53:34.059 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] ===========================================================================
+2022-08-13 22:53:34.060 INFO  [8992] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 22:53:34.060 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Enter world
+2022-08-13 22:53:34.060 INFO  [8992] [godot::GDN_TheWorld_Viewer::init@274] TheWorld Viewer Initializing...
+2022-08-13 22:53:34.230 INFO  [8992] [godot::GDN_TheWorld_Viewer::init@282] TheWorld Viewer Initialized!
+2022-08-13 22:53:34.230 INFO  [8992] [godot::GDN_TheWorld_MainNode::init@154] TheWorld Main Node Initialized!
+2022-08-13 22:53:34.230 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Bitmap resolution = 1024 + 1
+2022-08-13 22:53:34.231 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Num vertices per chunk side = 32 + 1
+2022-08-13 22:53:34.231 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Lod max depth = 5 - Num lods = 6
+2022-08-13 22:53:34.231 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (0) - Num chunks per bitmap side = 32 - Grid step in WUs = 5 - Num vertices per side = 1024 + 1 - Size of the side in WUs = 5120
+2022-08-13 22:53:34.232 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (1) - Num chunks per bitmap side = 16 - Grid step in WUs = 10 - Num vertices per side = 512 + 1 - Size of the side in WUs = 5120
+2022-08-13 22:53:34.232 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (2) - Num chunks per bitmap side = 8 - Grid step in WUs = 20 - Num vertices per side = 256 + 1 - Size of the side in WUs = 5120
+2022-08-13 22:53:34.232 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (3) - Num chunks per bitmap side = 4 - Grid step in WUs = 40 - Num vertices per side = 128 + 1 - Size of the side in WUs = 5120
+2022-08-13 22:53:34.233 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (4) - Num chunks per bitmap side = 2 - Grid step in WUs = 80 - Num vertices per side = 64 + 1 - Size of the side in WUs = 5120
+2022-08-13 22:53:34.233 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (5) - Num chunks per bitmap side = 1 - Grid step in WUs = 160 - Num vertices per side = 32 + 1 - Size of the side in WUs = 5120
+2022-08-13 22:53:34.233 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Viewer::_ready
+2022-08-13 22:53:34.234 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_MainNode::_ready
+2022-08-13 22:53:34.234 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Globals::_ready
+2022-08-13 22:53:34.703 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Camera::_ready
+2022-08-13 22:53:34.704 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Entering world...
+2022-08-13 22:53:34.705 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - World entered...
+2022-08-13 22:53:34.706 DEBUG [4380] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Initializing world...
+2022-08-13 22:53:40.996 INFO  [4380] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 606741 duration = 6290 ms
+2022-08-13 22:53:40.997 DEBUG [4380] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Inizio SUPER DEBUGRIC!
+2022-08-13 22:53:41.092 DEBUG [4380] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Fine SUPER DEBUGRIC!
+2022-08-13 22:53:41.823 DEBUG [4380] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - World initialization completed...
+2022-08-13 22:53:41.845 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (1:1) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2560.000000
+2022-08-13 22:53:41.845 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Updating terrain material params
+2022-08-13 22:53:41.846 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - internalTransformGlobalCoord t=1, 0, 0, 0, 1, 0, 0, 0, 1 - 1193060, 0, 5463150
+2022-08-13 22:53:41.846 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - setting shader_param=u_terrain_inverse_transform t=1, 0, 0, 0, 1, 0, 0, 0, 1 - -1193060, -0, -5463150
+2022-08-13 22:53:41.846 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - setting shader_param=u_terrain_normal_basis b=1, 0, 0, 0, 1, 0, 0, 0, 1
+2022-08-13 22:53:41.846 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - setting shader_param=u_grid_step_in_wu grid_step=5.000000
+2022-08-13 22:53:41.847 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - setting shader_param=u_terrain_heightmap
+2022-08-13 22:53:41.847 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - setting shader_param=u_terrain_normalmap
+2022-08-13 22:53:41.872 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (2:2) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 1280.000000
+2022-08-13 22:53:41.878 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (4:4) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 640.000000
+2022-08-13 22:53:41.883 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (8:8) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 320.000000
+2022-08-13 22:53:41.892 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (16:16) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:53:52.372 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (15:16) - Chunk pos (Global) = 1195460.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:53:54.340 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (15:15) - Chunk pos (Global) = 1195460.000000:5465550.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:53:56.623 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (14:15) - Chunk pos (Global) = 1195300.000000:5465550.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:00.489 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (14:15) - Chunk pos (Global) = 1195300.000000:5465550.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:00.489 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (15:15) - Chunk pos (Global) = 1195460.000000:5465550.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:00.839 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (15:15) - Chunk pos (Global) = 1195460.000000:5465550.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:00.839 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (15:16) - Chunk pos (Global) = 1195460.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:01.255 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (15:16) - Chunk pos (Global) = 1195460.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:01.256 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (16:16) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:01.605 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (16:16) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:01.605 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (16:17) - Chunk pos (Global) = 1195620.000000:5465870.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:08.271 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - *************
+2022-08-13 22:54:08.272 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - STARTING DUMP
+2022-08-13 22:54:08.272 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - FPS: 60.000000
+2022-08-13 22:54:08.272 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Num vertices per chunk side: 32 - Num vertices pert grid size: 1024 - Grid size [WUs]: 5125.000000 - Lod max depth: 5
+2022-08-13 22:54:08.273 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - FROM LAST DUMP - Num quad split: 36 - Num quad join: 11 - Num leaves: 76
+2022-08-13 22:54:08.273 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GRID POS (global) - X = 1193060.000000 - Z = 5463150.000000
+2022-08-13 22:54:08.273 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Num chunks at lod 5: 1	 Active 0
+2022-08-13 22:54:08.273 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Num chunks at lod 4: 4	 Active 0
+2022-08-13 22:54:08.274 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Num chunks at lod 3: 16	 Active 9
+2022-08-13 22:54:08.274 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Num chunks at lod 2: 40	 Active 21
+2022-08-13 22:54:08.274 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Num chunks at lod 1: 40	 Active 22
+2022-08-13 22:54:08.275 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Num chunks at lod 0: 40	 Active 24
+2022-08-13 22:54:08.275 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Num chunks: 141
+2022-08-13 22:54:08.275 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Num active chunks: 76
+2022-08-13 22:54:08.275 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:16-Z:14 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2560.000000, Z = 2240.000000 - Pos in GRID (global): X = 1195620.000000, Z = 5465390.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.276 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:16-Z:14 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.276 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:17-Z:14 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2720.000000, Z = 2240.000000 - Pos in GRID (global): X = 1195780.000000, Z = 5465390.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.276 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:17-Z:14 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.277 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:16-Z:15 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2560.000000, Z = 2400.000000 - Pos in GRID (global): X = 1195620.000000, Z = 5465550.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.277 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:16-Z:15 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.277 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:17-Z:15 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2720.000000, Z = 2400.000000 - Pos in GRID (global): X = 1195780.000000, Z = 5465550.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.278 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:17-Z:15 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.278 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:14-Z:16 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2240.000000, Z = 2560.000000 - Pos in GRID (global): X = 1195300.000000, Z = 5465710.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.278 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:14-Z:16 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.279 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:15-Z:16 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2400.000000, Z = 2560.000000 - Pos in GRID (global): X = 1195460.000000, Z = 5465710.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.279 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:15-Z:16 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.279 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:16-Z:16 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2560.000000, Z = 2560.000000 - Pos in GRID (global): X = 1195620.000000, Z = 5465710.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.280 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:16-Z:16 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.280 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:17-Z:16 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2720.000000, Z = 2560.000000 - Pos in GRID (global): X = 1195780.000000, Z = 5465710.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.280 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:17-Z:16 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.281 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:18-Z:16 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2880.000000, Z = 2560.000000 - Pos in GRID (global): X = 1195940.000000, Z = 5465710.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.281 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:18-Z:16 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.281 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:19-Z:16 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 3040.000000, Z = 2560.000000 - Pos in GRID (global): X = 1196100.000000, Z = 5465710.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.282 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:19-Z:16 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.282 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:14-Z:17 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2240.000000, Z = 2720.000000 - Pos in GRID (global): X = 1195300.000000, Z = 5465870.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.282 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:14-Z:17 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.283 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:15-Z:17 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2400.000000, Z = 2720.000000 - Pos in GRID (global): X = 1195460.000000, Z = 5465870.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.283 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:15-Z:17 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.283 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:16-Z:17 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2560.000000, Z = 2720.000000 - Pos in GRID (global): X = 1195620.000000, Z = 5465870.000000 - MinH = 0.000000 - MaxH = 0.000000 - CAMERA
+2022-08-13 22:54:08.284 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:16-Z:17 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000 - CAMERA
+2022-08-13 22:54:08.284 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:17-Z:17 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2720.000000, Z = 2720.000000 - Pos in GRID (global): X = 1195780.000000, Z = 5465870.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.284 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:17-Z:17 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.285 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:18-Z:17 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2880.000000, Z = 2720.000000 - Pos in GRID (global): X = 1195940.000000, Z = 5465870.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.285 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:18-Z:17 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.285 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:19-Z:17 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 3040.000000, Z = 2720.000000 - Pos in GRID (global): X = 1196100.000000, Z = 5465870.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.286 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:19-Z:17 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.286 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:14-Z:18 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2240.000000, Z = 2880.000000 - Pos in GRID (global): X = 1195300.000000, Z = 5466030.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.286 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:14-Z:18 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.287 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:15-Z:18 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2400.000000, Z = 2880.000000 - Pos in GRID (global): X = 1195460.000000, Z = 5466030.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.287 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:15-Z:18 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.288 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:16-Z:18 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2560.000000, Z = 2880.000000 - Pos in GRID (global): X = 1195620.000000, Z = 5466030.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.288 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:16-Z:18 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.288 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:17-Z:18 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2720.000000, Z = 2880.000000 - Pos in GRID (global): X = 1195780.000000, Z = 5466030.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.289 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:17-Z:18 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.289 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:14-Z:19 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2240.000000, Z = 3040.000000 - Pos in GRID (global): X = 1195300.000000, Z = 5466190.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.289 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:14-Z:19 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.290 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:15-Z:19 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2400.000000, Z = 3040.000000 - Pos in GRID (global): X = 1195460.000000, Z = 5466190.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.290 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:15-Z:19 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.290 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:16-Z:19 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2560.000000, Z = 3040.000000 - Pos in GRID (global): X = 1195620.000000, Z = 5466190.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.291 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:16-Z:19 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.291 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:17-Z:19 - chunk size (WUs) 160.000000 - Pos in GRID (local): X = 2720.000000, Z = 3040.000000 - Pos in GRID (global): X = 1195780.000000, Z = 5466190.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.291 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:0-X:17-Z:19 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.292 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:6-Z:6 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 1920.000000, Z = 1920.000000 - Pos in GRID (global): X = 1194980.000000, Z = 5465070.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.292 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:6-Z:6 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.292 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:7-Z:6 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 2240.000000, Z = 1920.000000 - Pos in GRID (global): X = 1195300.000000, Z = 5465070.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.293 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:7-Z:6 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.293 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:8-Z:6 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 2560.000000, Z = 1920.000000 - Pos in GRID (global): X = 1195620.000000, Z = 5465070.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.293 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:8-Z:6 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.294 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:9-Z:6 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 2880.000000, Z = 1920.000000 - Pos in GRID (global): X = 1195940.000000, Z = 5465070.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.294 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:9-Z:6 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.294 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:6-Z:7 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 1920.000000, Z = 2240.000000 - Pos in GRID (global): X = 1194980.000000, Z = 5465390.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.295 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:6-Z:7 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.295 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:7-Z:7 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 2240.000000, Z = 2240.000000 - Pos in GRID (global): X = 1195300.000000, Z = 5465390.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.295 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:7-Z:7 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.296 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:9-Z:7 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 2880.000000, Z = 2240.000000 - Pos in GRID (global): X = 1195940.000000, Z = 5465390.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.296 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:9-Z:7 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.296 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:6-Z:8 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 1920.000000, Z = 2560.000000 - Pos in GRID (global): X = 1194980.000000, Z = 5465710.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.297 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:6-Z:8 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.297 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:10-Z:8 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 3200.000000, Z = 2560.000000 - Pos in GRID (global): X = 1196260.000000, Z = 5465710.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.297 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:10-Z:8 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.298 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:11-Z:8 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 3520.000000, Z = 2560.000000 - Pos in GRID (global): X = 1196580.000000, Z = 5465710.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.298 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:11-Z:8 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.298 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:6-Z:9 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 1920.000000, Z = 2880.000000 - Pos in GRID (global): X = 1194980.000000, Z = 5466030.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.299 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:6-Z:9 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.299 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:9-Z:9 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 2880.000000, Z = 2880.000000 - Pos in GRID (global): X = 1195940.000000, Z = 5466030.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.299 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:9-Z:9 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.300 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:10-Z:9 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 3200.000000, Z = 2880.000000 - Pos in GRID (global): X = 1196260.000000, Z = 5466030.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.300 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:10-Z:9 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.300 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:11-Z:9 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 3520.000000, Z = 2880.000000 - Pos in GRID (global): X = 1196580.000000, Z = 5466030.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.301 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:11-Z:9 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.301 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:6-Z:10 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 1920.000000, Z = 3200.000000 - Pos in GRID (global): X = 1194980.000000, Z = 5466350.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.301 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:6-Z:10 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.302 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:7-Z:10 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 2240.000000, Z = 3200.000000 - Pos in GRID (global): X = 1195300.000000, Z = 5466350.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.302 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:7-Z:10 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.302 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:8-Z:10 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 2560.000000, Z = 3200.000000 - Pos in GRID (global): X = 1195620.000000, Z = 5466350.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.303 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:8-Z:10 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.303 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:9-Z:10 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 2880.000000, Z = 3200.000000 - Pos in GRID (global): X = 1195940.000000, Z = 5466350.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.303 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:9-Z:10 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.304 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:6-Z:11 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 1920.000000, Z = 3520.000000 - Pos in GRID (global): X = 1194980.000000, Z = 5466670.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.304 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:6-Z:11 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.304 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:7-Z:11 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 2240.000000, Z = 3520.000000 - Pos in GRID (global): X = 1195300.000000, Z = 5466670.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.305 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:7-Z:11 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.305 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:8-Z:11 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 2560.000000, Z = 3520.000000 - Pos in GRID (global): X = 1195620.000000, Z = 5466670.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.305 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:8-Z:11 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.306 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:9-Z:11 - chunk size (WUs) 320.000000 - Pos in GRID (local): X = 2880.000000, Z = 3520.000000 - Pos in GRID (global): X = 1195940.000000, Z = 5466670.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.306 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:1-X:9-Z:11 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.306 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:2-Z:2 - chunk size (WUs) 640.000000 - Pos in GRID (local): X = 1280.000000, Z = 1280.000000 - Pos in GRID (global): X = 1194340.000000, Z = 5464430.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.307 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:2-Z:2 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.307 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:3-Z:2 - chunk size (WUs) 640.000000 - Pos in GRID (local): X = 1920.000000, Z = 1280.000000 - Pos in GRID (global): X = 1194980.000000, Z = 5464430.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.307 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:3-Z:2 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.308 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:4-Z:2 - chunk size (WUs) 640.000000 - Pos in GRID (local): X = 2560.000000, Z = 1280.000000 - Pos in GRID (global): X = 1195620.000000, Z = 5464430.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.308 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:4-Z:2 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.308 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:5-Z:2 - chunk size (WUs) 640.000000 - Pos in GRID (local): X = 3200.000000, Z = 1280.000000 - Pos in GRID (global): X = 1196260.000000, Z = 5464430.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.309 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:5-Z:2 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.309 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:2-Z:3 - chunk size (WUs) 640.000000 - Pos in GRID (local): X = 1280.000000, Z = 1920.000000 - Pos in GRID (global): X = 1194340.000000, Z = 5465070.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.309 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:2-Z:3 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.310 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:5-Z:3 - chunk size (WUs) 640.000000 - Pos in GRID (local): X = 3200.000000, Z = 1920.000000 - Pos in GRID (global): X = 1196260.000000, Z = 5465070.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.310 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:5-Z:3 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.310 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:2-Z:4 - chunk size (WUs) 640.000000 - Pos in GRID (local): X = 1280.000000, Z = 2560.000000 - Pos in GRID (global): X = 1194340.000000, Z = 5465710.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.311 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:2-Z:4 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.311 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:6-Z:4 - chunk size (WUs) 640.000000 - Pos in GRID (local): X = 3840.000000, Z = 2560.000000 - Pos in GRID (global): X = 1196900.000000, Z = 5465710.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.311 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:6-Z:4 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.312 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:7-Z:4 - chunk size (WUs) 640.000000 - Pos in GRID (local): X = 4480.000000, Z = 2560.000000 - Pos in GRID (global): X = 1197540.000000, Z = 5465710.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.312 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:7-Z:4 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.312 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:2-Z:5 - chunk size (WUs) 640.000000 - Pos in GRID (local): X = 1280.000000, Z = 3200.000000 - Pos in GRID (global): X = 1194340.000000, Z = 5466350.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.313 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:2-Z:5 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.313 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:5-Z:5 - chunk size (WUs) 640.000000 - Pos in GRID (local): X = 3200.000000, Z = 3200.000000 - Pos in GRID (global): X = 1196260.000000, Z = 5466350.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.313 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:5-Z:5 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.314 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:6-Z:5 - chunk size (WUs) 640.000000 - Pos in GRID (local): X = 3840.000000, Z = 3200.000000 - Pos in GRID (global): X = 1196900.000000, Z = 5466350.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.314 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:6-Z:5 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.314 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:7-Z:5 - chunk size (WUs) 640.000000 - Pos in GRID (local): X = 4480.000000, Z = 3200.000000 - Pos in GRID (global): X = 1197540.000000, Z = 5466350.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.315 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:7-Z:5 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.315 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:2-Z:6 - chunk size (WUs) 640.000000 - Pos in GRID (local): X = 1280.000000, Z = 3840.000000 - Pos in GRID (global): X = 1194340.000000, Z = 5466990.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.315 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:2-Z:6 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.316 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:3-Z:6 - chunk size (WUs) 640.000000 - Pos in GRID (local): X = 1920.000000, Z = 3840.000000 - Pos in GRID (global): X = 1194980.000000, Z = 5466990.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.316 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:3-Z:6 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.316 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:4-Z:6 - chunk size (WUs) 640.000000 - Pos in GRID (local): X = 2560.000000, Z = 3840.000000 - Pos in GRID (global): X = 1195620.000000, Z = 5466990.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.317 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:4-Z:6 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.317 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:5-Z:6 - chunk size (WUs) 640.000000 - Pos in GRID (local): X = 3200.000000, Z = 3840.000000 - Pos in GRID (global): X = 1196260.000000, Z = 5466990.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.317 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:5-Z:6 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.318 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:2-Z:7 - chunk size (WUs) 640.000000 - Pos in GRID (local): X = 1280.000000, Z = 4480.000000 - Pos in GRID (global): X = 1194340.000000, Z = 5467630.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.318 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:2-Z:7 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.318 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:3-Z:7 - chunk size (WUs) 640.000000 - Pos in GRID (local): X = 1920.000000, Z = 4480.000000 - Pos in GRID (global): X = 1194980.000000, Z = 5467630.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.319 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:3-Z:7 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.319 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:4-Z:7 - chunk size (WUs) 640.000000 - Pos in GRID (local): X = 2560.000000, Z = 4480.000000 - Pos in GRID (global): X = 1195620.000000, Z = 5467630.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.319 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:4-Z:7 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.320 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:5-Z:7 - chunk size (WUs) 640.000000 - Pos in GRID (local): X = 3200.000000, Z = 4480.000000 - Pos in GRID (global): X = 1196260.000000, Z = 5467630.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.320 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:2-X:5-Z:7 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.320 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:3-X:0-Z:0 - chunk size (WUs) 1280.000000 - Pos in GRID (local): X = 0.000000, Z = 0.000000 - Pos in GRID (global): X = 1193060.000000, Z = 5463150.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.321 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:3-X:0-Z:0 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.321 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:3-X:1-Z:0 - chunk size (WUs) 1280.000000 - Pos in GRID (local): X = 1280.000000, Z = 0.000000 - Pos in GRID (global): X = 1194340.000000, Z = 5463150.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.321 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:3-X:1-Z:0 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.322 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:3-X:2-Z:0 - chunk size (WUs) 1280.000000 - Pos in GRID (local): X = 2560.000000, Z = 0.000000 - Pos in GRID (global): X = 1195620.000000, Z = 5463150.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.322 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:3-X:2-Z:0 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.322 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:3-X:3-Z:0 - chunk size (WUs) 1280.000000 - Pos in GRID (local): X = 3840.000000, Z = 0.000000 - Pos in GRID (global): X = 1196900.000000, Z = 5463150.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.323 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:3-X:3-Z:0 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.323 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:3-X:0-Z:1 - chunk size (WUs) 1280.000000 - Pos in GRID (local): X = 0.000000, Z = 1280.000000 - Pos in GRID (global): X = 1193060.000000, Z = 5464430.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.323 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:3-X:0-Z:1 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.324 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:3-X:3-Z:1 - chunk size (WUs) 1280.000000 - Pos in GRID (local): X = 3840.000000, Z = 1280.000000 - Pos in GRID (global): X = 1196900.000000, Z = 5464430.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.324 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:3-X:3-Z:1 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.324 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:3-X:0-Z:2 - chunk size (WUs) 1280.000000 - Pos in GRID (local): X = 0.000000, Z = 2560.000000 - Pos in GRID (global): X = 1193060.000000, Z = 5465710.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.325 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:3-X:0-Z:2 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.325 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:3-X:0-Z:3 - chunk size (WUs) 1280.000000 - Pos in GRID (local): X = 0.000000, Z = 3840.000000 - Pos in GRID (global): X = 1193060.000000, Z = 5466990.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.325 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:3-X:0-Z:3 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.326 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:3-X:3-Z:3 - chunk size (WUs) 1280.000000 - Pos in GRID (local): X = 3840.000000, Z = 3840.000000 - Pos in GRID (global): X = 1196900.000000, Z = 5466990.000000 - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.326 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Chunk ID: LOD:3-X:3-Z:3 DEBUG MESH - MinH = 0.000000 - MaxH = 0.000000
+2022-08-13 22:54:08.326 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - DUMP COMPLETE
+2022-08-13 22:54:08.326 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - *************
+2022-08-13 22:54:10.204 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (16:16) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:10.322 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (16:16) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:10.322 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (17:16) - Chunk pos (Global) = 1195780.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:10.804 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (17:15) - Chunk pos (Global) = 1195780.000000:5465550.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:11.388 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (17:14) - Chunk pos (Global) = 1195780.000000:5465390.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:11.571 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (17:14) - Chunk pos (Global) = 1195780.000000:5465390.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:11.571 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (18:14) - Chunk pos (Global) = 1195940.000000:5465390.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:31.103 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (17:14) - Chunk pos (Global) = 1195780.000000:5465390.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:40.252 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (17:14) - Chunk pos (Global) = 1195780.000000:5465390.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:40.253 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (18:14) - Chunk pos (Global) = 1195940.000000:5465390.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:42.985 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (17:14) - Chunk pos (Global) = 1195780.000000:5465390.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:45.019 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (17:14) - Chunk pos (Global) = 1195780.000000:5465390.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:45.019 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (18:14) - Chunk pos (Global) = 1195940.000000:5465390.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:46.468 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (17:14) - Chunk pos (Global) = 1195780.000000:5465390.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 22:54:51.085 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Exiting world...
+2022-08-13 22:54:51.086 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - World exited...
+2022-08-13 22:54:51.102 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Exit world
+2022-08-13 22:54:51.103 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Quitting...
+2022-08-13 22:54:51.103 INFO  [8992] [godot::GDN_TheWorld_MainNode::deinit@37] TheWorld Main Node Deinitializing...
+2022-08-13 22:54:51.103 INFO  [8992] [godot::GDN_TheWorld_Viewer::deinit@84] TheWorld Viewer Deinitializing...
+2022-08-13 22:54:51.130 INFO  [8992] [godot::GDN_TheWorld_Viewer::deinit@91] TheWorld Viewer Deinitialized!
+2022-08-13 22:54:51.130 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Viewer::deinit DONE!
+2022-08-13 22:54:51.131 INFO  [8992] [godot::GDN_TheWorld_MainNode::deinit@62] TheWorld Main Node Deinitialized!
+2022-08-13 22:54:51.131 INFO  [8992] [godot::GDN_TheWorld_Globals::deinit@96] TheWorld Globals Deinitializing...
+2022-08-13 22:54:51.132 INFO  [8992] [TheWorld_MapManager::utils::~utils@54] *****************
+2022-08-13 22:54:51.132 INFO  [8992] [TheWorld_MapManager::utils::~utils@55] Log Terminated!
+2022-08-13 22:54:51.133 INFO  [8992] [TheWorld_MapManager::utils::~utils@56] *****************
+2022-08-13 22:54:51.133 INFO  [8992] [godot::GDN_TheWorld_Globals::deinit@100] TheWorld Globals Deinitialized!
+2022-08-13 22:54:51.133 INFO  [8992] [godot::GDN_TheWorld_Globals::deinit@102] *****************
+2022-08-13 22:54:51.133 INFO  [8992] [godot::GDN_TheWorld_Globals::deinit@103] Log Terminated!
+2022-08-13 22:54:51.133 INFO  [8992] [godot::GDN_TheWorld_Globals::deinit@104] *****************
+2022-08-13 22:54:51.134 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Globals::deinit DONE!
+2022-08-13 22:54:51.134 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_MainNode::deinit DONE!
+2022-08-13 22:54:51.134 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_MainNode::_notification - Destroy Main Node
+2022-08-13 22:54:51.135 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Camera::_notification - Destroy Camera
+2022-08-13 22:54:51.136 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Viewer::_notification - Destroy Viewer
+2022-08-13 22:54:51.145 DEBUG [8992] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Globals::_notification - Destroy Globals
+2022-08-13 23:07:33.927 INFO  [6544] [godot::GDN_TheWorld_Globals::init@71] ***************
+2022-08-13 23:07:33.927 INFO  [6544] [godot::GDN_TheWorld_Globals::init@72] Log initilized!
+2022-08-13 23:07:33.927 INFO  [6544] [godot::GDN_TheWorld_Globals::init@73] ***************
+2022-08-13 23:07:33.928 INFO  [6544] [godot::GDN_TheWorld_Globals::init@75] TheWorld Globals Initializing...
+2022-08-13 23:07:33.928 INFO  [6544] [TheWorld_MapManager::utils::init@47] ***************
+2022-08-13 23:07:33.928 INFO  [6544] [TheWorld_MapManager::utils::init@48] Log initilized!
+2022-08-13 23:07:33.928 INFO  [6544] [TheWorld_MapManager::utils::init@49] ***************
+2022-08-13 23:07:33.932 INFO  [6544] [godot::GDN_TheWorld_Globals::init@84] TheWorld Globals Initialized!
+2022-08-13 23:07:33.933 INFO  [6544] [godot::GDN_TheWorld_MainNode::init@141] TheWorld Main Node Initializing...
+2022-08-13 23:07:33.933 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 23:07:33.933 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] ===========================================================================
+2022-08-13 23:07:33.934 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 23:07:33.934 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] KEYBOARD MAPPING
+2022-08-13 23:07:33.934 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 23:07:33.934 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] LEFT					==> A	MOUSE BUTTON LEFT
+2022-08-13 23:07:33.935 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] RIGHT					==> D	MOUSE BUTTON LEFT
+2022-08-13 23:07:33.935 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] FORWARD					==>	W	MOUSE BUTTON MID	MOUSE WHEEL UP (WITH ALT MOVE ON MAP, WITHOUT MOVE FORWARD IN THE DIRECTION OF CAMERA)
+2022-08-13 23:07:33.935 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] BACKWARD				==>	S	MOUSE BUTTON MID	MOUSE WHEEL DOWN (WITH ALT MOVE ON MAP, WITHOUT MOVE BACKWARD IN THE DIRECTION OF CAMERA)
+2022-08-13 23:07:33.935 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] UP						==>	Q
+2022-08-13 23:07:33.936 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] DOWN					==>	E
+2022-08-13 23:07:33.936 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 23:07:33.936 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] SHIFT					==>	LOW MOVEMENT
+2022-08-13 23:07:33.936 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] CTRL-ALT-D				==> FAST MOVEMENT
+2022-08-13 23:07:33.937 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 23:07:33.937 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] ROTATE CAMERA			==>	MOUSE BUTTON RIGHT
+2022-08-13 23:07:33.937 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] SHIFT ORI CAMERA		==>	MOUSE BUTTON LEFT
+2022-08-13 23:07:33.937 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] SHIFT VERT CAMERA		==>	MOUSE BUTTON MID
+2022-08-13 23:07:33.938 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 23:07:33.938 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] TOGGLE DEBUG STATS		==>	CTRL-ALT-D
+2022-08-13 23:07:33.938 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] DUMP					==>	ALT-D
+2022-08-13 23:07:33.938 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 23:07:33.939 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] TOGGLE DEBUG VISIBILITY	==>	F1
+2022-08-13 23:07:33.939 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] ROTATE CHUNK DEBUG MODE	==>	F2
+2022-08-13 23:07:33.939 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] ROTATE DRAWING MODE		==>	F3
+2022-08-13 23:07:33.939 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] REFRESH VIEW			==>	F4
+2022-08-13 23:07:33.939 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 23:07:33.940 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] EXIT					==>	ESC
+2022-08-13 23:07:33.940 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 23:07:33.940 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] ===========================================================================
+2022-08-13 23:07:33.940 INFO  [6544] [godot::GDN_TheWorld_Globals::print@169] 
+2022-08-13 23:07:33.941 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Enter world
+2022-08-13 23:07:33.941 INFO  [6544] [godot::GDN_TheWorld_Viewer::init@274] TheWorld Viewer Initializing...
+2022-08-13 23:07:34.105 INFO  [6544] [godot::GDN_TheWorld_Viewer::init@282] TheWorld Viewer Initialized!
+2022-08-13 23:07:34.105 INFO  [6544] [godot::GDN_TheWorld_MainNode::init@154] TheWorld Main Node Initialized!
+2022-08-13 23:07:34.106 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Bitmap resolution = 1024 + 1
+2022-08-13 23:07:34.106 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Num vertices per chunk side = 32 + 1
+2022-08-13 23:07:34.106 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Lod max depth = 5 - Num lods = 6
+2022-08-13 23:07:34.107 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (0) - Num chunks per bitmap side = 32 - Grid step in WUs = 5 - Num vertices per side = 1024 + 1 - Size of the side in WUs = 5120
+2022-08-13 23:07:34.107 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (1) - Num chunks per bitmap side = 16 - Grid step in WUs = 10 - Num vertices per side = 512 + 1 - Size of the side in WUs = 5120
+2022-08-13 23:07:34.107 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (2) - Num chunks per bitmap side = 8 - Grid step in WUs = 20 - Num vertices per side = 256 + 1 - Size of the side in WUs = 5120
+2022-08-13 23:07:34.107 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (3) - Num chunks per bitmap side = 4 - Grid step in WUs = 40 - Num vertices per side = 128 + 1 - Size of the side in WUs = 5120
+2022-08-13 23:07:34.108 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (4) - Num chunks per bitmap side = 2 - Grid step in WUs = 80 - Num vertices per side = 64 + 1 - Size of the side in WUs = 5120
+2022-08-13 23:07:34.108 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - lod (5) - Num chunks per bitmap side = 1 - Grid step in WUs = 160 - Num vertices per side = 32 + 1 - Size of the side in WUs = 5120
+2022-08-13 23:07:34.108 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Viewer::_ready
+2022-08-13 23:07:34.109 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_MainNode::_ready
+2022-08-13 23:07:34.109 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Globals::_ready
+2022-08-13 23:07:34.581 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Camera::_ready
+2022-08-13 23:07:34.581 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Entering world...
+2022-08-13 23:07:34.583 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - World entered...
+2022-08-13 23:07:34.583 DEBUG [11244] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Initializing world...
+2022-08-13 23:07:40.863 INFO  [11244] [TheWorld_MapManager::Timer<class std::chrono::duration<__int64,struct std::ratio<1,1000> >,struct std::chrono::steady_clock>::printDuration@54] TheWorld_MapManager::MapManager::getVertices - Num Vertices: 1050625 - (X x Z): 1025 x 1025 - Found in DB: 606741 duration = 6279 ms
+2022-08-13 23:07:40.863 DEBUG [11244] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Inizio SUPER DEBUGRIC!
+2022-08-13 23:07:40.959 DEBUG [11244] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Fine SUPER DEBUGRIC!
+2022-08-13 23:07:41.684 DEBUG [11244] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - World initialization completed...
+2022-08-13 23:07:41.706 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (1:1) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2560.000000
+2022-08-13 23:07:41.706 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Updating terrain material params
+2022-08-13 23:07:41.706 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - internalTransformGlobalCoord t=1, 0, 0, 0, 1, 0, 0, 0, 1 - 1193060, 0, 5463150
+2022-08-13 23:07:41.707 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - setting shader_param=u_terrain_inverse_transform t=1, 0, 0, 0, 1, 0, 0, 0, 1 - -1193060, -0, -5463150
+2022-08-13 23:07:41.707 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - setting shader_param=u_terrain_normal_basis b=1, 0, 0, 0, 1, 0, 0, 0, 1
+2022-08-13 23:07:41.707 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - setting shader_param=u_grid_step_in_wu grid_step=5.000000
+2022-08-13 23:07:41.708 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - setting shader_param=u_terrain_heightmap
+2022-08-13 23:07:41.708 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - setting shader_param=u_terrain_normalmap
+2022-08-13 23:07:41.733 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (2:2) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 1280.000000
+2022-08-13 23:07:41.739 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (4:4) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 640.000000
+2022-08-13 23:07:41.744 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (8:8) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 320.000000
+2022-08-13 23:07:41.753 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Camera vertical on chunk (16:16) - Chunk pos (Global) = 1195620.000000:5465710.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 160.000000
+2022-08-13 23:08:46.996 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Exiting world...
+2022-08-13 23:08:46.997 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - World exited...
+2022-08-13 23:08:47.012 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Exit world
+2022-08-13 23:08:47.013 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - Quitting...
+2022-08-13 23:08:47.013 INFO  [6544] [godot::GDN_TheWorld_MainNode::deinit@37] TheWorld Main Node Deinitializing...
+2022-08-13 23:08:47.013 INFO  [6544] [godot::GDN_TheWorld_Viewer::deinit@84] TheWorld Viewer Deinitializing...
+2022-08-13 23:08:47.038 INFO  [6544] [godot::GDN_TheWorld_Viewer::deinit@91] TheWorld Viewer Deinitialized!
+2022-08-13 23:08:47.038 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Viewer::deinit DONE!
+2022-08-13 23:08:47.039 INFO  [6544] [godot::GDN_TheWorld_MainNode::deinit@62] TheWorld Main Node Deinitialized!
+2022-08-13 23:08:47.039 INFO  [6544] [godot::GDN_TheWorld_Globals::deinit@96] TheWorld Globals Deinitializing...
+2022-08-13 23:08:47.040 INFO  [6544] [TheWorld_MapManager::utils::~utils@54] *****************
+2022-08-13 23:08:47.041 INFO  [6544] [TheWorld_MapManager::utils::~utils@55] Log Terminated!
+2022-08-13 23:08:47.041 INFO  [6544] [TheWorld_MapManager::utils::~utils@56] *****************
+2022-08-13 23:08:47.041 INFO  [6544] [godot::GDN_TheWorld_Globals::deinit@100] TheWorld Globals Deinitialized!
+2022-08-13 23:08:47.041 INFO  [6544] [godot::GDN_TheWorld_Globals::deinit@102] *****************
+2022-08-13 23:08:47.041 INFO  [6544] [godot::GDN_TheWorld_Globals::deinit@103] Log Terminated!
+2022-08-13 23:08:47.041 INFO  [6544] [godot::GDN_TheWorld_Globals::deinit@104] *****************
+2022-08-13 23:08:47.042 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Globals::deinit DONE!
+2022-08-13 23:08:47.042 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_MainNode::deinit DONE!
+2022-08-13 23:08:47.042 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_MainNode::_notification - Destroy Main Node
+2022-08-13 23:08:47.042 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Camera::_notification - Destroy Camera
+2022-08-13 23:08:47.044 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Viewer::_notification - Destroy Viewer
+2022-08-13 23:08:47.052 DEBUG [6544] [godot::GDN_TheWorld_Globals::debugPrint@142] DEBUG - GDN_TheWorld_Globals::_notification - Destroy Globals
