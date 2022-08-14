@@ -1,4 +1,9 @@
 *.exe
+*.dll
+*log.txt
+*Log.txt
+*_log.*.txt
+*_Log.*.txt
 
 # Godot-specific ignores
 .import/
