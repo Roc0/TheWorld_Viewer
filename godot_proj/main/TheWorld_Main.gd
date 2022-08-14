@@ -8,6 +8,8 @@ var initialLevel := 0
 var init_world_thread : Thread
 var world_initalized : bool = false
 var request_to_quit_pending : bool = false
+var request_to_test_action : bool = false
+var test_action_enabled : bool = false
 var scene_initialized : bool = false
 var fps := 0.0
 var chunk_grid_global_pos : Vector3
@@ -19,6 +21,8 @@ var num_chunks : int
 var debug_draw_mode : String
 var chunk_debug_mode  : String = ""
 var cam_chunk_id : String = ""
+var cam_chunk_mesh_pos : Vector3 = Vector3(0,0,0)
+var cam_chunk_mesh_aabb : AABB
 var cam_chunk_mesh_pos_xzy : String = ""
 var cam_chunk_mesh_aabb_x : String = ""
 var cam_chunk_mesh_aabb_y : String = ""
@@ -40,6 +44,9 @@ func _input(event):
 				set_debug_window(true)
 		elif event.is_action_pressed("ui_cancel"):
 			request_to_quit_pending = true
+		elif event.is_action_pressed("ui_test"):
+			request_to_test_action = !request_to_test_action
+			test_action_enabled = true
 		#elif event.is_action_pressed("ui_dump"):
 		#	Globals.GDN_viewer().dump_required()
 				
@@ -63,9 +70,9 @@ func _process(_delta):
 		# DEBUGRIC
 		$CubeMeshTest.mesh.size = Vector3(1, 1, 1)
 		$CubeMeshTest.global_transform.origin = Vector3(initialViewerPos.x, initialViewerPos.y + 5, initialViewerPos.z)
-		$PlaneMeshTest.mesh.size = Vector2(10, 10)
-		$PlaneMeshTest.get_surface_material(0).set_shader_param("height_scale", 1.5)
-		$PlaneMeshTest.global_transform.origin = initialViewerPos
+		$NoiseMeshTest.mesh.size = Vector2(10, 10)
+		$NoiseMeshTest.get_surface_material(0).set_shader_param("height_scale", 1.5)
+		$NoiseMeshTest.global_transform.origin = initialViewerPos
 		$OmniLightTest.global_transform.origin = Vector3(initialViewerPos.x, initialViewerPos.y + 5, initialViewerPos.z)
 		current_camera.global_transform.origin = Vector3(current_camera.global_transform.origin.x, initiaCameraDistanceFromTerrain, current_camera.global_transform.origin.z)
 		current_camera.look_at(initialViewerPos, Vector3(0, 1, 0))
@@ -92,7 +99,19 @@ func _process(_delta):
 		cam_chunk_dmesh_aabb_y = String(t_mesh.origin.y) + ":" + String(t_mesh.origin.y + t_aabb.size.y)
 		cam_chunk_dmesh_aabb_z = String(t_mesh.origin.z) + ":" + String(t_mesh.origin.z + t_aabb.size.z)
 		chunk_debug_mode = _chunk_debug_mode
+		cam_chunk_mesh_pos = t_mesh.origin
+		cam_chunk_mesh_aabb = t_aabb
 		cam_chunk_id = _cam_chunk_id
+		
+	if (test_action_enabled):
+		test_action_enabled = false
+		if (request_to_test_action):
+			$PlaneMeshTest.global_transform.origin = Vector3(cam_chunk_mesh_pos.x + (cam_chunk_mesh_aabb.size.x / 2),
+				cam_chunk_mesh_pos.y, 
+				cam_chunk_mesh_pos.z + (cam_chunk_mesh_aabb.size.z / 2))
+			$PlaneMeshTest.visible = true
+		else:
+			$PlaneMeshTest.visible = false
 
 	chunk_grid_global_pos = Globals.GDN_viewer().global_transform.origin
 	if current_camera:
