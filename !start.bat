@@ -7,3 +7,4 @@ copy /Y ..\shapelib\shapelib.dll %curpath%godot_proj\native\
 
 
 call Godot_v3.4.2-stable_win64.exe -v --path %curpath%godot_proj -e>log.txt
+rem call Godot_v3.5-stable_win64.exe -v --path %curpath%godot_proj -e>log.txt
