@@ -112,6 +112,8 @@ func _process(_delta):
 			$PlaneMeshTest.visible = true
 		else:
 			$PlaneMeshTest.visible = false
+		var n = get_node("/root/Main/@@2")
+		print(n)
 
 	chunk_grid_global_pos = Globals.GDN_viewer().global_transform.origin
 	if current_camera:
