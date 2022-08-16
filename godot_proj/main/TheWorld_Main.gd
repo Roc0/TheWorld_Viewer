@@ -110,10 +110,16 @@ func _process(_delta):
 				cam_chunk_mesh_pos.y, 
 				cam_chunk_mesh_pos.z + (cam_chunk_mesh_aabb.size.z / 2))
 			$PlaneMeshTest.visible = true
+			print("$PlaneMeshTest.global_transform.origin=" + str($PlaneMeshTest.global_transform.origin))
+			print("($PlaneMeshTest.mesh as PlaneMesh).size=" + str(($PlaneMeshTest.mesh as PlaneMesh).size))
+			var s := "/root/Main/TheWorld_Main/GDN_TheWorld_Viewer/ChunkDebug_" + cam_chunk_id.replace(":","")
+			var chunkMeshInstance : MeshInstance = get_node(s)
+			if (chunkMeshInstance != null):
+				print("chunkMeshInstance.global_transform.origin=" + str(chunkMeshInstance.global_transform.origin))
 		else:
 			$PlaneMeshTest.visible = false
-		var n = get_node("/root/Main/@@2")
-		print(n)
+		#var n = get_node("/root/Main/@@2")
+		#print(n)
 
 	chunk_grid_global_pos = Globals.GDN_viewer().global_transform.origin
 	if current_camera:
