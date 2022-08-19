@@ -113,9 +113,19 @@ func _process(_delta):
 			print("$PlaneMeshTest.global_transform.origin=" + str($PlaneMeshTest.global_transform.origin))
 			print("($PlaneMeshTest.mesh as PlaneMesh).size=" + str(($PlaneMeshTest.mesh as PlaneMesh).size))
 			var s := "/root/Main/TheWorld_Main/GDN_TheWorld_Viewer/ChunkDebug_" + cam_chunk_id.replace(":","")
+			var chunkDebugMeshInstance : MeshInstance = get_node(s)
+			if (chunkDebugMeshInstance != null):
+				print("chunkDebugMeshInstance.global_transform.origin=" + str(chunkDebugMeshInstance.global_transform.origin))
+			s = "/root/Main/TheWorld_Main/GDN_TheWorld_Viewer/Chunk_" + cam_chunk_id.replace(":","")
 			var chunkMeshInstance : MeshInstance = get_node(s)
 			if (chunkMeshInstance != null):
 				print("chunkMeshInstance.global_transform.origin=" + str(chunkMeshInstance.global_transform.origin))
+				#var mat : SpatialMaterial
+				#mat = SpatialMaterial.new()
+				#mat.albedo_color.r = 0
+				#mat.albedo_color.g = 0
+				#mat.albedo_color.b = 255
+				#chunkMeshInstance.mesh.surface_set_material(0, mat)
 		else:
 			$PlaneMeshTest.visible = false
 		#var n = get_node("/root/Main/@@2")
