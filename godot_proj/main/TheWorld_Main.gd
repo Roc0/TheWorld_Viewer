@@ -107,28 +107,54 @@ func _process(_delta):
 	if (process_test_action):
 		process_test_action = false
 		if (test_action_enabled):
-			$PlaneMeshTest.global_transform.origin = Vector3(cam_chunk_mesh_pos.x + (cam_chunk_mesh_aabb.size.x / 2),
-				cam_chunk_mesh_pos.y, 
-				cam_chunk_mesh_pos.z + (cam_chunk_mesh_aabb.size.z / 2))
-			$PlaneMeshTest.visible = true
-			print("$PlaneMeshTest.global_transform.origin=" + str($PlaneMeshTest.global_transform.origin))
-			print("($PlaneMeshTest.mesh as PlaneMesh).size=" + str(($PlaneMeshTest.mesh as PlaneMesh).size))
-			var s := "/root/Main/TheWorld_Main/GDN_TheWorld_Viewer/ChunkDebug_" + cam_chunk_id.replace(":","")
-			var chunkDebugMeshInstance : MeshInstance = get_node(s)
-			if (chunkDebugMeshInstance != null):
-				print("chunkDebugMeshInstance.global_transform.origin=" + str(chunkDebugMeshInstance.global_transform.origin))
-			s = "/root/Main/TheWorld_Main/GDN_TheWorld_Viewer/Chunk_" + cam_chunk_id.replace(":","")
-			var chunkMeshInstance : MeshInstance = get_node(s)
-			if (chunkMeshInstance != null):
-				print("chunkMeshInstance.global_transform.origin=" + str(chunkMeshInstance.global_transform.origin))
-				var mdt := MeshDataTool.new()
-				if mdt.create_from_surface(chunkMeshInstance.mesh, 0) == OK:  # Check pass
-					print("Ok!!")
-					print(mdt.get_vertex_count())
-				else:
-					print("Fail...")
+			var chunks : Array
+			chunks = get_tree().get_nodes_in_group("ChunkMeshInstanceGroup")
+			for chunk in chunks:
+				var mi : MeshInstance = MeshInstance.new()
+				add_child(mi)
+				mi.add_to_group("TestChunkMeshInstanceGroup")
+				mi.mesh = (chunk as MeshInstance).mesh
+				mi.visible = true
+				mi.set_surface_material(0, (chunk as MeshInstance).get_surface_material(0))
+				mi.global_transform.origin = chunk.global_transform.origin
+				mi.global_transform.origin.y = 200
+			#$PlaneMeshTest.global_transform.origin = Vector3(cam_chunk_mesh_pos.x + (cam_chunk_mesh_aabb.size.x / 2),
+			#	cam_chunk_mesh_pos.y, 
+			#	cam_chunk_mesh_pos.z + (cam_chunk_mesh_aabb.size.z / 2))
+			#$PlaneMeshTest.visible = true
+			#print("$PlaneMeshTest.global_transform.origin=" + str($PlaneMeshTest.global_transform.origin))
+			#print("($PlaneMeshTest.mesh as PlaneMesh).size=" + str(($PlaneMeshTest.mesh as PlaneMesh).size))
+			#var s := "/root/Main/TheWorld_Main/GDN_TheWorld_Viewer/ChunkDebug_" + cam_chunk_id.replace(":","")
+			#var chunkDebugMeshInstance : MeshInstance = get_node(s)
+			#if (chunkDebugMeshInstance != null):
+			#	print("chunkDebugMeshInstance.global_transform.origin=" + str(chunkDebugMeshInstance.global_transform.origin))
+			#s = "/root/Main/TheWorld_Main/GDN_TheWorld_Viewer/Chunk_" + cam_chunk_id.replace(":","")
+			#var chunkMeshInstance : MeshInstance = get_node(s)
+			#if (chunkMeshInstance != null):
+			#	print("chunkMeshInstance.global_transform.origin=" + str(chunkMeshInstance.global_transform.origin))
+			#	print("mesh 160 x 160")
+				#var mdt := MeshDataTool.new()
+				#if mdt.create_from_surface(chunkMeshInstance.mesh, 0) == OK:  # Check pass
+				#	var v_count := mdt.get_vertex_count()
+				#	print("Vertex Count: " + str(v_count))
+				#	var dim := sqrt(v_count)
+				#	s = ""
+				#	var idx : int = 0
+				#	for z in range (dim):
+				#		for x in range (dim):
+				#			s += str(mdt.get_vertex(idx)) + " "
+				#			idx = idx + 1
+				#		print(s)
+				#		s = ""
+				#else:
+				#	print("Fail...")
 		else:
-			$PlaneMeshTest.visible = false
+			#$PlaneMeshTest.visible = false
+			var chunks : Array = get_tree().get_nodes_in_group("TestChunkMeshInstanceGroup")
+			for chunk in chunks:
+				chunk.visible = false
+				chunk.remove_from_group("TestChunkMeshInstanceGroup")
+				chunk.queue_free()
 		#var n = get_node("/root/Main/@@2")
 		#print(n)
 
