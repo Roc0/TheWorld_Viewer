@@ -8,8 +8,8 @@ var initialLevel := 0
 var init_world_thread : Thread
 var world_initalized : bool = false
 var request_to_quit_pending : bool = false
-var request_to_test_action : bool = false
 var test_action_enabled : bool = false
+var process_test_action : bool = false
 var scene_initialized : bool = false
 var fps := 0.0
 var chunk_grid_global_pos : Vector3
@@ -45,8 +45,8 @@ func _input(event):
 		elif event.is_action_pressed("ui_cancel"):
 			request_to_quit_pending = true
 		elif event.is_action_pressed("ui_test"):
-			request_to_test_action = !request_to_test_action
-			test_action_enabled = true
+			test_action_enabled = !test_action_enabled
+			process_test_action = true
 		#elif event.is_action_pressed("ui_dump"):
 		#	Globals.GDN_viewer().dump_required()
 				
@@ -102,10 +102,11 @@ func _process(_delta):
 		cam_chunk_mesh_pos = t_mesh.origin
 		cam_chunk_mesh_aabb = t_aabb
 		cam_chunk_id = _cam_chunk_id
+		process_test_action = true
 		
-	if (test_action_enabled):
-		test_action_enabled = false
-		if (request_to_test_action):
+	if (process_test_action):
+		process_test_action = false
+		if (test_action_enabled):
 			$PlaneMeshTest.global_transform.origin = Vector3(cam_chunk_mesh_pos.x + (cam_chunk_mesh_aabb.size.x / 2),
 				cam_chunk_mesh_pos.y, 
 				cam_chunk_mesh_pos.z + (cam_chunk_mesh_aabb.size.z / 2))
@@ -120,12 +121,12 @@ func _process(_delta):
 			var chunkMeshInstance : MeshInstance = get_node(s)
 			if (chunkMeshInstance != null):
 				print("chunkMeshInstance.global_transform.origin=" + str(chunkMeshInstance.global_transform.origin))
-				#var mat : SpatialMaterial
-				#mat = SpatialMaterial.new()
-				#mat.albedo_color.r = 0
-				#mat.albedo_color.g = 0
-				#mat.albedo_color.b = 255
-				#chunkMeshInstance.mesh.surface_set_material(0, mat)
+				var mdt := MeshDataTool.new()
+				if mdt.create_from_surface(chunkMeshInstance.mesh, 0) == OK:  # Check pass
+					print("Ok!!")
+					print(mdt.get_vertex_count())
+				else:
+					print("Fail...")
 		else:
 			$PlaneMeshTest.visible = false
 		#var n = get_node("/root/Main/@@2")
