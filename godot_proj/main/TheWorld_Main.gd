@@ -3,7 +3,7 @@ extends Spatial
 var debug_window_Active : bool = false
 var world_entered : bool = false
 var initialViewerPos := Vector3(1195425.176295 + 200, 0, 5465512.560295 +200)
-var initiaCameraDistanceFromTerrain = 10
+var initiaCameraDistanceFromTerrain = 300
 var initialLevel := 0
 var init_world_thread : Thread
 var world_initalized : bool = false
@@ -107,17 +107,37 @@ func _process(_delta):
 	if (process_test_action):
 		process_test_action = false
 		if (test_action_enabled):
-			var chunks : Array
-			chunks = get_tree().get_nodes_in_group("ChunkMeshInstanceGroup")
-			for chunk in chunks:
+			var chunk_mis : Array
+			chunk_mis = get_tree().get_nodes_in_group("ChunkMeshInstanceGroup")
+			for chunk_mi in chunk_mis:
 				var mi : MeshInstance = MeshInstance.new()
-				add_child(mi)
+				viewer.add_child(mi)
 				mi.add_to_group("TestChunkMeshInstanceGroup")
-				mi.mesh = (chunk as MeshInstance).mesh
+				mi.name = "Test" + chunk_mi.name
+				mi.global_transform.origin = chunk_mi.global_transform.origin
+				mi.global_transform.origin.y = 250
 				mi.visible = true
-				mi.set_surface_material(0, (chunk as MeshInstance).get_surface_material(0))
-				mi.global_transform.origin = chunk.global_transform.origin
-				mi.global_transform.origin.y = 200
+				
+				#mi.mesh = (chunk_mi as MeshInstance).mesh
+				#mi.set_surface_material(0, (chunk_mi as MeshInstance).get_surface_material(0))
+				
+				#mi.mesh = $PlaneMeshTest.mesh
+				#mi.set_surface_material(0, $PlaneMeshTest.get_surface_material(0))
+				
+				chunk_mi.visible = false
+				var lod : int = chunk_mi.get_lod()
+				var mesh := PlaneMesh.new()
+				var size := Vector2(160 * pow(2, lod), 160 * pow(2, lod))
+				mesh.size = size
+				mesh.subdivide_width = 32
+				mesh.subdivide_depth = 32
+				mi.mesh = mesh
+				mi.global_transform.origin = Vector3(chunk_mi.global_transform.origin.x + (size.x / 2),
+													 mi.global_transform.origin.y,
+													 chunk_mi.global_transform.origin.z + (size.y / 2))
+				print(mi.name + " - " + str(mi.global_transform.origin) + " - " + str(mesh.size))
+				#mi.set_surface_material(0, $PlaneMeshTest.get_surface_material(0))
+				
 			#$PlaneMeshTest.global_transform.origin = Vector3(cam_chunk_mesh_pos.x + (cam_chunk_mesh_aabb.size.x / 2),
 			#	cam_chunk_mesh_pos.y, 
 			#	cam_chunk_mesh_pos.z + (cam_chunk_mesh_aabb.size.z / 2))
