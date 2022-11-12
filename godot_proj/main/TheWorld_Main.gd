@@ -2,8 +2,11 @@ extends Spatial
 
 var debug_window_Active : bool = false
 var world_entered : bool = false
-var initialViewerPos := Vector3(1195425.176295 + 200, 0, 5465512.560295 +200)
-var initiaCameraDistanceFromTerrain = 300
+#var initialViewerPos := Vector3(1195425.176295 + 200, 0, 5465512.560295 +200)
+#var initialViewerPos := Vector3(1195475, 0, 5467999)
+var initialViewerPos := Vector3(1194125, 0, 5463250)
+var initialCameraDistanceFromTerrain = 300
+var initialCameraAltitudeForced = 9417
 var initialLevel := 0
 var init_world_thread : Thread
 var world_initalized : bool = false
@@ -17,7 +20,8 @@ var active_camera_global_rot : Vector3
 var active_camera_global_pos : Vector3
 var num_splits : int
 var num_joins : int
-var num_chunks : int
+var num_active_chunks : int
+var process_duration_mcs : int
 var debug_draw_mode : String
 var chunk_debug_mode  : String = ""
 var cam_chunk_id : String = ""
@@ -74,8 +78,10 @@ func _process(_delta):
 		$NoiseMeshTest.get_surface_material(0).set_shader_param("height_scale", 1.5)
 		$NoiseMeshTest.global_transform.origin = initialViewerPos
 		$OmniLightTest.global_transform.origin = Vector3(initialViewerPos.x, initialViewerPos.y + 5, initialViewerPos.z)
-		current_camera.global_transform.origin = Vector3(current_camera.global_transform.origin.x, initiaCameraDistanceFromTerrain, current_camera.global_transform.origin.z)
-		current_camera.look_at(initialViewerPos, Vector3(0, 1, 0))
+		#current_camera.global_transform.origin = Vector3(current_camera.global_transform.origin.x, initialCameraAltitudeForced, current_camera.global_transform.origin.z)
+		current_camera.global_transform.origin.y = initialCameraAltitudeForced
+		#current_camera.look_at(initialViewerPos, Vector3(0, 1, 0))
+		current_camera.look_at(Vector3(current_camera.global_transform.origin.x + 1, 0, current_camera.global_transform.origin.z + 1), Vector3(0, 1, 0))
 		# DEBUGRIC
 		scene_initialized = true
 	
@@ -185,7 +191,8 @@ func _process(_delta):
 	
 	num_splits = viewer.get_num_splits()
 	num_joins = viewer.get_num_joins()
-	num_chunks = viewer.get_num_chunks()
+	num_active_chunks = viewer.get_num_active_chunks()
+	process_duration_mcs = viewer.get_process_duration()
 	debug_draw_mode = viewer.get_debug_draw_mode()
 		
 func enter_world():
@@ -197,7 +204,8 @@ func enter_world():
 	$DebugStats.add_property(self, "chunk_grid_global_pos", "")
 	$DebugStats.add_property(self, "active_camera_global_rot", "")
 	$DebugStats.add_property(self, "active_camera_global_pos", "")
-	$DebugStats.add_property(self, "num_chunks", "")
+	$DebugStats.add_property(self, "num_active_chunks", "")
+	$DebugStats.add_property(self, "process_duration_mcs", "")
 	$DebugStats.add_property(self, "num_splits", "")
 	$DebugStats.add_property(self, "num_joins", "")
 	$DebugStats.add_property(self, "cam_chunk_id", "")
@@ -226,7 +234,8 @@ func exit_world():
 		$DebugStats.remove_property(self, "chunk_grid_global_pos")
 		$DebugStats.remove_property(self, "active_camera_global_rot")
 		$DebugStats.remove_property(self, "active_camera_global_pos")
-		$DebugStats.remove_property(self, "num_chunks")
+		$DebugStats.remove_property(self, "num_active_chunks")
+		$DebugStats.remove_property(self, "process_duration_mcs")
 		$DebugStats.remove_property(self, "num_splits")
 		$DebugStats.remove_property(self, "num_joins")
 		$DebugStats.remove_property(self, "cam_chunk_id")
@@ -255,7 +264,7 @@ func set_debug_window(active : bool) -> void:
 		
 func _init_world() -> void:
 	Globals.debug_print("Initializing world...")
-	Globals.GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initiaCameraDistanceFromTerrain, initialLevel, -1 , -1)
+	Globals.GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
 	Globals.debug_print("World initialization completed...")
 	world_initalized = true
 	
