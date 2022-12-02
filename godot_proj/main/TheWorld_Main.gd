@@ -5,7 +5,9 @@ var world_entered : bool = false
 #var initialViewerPos := Vector3(1195425.176295 + 200, 0, 5465512.560295 +200)
 #var initialViewerPos := Vector3(1195475, 0, 5467999)
 var initialViewerPos := Vector3(1194125, 0, 5463250)
+#var initialViewerPos := Vector3(0, 0, 0)
 var initialCameraDistanceFromTerrain = 300
+#var initialCameraAltitudeForced = 0
 var initialCameraAltitudeForced = 9417
 var initialLevel := 0
 var init_world_thread : Thread
@@ -79,7 +81,8 @@ func _process(_delta):
 		$NoiseMeshTest.global_transform.origin = initialViewerPos
 		$OmniLightTest.global_transform.origin = Vector3(initialViewerPos.x, initialViewerPos.y + 5, initialViewerPos.z)
 		#current_camera.global_transform.origin = Vector3(current_camera.global_transform.origin.x, initialCameraAltitudeForced, current_camera.global_transform.origin.z)
-		current_camera.global_transform.origin.y = initialCameraAltitudeForced
+		if (initialCameraAltitudeForced != 0):
+			current_camera.global_transform.origin.y = initialCameraAltitudeForced
 		#current_camera.look_at(initialViewerPos, Vector3(0, 1, 0))
 		current_camera.look_at(Vector3(current_camera.global_transform.origin.x + 1, 0, current_camera.global_transform.origin.z + 1), Vector3(0, 1, 0))
 		# DEBUGRIC
