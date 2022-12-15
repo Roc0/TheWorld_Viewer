@@ -1,6 +1,13 @@
 extends Node
 
+const status_error = -1
+const status_uninitialized = 0
+const status_initialized = 1
+const status_connected_to_server = 2
+const status_session_initialized = 3
+
 var debug_enabled : bool = true
+var debug_enable_set : bool = false
 var GDNTheWorldMain = preload("res://native/GDN_TheWorld_Viewer.gdns").new()
 var GDNTheWorldGlobals : Node = null
 var GDNTheWorldViewer : Node = null
@@ -21,6 +28,7 @@ func _ready():
 	main_node = get_tree().get_root().find_node("Main", true, false)
 	world_main_node = get_tree().get_root().find_node("TheWorld_Main", true, false)
 	GDN_main().init(main_node, world_main_node)
+	GDN_globals().connect_to_server()
 
 	#GDN_globals().set_debug_enabled(Globals.debug_enabled)
 	#debug_print("Debug Enabled!")
@@ -32,6 +40,14 @@ func _notification(_what):
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
+	var status : int = Globals.get_status()
+	if status == Globals.status_session_initialized && !debug_enable_set:
+		debug_enable_set = true
+		GDN_globals().set_debug_enabled(debug_enabled)
+		
+	if status != Globals.status_session_initialized:
+		pass
+
 	if not world_initialized:
 		initialize_world()
 		world_initialized = true
@@ -55,6 +71,9 @@ func GDN_viewer():
 		GDNTheWorldViewer = GDN_globals().viewer(true)
 	return GDNTheWorldViewer
 
+func get_status() -> int:
+	return GDN_globals().get_status()
+
 func debug_print(var text : String):
 	GDN_globals().debug_print(text)
 
@@ -67,6 +86,7 @@ func get_grid_step_in_wu(var lod : int) -> float:
 func exit_funct():
 	debug_print ("Quitting...")
 	unitialize_world()
+	GDN_globals().disconnect_from_server()
 	GDN_main().deinit()
 	
 func printTerrainDimensions() -> void:
