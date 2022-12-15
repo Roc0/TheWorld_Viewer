@@ -3,15 +3,16 @@ extends Spatial
 var debug_window_Active : bool = false
 var world_entered : bool = false
 #var initialViewerPos := Vector3(1195425.176295 + 200, 0, 5465512.560295 +200)
-#var initialViewerPos := Vector3(1195475, 0, 5467999)
-var initialViewerPos := Vector3(1194125, 0, 5463250)
+var initialViewerPos := Vector3(1195476, 0, 5467999)
+#var initialViewerPos := Vector3(1194125, 0, 5463250)
+#var initialViewerPos := Vector3(1194156, 0, 5463351)
 #var initialViewerPos := Vector3(0, 0, 0)
 var initialCameraDistanceFromTerrain = 300
 #var initialCameraAltitudeForced = 0
 var initialCameraAltitudeForced = 9417
 var initialLevel := 0
 var init_world_thread : Thread
-var world_initalized : bool = false
+#var world_initalized : bool = false
 var request_to_quit_pending : bool = false
 var test_action_enabled : bool = false
 var process_test_action : bool = false
@@ -22,8 +23,11 @@ var active_camera_global_rot : Vector3
 var active_camera_global_pos : Vector3
 var num_splits : int
 var num_joins : int
+var num_quadrant : String
+var num_visible_quadrant : String
 var num_active_chunks : int
 var process_duration_mcs : int
+var num_process_locked : int
 var debug_draw_mode : String
 var chunk_debug_mode  : String = ""
 var cam_chunk_id : String = ""
@@ -42,6 +46,10 @@ func _ready():
 	pass
 
 func _input(event):
+	var status : int = Globals.get_status()
+	if status != Globals.status_session_initialized:
+		pass
+		
 	if event is InputEventKey:
 		if event.is_action_pressed("ui_toggle_debug_stats"):
 			if debug_window_Active:
@@ -57,8 +65,14 @@ func _input(event):
 		#	Globals.GDN_viewer().dump_required()
 				
 func _process(_delta):
+	var status : int = Globals.get_status()
+	if status != Globals.status_session_initialized:
+		pass
+
 	fps = Engine.get_frames_per_second()
 	
+	var viewer = Globals.GDN_viewer()
+
 	if init_world_thread.is_alive():
 		return
 	if init_world_thread.is_active():
@@ -67,11 +81,10 @@ func _process(_delta):
 		force_app_to_quit()
 	if not world_entered:
 		return
-	if not world_initalized:
+	if not viewer.initial_world_viewer_pos_set():
 		return
 	
 	var current_camera := get_viewport().get_camera()
-	var viewer = Globals.GDN_viewer()
 	if not scene_initialized:
 		# DEBUGRIC
 		$CubeMeshTest.mesh.size = Vector3(1, 1, 1)
@@ -195,7 +208,10 @@ func _process(_delta):
 	num_splits = viewer.get_num_splits()
 	num_joins = viewer.get_num_joins()
 	num_active_chunks = viewer.get_num_active_chunks()
+	num_quadrant = str(viewer.get_num_initialized_quadrant()) + ":" + str(viewer.get_num_quadrant())
+	num_visible_quadrant = str(viewer.get_num_initialized_visible_quadrant()) + ":" + str(viewer.get_num_visible_quadrant())
 	process_duration_mcs = viewer.get_process_duration()
+	num_process_locked = viewer.get_num_process_not_owns_lock()
 	debug_draw_mode = viewer.get_debug_draw_mode()
 		
 func enter_world():
@@ -209,8 +225,11 @@ func enter_world():
 	$DebugStats.add_property(self, "active_camera_global_pos", "")
 	$DebugStats.add_property(self, "num_active_chunks", "")
 	$DebugStats.add_property(self, "process_duration_mcs", "")
+	$DebugStats.add_property(self, "num_process_locked", "")
 	$DebugStats.add_property(self, "num_splits", "")
 	$DebugStats.add_property(self, "num_joins", "")
+	$DebugStats.add_property(self, "num_quadrant", "")
+	$DebugStats.add_property(self, "num_visible_quadrant", "")
 	$DebugStats.add_property(self, "cam_chunk_id", "")
 	$DebugStats.add_property(self, "cam_chunk_mesh_pos_xzy", "")
 	$DebugStats.add_property(self, "cam_chunk_mesh_aabb_x", "")
@@ -221,7 +240,7 @@ func enter_world():
 	$DebugStats.add_property(self, "cam_chunk_dmesh_aabb_x", "")
 	$DebugStats.add_property(self, "cam_chunk_dmesh_aabb_z", "")
 	$DebugStats.add_property(self, "cam_chunk_dmesh_aabb_y", "")
-	world_initalized = false
+	#world_initalized = false
 	init_world_thread = Thread.new()
 	var err := init_world_thread.start(self, "_init_world")
 	if err:
@@ -239,8 +258,11 @@ func exit_world():
 		$DebugStats.remove_property(self, "active_camera_global_pos")
 		$DebugStats.remove_property(self, "num_active_chunks")
 		$DebugStats.remove_property(self, "process_duration_mcs")
+		$DebugStats.remove_property(self, "num_process_locked")
 		$DebugStats.remove_property(self, "num_splits")
 		$DebugStats.remove_property(self, "num_joins")
+		$DebugStats.remove_property(self, "num_quadrant")
+		$DebugStats.remove_property(self, "num_visible_quadrant")
 		$DebugStats.remove_property(self, "cam_chunk_id")
 		$DebugStats.remove_property(self, "cam_chunk_mesh_pos_xzy")
 		$DebugStats.remove_property(self, "cam_chunk_mesh_aabb_x")
@@ -253,7 +275,7 @@ func exit_world():
 		$DebugStats.remove_property(self, "cam_chunk_dmesh_aabb_y")
 		if init_world_thread.is_active():
 			init_world_thread.wait_to_finish()
-		world_initalized = false
+		#world_initalized = false
 		world_entered = false
 		Globals.debug_print("World exited...")
 	
@@ -269,7 +291,7 @@ func _init_world() -> void:
 	Globals.debug_print("Initializing world...")
 	Globals.GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
 	Globals.debug_print("World initialization completed...")
-	world_initalized = true
+	#world_initalized = true
 	
 func force_app_to_quit() -> void:
 	get_tree().set_input_as_handled()
