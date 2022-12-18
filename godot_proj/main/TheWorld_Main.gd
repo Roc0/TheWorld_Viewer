@@ -30,7 +30,7 @@ var process_duration_mcs : int
 var num_process_locked : int
 var debug_draw_mode : String
 var chunk_debug_mode  : String = ""
-var cam_chunk_id : String = ""
+var cam_chunk_pos : String = ""
 var cam_chunk_mesh_pos : Vector3 = Vector3(0,0,0)
 var cam_chunk_mesh_aabb : AABB
 var cam_chunk_mesh_pos_xzy : String = ""
@@ -102,8 +102,8 @@ func _process(_delta):
 		scene_initialized = true
 	
 	var _chunk_debug_mode : String = viewer.get_chunk_debug_mode()
-	var _cam_chunk_id = viewer.get_camera_chunk_id()
-	if (_cam_chunk_id != cam_chunk_id or _chunk_debug_mode != chunk_debug_mode):
+	var _cam_chunk_pos = viewer.get_camera_quadrant_name() + " " + viewer.get_camera_chunk_id()
+	if (_cam_chunk_pos != cam_chunk_pos or _chunk_debug_mode != chunk_debug_mode):
 		#var cam_chunk_t : Transform = Globals.GDN_viewer().get_camera_chunk_global_transform_of_aabb()
 		#var displ : Vector3 = Vector3(cam_chunk_t.basis.x.x, cam_chunk_t.basis.y.y, cam_chunk_t.basis.z.z) / 2
 		#cam_chunk_t.origin += displ
@@ -123,7 +123,7 @@ func _process(_delta):
 		chunk_debug_mode = _chunk_debug_mode
 		cam_chunk_mesh_pos = t_mesh.origin
 		cam_chunk_mesh_aabb = t_aabb
-		cam_chunk_id = _cam_chunk_id
+		cam_chunk_pos = _cam_chunk_pos
 		process_test_action = true
 		
 	if (process_test_action):
@@ -166,11 +166,11 @@ func _process(_delta):
 			#$PlaneMeshTest.visible = true
 			#print("$PlaneMeshTest.global_transform.origin=" + str($PlaneMeshTest.global_transform.origin))
 			#print("($PlaneMeshTest.mesh as PlaneMesh).size=" + str(($PlaneMeshTest.mesh as PlaneMesh).size))
-			#var s := "/root/Main/TheWorld_Main/GDN_TheWorld_Viewer/ChunkDebug_" + cam_chunk_id.replace(":","")
+			#var s := "/root/Main/TheWorld_Main/GDN_TheWorld_Viewer/ChunkDebug_" + cam_chunk_pos.replace(":","")
 			#var chunkDebugMeshInstance : MeshInstance = get_node(s)
 			#if (chunkDebugMeshInstance != null):
 			#	print("chunkDebugMeshInstance.global_transform.origin=" + str(chunkDebugMeshInstance.global_transform.origin))
-			#s = "/root/Main/TheWorld_Main/GDN_TheWorld_Viewer/Chunk_" + cam_chunk_id.replace(":","")
+			#s = "/root/Main/TheWorld_Main/GDN_TheWorld_Viewer/Chunk_" + cam_chunk_pos.replace(":","")
 			#var chunkMeshInstance : MeshInstance = get_node(s)
 			#if (chunkMeshInstance != null):
 			#	print("chunkMeshInstance.global_transform.origin=" + str(chunkMeshInstance.global_transform.origin))
@@ -230,7 +230,7 @@ func enter_world():
 	$DebugStats.add_property(self, "num_joins", "")
 	$DebugStats.add_property(self, "num_quadrant", "")
 	$DebugStats.add_property(self, "num_visible_quadrant", "")
-	$DebugStats.add_property(self, "cam_chunk_id", "")
+	$DebugStats.add_property(self, "cam_chunk_pos", "")
 	$DebugStats.add_property(self, "cam_chunk_mesh_pos_xzy", "")
 	$DebugStats.add_property(self, "cam_chunk_mesh_aabb_x", "")
 	$DebugStats.add_property(self, "cam_chunk_mesh_aabb_z", "")
@@ -263,7 +263,7 @@ func exit_world():
 		$DebugStats.remove_property(self, "num_joins")
 		$DebugStats.remove_property(self, "num_quadrant")
 		$DebugStats.remove_property(self, "num_visible_quadrant")
-		$DebugStats.remove_property(self, "cam_chunk_id")
+		$DebugStats.remove_property(self, "cam_chunk_pos")
 		$DebugStats.remove_property(self, "cam_chunk_mesh_pos_xzy")
 		$DebugStats.remove_property(self, "cam_chunk_mesh_aabb_x")
 		$DebugStats.remove_property(self, "cam_chunk_mesh_aabb_z")
