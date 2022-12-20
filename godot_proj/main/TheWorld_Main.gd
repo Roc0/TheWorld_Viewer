@@ -14,7 +14,6 @@ var initialCameraDistanceFromTerrain = 300
 var initialCameraAltitudeForced = 1485
 var initialLevel := 0
 #var init_world_thread : Thread
-var request_to_quit_pending : bool = false
 var test_action_enabled : bool = false
 var process_test_action : bool = false
 var scene_initialized : bool = false
@@ -45,10 +44,10 @@ var cam_chunk_dmesh_aabb_z : String = ""
 		
 func _ready():
 	pass
-
+	
 func _input(event):
-	var status : int = Globals.get_status()
-	if status != Globals.status_session_initialized:
+	var status : int = Globals.get_clientstatus()
+	if status != Globals.clientstatus_session_initialized:
 		pass
 		
 	if event is InputEventKey:
@@ -59,7 +58,7 @@ func _input(event):
 				set_debug_window(true)
 		elif event.is_action_pressed("ui_cancel"):
 			get_tree().notification(MainLoop.NOTIFICATION_WM_QUIT_REQUEST)
-			#request_to_quit_pending = true
+			Globals.debug_print("ESC pressed...")
 		elif event.is_action_pressed("ui_test"):
 			test_action_enabled = !test_action_enabled
 			process_test_action = true
@@ -68,13 +67,33 @@ func _input(event):
 
 func _notification(_what):
 	if (_what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST):
-		force_app_to_quit()
+		Globals.appstatus = Globals.appstatus_deinit_required
+		#prepare_deinit_thread = Thread.new()
+		#var err := prepare_deinit_thread.start(self, "_prepare_deinit")
+		#if err:
+		#	Globals.debug_print("Start _prepare_deinit failure!")
 		
 func _process(_delta):
-	var status : int = Globals.get_status()
-	if status != Globals.status_session_initialized:
-		pass
+	if Globals.appstatus == Globals.appstatus_deinit_required:
+		Globals.appstatus = Globals.appstatus_deinit_in_progress
+		Globals.debug_print("Prepare deinit...")
+		Globals.GDN_main().prepare_deinit()
+		Globals.debug_print("Prepare deinit completed...")
+		Globals.appstatus = Globals.appstatus_quit_required
+		return
+		
+	if Globals.appstatus == Globals.appstatus_quit_required:
+		Globals.appstatus = Globals.appstatus_quit_in_progress
+		force_app_to_quit()
+		return
 
+	if Globals.appstatus != Globals.appstatus_running:
+		return
+	
+	var status : int = Globals.get_clientstatus()
+	if status != Globals.clientstatus_session_initialized:
+		return
+	
 	fps = Engine.get_frames_per_second()
 	
 	var viewer = Globals.GDN_viewer()
@@ -83,10 +102,10 @@ func _process(_delta):
 	#	return
 	#if init_world_thread.is_active():
 	#	init_world_thread.wait_to_finish()
-	if request_to_quit_pending:
-		force_app_to_quit()
+	
 	if not world_entered:
 		return
+		
 	if not viewer.initial_world_viewer_pos_set():
 		return
 	
@@ -307,9 +326,13 @@ func _init_world() -> void:
 	Globals.GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
 	Globals.debug_print("World initialization completed...")
 	
+func _prepare_deinit() -> void:
+	Globals.debug_print("Prepare deinit...")
+	Globals.GDN_main().prepare_deinit()
+	Globals.debug_print("Prepare deinit completed...")
+	
 func force_app_to_quit() -> void:
 	get_tree().set_input_as_handled()
 	exit_world()
-	Globals.GDN_main().prepare_deinit()
 	get_tree().quit()
 	

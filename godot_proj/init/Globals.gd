@@ -1,10 +1,17 @@
 extends Node
 
-const status_error = -1
-const status_uninitialized = 0
-const status_initialized = 1
-const status_connected_to_server = 2
-const status_session_initialized = 3
+const clientstatus_error = -1
+const clientstatus_uninitialized = 0
+const clientstatus_initialized = 1
+const clientstatus_connected_to_server = 2
+const clientstatus_session_initialized = 3
+
+var appstatus : int
+const appstatus_running = 1
+const appstatus_deinit_required = 2
+const appstatus_deinit_in_progress = 3
+const appstatus_quit_required = 4
+const appstatus_quit_in_progress = 5
 
 var debug_enabled : bool = true
 var debug_enable_set : bool = false
@@ -22,6 +29,9 @@ var main_node : Node
 var world_main_node : Spatial
 
 func _ready():
+	get_tree().set_auto_accept_quit(false)
+	appstatus = appstatus_running
+	
 	assert(connect("tree_exiting", self, "exit_funct",[]) == 0)
 	OS.set_window_maximized(true)
 	
@@ -37,16 +47,16 @@ func _ready():
 	
 func _notification(_what):
 	if (_what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST):
-		pass
+		return
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
-	var status : int = Globals.get_status()
-	if status == Globals.status_session_initialized && !debug_enable_set:
+	var clientstatus : int = Globals.get_clientstatus()
+	if clientstatus == Globals.clientstatus_session_initialized && !debug_enable_set:
 		debug_enable_set = true
 		GDN_globals().set_debug_enabled(debug_enabled)
 		
-	if status != Globals.status_session_initialized:
+	if clientstatus != Globals.clientstatus_session_initialized:
 		pass
 
 	if not world_initialized:
@@ -72,9 +82,12 @@ func GDN_viewer():
 		GDNTheWorldViewer = GDN_globals().viewer(true)
 	return GDNTheWorldViewer
 
-func get_status() -> int:
+func get_clientstatus() -> int:
 	return GDN_globals().get_status()
 
+func get_appstatus() -> int:
+	return appstatus
+	
 func debug_print(var text : String):
 	GDN_globals().debug_print(text)
 
