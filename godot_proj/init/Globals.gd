@@ -36,7 +36,8 @@ func _ready():
 	printTerrainDimensions()
 	
 func _notification(_what):
-	pass
+	if (_what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST):
+		pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
@@ -85,7 +86,7 @@ func get_grid_step_in_wu(var lod : int) -> float:
 
 func exit_funct():
 	debug_print ("Quitting...")
-	unitialize_world()
+	#unitialize_world()
 	GDN_globals().disconnect_from_server()
 	GDN_main().deinit()
 	
