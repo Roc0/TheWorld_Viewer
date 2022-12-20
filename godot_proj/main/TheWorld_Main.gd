@@ -13,8 +13,7 @@ var initialCameraDistanceFromTerrain = 300
 #var initialCameraAltitudeForced = 9417
 var initialCameraAltitudeForced = 1485
 var initialLevel := 0
-var init_world_thread : Thread
-#var world_initalized : bool = false
+#var init_world_thread : Thread
 var request_to_quit_pending : bool = false
 var test_action_enabled : bool = false
 var process_test_action : bool = false
@@ -59,13 +58,18 @@ func _input(event):
 			else:
 				set_debug_window(true)
 		elif event.is_action_pressed("ui_cancel"):
-			request_to_quit_pending = true
+			get_tree().notification(MainLoop.NOTIFICATION_WM_QUIT_REQUEST)
+			#request_to_quit_pending = true
 		elif event.is_action_pressed("ui_test"):
 			test_action_enabled = !test_action_enabled
 			process_test_action = true
 		#elif event.is_action_pressed("ui_dump"):
 		#	Globals.GDN_viewer().dump_required()
-				
+
+func _notification(_what):
+	if (_what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST):
+		force_app_to_quit()
+		
 func _process(_delta):
 	var status : int = Globals.get_status()
 	if status != Globals.status_session_initialized:
@@ -75,10 +79,10 @@ func _process(_delta):
 	
 	var viewer = Globals.GDN_viewer()
 
-	if init_world_thread.is_alive():
-		return
-	if init_world_thread.is_active():
-		init_world_thread.wait_to_finish()
+	#if init_world_thread.is_alive():
+	#	return
+	#if init_world_thread.is_active():
+	#	init_world_thread.wait_to_finish()
 	if request_to_quit_pending:
 		force_app_to_quit()
 	if not world_entered:
@@ -252,13 +256,13 @@ func enter_world():
 	$DebugStats.add_property(self, "cam_chunk_dmesh_aabb_x", "")
 	$DebugStats.add_property(self, "cam_chunk_dmesh_aabb_z", "")
 	$DebugStats.add_property(self, "cam_chunk_dmesh_aabb_y", "")
-	#world_initalized = false
-	init_world_thread = Thread.new()
-	var err := init_world_thread.start(self, "_init_world")
-	if err:
-		Globals.debug_print("Start _init_world failure!")
-	world_entered = true
+	_init_world()
+	#init_world_thread = Thread.new()
+	#var err := init_world_thread.start(self, "_init_world")
+	#if err:
+	#	Globals.debug_print("Start _init_world failure!")
 	Globals.debug_print("World entered...")
+	world_entered = true
 	
 func exit_world():
 	if world_entered:
@@ -285,11 +289,10 @@ func exit_world():
 		$DebugStats.remove_property(self, "cam_chunk_dmesh_aabb_x")
 		$DebugStats.remove_property(self, "cam_chunk_dmesh_aabb_z")
 		$DebugStats.remove_property(self, "cam_chunk_dmesh_aabb_y")
-		if init_world_thread.is_active():
-			init_world_thread.wait_to_finish()
-		#world_initalized = false
-		world_entered = false
+		#if init_world_thread.is_active():
+		#	init_world_thread.wait_to_finish()
 		Globals.debug_print("World exited...")
+		world_entered = false
 	
 func set_debug_window(active : bool) -> void:
 	if active:
@@ -303,10 +306,10 @@ func _init_world() -> void:
 	Globals.debug_print("Initializing world...")
 	Globals.GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
 	Globals.debug_print("World initialization completed...")
-	#world_initalized = true
 	
 func force_app_to_quit() -> void:
 	get_tree().set_input_as_handled()
 	exit_world()
+	Globals.GDN_main().prepare_deinit()
 	get_tree().quit()
 	
