@@ -17,7 +17,7 @@ var debug_enabled : bool = true
 var debug_enable_set : bool = false
 var GDNTheWorldMain = preload("res://native/GDN_TheWorld_Viewer.gdns").new()
 var GDNTheWorldGlobals : Node = null
-var GDNTheWorldViewer : Node = null
+var GDNTheWorldViewer : Spatial = null
 
 var num_vertices_per_chunk_side : int
 var bitmap_resolution : int
