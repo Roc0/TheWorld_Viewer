@@ -5,13 +5,13 @@ var world_entered : bool = false
 #var initialViewerPos := Vector3(1195425.176295 + 200, 0, 5465512.560295 +200)
 ##var initialViewerPos := Vector3(1194125, 0, 5463250)
 ##var initialViewerPos := Vector3(1194156, 0, 5463351)
-#var initialViewerPos := Vector3(1195476, 0, 5467999)
+var initialViewerPos := Vector3(1195476, 0, 5467999)
 #var initialViewerPos := Vector3(0, 0, 0)
-var initialViewerPos := Vector3(2639.48, 0, 338.69)
+#var initialViewerPos := Vector3(2639.48, 0, 338.69)
 var initialCameraDistanceFromTerrain = 300
 #var initialCameraAltitudeForced = 0
-#var initialCameraAltitudeForced = 9417
-var initialCameraAltitudeForced = 1485
+var initialCameraAltitudeForced = 9417
+#var initialCameraAltitudeForced = 1485
 var initialLevel := 0
 #var init_world_thread : Thread
 var test_action_enabled : bool = false
@@ -72,20 +72,26 @@ func _notification(_what):
 		#var err := prepare_deinit_thread.start(self, "_prepare_deinit")
 		#if err:
 		#	Globals.debug_print("Start _prepare_deinit failure!")
+	elif (_what == Spatial.NOTIFICATION_TRANSFORM_CHANGED):
+		var viewer : Spatial = Globals.GDN_viewer()
+		viewer.global_transform = global_transform
+	elif (_what == Spatial.NOTIFICATION_ENTER_WORLD):
+		print("Notification Spatial.NOTIFICATION_ENTER_WORLD")
 		
 func _process(_delta):
 	if Globals.appstatus == Globals.appstatus_deinit_required:
 		Globals.appstatus = Globals.appstatus_deinit_in_progress
-		Globals.debug_print("Prepare deinit...")
-		Globals.GDN_main().prepare_deinit()
-		Globals.debug_print("Prepare deinit completed...")
+		Globals.debug_print("Pre deinit...")
+		Globals.GDN_main().pre_deinit()
+		Globals.debug_print("Pre deinit completed...")
 		Globals.appstatus = Globals.appstatus_quit_required
 		return
 		
 	if Globals.appstatus == Globals.appstatus_quit_required:
-		Globals.appstatus = Globals.appstatus_quit_in_progress
-		force_app_to_quit()
-		return
+		if Globals.GDN_main().can_deinit():
+			Globals.appstatus = Globals.appstatus_quit_in_progress
+			force_app_to_quit()
+			return
 
 	if Globals.appstatus != Globals.appstatus_running:
 		return
@@ -96,7 +102,7 @@ func _process(_delta):
 	
 	fps = Engine.get_frames_per_second()
 	
-	var viewer = Globals.GDN_viewer()
+	var viewer : Spatial = Globals.GDN_viewer()
 
 	#if init_world_thread.is_alive():
 	#	return
@@ -134,13 +140,13 @@ func _process(_delta):
 		#cam_chunk_t.origin += displ
 		#$CubeMeshTest.global_transform = cam_chunk_t
 		var t_aabb : AABB = viewer.get_camera_chunk_local_aabb()
-		var t_mesh : Transform = viewer.get_camera_chunk_mesh_global_transform_applied()
+		var t_mesh : Transform = viewer.get_camera_chunk_global_transform_applied()
 		cam_chunk_mesh_pos_xzy = String(t_mesh.origin.x) + ":" + String(t_mesh.origin.z) + ":" + String(t_mesh.origin.y)
 		cam_chunk_mesh_aabb_x = String(t_mesh.origin.x) + ":" + String(t_mesh.origin.x + t_aabb.size.x)
 		cam_chunk_mesh_aabb_y = String(t_mesh.origin.y) + ":" + String(t_mesh.origin.y + t_aabb.size.y)
 		cam_chunk_mesh_aabb_z = String(t_mesh.origin.z) + ":" + String(t_mesh.origin.z + t_aabb.size.z)
 		t_aabb = viewer.get_camera_chunk_local_debug_aabb()
-		t_mesh = viewer.get_camera_chunk_debug_mesh_global_transform_applied()
+		t_mesh = viewer.get_camera_chunk_debug_global_transform_applied()
 		cam_chunk_dmesh_pos_xzy = String(t_mesh.origin.x) + ":" + String(t_mesh.origin.z) + ":" + String(t_mesh.origin.y)
 		cam_chunk_dmesh_aabb_x = String(t_mesh.origin.x) + ":" + String(t_mesh.origin.x + t_aabb.size.x)
 		cam_chunk_dmesh_aabb_y = String(t_mesh.origin.y) + ":" + String(t_mesh.origin.y + t_aabb.size.y)
@@ -326,10 +332,10 @@ func _init_world() -> void:
 	Globals.GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
 	Globals.debug_print("World initialization completed...")
 	
-func _prepare_deinit() -> void:
-	Globals.debug_print("Prepare deinit...")
-	Globals.GDN_main().prepare_deinit()
-	Globals.debug_print("Prepare deinit completed...")
+#func _pre_deinit() -> void:
+#	Globals.debug_print("Pre deinit...")
+#	Globals.GDN_main().pre_deinit()
+#	Globals.debug_print("Pre deinit completed...")
 	
 func force_app_to_quit() -> void:
 	get_tree().set_input_as_handled()
