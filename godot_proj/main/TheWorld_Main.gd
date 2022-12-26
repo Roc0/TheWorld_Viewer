@@ -5,12 +5,12 @@ var world_entered : bool = false
 #var initialViewerPos := Vector3(1195425.176295 + 200, 0, 5465512.560295 +200)
 ##var initialViewerPos := Vector3(1194125, 0, 5463250)
 ##var initialViewerPos := Vector3(1194156, 0, 5463351)
-var initialViewerPos := Vector3(1195476, 0, 5467999)
+#var initialViewerPos := Vector3(1195476, 0, 5467999)
 #var initialViewerPos := Vector3(0, 0, 0)
-#var initialViewerPos := Vector3(2639.48, 0, 338.69)
+var initialViewerPos := Vector3(2639.48, 0, 338.69)
 var initialCameraDistanceFromTerrain = 300
-#var initialCameraAltitudeForced = 0
-var initialCameraAltitudeForced = 9417
+var initialCameraAltitudeForced = 0
+#var initialCameraAltitudeForced = 9417
 #var initialCameraAltitudeForced = 1485
 var initialLevel := 0
 #var init_world_thread : Thread
@@ -155,7 +155,7 @@ func _process(_delta):
 		cam_chunk_mesh_pos = t_mesh.origin
 		cam_chunk_mesh_aabb = t_aabb
 		cam_chunk_pos = _cam_chunk_pos
-		process_test_action = true
+		#process_test_action = true
 		
 	if (process_test_action):
 		process_test_action = false
