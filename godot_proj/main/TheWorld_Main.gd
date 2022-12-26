@@ -160,7 +160,7 @@ func _process(_delta):
 	if (process_test_action):
 		process_test_action = false
 		if (test_action_enabled):
-			var space_state : PhysicsDirectSpaceState = get_world().direct_space_state
+			var space_state : PhysicsDirectSpaceState = viewer.get_world().direct_space_state
 			var mouse_pos_in_viewport : Vector2 = get_viewport().get_mouse_position()
 			var camera : Camera = get_tree().root.get_camera()
 			var ray_origin : Vector3 = camera.project_ray_origin(mouse_pos_in_viewport)
@@ -169,6 +169,7 @@ func _process(_delta):
 			var mouse_pos_in_3d : Vector3
 			if ray_array.has("position"):
 				mouse_pos_in_3d = ray_array["position"]
+				print(mouse_pos_in_3d)
 			
 			var chunk_mis : Array
 			chunk_mis = get_tree().get_nodes_in_group("ChunkMeshInstanceGroup")
