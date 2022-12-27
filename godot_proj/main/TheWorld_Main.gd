@@ -2,16 +2,17 @@ extends Spatial
 
 var debug_window_Active : bool = false
 var world_entered : bool = false
-#var initialViewerPos := Vector3(1195425.176295 + 200, 0, 5465512.560295 +200)
+##var initialViewerPos := Vector3(1195425.176295 + 200, 0, 5465512.560295 +200)
 ##var initialViewerPos := Vector3(1194125, 0, 5463250)
 ##var initialViewerPos := Vector3(1194156, 0, 5463351)
-#var initialViewerPos := Vector3(1195476, 0, 5467999)
-#var initialViewerPos := Vector3(0, 0, 0)
-var initialViewerPos := Vector3(2639.48, 0, 338.69)
+##var initialViewerPos := Vector3(0, 0, 0)
 var initialCameraDistanceFromTerrain = 300
-var initialCameraAltitudeForced = 0
+var initialViewerPos := Vector3(1195476, 0, 5467999)
+#var initialViewerPos := Vector3(2639.48, 0, 338.69)
+var initialCameraAltitudeForced = 2900
 #var initialCameraAltitudeForced = 9417
 #var initialCameraAltitudeForced = 1485
+##var initialCameraAltitudeForced = 0
 var initialLevel := 0
 #var init_world_thread : Thread
 var test_action_enabled : bool = false
@@ -41,6 +42,8 @@ var cam_chunk_dmesh_pos_xzy : String = ""
 var cam_chunk_dmesh_aabb_x : String = ""
 var cam_chunk_dmesh_aabb_y : String = ""
 var cam_chunk_dmesh_aabb_z : String = ""
+
+var prev_mouse_pos_in_3d : Vector3 = Vector3(0, 0, 0)
 		
 func _ready():
 	pass
@@ -159,18 +162,31 @@ func _process(_delta):
 		
 	if (process_test_action):
 		process_test_action = false
-		if (test_action_enabled):
-			var space_state : PhysicsDirectSpaceState = viewer.get_world().direct_space_state
-			var mouse_pos_in_viewport : Vector2 = get_viewport().get_mouse_position()
-			var camera : Camera = get_tree().root.get_camera()
-			var ray_origin : Vector3 = camera.project_ray_origin(mouse_pos_in_viewport)
-			var ray_end : Vector3 = ray_origin + camera.project_ray_normal(mouse_pos_in_viewport) * 20000
-			var ray_array : Dictionary = space_state.intersect_ray(ray_origin, ray_end)
+
+		var space_state : PhysicsDirectSpaceState = viewer.get_world().direct_space_state
+		var mouse_pos_in_viewport : Vector2 = get_viewport().get_mouse_position()
+		var camera : Camera = get_tree().root.get_camera()
+		var ray_origin : Vector3 = camera.project_ray_origin(mouse_pos_in_viewport)
+		var ray_end : Vector3 = ray_origin + camera.project_ray_normal(mouse_pos_in_viewport) * 20000
+		var ray_array : Dictionary = space_state.intersect_ray(ray_origin, ray_end)
+		if ray_array.has("position"):
 			var mouse_pos_in_3d : Vector3
-			if ray_array.has("position"):
-				mouse_pos_in_3d = ray_array["position"]
-				print(mouse_pos_in_3d)
-			
+			mouse_pos_in_3d = ray_array["position"]
+			print(String(mouse_pos_in_3d) + " - Delta X=" + String(mouse_pos_in_3d.x - prev_mouse_pos_in_3d.x) + " - Delta Z=" + String(mouse_pos_in_3d.z - prev_mouse_pos_in_3d.z))
+			#print ("Delta X=" + String(mouse_pos_in_3d.x - prev_mouse_pos_in_3d.x) + " - Delta Z=" + String(mouse_pos_in_3d.z - prev_mouse_pos_in_3d.z))
+			prev_mouse_pos_in_3d = mouse_pos_in_3d
+		else:
+			print("No hit")
+		if ray_array.has("collider"):
+			var collider : Node = ray_array["collider"]
+			#print(collider.get_class())
+			#print(collider.name)
+			var arrayOfMetas = collider.get_meta_list()
+			if !arrayOfMetas.empty():
+				for meta_name in arrayOfMetas:
+					print(collider.get_meta(meta_name))
+
+		if (test_action_enabled):
 			var chunk_mis : Array
 			chunk_mis = get_tree().get_nodes_in_group("ChunkMeshInstanceGroup")
 			for chunk_mi in chunk_mis:
