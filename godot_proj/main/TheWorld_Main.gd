@@ -2,25 +2,31 @@ extends Spatial
 
 var debug_window_Active : bool = false
 var world_entered : bool = false
-##var initialViewerPos := Vector3(1195425.176295 + 200, 0, 5465512.560295 +200)
-##var initialViewerPos := Vector3(1194125, 0, 5463250)
-##var initialViewerPos := Vector3(1194156, 0, 5463351)
-##var initialViewerPos := Vector3(0, 0, 0)
 var initialCameraDistanceFromTerrain = 300
-var initialViewerPos := Vector3(1195476, 0, 5467999)
 #var initialViewerPos := Vector3(2639.48, 0, 338.69)
-#var initialCameraAltitudeForced = 2900
-var initialCameraAltitudeForced = 9417
-#var initialCameraAltitudeForced = 1485
+#var initialViewerPos := Vector3(1195476, 0, 5467999)
+var initialViewerPos := Vector3(1196000, 0, 5467000)
 ##var initialCameraAltitudeForced = 0
+#var initialCameraAltitudeForced = 2900
+#var initialCameraAltitudeForced = 1485
+var initialCameraAltitudeForced = 9417
 var initialLevel := 0
 #var init_world_thread : Thread
 var test_action_enabled : bool = false
+var prev_test_action_enabled : bool = false
 var process_test_action : bool = false
 var collider_up_pressed : bool = false
 var collider_down_pressed : bool = false
 var collider_left_pressed : bool = false
 var collider_right_pressed : bool = false
+var collider_upaltitude_pressed : bool = false
+var collider_downaltitude_pressed : bool = false
+var collider_mesh_up_pressed : bool = false
+var collider_mesh_down_pressed : bool = false
+var collider_mesh_left_pressed : bool = false
+var collider_mesh_right_pressed : bool = false
+var collider_mesh_upaltitude_pressed : bool = false
+var collider_mesh_downaltitude_pressed : bool = false
 var scene_initialized : bool = false
 var fps := 0.0
 var chunk_grid_global_pos : Vector3
@@ -57,11 +63,15 @@ var collider_quadrant_pos : Vector3
 var collider_transform_pos : Vector3
 var collider_transform_rot : Vector3
 var collider_transform_scl : Vector3
-
+var collider_mesh_transform_pos : Vector3
+var collider_mesh_transform_rot : Vector3
+var collider_mesh_transform_scl : Vector3
 var time_of_last_ray : int = 0
-
+const max_transform_step : float = 100.0
+const min_transform_step : float = 5.0
+var transform_step : float = max_transform_step
 var altPressed := false
-	
+var ctrlPressed := false
 
 var prev_hit : Vector3 = Vector3(0, 0, 0)
 		
@@ -76,23 +86,48 @@ func _input(event):
 	if event is InputEventKey:
 		if event.is_action_pressed("ui_alt"):
 			altPressed = true
-			
 		if event.is_action_released("ui_alt"):
 			altPressed = false
+
+		if event.is_action_pressed("ui_ctrl"):
+			ctrlPressed = true
+		if event.is_action_released("ui_ctrl"):
+			ctrlPressed = false
 
 		if event.is_action_pressed("ui_toggle_debug_stats"):
 			if debug_window_Active:
 				set_debug_window(false)
 			else:
 				set_debug_window(true)
-		elif event.is_action_pressed("ui_up") && altPressed:
+		elif event.is_action_pressed("ui_change_step"):
+			if transform_step == max_transform_step:
+				transform_step = min_transform_step
+			else:
+				transform_step = max_transform_step
+		elif event.is_action_pressed("ui_up_arrow") && altPressed:
 			collider_up_pressed = true
-		elif event.is_action_pressed("ui_down") && altPressed:
+		elif event.is_action_pressed("ui_down_arrow") && altPressed:
 			collider_down_pressed = true
-		elif event.is_action_pressed("ui_left") && altPressed:
+		elif event.is_action_pressed("ui_left_arrow") && altPressed:
 			collider_left_pressed = true
-		elif event.is_action_pressed("ui_right") && altPressed:
+		elif event.is_action_pressed("ui_right_arrow") && altPressed:
 			collider_right_pressed = true
+		elif event.is_action_pressed("ui_page_up") && altPressed:
+			collider_upaltitude_pressed = true
+		elif event.is_action_pressed("ui_page_down") && altPressed:
+			collider_downaltitude_pressed = true
+		elif event.is_action_pressed("ui_up_arrow") && ctrlPressed:
+			collider_mesh_up_pressed = true
+		elif event.is_action_pressed("ui_down_arrow") && ctrlPressed:
+			collider_mesh_down_pressed = true
+		elif event.is_action_pressed("ui_left_arrow") && ctrlPressed:
+			collider_mesh_left_pressed = true
+		elif event.is_action_pressed("ui_right_arrow") && ctrlPressed:
+			collider_mesh_right_pressed = true
+		elif event.is_action_pressed("ui_page_up") && ctrlPressed:
+			collider_mesh_upaltitude_pressed = true
+		elif event.is_action_pressed("ui_page_down") && ctrlPressed:
+			collider_mesh_downaltitude_pressed = true
 		elif event.is_action_pressed("ui_cancel"):
 			get_tree().notification(MainLoop.NOTIFICATION_WM_QUIT_REQUEST)
 			Globals.debug_print("ESC pressed...")
@@ -161,9 +196,13 @@ func _process(_delta):
 		$NoiseMeshTest.get_surface_material(0).set_shader_param("height_scale", 1.5)
 		$NoiseMeshTest.global_transform.origin = initialViewerPos
 		$OmniLightTest.global_transform.origin = Vector3(initialViewerPos.x, initialViewerPos.y + 5, initialViewerPos.z)
+		
+		$BallRigidBody.global_transform.origin = Vector3(initialViewerPos.x, initialViewerPos.y + 5, initialViewerPos.z)
+		
 		#current_camera.global_transform.origin = Vector3(current_camera.global_transform.origin.x, initialCameraAltitudeForced, current_camera.global_transform.origin.z)
 		if (initialCameraAltitudeForced != 0):
 			current_camera.global_transform.origin.y = initialCameraAltitudeForced
+			$BallRigidBody.global_transform.origin.y = initialCameraAltitudeForced
 		#current_camera.look_at(initialViewerPos, Vector3(0, 1, 0))
 		current_camera.look_at(Vector3(current_camera.global_transform.origin.x + 1, 0, current_camera.global_transform.origin.z + 1), Vector3(0, 1, 0))
 		current_camera.global_transform.basis = Basis(Vector3(-1.57, -1.57, 0))
@@ -195,6 +234,7 @@ func _process(_delta):
 		cam_chunk_pos = _cam_chunk_pos
 		#process_test_action = true
 		
+	# check mouse pos on the ground
 	var current_time : int = Time.get_ticks_msec()
 	if (process_test_action || current_time - time_of_last_ray > 250):
 		time_of_last_ray = current_time
@@ -204,7 +244,7 @@ func _process(_delta):
 		mouse_pos_in_viewport = get_viewport().get_mouse_position()
 		var camera : Camera = get_tree().root.get_camera()
 		ray_origin = camera.project_ray_origin(mouse_pos_in_viewport)
-		ray_end = ray_origin + camera.project_ray_normal(mouse_pos_in_viewport) * camera.get_zfar() * 2
+		ray_end = ray_origin + camera.project_ray_normal(mouse_pos_in_viewport) * camera.get_zfar() * 3
 		var ray_array : Dictionary = space_state.intersect_ray(ray_origin, ray_end)
 
 		collider_quadrant_pos = Vector3(0, 0, 0)
@@ -215,34 +255,81 @@ func _process(_delta):
 		hit = Vector3(0, 0, 0)
 		quad_hit = ""
 
-		if ray_array.has("position"):
-			hit = ray_array["position"]
-			#print ("Delta X=" + String(hit.x - prev_hit.x) + " - Delta Z=" + String(hit.z - prev_hit.z))
-			deltaPos = hit - prev_hit
-			#print(String(hit) + " - Delta X=" + String(deltaPos.x) + " - Delta Z=" + String(deltaPos.z))
-			prev_hit = hit
-			if ray_array.has("collider"):
-				var collider : Node = ray_array["collider"]
-				var t : Transform = collider.get_transform()
+		#if ray_array.empty():
+		#	print("No hit")
+			
+		var collider_transform : Transform
+		var collider_mesh_transform : Transform
+		
+		if ray_array.has("collider"):
+			var collider : Node = ray_array["collider"]
+			
+			if (collider.has_method("show_collider_mesh") && test_action_enabled != prev_test_action_enabled):
+				prev_test_action_enabled = test_action_enabled
+				collider.show_collider_mesh(test_action_enabled)
+			
+			if (collider.has_method("get_collider_transform") && collider.has_method("set_collider_transform")):
+				var step := transform_step
+				collider_transform = collider.get_collider_transform()
 				if collider_up_pressed:
 					collider_up_pressed = false
-					t.origin.x += 5.0
-					collider.set_transform(t)
+					collider_transform.origin.x += step
+					collider.set_collider_transform(collider_transform)
 				if collider_down_pressed:
 					collider_down_pressed = false
-					t.origin.x -= 5.0
-					collider.set_transform(t)
+					collider_transform.origin.x -= step
+					collider.set_collider_transform(collider_transform)
 				if collider_left_pressed:
 					collider_left_pressed = false
-					t.origin.z -= 5.0
-					collider.set_transform(t)
+					collider_transform.origin.z -= step
+					collider.set_collider_transform(collider_transform)
 				if collider_right_pressed:
 					collider_right_pressed = false
-					t.origin.z += 5.0
-					collider.set_transform(t)
-				collider_transform_pos = t.origin
-				collider_transform_rot = t.basis.get_euler()
-				collider_transform_scl = t.basis.get_scale()
+					collider_transform.origin.z += step
+					collider.set_collider_transform(collider_transform)
+				if collider_upaltitude_pressed:
+					collider_upaltitude_pressed = false
+					collider_transform.origin.y += step
+					collider.set_collider_transform(collider_transform)
+				if collider_downaltitude_pressed:
+					collider_downaltitude_pressed = false
+					collider_transform.origin.y -= step
+					collider.set_collider_transform(collider_transform)
+				collider_transform_pos = collider_transform.origin
+				collider_transform_rot = collider_transform.basis.get_euler()
+				collider_transform_scl = collider_transform.basis.get_scale()
+
+			if (collider.has_method("get_collider_mesh_transform") && collider.has_method("set_collider_mesh_transform")):
+				var step := transform_step
+				collider_mesh_transform = collider.get_collider_mesh_transform()
+				if collider_mesh_up_pressed:
+					collider_mesh_up_pressed = false
+					collider_mesh_transform.origin.x += step
+					collider.set_collider_mesh_transform(collider_mesh_transform)
+				if collider_mesh_down_pressed:
+					collider_mesh_down_pressed = false
+					collider_mesh_transform.origin.x -= step
+					collider.set_collider_mesh_transform(collider_mesh_transform)
+				if collider_mesh_left_pressed:
+					collider_mesh_left_pressed = false
+					collider_mesh_transform.origin.z -= step
+					collider.set_collider_mesh_transform(collider_mesh_transform)
+				if collider_mesh_right_pressed:
+					collider_mesh_right_pressed = false
+					collider_mesh_transform.origin.z += step
+					collider.set_collider_mesh_transform(collider_mesh_transform)
+				if collider_mesh_upaltitude_pressed:
+					collider_mesh_upaltitude_pressed = false
+					collider_mesh_transform.origin.y += step
+					collider.set_collider_mesh_transform(collider_mesh_transform)
+				if collider_mesh_downaltitude_pressed:
+					collider_mesh_downaltitude_pressed = false
+					collider_mesh_transform.origin.y -= step
+					collider.set_collider_mesh_transform(collider_mesh_transform)
+				collider_mesh_transform_pos = collider_mesh_transform.origin
+				collider_mesh_transform_rot = collider_mesh_transform.basis.get_euler()
+				collider_mesh_transform_scl = collider_mesh_transform.basis.get_scale()
+				
 				#print(collider.get_class())
 				#print(collider.name)
 				var arrayOfMetas = collider.get_meta_list()
@@ -256,8 +343,17 @@ func _process(_delta):
 						quad_hit = collider.get_meta("QuadrantName")
 					#for meta_name in arrayOfMetas:
 					#	print(collider.get_meta(meta_name))
-		#else:
-			#print("No hit")
+
+		if ray_array.has("position"):
+			hit = ray_array["position"]
+			if (collider_transform != Transform()):
+				hit.y -= collider_transform.origin.y
+			#print ("Delta X=" + String(hit.x - prev_hit.x) + " - Delta Z=" + String(hit.z - prev_hit.z))
+			deltaPos = hit - prev_hit
+			#print(String(hit) + " - Delta X=" + String(deltaPos.x) + " - Delta Z=" + String(deltaPos.z))
+			prev_hit = hit
+			
+
 		#print("")
 
 		#if (test_action_enabled):
@@ -350,7 +446,7 @@ func enter_world():
 	Globals.debug_print("Entering world...")
 	OS.window_maximized = true
 	set_debug_window(true)
-	#$DebugStats.add_property(self, "fps", "")
+	$DebugStats.add_property(self, "fps", "")
 	#$DebugStats.add_property(self, "process_duration_mcs", "")
 	#$DebugStats.add_property(self, "num_process_locked", "")
 	$DebugStats.add_property(self, "debug_draw_mode", "")
@@ -372,10 +468,14 @@ func enter_world():
 	#$DebugStats.add_property(self, "cam_chunk_dmesh_aabb_x", "")
 	#$DebugStats.add_property(self, "cam_chunk_dmesh_aabb_z", "")
 	#$DebugStats.add_property(self, "cam_chunk_dmesh_aabb_y", "")
+	$DebugStats.add_property(self, "transform_step", "")
 	$DebugStats.add_property(self, "collider_quadrant_pos", "")
 	$DebugStats.add_property(self, "collider_transform_pos", "")
 	$DebugStats.add_property(self, "collider_transform_rot", "")
 	$DebugStats.add_property(self, "collider_transform_scl", "")
+	$DebugStats.add_property(self, "collider_mesh_transform_pos", "")
+	$DebugStats.add_property(self, "collider_mesh_transform_rot", "")
+	$DebugStats.add_property(self, "collider_mesh_transform_scl", "")
 	$DebugStats.add_property(self, "mouse_pos_in_viewport", "")
 	$DebugStats.add_property(self, "quadDistFromCamera", "")
 	$DebugStats.add_property(self, "ray_origin", "")
@@ -394,7 +494,7 @@ func enter_world():
 func exit_world():
 	if world_entered:
 		Globals.debug_print("Exiting world...")
-		#$DebugStats.remove_property(self, "fps")
+		$DebugStats.remove_property(self, "fps")
 		#$DebugStats.remove_property(self, "process_duration_mcs")
 		#$DebugStats.remove_property(self, "num_process_locked")
 		$DebugStats.remove_property(self, "debug_draw_mode")
@@ -416,10 +516,14 @@ func exit_world():
 		#$DebugStats.remove_property(self, "cam_chunk_dmesh_aabb_x")
 		#$DebugStats.remove_property(self, "cam_chunk_dmesh_aabb_z")
 		#$DebugStats.remove_property(self, "cam_chunk_dmesh_aabb_y")
+		$DebugStats.remove_property(self, "transform_step")
 		$DebugStats.remove_property(self, "collider_quadrant_pos")
 		$DebugStats.remove_property(self, "collider_transform_pos")
 		$DebugStats.remove_property(self, "collider_transform_rot")
 		$DebugStats.remove_property(self, "collider_transform_scl")
+		$DebugStats.remove_property(self, "collider_mesh_transform_pos")
+		$DebugStats.remove_property(self, "collider_mesh_transform_rot")
+		$DebugStats.remove_property(self, "collider_mesh_transform_scl")
 		$DebugStats.remove_property(self, "mouse_pos_in_viewport")
 		$DebugStats.remove_property(self, "quadDistFromCamera")
 		$DebugStats.remove_property(self, "ray_origin")

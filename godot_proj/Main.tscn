@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://utils/DebugStats.gd" type="Script" id=1]
 [ext_resource path="res://main/TheWorld_Main.gd" type="Script" id=2]
@@ -72,6 +72,14 @@ subdivide_depth = 32
 [sub_resource type="SpatialMaterial" id=7]
 albedo_color = Color( 1, 0, 0, 1 )
 
+[sub_resource type="SpatialMaterial" id=8]
+albedo_color = Color( 0.807843, 0.117647, 0.117647, 1 )
+
+[sub_resource type="SphereMesh" id=9]
+material = SubResource( 8 )
+
+[sub_resource type="SphereShape" id=10]
+
 [node name="Main" type="Node"]
 
 [node name="TheWorld_Main" type="Spatial" parent="."]
@@ -113,3 +121,15 @@ visible = false
 visible = false
 mesh = SubResource( 6 )
 material/0 = SubResource( 7 )
+
+[node name="BallRigidBody" type="RigidBody" parent="TheWorld_Main"]
+visible = false
+
+[node name="SphereMeshTest" type="MeshInstance" parent="TheWorld_Main/BallRigidBody"]
+visible = false
+mesh = SubResource( 9 )
+skeleton = NodePath("../..")
+
+[node name="CollisionShape" type="CollisionShape" parent="TheWorld_Main/BallRigidBody"]
+visible = false
+shape = SubResource( 10 )
