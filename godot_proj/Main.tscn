@@ -123,13 +123,10 @@ mesh = SubResource( 6 )
 material/0 = SubResource( 7 )
 
 [node name="BallRigidBody" type="RigidBody" parent="TheWorld_Main"]
-visible = false
 
 [node name="SphereMeshTest" type="MeshInstance" parent="TheWorld_Main/BallRigidBody"]
-visible = false
 mesh = SubResource( 9 )
 skeleton = NodePath("../..")
 
 [node name="CollisionShape" type="CollisionShape" parent="TheWorld_Main/BallRigidBody"]
-visible = false
 shape = SubResource( 10 )
