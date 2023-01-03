@@ -59,6 +59,7 @@ var quadDistFromCamera : Vector3
 var deltaPos : Vector3
 var hit : Vector3
 var quad_hit : String
+var tracked_chunk : String
 var collider_quadrant_pos : Vector3
 var collider_transform_pos : Vector3
 var collider_transform_rot : Vector3
@@ -69,6 +70,7 @@ var collider_mesh_transform_scl : Vector3
 var time_of_last_ray : int = 0
 const max_transform_step : float = 100.0
 const min_transform_step : float = 5.0
+const Color_Yellow_Apricot := Color(251.0 / 255.0, 206.0 / 255.0, 177.0 / 255.0)
 var transform_step : float = max_transform_step
 var altPressed := false
 var ctrlPressed := false
@@ -239,13 +241,24 @@ func _process(_delta):
 	if (process_test_action || current_time - time_of_last_ray > 250):
 		time_of_last_ray = current_time
 		process_test_action = false
+		
+		var test_action_changed := false
+		if test_action_enabled != prev_test_action_enabled:
+			prev_test_action_enabled = test_action_enabled
+			test_action_changed = true
 
+		#if test_action_changed:
+		#tracked_chunk = Globals.GDN_viewer().get_tracked_chunk_str()
+		
 		var space_state : PhysicsDirectSpaceState = viewer.get_world().direct_space_state
 		mouse_pos_in_viewport = get_viewport().get_mouse_position()
-		var camera : Camera = get_tree().root.get_camera()
-		ray_origin = camera.project_ray_origin(mouse_pos_in_viewport)
-		ray_end = ray_origin + camera.project_ray_normal(mouse_pos_in_viewport) * camera.get_zfar() * 3
+		#var camera : Camera = get_tree().root.get_camera()
+		ray_origin = current_camera.project_ray_origin(mouse_pos_in_viewport)
+		ray_end = ray_origin + current_camera.project_ray_normal(mouse_pos_in_viewport) * current_camera.get_zfar() * 3
 		var ray_array : Dictionary = space_state.intersect_ray(ray_origin, ray_end)
+
+		if test_action_enabled:
+			DrawLine.Draw_Line3D(1, ray_origin, ray_end, Color_Yellow_Apricot, 1.0)
 
 		collider_quadrant_pos = Vector3(0, 0, 0)
 		collider_transform_pos = Vector3(0, 0, 0)
@@ -264,9 +277,8 @@ func _process(_delta):
 		if ray_array.has("collider"):
 			var collider : Node = ray_array["collider"]
 			
-			if (collider.has_method("show_collider_mesh") && test_action_enabled != prev_test_action_enabled):
-				prev_test_action_enabled = test_action_enabled
-				collider.show_collider_mesh(test_action_enabled)
+			#if (collider.has_method("show_collider_mesh") && test_action_changed):
+			#	collider.show_collider_mesh(test_action_enabled)
 			
 			if (collider.has_method("get_collider_transform") && collider.has_method("set_collider_transform")):
 				var step := transform_step
@@ -337,7 +349,7 @@ func _process(_delta):
 					if arrayOfMetas.has("QuadrantOrig") && arrayOfMetas.has("QuadrantSize"):
 						var quadOrig : Vector3 = collider.get_meta("QuadrantOrig")
 						var quadSize : float = collider.get_meta("QuadrantSize")
-						quadDistFromCamera = camera.global_transform.origin - (quadOrig + 0.5 * Vector3(quadSize, 0, quadSize))
+						quadDistFromCamera = current_camera.global_transform.origin - (quadOrig + 0.5 * Vector3(quadSize, 0, quadSize))
 						collider_quadrant_pos = quadOrig
 					if arrayOfMetas.has("QuadrantName"):
 						quad_hit = collider.get_meta("QuadrantName")
@@ -483,6 +495,7 @@ func enter_world():
 	$DebugStats.add_property(self, "deltaPos", "")
 	$DebugStats.add_property(self, "hit", "")
 	$DebugStats.add_property(self, "quad_hit", "")
+	$DebugStats.add_property(self, "tracked_chunk", "")
 	_init_world()
 	#init_world_thread = Thread.new()
 	#var err := init_world_thread.start(self, "_init_world")
@@ -531,6 +544,7 @@ func exit_world():
 		$DebugStats.remove_property(self, "deltaPos")
 		$DebugStats.remove_property(self, "hit")
 		$DebugStats.remove_property(self, "quad_hit")
+		$DebugStats.remove_property(self, "tracked_chunk")
 		#if init_world_thread.is_active():
 		#	init_world_thread.wait_to_finish()
 		Globals.debug_print("World exited...")
