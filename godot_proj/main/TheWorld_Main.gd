@@ -28,6 +28,7 @@ var collider_mesh_right_pressed : bool = false
 var collider_mesh_upaltitude_pressed : bool = false
 var collider_mesh_downaltitude_pressed : bool = false
 var scene_initialized : bool = false
+var post_world_deploy_initialized : bool = false
 var fps := 0.0
 var chunk_grid_global_pos : Vector3
 var active_camera_global_rot : Vector3
@@ -39,6 +40,7 @@ var num_visible_quadrant : String
 var num_active_chunks : int
 var process_duration_mcs : int
 var num_process_locked : int
+var client_status : String
 var debug_draw_mode : String
 var chunk_debug_mode  : String = ""
 var cam_chunk_pos : String = ""
@@ -53,36 +55,41 @@ var cam_chunk_dmesh_aabb_x : String = ""
 var cam_chunk_dmesh_aabb_y : String = ""
 var cam_chunk_dmesh_aabb_z : String = ""
 var mouse_pos_in_viewport : Vector2
-var ray_origin : Vector3
-var ray_end : Vector3
-var quadDistFromCamera : Vector3
+#var ray_origin : Vector3
+#var ray_end : Vector3
+#var quadDistFromCamera : Vector3
 var deltaPos : Vector3
 var hit : Vector3
-var quad_hit : String
-var tracked_chunk : String
-var collider_quadrant_pos : Vector3
-var collider_transform_pos : Vector3
-var collider_transform_rot : Vector3
-var collider_transform_scl : Vector3
-var collider_mesh_transform_pos : Vector3
-var collider_mesh_transform_rot : Vector3
-var collider_mesh_transform_scl : Vector3
+#var tracked_chunk : String
+var quad_hit_name : String
+var quad_hit_pos : Vector3
+var quad_hit_size : float
+var chunk_hit_name : String
+var chunk_hit_pos : Vector3
+var chunk_hit_size : float
+var chunk_hit_dist_from_cam : float
+#var collider_transform_pos : Vector3
+#var collider_transform_rot : Vector3
+#var collider_transform_scl : Vector3
+#var collider_mesh_transform_pos : Vector3
+#var collider_mesh_transform_rot : Vector3
+#var collider_mesh_transform_scl : Vector3
 var time_of_last_ray : int = 0
-const max_transform_step : float = 100.0
-const min_transform_step : float = 5.0
+#const max_transform_step : float = 100.0
+#const min_transform_step : float = 5.0
 const Color_Yellow_Apricot := Color(251.0 / 255.0, 206.0 / 255.0, 177.0 / 255.0)
-var transform_step : float = max_transform_step
+#var transform_step : float = max_transform_step
 var altPressed := false
 var ctrlPressed := false
 
 var prev_hit : Vector3 = Vector3(0, 0, 0)
 		
 func _ready():
-	pass
+	$BallRigidBody.visible = false
 	
 func _input(event):
 	var status : int = Globals.get_clientstatus()
-	if status != Globals.clientstatus_session_initialized:
+	if status < Globals.clientstatus_session_initialized:
 		pass
 		
 	if event is InputEventKey:
@@ -101,11 +108,11 @@ func _input(event):
 				set_debug_window(false)
 			else:
 				set_debug_window(true)
-		elif event.is_action_pressed("ui_change_step"):
-			if transform_step == max_transform_step:
-				transform_step = min_transform_step
-			else:
-				transform_step = max_transform_step
+		#elif event.is_action_pressed("ui_change_step"):
+		#	if transform_step == max_transform_step:
+		#		transform_step = min_transform_step
+		#	else:
+		#		transform_step = max_transform_step
 		elif event.is_action_pressed("ui_up_arrow") && altPressed:
 			collider_up_pressed = true
 		elif event.is_action_pressed("ui_down_arrow") && altPressed:
@@ -170,8 +177,10 @@ func _process(_delta):
 	if Globals.appstatus != Globals.appstatus_running:
 		return
 	
-	var status : int = Globals.get_clientstatus()
-	if status != Globals.clientstatus_session_initialized:
+	var clientstatus : int = Globals.get_clientstatus()
+	client_status = Globals.status_to_string(clientstatus)
+	
+	if clientstatus < Globals.clientstatus_session_initialized:
 		return
 	
 	fps = Engine.get_frames_per_second()
@@ -199,17 +208,22 @@ func _process(_delta):
 		$NoiseMeshTest.global_transform.origin = initialViewerPos
 		$OmniLightTest.global_transform.origin = Vector3(initialViewerPos.x, initialViewerPos.y + 5, initialViewerPos.z)
 		
-		$BallRigidBody.global_transform.origin = Vector3(initialViewerPos.x, initialViewerPos.y + 5, initialViewerPos.z)
-		
 		#current_camera.global_transform.origin = Vector3(current_camera.global_transform.origin.x, initialCameraAltitudeForced, current_camera.global_transform.origin.z)
 		if (initialCameraAltitudeForced != 0):
 			current_camera.global_transform.origin.y = initialCameraAltitudeForced
-			$BallRigidBody.global_transform.origin.y = initialCameraAltitudeForced
 		#current_camera.look_at(initialViewerPos, Vector3(0, 1, 0))
 		current_camera.look_at(Vector3(current_camera.global_transform.origin.x + 1, 0, current_camera.global_transform.origin.z + 1), Vector3(0, 1, 0))
 		current_camera.global_transform.basis = Basis(Vector3(-1.57, -1.57, 0))
 		# DEBUGRIC
 		scene_initialized = true
+	
+	if scene_initialized && !post_world_deploy_initialized && clientstatus >= Globals.clientstatus_world_deployed:
+		#$BallRigidBody.global_transform.origin = Vector3(initialViewerPos.x, initialViewerPos.y + 5, initialViewerPos.z)
+		#if (initialCameraAltitudeForced != 0):
+		#	$BallRigidBody.global_transform.origin.y = initialCameraAltitudeForced
+		#$BallRigidBody.visible = true
+		post_world_deploy_initialized = true
+	
 	
 	var _chunk_debug_mode : String = viewer.get_chunk_debug_mode()
 	var _cam_chunk_pos = viewer.get_camera_quadrant_name() + " " + viewer.get_camera_chunk_id()
@@ -236,6 +250,18 @@ func _process(_delta):
 		cam_chunk_pos = _cam_chunk_pos
 		#process_test_action = true
 		
+	hit = viewer.get_mouse_hit()
+	if hit != prev_hit:
+		deltaPos = hit - prev_hit
+		prev_hit = hit
+	quad_hit_name = viewer.get_mouse_quadrant_hit_name()
+	quad_hit_pos = viewer.get_mouse_quadrant_hit_pos()
+	quad_hit_size = viewer.get_mouse_quadrant_hit_size()
+	chunk_hit_name = viewer.get_mouse_chunk_hit_name()
+	chunk_hit_pos = viewer.get_mouse_chunk_hit_pos()
+	chunk_hit_size = viewer.get_mouse_chunk_hit_size()
+	chunk_hit_dist_from_cam = viewer.get_mouse_chunk_hit_dist_from_cam()
+
 	# check mouse pos on the ground
 	var current_time : int = Time.get_ticks_msec()
 	if (process_test_action || current_time - time_of_last_ray > 250):
@@ -250,120 +276,122 @@ func _process(_delta):
 		#if test_action_changed:
 		#tracked_chunk = Globals.GDN_viewer().get_tracked_chunk_str()
 		
+		var ray_array : Dictionary
 		var space_state : PhysicsDirectSpaceState = viewer.get_world().direct_space_state
 		mouse_pos_in_viewport = get_viewport().get_mouse_position()
-		#var camera : Camera = get_tree().root.get_camera()
-		ray_origin = current_camera.project_ray_origin(mouse_pos_in_viewport)
-		ray_end = ray_origin + current_camera.project_ray_normal(mouse_pos_in_viewport) * current_camera.get_zfar() * 3
-		var ray_array : Dictionary = space_state.intersect_ray(ray_origin, ray_end)
+		var ray_origin = current_camera.project_ray_origin(mouse_pos_in_viewport)
+		var ray_end = ray_origin + current_camera.project_ray_normal(mouse_pos_in_viewport) * current_camera.get_zfar() * 3
+		#ray_array : Dictionary = space_state.intersect_ray(ray_origin, ray_end)
 
 		if test_action_enabled:
 			DrawLine.Draw_Line3D(1, ray_origin, ray_end, Color_Yellow_Apricot, 1.0)
 
-		collider_quadrant_pos = Vector3(0, 0, 0)
-		collider_transform_pos = Vector3(0, 0, 0)
-		collider_transform_rot = Vector3(0, 0, 0)
-		collider_transform_scl = Vector3(0, 0, 0)
-		quadDistFromCamera = Vector3(0, 0, 0)
-		hit = Vector3(0, 0, 0)
-		quad_hit = ""
+		#collider_transform_pos = Vector3(0, 0, 0)
+		#collider_transform_rot = Vector3(0, 0, 0)
+		#collider_transform_scl = Vector3(0, 0, 0)
+		#quadDistFromCamera = Vector3(0, 0, 0)
+		#hit = viewer.get_mouse_hit()
+		#deltaPos = hit - prev_hit
+		#prev_hit = hit
+		#quad_hit_name = viewer.get_mouse_quadrant_hit_name()
+		#quad_hit_pos = viewer.get_mouse_quadrant_hit_pos()
 
 		#if ray_array.empty():
 		#	print("No hit")
 			
-		var collider_transform : Transform
-		var collider_mesh_transform : Transform
+		#var collider_transform : Transform
+		#var collider_mesh_transform : Transform
 		
-		if ray_array.has("collider"):
-			var collider : Node = ray_array["collider"]
+		#if ray_array.has("collider"):
+		#	var collider : Node = ray_array["collider"]
 			
-			#if (collider.has_method("show_collider_mesh") && test_action_changed):
-			#	collider.show_collider_mesh(test_action_enabled)
+		#	#if (collider.has_method("show_collider_mesh") && test_action_changed):
+		#	#	collider.show_collider_mesh(test_action_enabled)
 			
-			if (collider.has_method("get_collider_transform") && collider.has_method("set_collider_transform")):
-				var step := transform_step
-				collider_transform = collider.get_collider_transform()
-				if collider_up_pressed:
-					collider_up_pressed = false
-					collider_transform.origin.x += step
-					collider.set_collider_transform(collider_transform)
-				if collider_down_pressed:
-					collider_down_pressed = false
-					collider_transform.origin.x -= step
-					collider.set_collider_transform(collider_transform)
-				if collider_left_pressed:
-					collider_left_pressed = false
-					collider_transform.origin.z -= step
-					collider.set_collider_transform(collider_transform)
-				if collider_right_pressed:
-					collider_right_pressed = false
-					collider_transform.origin.z += step
-					collider.set_collider_transform(collider_transform)
-				if collider_upaltitude_pressed:
-					collider_upaltitude_pressed = false
-					collider_transform.origin.y += step
-					collider.set_collider_transform(collider_transform)
-				if collider_downaltitude_pressed:
-					collider_downaltitude_pressed = false
-					collider_transform.origin.y -= step
-					collider.set_collider_transform(collider_transform)
-				collider_transform_pos = collider_transform.origin
-				collider_transform_rot = collider_transform.basis.get_euler()
-				collider_transform_scl = collider_transform.basis.get_scale()
-
-			if (collider.has_method("get_collider_mesh_transform") && collider.has_method("set_collider_mesh_transform")):
-				var step := transform_step
-				collider_mesh_transform = collider.get_collider_mesh_transform()
-				if collider_mesh_up_pressed:
-					collider_mesh_up_pressed = false
-					collider_mesh_transform.origin.x += step
-					collider.set_collider_mesh_transform(collider_mesh_transform)
-				if collider_mesh_down_pressed:
-					collider_mesh_down_pressed = false
-					collider_mesh_transform.origin.x -= step
-					collider.set_collider_mesh_transform(collider_mesh_transform)
-				if collider_mesh_left_pressed:
-					collider_mesh_left_pressed = false
-					collider_mesh_transform.origin.z -= step
-					collider.set_collider_mesh_transform(collider_mesh_transform)
-				if collider_mesh_right_pressed:
-					collider_mesh_right_pressed = false
-					collider_mesh_transform.origin.z += step
-					collider.set_collider_mesh_transform(collider_mesh_transform)
-				if collider_mesh_upaltitude_pressed:
-					collider_mesh_upaltitude_pressed = false
-					collider_mesh_transform.origin.y += step
-					collider.set_collider_mesh_transform(collider_mesh_transform)
-				if collider_mesh_downaltitude_pressed:
-					collider_mesh_downaltitude_pressed = false
-					collider_mesh_transform.origin.y -= step
-					collider.set_collider_mesh_transform(collider_mesh_transform)
-				collider_mesh_transform_pos = collider_mesh_transform.origin
-				collider_mesh_transform_rot = collider_mesh_transform.basis.get_euler()
-				collider_mesh_transform_scl = collider_mesh_transform.basis.get_scale()
+		#	if (collider.has_method("get_collider_transform") && collider.has_method("set_collider_transform")):
+		#		var step := transform_step
+		#		collider_transform = collider.get_collider_transform()
+		#		if collider_up_pressed:
+		#			collider_up_pressed = false
+		#			collider_transform.origin.x += step
+		#			collider.set_collider_transform(collider_transform)
+		#		if collider_down_pressed:
+		#			collider_down_pressed = false
+		#			collider_transform.origin.x -= step
+		#			collider.set_collider_transform(collider_transform)
+		#		if collider_left_pressed:
+		#			collider_left_pressed = false
+		#			collider_transform.origin.z -= step
+		#			collider.set_collider_transform(collider_transform)
+		#		if collider_right_pressed:
+		#			collider_right_pressed = false
+		#			collider_transform.origin.z += step
+		#			collider.set_collider_transform(collider_transform)
+		#		if collider_upaltitude_pressed:
+		#			collider_upaltitude_pressed = false
+		#			collider_transform.origin.y += step
+		#			collider.set_collider_transform(collider_transform)
+		#		if collider_downaltitude_pressed:
+		#			collider_downaltitude_pressed = false
+		#			collider_transform.origin.y -= step
+		#			collider.set_collider_transform(collider_transform)
+		#		collider_transform_pos = collider_transform.origin
+		#		collider_transform_rot = collider_transform.basis.get_euler()
+		#		collider_transform_scl = collider_transform.basis.get_scale()
+#
+		#	if (collider.has_method("get_collider_mesh_transform") && collider.has_method("set_collider_mesh_transform")):
+		#		var step := transform_step
+		#		collider_mesh_transform = collider.get_collider_mesh_transform()
+		#		if collider_mesh_up_pressed:
+		#			collider_mesh_up_pressed = false
+		#			collider_mesh_transform.origin.x += step
+		#			collider.set_collider_mesh_transform(collider_mesh_transform)
+		#		if collider_mesh_down_pressed:
+		#			collider_mesh_down_pressed = false
+		#			collider_mesh_transform.origin.x -= step
+		#			collider.set_collider_mesh_transform(collider_mesh_transform)
+		#		if collider_mesh_left_pressed:
+		#			collider_mesh_left_pressed = false
+		#			collider_mesh_transform.origin.z -= step
+		#			collider.set_collider_mesh_transform(collider_mesh_transform)
+		#		if collider_mesh_right_pressed:
+		#			collider_mesh_right_pressed = false
+		#			collider_mesh_transform.origin.z += step
+		#			collider.set_collider_mesh_transform(collider_mesh_transform)
+		#		if collider_mesh_upaltitude_pressed:
+		#			collider_mesh_upaltitude_pressed = false
+		#			collider_mesh_transform.origin.y += step
+		#			collider.set_collider_mesh_transform(collider_mesh_transform)
+		#		if collider_mesh_downaltitude_pressed:
+		#			collider_mesh_downaltitude_pressed = false
+		#			collider_mesh_transform.origin.y -= step
+		#			collider.set_collider_mesh_transform(collider_mesh_transform)
+		#		collider_mesh_transform_pos = collider_mesh_transform.origin
+		#		collider_mesh_transform_rot = collider_mesh_transform.basis.get_euler()
+		#		collider_mesh_transform_scl = collider_mesh_transform.basis.get_scale()
 				
 				#print(collider.get_class())
 				#print(collider.name)
-				var arrayOfMetas = collider.get_meta_list()
-				if !arrayOfMetas.empty():
-					if arrayOfMetas.has("QuadrantOrig") && arrayOfMetas.has("QuadrantSize"):
-						var quadOrig : Vector3 = collider.get_meta("QuadrantOrig")
-						var quadSize : float = collider.get_meta("QuadrantSize")
-						quadDistFromCamera = current_camera.global_transform.origin - (quadOrig + 0.5 * Vector3(quadSize, 0, quadSize))
-						collider_quadrant_pos = quadOrig
-					if arrayOfMetas.has("QuadrantName"):
-						quad_hit = collider.get_meta("QuadrantName")
-					#for meta_name in arrayOfMetas:
-					#	print(collider.get_meta(meta_name))
+		#		var arrayOfMetas = collider.get_meta_list()
+		#		if !arrayOfMetas.empty():
+		#			if arrayOfMetas.has("QuadrantOrig") && arrayOfMetas.has("QuadrantSize"):
+		#				var quadOrig : Vector3 = collider.get_meta("QuadrantOrig")
+		#				var quadSize : float = collider.get_meta("QuadrantSize")
+		#				quadDistFromCamera = current_camera.global_transform.origin - (quadOrig + 0.5 * Vector3(quadSize, 0, quadSize))
+		#				collider_quadrant_pos = quadOrig
+		#			if arrayOfMetas.has("QuadrantName"):
+		#				quad_hit = collider.get_meta("QuadrantName")
+		#			#for meta_name in arrayOfMetas:
+		#			#	print(collider.get_meta(meta_name))
 
-		if ray_array.has("position"):
-			hit = ray_array["position"]
-			if (collider_transform != Transform()):
-				hit.y -= collider_transform.origin.y
-			#print ("Delta X=" + String(hit.x - prev_hit.x) + " - Delta Z=" + String(hit.z - prev_hit.z))
-			deltaPos = hit - prev_hit
-			#print(String(hit) + " - Delta X=" + String(deltaPos.x) + " - Delta Z=" + String(deltaPos.z))
-			prev_hit = hit
+		#if ray_array.has("position"):
+		#	hit = ray_array["position"]
+		#	if (collider_transform != Transform()):
+		#		hit.y -= collider_transform.origin.y
+		#	#print ("Delta X=" + String(hit.x - prev_hit.x) + " - Delta Z=" + String(hit.z - prev_hit.z))
+		#	deltaPos = hit - prev_hit
+		#	#print(String(hit) + " - Delta X=" + String(deltaPos.x) + " - Delta Z=" + String(deltaPos.z))
+		#	prev_hit = hit
 			
 
 		#print("")
@@ -458,6 +486,7 @@ func enter_world():
 	Globals.debug_print("Entering world...")
 	OS.window_maximized = true
 	set_debug_window(true)
+	$DebugStats.add_property(self, "client_status", "")
 	$DebugStats.add_property(self, "fps", "")
 	#$DebugStats.add_property(self, "process_duration_mcs", "")
 	#$DebugStats.add_property(self, "num_process_locked", "")
@@ -480,22 +509,27 @@ func enter_world():
 	#$DebugStats.add_property(self, "cam_chunk_dmesh_aabb_x", "")
 	#$DebugStats.add_property(self, "cam_chunk_dmesh_aabb_z", "")
 	#$DebugStats.add_property(self, "cam_chunk_dmesh_aabb_y", "")
-	$DebugStats.add_property(self, "transform_step", "")
-	$DebugStats.add_property(self, "collider_quadrant_pos", "")
-	$DebugStats.add_property(self, "collider_transform_pos", "")
-	$DebugStats.add_property(self, "collider_transform_rot", "")
-	$DebugStats.add_property(self, "collider_transform_scl", "")
-	$DebugStats.add_property(self, "collider_mesh_transform_pos", "")
-	$DebugStats.add_property(self, "collider_mesh_transform_rot", "")
-	$DebugStats.add_property(self, "collider_mesh_transform_scl", "")
+	#$DebugStats.add_property(self, "transform_step", "")
+	#$DebugStats.add_property(self, "collider_transform_pos", "")
+	#$DebugStats.add_property(self, "collider_transform_rot", "")
+	#$DebugStats.add_property(self, "collider_transform_scl", "")
+	#$DebugStats.add_property(self, "collider_mesh_transform_pos", "")
+	#$DebugStats.add_property(self, "collider_mesh_transform_rot", "")
+	#$DebugStats.add_property(self, "collider_mesh_transform_scl", "")
 	$DebugStats.add_property(self, "mouse_pos_in_viewport", "")
-	$DebugStats.add_property(self, "quadDistFromCamera", "")
-	$DebugStats.add_property(self, "ray_origin", "")
-	$DebugStats.add_property(self, "ray_end", "")
+	#$DebugStats.add_property(self, "quadDistFromCamera", "")
+	#$DebugStats.add_property(self, "ray_origin", "")
+	#$DebugStats.add_property(self, "ray_end", "")
 	$DebugStats.add_property(self, "deltaPos", "")
 	$DebugStats.add_property(self, "hit", "")
-	$DebugStats.add_property(self, "quad_hit", "")
-	$DebugStats.add_property(self, "tracked_chunk", "")
+	$DebugStats.add_property(self, "quad_hit_name", "")
+	$DebugStats.add_property(self, "quad_hit_pos", "")
+	$DebugStats.add_property(self, "quad_hit_size", "")
+	$DebugStats.add_property(self, "chunk_hit_name", "")
+	$DebugStats.add_property(self, "chunk_hit_pos", "")
+	$DebugStats.add_property(self, "chunk_hit_size", "")
+	$DebugStats.add_property(self, "chunk_hit_dist_from_cam", "")
+	#$DebugStats.add_property(self, "tracked_chunk", "")
 	_init_world()
 	#init_world_thread = Thread.new()
 	#var err := init_world_thread.start(self, "_init_world")
@@ -507,6 +541,7 @@ func enter_world():
 func exit_world():
 	if world_entered:
 		Globals.debug_print("Exiting world...")
+		$DebugStats.remove_property(self, "client_status")
 		$DebugStats.remove_property(self, "fps")
 		#$DebugStats.remove_property(self, "process_duration_mcs")
 		#$DebugStats.remove_property(self, "num_process_locked")
@@ -529,8 +564,7 @@ func exit_world():
 		#$DebugStats.remove_property(self, "cam_chunk_dmesh_aabb_x")
 		#$DebugStats.remove_property(self, "cam_chunk_dmesh_aabb_z")
 		#$DebugStats.remove_property(self, "cam_chunk_dmesh_aabb_y")
-		$DebugStats.remove_property(self, "transform_step")
-		$DebugStats.remove_property(self, "collider_quadrant_pos")
+		#$DebugStats.remove_property(self, "transform_step")
 		$DebugStats.remove_property(self, "collider_transform_pos")
 		$DebugStats.remove_property(self, "collider_transform_rot")
 		$DebugStats.remove_property(self, "collider_transform_scl")
@@ -538,13 +572,19 @@ func exit_world():
 		$DebugStats.remove_property(self, "collider_mesh_transform_rot")
 		$DebugStats.remove_property(self, "collider_mesh_transform_scl")
 		$DebugStats.remove_property(self, "mouse_pos_in_viewport")
-		$DebugStats.remove_property(self, "quadDistFromCamera")
-		$DebugStats.remove_property(self, "ray_origin")
-		$DebugStats.remove_property(self, "ray_end")
+		#$DebugStats.remove_property(self, "quadDistFromCamera")
+		#$DebugStats.remove_property(self, "ray_origin")
+		#$DebugStats.remove_property(self, "ray_end")
 		$DebugStats.remove_property(self, "deltaPos")
 		$DebugStats.remove_property(self, "hit")
-		$DebugStats.remove_property(self, "quad_hit")
-		$DebugStats.remove_property(self, "tracked_chunk")
+		$DebugStats.remove_property(self, "quad_hit_name")
+		$DebugStats.remove_property(self, "quad_hit_pos")
+		$DebugStats.remove_property(self, "quad_hit_size")
+		$DebugStats.remove_property(self, "chunk_hit_name")
+		$DebugStats.remove_property(self, "chunk_hit_pos")
+		$DebugStats.remove_property(self, "chunk_hit_size")
+		$DebugStats.remove_property(self, "chunk_hit_dist_from_cam")
+		#$DebugStats.remove_property(self, "tracked_chunk")
 		#if init_world_thread.is_active():
 		#	init_world_thread.wait_to_finish()
 		Globals.debug_print("World exited...")
