@@ -38,7 +38,7 @@ var num_joins : int
 var num_quadrant : String
 var num_visible_quadrant : String
 var num_active_chunks : int
-var process_durations : String
+var process_durations_mcs : String
 var num_process_locked : int
 var client_status : String
 var debug_draw_mode : String
@@ -55,12 +55,8 @@ var cam_chunk_dmesh_aabb_x : String = ""
 var cam_chunk_dmesh_aabb_y : String = ""
 var cam_chunk_dmesh_aabb_z : String = ""
 var mouse_pos_in_viewport : Vector2
-#var ray_origin : Vector3
-#var ray_end : Vector3
-#var quadDistFromCamera : Vector3
 var deltaPos : Vector3
 var hit : Vector3
-#var tracked_chunk : String
 var quad_hit_name : String
 var quad_hit_pos : Vector3
 var quad_hit_size : float
@@ -68,17 +64,8 @@ var chunk_hit_name : String
 var chunk_hit_pos : Vector3
 var chunk_hit_size : float
 var chunk_hit_dist_from_cam : float
-#var collider_transform_pos : Vector3
-#var collider_transform_rot : Vector3
-#var collider_transform_scl : Vector3
-#var collider_mesh_transform_pos : Vector3
-#var collider_mesh_transform_rot : Vector3
-#var collider_mesh_transform_scl : Vector3
 var time_of_last_ray : int = 0
-#const max_transform_step : float = 100.0
-#const min_transform_step : float = 5.0
 const Color_Yellow_Apricot := Color(251.0 / 255.0, 206.0 / 255.0, 177.0 / 255.0)
-#var transform_step : float = max_transform_step
 var altPressed := false
 var ctrlPressed := false
 
@@ -108,11 +95,6 @@ func _input(event):
 				set_debug_window(false)
 			else:
 				set_debug_window(true)
-		#elif event.is_action_pressed("ui_change_step"):
-		#	if transform_step == max_transform_step:
-		#		transform_step = min_transform_step
-		#	else:
-		#		transform_step = max_transform_step
 		elif event.is_action_pressed("ui_up_arrow") && altPressed:
 			collider_up_pressed = true
 		elif event.is_action_pressed("ui_down_arrow") && altPressed:
@@ -149,10 +131,6 @@ func _input(event):
 func _notification(_what):
 	if (_what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST):
 		Globals.appstatus = Globals.appstatus_deinit_required
-		#prepare_deinit_thread = Thread.new()
-		#var err := prepare_deinit_thread.start(self, "_prepare_deinit")
-		#if err:
-		#	Globals.debug_print("Start _prepare_deinit failure!")
 	elif (_what == Spatial.NOTIFICATION_TRANSFORM_CHANGED):
 		var viewer : Spatial = Globals.GDN_viewer()
 		viewer.global_transform = global_transform
@@ -268,133 +246,22 @@ func _process(_delta):
 		time_of_last_ray = current_time
 		process_test_action = false
 		
-		var test_action_changed := false
+		var _test_action_changed := false
 		if test_action_enabled != prev_test_action_enabled:
 			prev_test_action_enabled = test_action_enabled
-			test_action_changed = true
+			_test_action_changed = true
 
-		#if test_action_changed:
+		#if _test_action_changed:
 		#tracked_chunk = Globals.GDN_viewer().get_tracked_chunk_str()
 		
-		var ray_array : Dictionary
-		var space_state : PhysicsDirectSpaceState = viewer.get_world().direct_space_state
 		mouse_pos_in_viewport = get_viewport().get_mouse_position()
 		var ray_origin = current_camera.project_ray_origin(mouse_pos_in_viewport)
 		var ray_end = ray_origin + current_camera.project_ray_normal(mouse_pos_in_viewport) * current_camera.get_zfar() * 3
+		#var space_state : PhysicsDirectSpaceState = viewer.get_world().direct_space_state
 		#ray_array : Dictionary = space_state.intersect_ray(ray_origin, ray_end)
 
 		if test_action_enabled:
 			DrawLine.Draw_Line3D(1, ray_origin, ray_end, Color_Yellow_Apricot, 1.0)
-
-		#collider_transform_pos = Vector3(0, 0, 0)
-		#collider_transform_rot = Vector3(0, 0, 0)
-		#collider_transform_scl = Vector3(0, 0, 0)
-		#quadDistFromCamera = Vector3(0, 0, 0)
-		#hit = viewer.get_mouse_hit()
-		#deltaPos = hit - prev_hit
-		#prev_hit = hit
-		#quad_hit_name = viewer.get_mouse_quadrant_hit_name()
-		#quad_hit_pos = viewer.get_mouse_quadrant_hit_pos()
-
-		#if ray_array.empty():
-		#	print("No hit")
-			
-		#var collider_transform : Transform
-		#var collider_mesh_transform : Transform
-		
-		#if ray_array.has("collider"):
-		#	var collider : Node = ray_array["collider"]
-			
-		#	#if (collider.has_method("show_collider_mesh") && test_action_changed):
-		#	#	collider.show_collider_mesh(test_action_enabled)
-			
-		#	if (collider.has_method("get_collider_transform") && collider.has_method("set_collider_transform")):
-		#		var step := transform_step
-		#		collider_transform = collider.get_collider_transform()
-		#		if collider_up_pressed:
-		#			collider_up_pressed = false
-		#			collider_transform.origin.x += step
-		#			collider.set_collider_transform(collider_transform)
-		#		if collider_down_pressed:
-		#			collider_down_pressed = false
-		#			collider_transform.origin.x -= step
-		#			collider.set_collider_transform(collider_transform)
-		#		if collider_left_pressed:
-		#			collider_left_pressed = false
-		#			collider_transform.origin.z -= step
-		#			collider.set_collider_transform(collider_transform)
-		#		if collider_right_pressed:
-		#			collider_right_pressed = false
-		#			collider_transform.origin.z += step
-		#			collider.set_collider_transform(collider_transform)
-		#		if collider_upaltitude_pressed:
-		#			collider_upaltitude_pressed = false
-		#			collider_transform.origin.y += step
-		#			collider.set_collider_transform(collider_transform)
-		#		if collider_downaltitude_pressed:
-		#			collider_downaltitude_pressed = false
-		#			collider_transform.origin.y -= step
-		#			collider.set_collider_transform(collider_transform)
-		#		collider_transform_pos = collider_transform.origin
-		#		collider_transform_rot = collider_transform.basis.get_euler()
-		#		collider_transform_scl = collider_transform.basis.get_scale()
-#
-		#	if (collider.has_method("get_collider_mesh_transform") && collider.has_method("set_collider_mesh_transform")):
-		#		var step := transform_step
-		#		collider_mesh_transform = collider.get_collider_mesh_transform()
-		#		if collider_mesh_up_pressed:
-		#			collider_mesh_up_pressed = false
-		#			collider_mesh_transform.origin.x += step
-		#			collider.set_collider_mesh_transform(collider_mesh_transform)
-		#		if collider_mesh_down_pressed:
-		#			collider_mesh_down_pressed = false
-		#			collider_mesh_transform.origin.x -= step
-		#			collider.set_collider_mesh_transform(collider_mesh_transform)
-		#		if collider_mesh_left_pressed:
-		#			collider_mesh_left_pressed = false
-		#			collider_mesh_transform.origin.z -= step
-		#			collider.set_collider_mesh_transform(collider_mesh_transform)
-		#		if collider_mesh_right_pressed:
-		#			collider_mesh_right_pressed = false
-		#			collider_mesh_transform.origin.z += step
-		#			collider.set_collider_mesh_transform(collider_mesh_transform)
-		#		if collider_mesh_upaltitude_pressed:
-		#			collider_mesh_upaltitude_pressed = false
-		#			collider_mesh_transform.origin.y += step
-		#			collider.set_collider_mesh_transform(collider_mesh_transform)
-		#		if collider_mesh_downaltitude_pressed:
-		#			collider_mesh_downaltitude_pressed = false
-		#			collider_mesh_transform.origin.y -= step
-		#			collider.set_collider_mesh_transform(collider_mesh_transform)
-		#		collider_mesh_transform_pos = collider_mesh_transform.origin
-		#		collider_mesh_transform_rot = collider_mesh_transform.basis.get_euler()
-		#		collider_mesh_transform_scl = collider_mesh_transform.basis.get_scale()
-				
-				#print(collider.get_class())
-				#print(collider.name)
-		#		var arrayOfMetas = collider.get_meta_list()
-		#		if !arrayOfMetas.empty():
-		#			if arrayOfMetas.has("QuadrantOrig") && arrayOfMetas.has("QuadrantSize"):
-		#				var quadOrig : Vector3 = collider.get_meta("QuadrantOrig")
-		#				var quadSize : float = collider.get_meta("QuadrantSize")
-		#				quadDistFromCamera = current_camera.global_transform.origin - (quadOrig + 0.5 * Vector3(quadSize, 0, quadSize))
-		#				collider_quadrant_pos = quadOrig
-		#			if arrayOfMetas.has("QuadrantName"):
-		#				quad_hit = collider.get_meta("QuadrantName")
-		#			#for meta_name in arrayOfMetas:
-		#			#	print(collider.get_meta(meta_name))
-
-		#if ray_array.has("position"):
-		#	hit = ray_array["position"]
-		#	if (collider_transform != Transform()):
-		#		hit.y -= collider_transform.origin.y
-		#	#print ("Delta X=" + String(hit.x - prev_hit.x) + " - Delta Z=" + String(hit.z - prev_hit.z))
-		#	deltaPos = hit - prev_hit
-		#	#print(String(hit) + " - Delta X=" + String(deltaPos.x) + " - Delta Z=" + String(deltaPos.z))
-		#	prev_hit = hit
-			
-
-		#print("")
 
 		#if (test_action_enabled):
 		#	var chunk_mis : Array
@@ -478,7 +345,7 @@ func _process(_delta):
 	num_active_chunks = viewer.get_num_active_chunks()
 	num_quadrant = str(viewer.get_num_initialized_quadrant()) + ":" + str(viewer.get_num_quadrant())
 	num_visible_quadrant = str(viewer.get_num_initialized_visible_quadrant()) + ":" + str(viewer.get_num_visible_quadrant())
-	process_durations = String(viewer.get_process_duration()) + " UQ " + String(viewer.get_update_quads_duration()) + " UC " + String(viewer.get_update_chunks_duration()) + " UM " + String(viewer.get_update_material_params_duration()) + " RQ " + String(viewer.get_refresh_quads_duration()) 
+	process_durations_mcs = String(viewer.get_process_duration()) + " UQ " + String(viewer.get_update_quads_duration()) + " UC " + String(viewer.get_update_chunks_duration()) + " UM " + String(viewer.get_update_material_params_duration()) + " RQ " + String(viewer.get_refresh_quads_duration()) + " T " + String(viewer.get_mouse_track_hit_duration())
 	num_process_locked = viewer.get_num_process_not_owns_lock()
 	debug_draw_mode = viewer.get_debug_draw_mode()
 		
@@ -488,7 +355,7 @@ func enter_world():
 	set_debug_window(true)
 	$DebugStats.add_property(self, "client_status", "")
 	$DebugStats.add_property(self, "fps", "")
-	$DebugStats.add_property(self, "process_durations", "")
+	$DebugStats.add_property(self, "process_durations_mcs", "")
 	#$DebugStats.add_property(self, "num_process_locked", "")
 	$DebugStats.add_property(self, "debug_draw_mode", "")
 	$DebugStats.add_property(self, "chunk_grid_global_pos", "")
@@ -497,8 +364,8 @@ func enter_world():
 	$DebugStats.add_property(self, "num_active_chunks", "")
 	$DebugStats.add_property(self, "num_quadrant", "")
 	$DebugStats.add_property(self, "num_visible_quadrant", "")
-	#$DebugStats.add_property(self, "num_splits", "")
-	#$DebugStats.add_property(self, "num_joins", "")
+	$DebugStats.add_property(self, "num_splits", "")
+	$DebugStats.add_property(self, "num_joins", "")
 	#$DebugStats.add_property(self, "cam_chunk_pos", "")
 	#$DebugStats.add_property(self, "cam_chunk_mesh_pos_xzy", "")
 	#$DebugStats.add_property(self, "cam_chunk_mesh_aabb_x", "")
@@ -543,7 +410,7 @@ func exit_world():
 		Globals.debug_print("Exiting world...")
 		$DebugStats.remove_property(self, "client_status")
 		$DebugStats.remove_property(self, "fps")
-		$DebugStats.remove_property(self, "process_durations")
+		$DebugStats.remove_property(self, "process_durations_mcs")
 		#$DebugStats.remove_property(self, "num_process_locked")
 		$DebugStats.remove_property(self, "debug_draw_mode")
 		$DebugStats.remove_property(self, "chunk_grid_global_pos")
@@ -552,8 +419,8 @@ func exit_world():
 		$DebugStats.remove_property(self, "num_active_chunks")
 		$DebugStats.remove_property(self, "num_quadrant")
 		$DebugStats.remove_property(self, "num_visible_quadrant")
-		#$DebugStats.remove_property(self, "num_splits")
-		#$DebugStats.remove_property(self, "num_joins")
+		$DebugStats.remove_property(self, "num_splits")
+		$DebugStats.remove_property(self, "num_joins")
 		#$DebugStats.remove_property(self, "cam_chunk_pos")
 		#$DebugStats.remove_property(self, "cam_chunk_mesh_pos_xzy")
 		#$DebugStats.remove_property(self, "cam_chunk_mesh_aabb_x")
