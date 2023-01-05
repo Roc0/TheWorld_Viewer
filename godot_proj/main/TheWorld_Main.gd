@@ -38,7 +38,7 @@ var num_joins : int
 var num_quadrant : String
 var num_visible_quadrant : String
 var num_active_chunks : int
-var process_duration_mcs : int
+var process_durations : String
 var num_process_locked : int
 var client_status : String
 var debug_draw_mode : String
@@ -478,7 +478,7 @@ func _process(_delta):
 	num_active_chunks = viewer.get_num_active_chunks()
 	num_quadrant = str(viewer.get_num_initialized_quadrant()) + ":" + str(viewer.get_num_quadrant())
 	num_visible_quadrant = str(viewer.get_num_initialized_visible_quadrant()) + ":" + str(viewer.get_num_visible_quadrant())
-	process_duration_mcs = viewer.get_process_duration()
+	process_durations = String(viewer.get_process_duration()) + " UQ " + String(viewer.get_update_quads_duration()) + " UC " + String(viewer.get_update_chunks_duration()) + " UM " + String(viewer.get_update_material_params_duration()) + " RQ " + String(viewer.get_refresh_quads_duration()) 
 	num_process_locked = viewer.get_num_process_not_owns_lock()
 	debug_draw_mode = viewer.get_debug_draw_mode()
 		
@@ -488,7 +488,7 @@ func enter_world():
 	set_debug_window(true)
 	$DebugStats.add_property(self, "client_status", "")
 	$DebugStats.add_property(self, "fps", "")
-	#$DebugStats.add_property(self, "process_duration_mcs", "")
+	$DebugStats.add_property(self, "process_durations", "")
 	#$DebugStats.add_property(self, "num_process_locked", "")
 	$DebugStats.add_property(self, "debug_draw_mode", "")
 	$DebugStats.add_property(self, "chunk_grid_global_pos", "")
@@ -543,7 +543,7 @@ func exit_world():
 		Globals.debug_print("Exiting world...")
 		$DebugStats.remove_property(self, "client_status")
 		$DebugStats.remove_property(self, "fps")
-		#$DebugStats.remove_property(self, "process_duration_mcs")
+		$DebugStats.remove_property(self, "process_durations")
 		#$DebugStats.remove_property(self, "num_process_locked")
 		$DebugStats.remove_property(self, "debug_draw_mode")
 		$DebugStats.remove_property(self, "chunk_grid_global_pos")
