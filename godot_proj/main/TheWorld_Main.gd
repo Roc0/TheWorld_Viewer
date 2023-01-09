@@ -196,10 +196,10 @@ func _process(_delta):
 		scene_initialized = true
 	
 	if scene_initialized && !post_world_deploy_initialized && clientstatus >= Globals.clientstatus_world_deployed:
-		#$BallRigidBody.global_transform.origin = Vector3(initialViewerPos.x, initialViewerPos.y + 5, initialViewerPos.z)
+		$BallRigidBody.global_transform.origin = Vector3(initialViewerPos.x, initialViewerPos.y + 5, initialViewerPos.z)
 		#if (initialCameraAltitudeForced != 0):
 		#	$BallRigidBody.global_transform.origin.y = initialCameraAltitudeForced
-		#$BallRigidBody.visible = true
+		$BallRigidBody.visible = true
 		post_world_deploy_initialized = true
 	
 	
@@ -345,7 +345,6 @@ func _process(_delta):
 	num_active_chunks = viewer.get_num_active_chunks()
 	num_quadrant = str(viewer.get_num_initialized_quadrant()) + ":" + str(viewer.get_num_quadrant())
 	num_visible_quadrant = str(viewer.get_num_initialized_visible_quadrant()) + ":" + str(viewer.get_num_visible_quadrant())
-<<<<<<< HEAD
 	var update_quads1_duration : int = viewer.get_update_quads1_duration()
 	var update_quads2_duration : int = viewer.get_update_quads2_duration()
 	var update_quads3_duration : int = viewer.get_update_quads3_duration()
@@ -358,9 +357,6 @@ func _process(_delta):
 		+ " UM " + String(viewer.get_update_material_params_duration()) \
 		+ " RQ " + String(viewer.get_refresh_quads_duration()) \
 		+ " T " + String(viewer.get_mouse_track_hit_duration())
-=======
-	process_durations_mcs = String(viewer.get_process_duration()) + " UQ " + String(viewer.get_update_quads_duration()) + " UC " + String(viewer.get_update_chunks_duration()) + " UM " + String(viewer.get_update_material_params_duration()) + " RQ " + String(viewer.get_refresh_quads_duration()) + " T " + String(viewer.get_mouse_track_hit_duration())
->>>>>>> 0c886cd4e17e6257536ae3d677b82285854239f9
 	num_process_locked = viewer.get_num_process_not_owns_lock()
 	debug_draw_mode = viewer.get_debug_draw_mode()
 		
