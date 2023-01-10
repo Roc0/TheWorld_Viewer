@@ -3,13 +3,16 @@ extends Spatial
 var debug_window_Active : bool = false
 var world_entered : bool = false
 var initialCameraDistanceFromTerrain = 300
-#var initialViewerPos := Vector3(2639.48, 0, 338.69)
+
+var initialViewerPos := Vector3(2639.48, 0, 338.69)
 #var initialViewerPos := Vector3(1195476, 0, 5467999)
-var initialViewerPos := Vector3(1196000, 0, 5467000)
-##var initialCameraAltitudeForced = 0
+#var initialViewerPos := Vector3(1196000, 0, 5467000)
+
+var initialCameraAltitudeForced = 0
 #var initialCameraAltitudeForced = 2900
 #var initialCameraAltitudeForced = 1485
-var initialCameraAltitudeForced = 9417
+#var initialCameraAltitudeForced = 9417
+
 var initialLevel := 0
 #var init_world_thread : Thread
 var test_action_enabled : bool = false
