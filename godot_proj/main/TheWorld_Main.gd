@@ -4,8 +4,8 @@ var debug_window_Active : bool = false
 var world_entered : bool = false
 var initialCameraDistanceFromTerrain = 300
 
-var initialViewerPos := Vector3(2639.48, 0, 338.69)
-#var initialViewerPos := Vector3(1195476, 0, 5467999)
+var initialViewerPos := Vector3(0, 0, 0)
+#var initialViewerPos := Vector3(1196000, 0, 5464000)
 #var initialViewerPos := Vector3(1196000, 0, 5467000)
 
 var initialCameraAltitudeForced = 0
