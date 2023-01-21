@@ -8,10 +8,10 @@ var initialViewerPos := Vector3(0, 0, 0)
 #var initialViewerPos := Vector3(1196000, 0, 5464000)
 #var initialViewerPos := Vector3(1196000, 0, 5467000)
 
-var initialCameraAltitudeForced = 0
+#var initialCameraAltitudeForced = 0
 #var initialCameraAltitudeForced = 2900
 #var initialCameraAltitudeForced = 1485
-#var initialCameraAltitudeForced = 9417
+var initialCameraAltitudeForced = 9417
 
 var initialLevel := 0
 #var init_world_thread : Thread
