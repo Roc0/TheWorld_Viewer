@@ -235,7 +235,7 @@ func _process(_delta):
 	if hit != prev_hit:
 		deltaPos = hit - prev_hit
 		prev_hit = hit
-	quad_hit_name = viewer.get_mouse_quadrant_hit_name()
+	quad_hit_name = viewer.get_mouse_quadrant_hit_name() + " " + viewer.get_mouse_quadrant_hit_tag()
 	quad_hit_pos = viewer.get_mouse_quadrant_hit_pos()
 	quad_hit_size = viewer.get_mouse_quadrant_hit_size()
 	chunk_hit_name = viewer.get_mouse_chunk_hit_name()
