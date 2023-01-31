@@ -6,13 +6,13 @@ render_mode  skip_vertex_transform;		// Fireflies along seams fix: https://githu
 uniform sampler2D u_terrain_heightmap;
 uniform sampler2D u_terrain_normalmap;
 uniform sampler2D u_terrain_colormap;
-uniform sampler2D u_map; // This map will control color
+//uniform sampler2D u_map; // This map will control color
 uniform mat4 u_terrain_inverse_transform;
 uniform mat3 u_terrain_normal_basis;
 uniform float u_grid_step_in_wu;
 
 varying float v_hole;
-
+varying vec3 v_color;
 
 vec3 unpack_normal(vec4 rgba) {
 	return rgba.xzy * 2.0 - vec3(1.0);
@@ -28,7 +28,7 @@ void vertex() {
 	// otherwise bilinear filtering of the textures will give us mixed results (#183)
 	//cell_coords += vec2(0.5);
 
-	// Normalized UV
+	// Normalized UV (linear interpolation expressing a value from 0 to 1)
 	UV = cell_coords / vec2(textureSize(u_terrain_heightmap, 0));
 
 	// Height displacement
@@ -42,6 +42,7 @@ void vertex() {
 	// (downside is LOD will also decimate tint and splat, but it's not bad overall)
 	vec4 tint = texture(u_terrain_colormap, UV);
 	v_hole = tint.a;
+	v_color = tint.rgb;
 
 	// Need to use u_terrain_normal_basis to handle scaling.
 	// For some reason I also had to invert Z when sampling terrain normals... not sure why
@@ -63,10 +64,12 @@ void fragment() {
 	terrain_normal_world = normalize(terrain_normal_world);
 	vec3 normal = terrain_normal_world;
 	
-	vec4 value = texture(u_map, UV);
+	//vec4 value = texture(u_map, UV);
 	// TODO Blend toward checker pattern to show the alpha channel
+	//ALBEDO = value.rgb;
 	
-	ALBEDO = value.rgb;
+	ALBEDO = v_color;
+	//ALBEDO = vec3(1.0, 0.0, 0.0); // DEBUG: use red for material albedo
 	ROUGHNESS = 0.5;
 	NORMAL = (INV_CAMERA_MATRIX * (vec4(normal, 0.0))).xyz;
 }
