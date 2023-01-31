@@ -76,7 +76,11 @@ var prev_hit : Vector3 = Vector3(0, 0, 0)
 		
 func _ready():
 	$BallRigidBody.visible = false
-	
+	get_tree().get_root().connect("size_changed", self, "myfunc")
+
+func myfunc():
+	print("Resizing: ", get_viewport().size)
+
 func _input(event):
 	var status : int = Globals.get_clientstatus()
 	if status < Globals.clientstatus_session_initialized:
