@@ -71,6 +71,7 @@ var time_of_last_ray : int = 0
 const Color_Yellow_Apricot := Color(251.0 / 255.0, 206.0 / 255.0, 177.0 / 255.0)
 var altPressed := false
 var ctrlPressed := false
+var ball_pos := Vector3(0, 0, 0)
 
 var prev_hit : Vector3 = Vector3(0, 0, 0)
 		
@@ -203,12 +204,14 @@ func _process(_delta):
 		scene_initialized = true
 	
 	if scene_initialized && !post_world_deploy_initialized && clientstatus >= Globals.clientstatus_world_deployed:
-		$BallRigidBody.global_transform.origin = Vector3(initialViewerPos.x, initialViewerPos.y + 5, initialViewerPos.z)
+		$BallRigidBody.global_transform.origin = Vector3(initialViewerPos.x, initialViewerPos.y + 1000, initialViewerPos.z)
 		#if (initialCameraAltitudeForced != 0):
 		#	$BallRigidBody.global_transform.origin.y = initialCameraAltitudeForced
 		$BallRigidBody.visible = true
 		post_world_deploy_initialized = true
 	
+	if scene_initialized && post_world_deploy_initialized && clientstatus >= Globals.clientstatus_world_deployed:
+		ball_pos = $BallRigidBody.global_transform.origin
 	
 	var _chunk_debug_mode : String = viewer.get_chunk_debug_mode()
 	var _cam_chunk_pos = viewer.get_camera_quadrant_name() + " " + viewer.get_camera_chunk_id()
@@ -414,6 +417,7 @@ func enter_world():
 	$DebugStats.add_property(self, "chunk_hit_pos", "")
 	$DebugStats.add_property(self, "chunk_hit_size", "")
 	$DebugStats.add_property(self, "chunk_hit_dist_from_cam", "")
+	$DebugStats.add_property(self, "ball_pos", "")
 	#$DebugStats.add_property(self, "tracked_chunk", "")
 	_init_world()
 	#init_world_thread = Thread.new()
@@ -450,12 +454,12 @@ func exit_world():
 		#$DebugStats.remove_property(self, "cam_chunk_dmesh_aabb_z")
 		#$DebugStats.remove_property(self, "cam_chunk_dmesh_aabb_y")
 		#$DebugStats.remove_property(self, "transform_step")
-		$DebugStats.remove_property(self, "collider_transform_pos")
-		$DebugStats.remove_property(self, "collider_transform_rot")
-		$DebugStats.remove_property(self, "collider_transform_scl")
-		$DebugStats.remove_property(self, "collider_mesh_transform_pos")
-		$DebugStats.remove_property(self, "collider_mesh_transform_rot")
-		$DebugStats.remove_property(self, "collider_mesh_transform_scl")
+		#$DebugStats.remove_property(self, "collider_transform_pos")
+		#$DebugStats.remove_property(self, "collider_transform_rot")
+		#$DebugStats.remove_property(self, "collider_transform_scl")
+		#$DebugStats.remove_property(self, "collider_mesh_transform_pos")
+		#$DebugStats.remove_property(self, "collider_mesh_transform_rot")
+		#$DebugStats.remove_property(self, "collider_mesh_transform_scl")
 		$DebugStats.remove_property(self, "mouse_pos_in_viewport")
 		#$DebugStats.remove_property(self, "quadDistFromCamera")
 		#$DebugStats.remove_property(self, "ray_origin")
@@ -469,6 +473,7 @@ func exit_world():
 		$DebugStats.remove_property(self, "chunk_hit_pos")
 		$DebugStats.remove_property(self, "chunk_hit_size")
 		$DebugStats.remove_property(self, "chunk_hit_dist_from_cam")
+		$DebugStats.remove_property(self, "ball_pos")
 		#$DebugStats.remove_property(self, "tracked_chunk")
 		#if init_world_thread.is_active():
 		#	init_world_thread.wait_to_finish()
