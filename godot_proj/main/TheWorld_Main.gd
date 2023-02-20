@@ -204,7 +204,7 @@ func _process(_delta):
 		scene_initialized = true
 	
 	if scene_initialized && !post_world_deploy_initialized && clientstatus >= Globals.clientstatus_world_deployed:
-		$BallRigidBody.global_transform.origin = Vector3(initialViewerPos.x, initialViewerPos.y + 1000, initialViewerPos.z)
+		$BallRigidBody.global_transform.origin = Vector3(initialViewerPos.x + 1, initialViewerPos.y + 1000, initialViewerPos.z + 1)
 		#if (initialCameraAltitudeForced != 0):
 		#	$BallRigidBody.global_transform.origin.y = initialCameraAltitudeForced
 		$BallRigidBody.visible = true

@@ -112,6 +112,7 @@ func exit_funct():
 	#unitialize_world()
 	GDN_globals().disconnect_from_server()
 	GDN_main().deinit()
+	#GDN_main().queue_free()	# crash on exit
 	
 func printTerrainDimensions() -> void:
 	num_vertices_per_chunk_side = GDN_globals().get_num_vertices_per_chunk_side()
