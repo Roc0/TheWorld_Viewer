@@ -19,6 +19,10 @@ config/icon="res://icon.png"
 Globals="*res://init/Globals.gd"
 DrawLine="*res://init/DrawLine.gd"
 
+[debug]
+
+settings/stdout/verbose_stdout=true
+
 [input]
 
 ui_left={
