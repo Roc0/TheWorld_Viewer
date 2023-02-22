@@ -1,8 +1,7 @@
-[gd_scene load_steps=14 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://utils/DebugStats.gd" type="Script" id=1]
 [ext_resource path="res://main/TheWorld_Main.gd" type="Script" id=2]
-[ext_resource path="res://TestEditModeUI.gd" type="Script" id=3]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 1, 1, 1 )
@@ -129,52 +128,3 @@ skeleton = NodePath("../..")
 
 [node name="CollisionShape" type="CollisionShape" parent="TheWorld_Main/BallRigidBody"]
 shape = SubResource( 10 )
-
-[node name="TestEditModeUI" type="MarginContainer" parent="TheWorld_Main"]
-visible = false
-script = ExtResource( 3 )
-
-[node name="PanelContainer" type="PanelContainer" parent="TheWorld_Main/TestEditModeUI"]
-margin_right = 14.0
-margin_bottom = 14.0
-
-[node name="TestVBoxContainer" type="VBoxContainer" parent="TheWorld_Main/TestEditModeUI/PanelContainer"]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 118.0
-margin_bottom = 63.0
-
-[node name="TestMarginContainerTitle" type="MarginContainer" parent="TheWorld_Main/TestEditModeUI/PanelContainer/TestVBoxContainer"]
-margin_right = 111.0
-margin_bottom = 14.0
-custom_constants/margin_right = 0
-custom_constants/margin_top = 0
-custom_constants/margin_left = 0
-custom_constants/margin_bottom = 0
-
-[node name="TestTitle" type="Label" parent="TheWorld_Main/TestEditModeUI/PanelContainer/TestVBoxContainer/TestMarginContainerTitle"]
-margin_right = 111.0
-margin_bottom = 14.0
-text = "Edit Mode"
-align = 1
-
-[node name="TestMarginC1" type="MarginContainer" parent="TheWorld_Main/TestEditModeUI/PanelContainer/TestVBoxContainer"]
-margin_top = 18.0
-margin_right = 111.0
-margin_bottom = 48.0
-custom_constants/margin_right = 20
-custom_constants/margin_top = 5
-custom_constants/margin_left = 20
-custom_constants/margin_bottom = 5
-
-[node name="TestGenerateButton" type="Button" parent="TheWorld_Main/TestEditModeUI/PanelContainer/TestVBoxContainer/TestMarginC1"]
-margin_left = 20.0
-margin_top = 5.0
-margin_right = 91.0
-margin_bottom = 25.0
-text = "Generate"
-
-[node name="HSeparator" type="HSeparator" parent="TheWorld_Main/TestEditModeUI/PanelContainer/TestVBoxContainer"]
-margin_top = 52.0
-margin_right = 111.0
-margin_bottom = 56.0

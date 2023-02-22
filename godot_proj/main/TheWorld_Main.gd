@@ -8,10 +8,10 @@ var initialViewerPos := Vector3(0, 0, 0)
 #var initialViewerPos := Vector3(1196000, 0, 5464000)
 #var initialViewerPos := Vector3(1196000, 0, 5467000)
 
-#var initialCameraAltitudeForced = 0
+var initialCameraAltitudeForced = 0
 #var initialCameraAltitudeForced = 2900
 #var initialCameraAltitudeForced = 1485
-var initialCameraAltitudeForced = 9417
+#var initialCameraAltitudeForced = 9417
 
 var initialLevel := 0
 #var init_world_thread : Thread
@@ -270,8 +270,8 @@ func _process(_delta):
 		#var space_state : PhysicsDirectSpaceState = viewer.get_world().direct_space_state
 		#ray_array : Dictionary = space_state.intersect_ray(ray_origin, ray_end)
 
-		if test_action_enabled:
-			DrawLine.Draw_Line3D(1, ray_origin, ray_end, Color_Yellow_Apricot, 1.0)
+		#if test_action_enabled:
+		#	DrawLine.Draw_Line3D(1, ray_origin, ray_end, Color_Yellow_Apricot, 1.0)
 
 		#if (test_action_enabled):
 		#	var chunk_mis : Array
