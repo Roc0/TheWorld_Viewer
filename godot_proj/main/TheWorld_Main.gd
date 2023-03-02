@@ -40,6 +40,8 @@ var num_splits : int
 var num_joins : int
 var num_quadrant : String
 var num_visible_quadrant : String
+var num_empty_quadrant : String
+var num_flushed_quadrant : String
 var num_active_chunks : int
 var process_durations_mcs : String
 var num_process_locked : int
@@ -355,6 +357,8 @@ func _process(_delta):
 	num_active_chunks = viewer.get_num_active_chunks()
 	num_quadrant = str(viewer.get_num_initialized_quadrant()) + ":" + str(viewer.get_num_quadrant())
 	num_visible_quadrant = str(viewer.get_num_initialized_visible_quadrant()) + ":" + str(viewer.get_num_visible_quadrant())
+	num_empty_quadrant = str(viewer.get_num_empty_quadrant())
+	num_flushed_quadrant = str(viewer.get_num_flushed_quadrant())
 	var update_quads1_duration : int = viewer.get_update_quads1_duration()
 	var update_quads2_duration : int = viewer.get_update_quads2_duration()
 	var update_quads3_duration : int = viewer.get_update_quads3_duration()
@@ -385,6 +389,8 @@ func enter_world():
 	$DebugStats.add_property(self, "num_active_chunks", "")
 	$DebugStats.add_property(self, "num_quadrant", "")
 	$DebugStats.add_property(self, "num_visible_quadrant", "")
+	$DebugStats.add_property(self, "num_empty_quadrant", "")
+	$DebugStats.add_property(self, "num_flushed_quadrant", "")
 	$DebugStats.add_property(self, "num_splits", "")
 	$DebugStats.add_property(self, "num_joins", "")
 	#$DebugStats.add_property(self, "cam_chunk_pos", "")
@@ -441,6 +447,8 @@ func exit_world():
 		$DebugStats.remove_property(self, "num_active_chunks")
 		$DebugStats.remove_property(self, "num_quadrant")
 		$DebugStats.remove_property(self, "num_visible_quadrant")
+		$DebugStats.remove_property(self, "num_empty_quadrant")
+		$DebugStats.remove_property(self, "num_flushed_quadrant")
 		$DebugStats.remove_property(self, "num_splits")
 		$DebugStats.remove_property(self, "num_joins")
 		#$DebugStats.remove_property(self, "cam_chunk_pos")
