@@ -128,3 +128,7 @@ skeleton = NodePath("../..")
 
 [node name="CollisionShape" type="CollisionShape" parent="TheWorld_Main/BallRigidBody"]
 shape = SubResource( 10 )
+
+[node name="Compass" type="Control" parent="TheWorld_Main"]
+margin_right = 40.0
+margin_bottom = 40.0
