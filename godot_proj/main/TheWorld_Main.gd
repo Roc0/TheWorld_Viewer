@@ -2,13 +2,16 @@ extends Spatial
 
 var debug_window_Active : bool = false
 var world_entered : bool = false
+
 var initialCameraDistanceFromTerrain = 300
 
-var initialViewerPos := Vector3(0, 0, 0)
+#var initialViewerPos := Vector3(0, 0, 0)
+var initialViewerPos := Vector3(2000, 0, 9000)
 #var initialViewerPos := Vector3(1196000, 0, 5464000)
 #var initialViewerPos := Vector3(1196000, 0, 5467000)
 
-var initialCameraAltitudeForced = 0
+#var initialCameraAltitudeForced = 0
+var initialCameraAltitudeForced = 2000
 #var initialCameraAltitudeForced = 2900
 #var initialCameraAltitudeForced = 1485
 #var initialCameraAltitudeForced = 9417
@@ -200,8 +203,10 @@ func _process(_delta):
 		if (initialCameraAltitudeForced != 0):
 			current_camera.global_transform.origin.y = initialCameraAltitudeForced
 		#current_camera.look_at(initialViewerPos, Vector3(0, 1, 0))
-		current_camera.look_at(Vector3(current_camera.global_transform.origin.x + 1, 0, current_camera.global_transform.origin.z + 1), Vector3(0, 1, 0))
-		current_camera.global_transform.basis = Basis(Vector3(-1.57, -1.57, 0))
+		#current_camera.look_at(Vector3(current_camera.global_transform.origin.x + 1, 0, current_camera.global_transform.origin.z + 1), Vector3(0, 1, 0))
+		# face to north
+		current_camera.look_at(Vector3(current_camera.global_transform.origin.x, current_camera.global_transform.origin.y, current_camera.global_transform.origin.z - 10000), Vector3(0, 1, 0))
+		#current_camera.global_transform.basis = Basis(Vector3(-1.57, -1.57, 0))
 		# DEBUGRIC
 		scene_initialized = true
 	
@@ -267,8 +272,8 @@ func _process(_delta):
 		#tracked_chunk = Globals.GDN_viewer().get_tracked_chunk_str()
 		
 		mouse_pos_in_viewport = get_viewport().get_mouse_position()
-		var ray_origin = current_camera.project_ray_origin(mouse_pos_in_viewport)
-		var ray_end = ray_origin + current_camera.project_ray_normal(mouse_pos_in_viewport) * current_camera.get_zfar() * 3
+		#var ray_origin = current_camera.project_ray_origin(mouse_pos_in_viewport)
+		#var ray_end = ray_origin + current_camera.project_ray_normal(mouse_pos_in_viewport) * current_camera.get_zfar() * 3
 		#var space_state : PhysicsDirectSpaceState = viewer.get_world().direct_space_state
 		#ray_array : Dictionary = space_state.intersect_ray(ray_origin, ray_end)
 
