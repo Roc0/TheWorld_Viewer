@@ -38,6 +38,7 @@ var post_world_deploy_initialized : bool = false
 var fps := 0.0
 var chunk_grid_global_pos : Vector3
 var active_camera_global_rot : Vector3
+var degree_from_north : float
 var active_camera_global_pos : Vector3
 var num_splits : int
 var num_joins : int
@@ -211,7 +212,7 @@ func _process(_delta):
 		scene_initialized = true
 	
 	if scene_initialized && !post_world_deploy_initialized && clientstatus >= Globals.clientstatus_world_deployed:
-		$BallRigidBody.global_transform.origin = Vector3(initialViewerPos.x + 1, initialViewerPos.y + 1000, initialViewerPos.z + 1)
+		$BallRigidBody.global_transform.origin = Vector3(initialViewerPos.x + 1, initialViewerPos.y - 1000, initialViewerPos.z + 1)
 		#if (initialCameraAltitudeForced != 0):
 		#	$BallRigidBody.global_transform.origin.y = initialCameraAltitudeForced
 		$BallRigidBody.visible = true
@@ -356,6 +357,7 @@ func _process(_delta):
 	if current_camera:
 		active_camera_global_rot = current_camera.global_transform.basis.get_euler()
 		active_camera_global_pos = current_camera.global_transform.origin
+		degree_from_north = current_camera.get_angle_from_north()
 	
 	num_splits = viewer.get_num_splits()
 	num_joins = viewer.get_num_joins()
@@ -389,6 +391,7 @@ func enter_world():
 	$DebugStats.add_property(self, "num_process_locked", "")
 	$DebugStats.add_property(self, "debug_draw_mode", "")
 	$DebugStats.add_property(self, "chunk_grid_global_pos", "")
+	$DebugStats.add_property(self, "degree_from_north", "")
 	$DebugStats.add_property(self, "active_camera_global_rot", "")
 	$DebugStats.add_property(self, "active_camera_global_pos", "")
 	$DebugStats.add_property(self, "num_active_chunks", "")
@@ -447,6 +450,7 @@ func exit_world():
 		$DebugStats.remove_property(self, "num_process_locked")
 		$DebugStats.remove_property(self, "debug_draw_mode")
 		$DebugStats.remove_property(self, "chunk_grid_global_pos")
+		$DebugStats.remove_property(self, "degree_from_north")
 		$DebugStats.remove_property(self, "active_camera_global_rot")
 		$DebugStats.remove_property(self, "active_camera_global_pos")
 		$DebugStats.remove_property(self, "num_active_chunks")
