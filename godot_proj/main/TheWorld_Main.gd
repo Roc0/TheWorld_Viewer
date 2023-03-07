@@ -6,12 +6,14 @@ var world_entered : bool = false
 var initialCameraDistanceFromTerrain = 300
 
 #var initialViewerPos := Vector3(0, 0, 0)
-var initialViewerPos := Vector3(2000, 0, 9000)
+#var initialViewerPos := Vector3(2000, 0, 9000)
+var initialViewerPos := Vector3(2000, 0, 15000)
 #var initialViewerPos := Vector3(1196000, 0, 5464000)
 #var initialViewerPos := Vector3(1196000, 0, 5467000)
 
 #var initialCameraAltitudeForced = 0
-var initialCameraAltitudeForced = 2000
+#var initialCameraAltitudeForced = 2000
+var initialCameraAltitudeForced = 7000
 #var initialCameraAltitudeForced = 2900
 #var initialCameraAltitudeForced = 1485
 #var initialCameraAltitudeForced = 9417
@@ -37,7 +39,8 @@ var scene_initialized : bool = false
 var post_world_deploy_initialized : bool = false
 var fps := 0.0
 var chunk_grid_global_pos : Vector3
-var active_camera_global_rot : Vector3
+#var active_camera_global_rot : Vector3
+var active_camera_global_rot : String
 var degree_from_north : float
 var active_camera_global_pos : Vector3
 var num_splits : int
@@ -355,7 +358,8 @@ func _process(_delta):
 
 	chunk_grid_global_pos = Globals.GDN_viewer().global_transform.origin
 	if current_camera:
-		active_camera_global_rot = current_camera.global_transform.basis.get_euler()
+		#active_camera_global_rot = current_camera.global_transform.basis.get_euler()
+		active_camera_global_rot = str(int(current_camera.get_yaw(false))) + " " + str(int(current_camera.get_pitch(false)))
 		active_camera_global_pos = current_camera.global_transform.origin
 		degree_from_north = current_camera.get_angle_from_north()
 	
