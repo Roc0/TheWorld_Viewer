@@ -210,6 +210,8 @@ func _process(_delta):
 		#current_camera.look_at(Vector3(current_camera.global_transform.origin.x + 1, 0, current_camera.global_transform.origin.z + 1), Vector3(0, 1, 0))
 		# face to north
 		current_camera.look_at(Vector3(current_camera.global_transform.origin.x, current_camera.global_transform.origin.y, current_camera.global_transform.origin.z - 10000), Vector3(0, 1, 0))
+		current_camera.set_yaw(-139, false)
+		current_camera.set_pitch(-7, false)
 		#current_camera.global_transform.basis = Basis(Vector3(-1.57, -1.57, 0))
 		# DEBUGRIC
 		scene_initialized = true
@@ -359,7 +361,7 @@ func _process(_delta):
 	chunk_grid_global_pos = Globals.GDN_viewer().global_transform.origin
 	if current_camera:
 		#active_camera_global_rot = current_camera.global_transform.basis.get_euler()
-		active_camera_global_rot = str(int(current_camera.get_yaw(false))) + " " + str(int(current_camera.get_pitch(false)))
+		active_camera_global_rot = str(current_camera.global_transform.basis.get_euler()) + " | " + "yaw " + str(int(current_camera.get_yaw(false))) + " pitch " + str(int(current_camera.get_pitch(false)))
 		active_camera_global_pos = current_camera.global_transform.origin
 		degree_from_north = current_camera.get_angle_from_north()
 	
