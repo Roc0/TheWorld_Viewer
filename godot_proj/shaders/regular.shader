@@ -10,9 +10,10 @@ uniform sampler2D u_terrain_colormap;
 uniform mat4 u_terrain_inverse_transform;
 uniform mat3 u_terrain_normal_basis;
 uniform float u_grid_step_in_wu;
+uniform float u_editmode_selected = 0.0;
 
-varying float v_hole;
-varying vec3 v_color;
+//varying float v_hole;
+//varying vec3 v_color;
 
 vec3 unpack_normal(vec4 rgba) {
 	return rgba.xzy * 2.0 - vec3(1.0);
@@ -40,9 +41,9 @@ void vertex() {
 	// which is good for performance at a negligible quality cost,
 	// provided that geometry is a regular grid that decimates with LOD.
 	// (downside is LOD will also decimate tint and splat, but it's not bad overall)
-	vec4 tint = texture(u_terrain_colormap, UV);
-	v_hole = tint.a;
-	v_color = tint.rgb;
+	//vec4 tint = texture(u_terrain_colormap, UV);
+	//v_hole = tint.a;
+	//v_color = tint.rgb;
 
 	// Need to use u_terrain_normal_basis to handle scaling.
 	// For some reason I also had to invert Z when sampling terrain normals... not sure why
@@ -54,10 +55,10 @@ void vertex() {
 }
 
 void fragment() {
-	if (v_hole < 0.5) {
-		// TODO Add option to use vertex discarding instead, using NaNs
-		discard;
-	}
+	//if (v_hole < 0.5) {
+	//	// TODO Add option to use vertex discarding instead, using NaNs
+	//	discard;
+	//}
 
 	vec3 terrain_normal_world = 
 		u_terrain_normal_basis * (unpack_normal(texture(u_terrain_normalmap, UV)) * vec3(1,1,-1));
@@ -67,8 +68,14 @@ void fragment() {
 	//vec4 value = texture(u_map, UV);
 	// TODO Blend toward checker pattern to show the alpha channel
 	//ALBEDO = value.rgb;
-	
-	ALBEDO = v_color;
+
+	if (u_editmode_selected > 0.0) {
+		ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+	} else {
+		ALBEDO = vec3(1.0, 1.0, 1.0);		// white
+	}
+
+	//ALBEDO = v_color;
 	//ALBEDO = vec3(1.0, 0.0, 0.0); // DEBUG: use red for material albedo
 	ROUGHNESS = 0.5;
 	NORMAL = (INV_CAMERA_MATRIX * (vec4(normal, 0.0))).xyz;
