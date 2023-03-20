@@ -1,5 +1,6 @@
 shader_type spatial;
 //render_mode  skip_vertex_transform;		// Fireflies along seams fix: https://github.com/Zylann/godot_heightmap_plugin/issues/312 (https://github.com/godotengine/godot/issues/35067)
+											// https://github.com/godotengine/godot/issues/35067#issuecomment-1058617216
 
 // Development shader used to debug or help authoring.
 
@@ -12,6 +13,7 @@ uniform mat3 u_terrain_normal_basis;
 uniform float u_grid_step_in_wu;
 uniform float u_editmode_selected = 0.0;
 uniform float u_terrain_height = 1.0;
+uniform float u_vertex_scale = 1.0;
 
 //varying float v_hole;
 //varying vec3 v_color;
@@ -45,13 +47,10 @@ vec3 get_normal(vec2 uv){
 void vertex() {
 	vec4 wpos = WORLD_MATRIX * vec4(VERTEX, 1);
 	vec2 cell_coords = (u_terrain_inverse_transform * wpos).xz;
-	
 	cell_coords /= vec2(u_grid_step_in_wu);		// WARNING
-	
 	// Must add a half-offset so that we sample the center of pixels,
 	// otherwise bilinear filtering of the textures will give us mixed results (#183)
-	cell_coords += vec2(0.5);		// TODORIC
-
+	cell_coords += vec2(0.5);
 	// Normalized UV (linear interpolation expressing a value from 0 to 1)
 	UV = cell_coords / vec2(textureSize(u_terrain_heightmap, 0));
 
@@ -59,7 +58,7 @@ void vertex() {
 	//float h = texture(u_terrain_heightmap, UV).r;
 	float h = get_height(UV);
 	VERTEX.y = h;
-	wpos.y = h;
+	//wpos.y = h;
 
 	// Putting this in vertex saves 2 fetches from the fragment shader,
 	// which is good for performance at a negligible quality cost,
@@ -73,19 +72,17 @@ void vertex() {
 	// For some reason I also had to invert Z when sampling terrain normals... not sure why
 	//NORMAL = u_terrain_normal_basis * unpack_normal(texture(u_terrain_normalmap, UV));
 	NORMAL = get_normal(UV);
-		
+	
+	VERTEX *= u_vertex_scale;
+	
 	//VERTEX = (WORLD_MATRIX * vec4(VERTEX, 1.0)).xyz;		// Fireflies along seams fix: https://github.com/Zylann/godot_heightmap_plugin/issues/312 (https://github.com/godotengine/godot/issues/35067)
 	//VERTEX = (INV_CAMERA_MATRIX * vec4(VERTEX, 1.0)).xyz;	// Fireflies along seams fix: https://github.com/Zylann/godot_heightmap_plugin/issues/312 (https://github.com/godotengine/godot/issues/35067)
-	
-	//if (u_editmode_selected > 0.0) {
-	//	COLOR = vec4(1.0, 0.749, 0.0, 1.0);
-	//}
 }
 
 void fragment() {
 	//if (v_hole < 0.5) {
-		// TODO Add option to use vertex discarding instead, using NaNs
-		//discard;
+	//	// TODO Add option to use vertex discarding instead, using NaNs
+	//	discard;
 	//}
 
 	//vec3 terrain_normal_world = u_terrain_normal_basis * unpack_normal(texture(u_terrain_normalmap, UV));
@@ -101,6 +98,7 @@ void fragment() {
 	} else {
 		ALBEDO = value.rgb;
 	}
+
 	//ALBEDO = v_color;
 	//ALBEDO = vec3(1.0, 0.0, 0.0); // DEBUG: use red for material albedo
 	ROUGHNESS = 0.5;
