@@ -13,6 +13,9 @@ uniform sampler2D u_terrain_splatmap;
 uniform sampler2D u_terrain_globalmap : hint_albedo;
 uniform mat4 u_terrain_inverse_transform;
 uniform mat3 u_terrain_normal_basis;
+uniform float u_grid_step_in_wu;
+uniform float u_editmode_selected = 0.0;
+uniform float u_terrain_height = 1.0;
 
 // the reason bump is preferred with albedo is, roughness looks better with normal maps.
 // If we want no normal mapping, roughness would only give flat mirror surfaces,
@@ -152,18 +155,23 @@ vec4 texture_antitile(sampler2D albedo_tex, sampler2D normal_tex, vec2 uv, out v
 	return depth_blend2(col0, col0.a, col1, col1.a, t);
 }
 
+float get_height(vec2 uv){
+	return texture(u_terrain_heightmap, uv).r * u_terrain_height;
+}
+
+vec3 get_normal(vec2 uv){
+	vec3 n = u_terrain_normal_basis * unpack_normal(texture(u_terrain_normalmap, uv));
+	return normalize(n);
+}
+
 void vertex() {
-	vec4 wpos = WORLD_MATRIX * vec4(VERTEX, 1);
-	vec2 cell_coords = (u_terrain_inverse_transform * wpos).xz;
-	// Must add a half-offset so that we sample the center of pixels,
-	// otherwise bilinear filtering of the textures will give us mixed results (#183)
-	cell_coords += vec2(0.5);
+	vec4 wpos = WORLD_MATRIX * vec4(VERTEX, 1);		// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need to trasform in world coord
+	vec2 cell_coords = (u_terrain_inverse_transform * wpos).xz;		// to calculate cell coords in the heigthmap/normlamap we need to trasfom global coords of the vertex (wpos) in local coords to che quadrant: we do this by using affine inverse matrix of the global trasfomr od the quadtree
+	cell_coords /= vec2(u_grid_step_in_wu);		// WARNING: we also need to consider the step (dividing by it) to get correct value from the textures: in the textures heigths/normlas are adjacent in global/local coords are separated by the step
+	cell_coords += vec2(0.5);		// Must add a half-offset so that we sample the center of pixels, otherwise bilinear filtering of the textures will give us mixed results (#183)
+	UV = cell_coords / vec2(textureSize(u_terrain_heightmap, 0));	// Normalized UV to be in the range 0/1
 
-	// Normalized UV
-	UV = cell_coords / vec2(textureSize(u_terrain_heightmap, 0));
-
-	// Height displacement
-	float h = texture(u_terrain_heightmap, UV).r;
+	float h = get_height(UV);		// Height displacement
 	VERTEX.y = h;
 	wpos.y = h;
 
