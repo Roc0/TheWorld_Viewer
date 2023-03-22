@@ -13,7 +13,7 @@ uniform mat3 u_terrain_normal_basis;
 uniform float u_grid_step_in_wu;
 uniform float u_editmode_selected = 0.0;
 uniform float u_terrain_height = 1.0;
-uniform float u_vertex_scale = 1.0;
+//uniform float u_vertex_scale = 1.0;
 
 //varying float v_hole;
 //varying vec3 v_color;
@@ -73,10 +73,12 @@ void vertex() {
 	//NORMAL = u_terrain_normal_basis * unpack_normal(texture(u_terrain_normalmap, UV));
 	NORMAL = get_normal(UV);
 	
-	VERTEX *= u_vertex_scale;
+	//VERTEX *= u_vertex_scale;
 	
 	//VERTEX = (WORLD_MATRIX * vec4(VERTEX, 1.0)).xyz;		// Fireflies along seams fix: https://github.com/Zylann/godot_heightmap_plugin/issues/312 (https://github.com/godotengine/godot/issues/35067)
 	//VERTEX = (INV_CAMERA_MATRIX * vec4(VERTEX, 1.0)).xyz;	// Fireflies along seams fix: https://github.com/Zylann/godot_heightmap_plugin/issues/312 (https://github.com/godotengine/godot/issues/35067)
+	////VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;				// Fireflies along seams fix: alternative to two up lines
+	//NORMAL = normalize((MODELVIEW_MATRIX * vec4(NORMAL, 0.0)).xyz);	// Fireflies along seams fix:
 }
 
 void fragment() {

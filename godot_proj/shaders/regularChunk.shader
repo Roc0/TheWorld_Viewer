@@ -2,19 +2,17 @@ shader_type spatial;
 //render_mode  skip_vertex_transform;		// Fireflies along seams fix: https://github.com/Zylann/godot_heightmap_plugin/issues/312 (https://github.com/godotengine/godot/issues/35067)
 											// https://github.com/godotengine/godot/issues/35067#issuecomment-1058617216
 
-// Development shader used to debug or help authoring.
-
 uniform sampler2D u_terrain_heightmap;
 uniform sampler2D u_terrain_normalmap;
 uniform sampler2D u_terrain_colormap;
-//uniform sampler2D u_map; // This map will control color
+uniform sampler2D u_terrain_splatmap;
 uniform mat4 u_terrain_inverse_transform;
 uniform mat3 u_terrain_normal_basis;
 uniform float u_grid_step_in_wu;
 uniform float u_editmode_selected = 0.0;
 uniform float u_terrain_height = 1.0;
-uniform float u_vertex_scale = 1.002;
-
+//uniform float u_vertex_scale = 1.002;
+//uniform float u_vertex_scale = 1.0;
 //varying float v_hole;
 //varying vec3 v_color;
 
@@ -73,10 +71,12 @@ void vertex() {
 	//NORMAL = u_terrain_normal_basis * unpack_normal(texture(u_terrain_normalmap, UV));
 	NORMAL = get_normal(UV);
 		
-	VERTEX *= u_vertex_scale;
+	//VERTEX *= u_vertex_scale;
 
-	//VERTEX = (WORLD_MATRIX * vec4(VERTEX, 1.0)).xyz;		// Fireflies along seams fix: https://github.com/Zylann/godot_heightmap_plugin/issues/312 (https://github.com/godotengine/godot/issues/35067)
-	//VERTEX = (INV_CAMERA_MATRIX * vec4(VERTEX, 1.0)).xyz;	// Fireflies along seams fix: https://github.com/Zylann/godot_heightmap_plugin/issues/312 (https://github.com/godotengine/godot/issues/35067)
+	//VERTEX = (WORLD_MATRIX * vec4(VERTEX, 1.0)).xyz;				// Fireflies along seams fix: https://github.com/Zylann/godot_heightmap_plugin/issues/312 (https://github.com/godotengine/godot/issues/35067)
+	//VERTEX = (INV_CAMERA_MATRIX * vec4(VERTEX, 1.0)).xyz;			// Fireflies along seams fix: https://github.com/Zylann/godot_heightmap_plugin/issues/312 (https://github.com/godotengine/godot/issues/35067)
+	////VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;				// Fireflies along seams fix: alternative to two up lines
+	//NORMAL = normalize((MODELVIEW_MATRIX * vec4(NORMAL, 0.0)).xyz);	// Fireflies along seams fix:
 }
 
 void fragment() {
