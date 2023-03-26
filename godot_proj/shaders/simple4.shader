@@ -40,8 +40,8 @@ uniform bool u_triplanar = false;
 // Each component corresponds to a ground texture. Set greater than zero to enable.
 uniform vec4 u_tile_reduction = vec4(0.0, 0.0, 0.0, 0.0);
 
-uniform float u_globalmap_blend_start;
-uniform float u_globalmap_blend_distance;
+uniform float u_globalmap_blend_start = 0;
+uniform float u_globalmap_blend_distance = 0;
 
 uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);
 
