@@ -99,6 +99,7 @@ __meta__ = {
 }
 
 [node name="Sun" type="DirectionalLight" parent="TheWorld_Main"]
+light_color = Color( 0.866667, 0.815686, 0.027451, 1 )
 
 [node name="CubeMeshTest" type="MeshInstance" parent="TheWorld_Main"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.9988, 0, 0 )
@@ -130,5 +131,6 @@ skeleton = NodePath("../..")
 shape = SubResource( 10 )
 
 [node name="Compass" type="Control" parent="TheWorld_Main"]
+visible = false
 margin_right = 40.0
 margin_bottom = 40.0
