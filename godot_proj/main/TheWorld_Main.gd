@@ -86,7 +86,8 @@ var prev_hit : Vector3 = Vector3(0, 0, 0)
 		
 func _ready():
 	$BallRigidBody.visible = false
-	get_tree().get_root().connect("size_changed", self, "myfunc")
+	var e := get_tree().get_root().connect("size_changed", self, "myfunc")
+	#print(e)
 
 func myfunc():
 	print("Resizing: ", get_viewport().size)
@@ -208,10 +209,16 @@ func _process(_delta):
 			current_camera.global_transform.origin.y = initialCameraAltitudeForced
 		#current_camera.look_at(initialViewerPos, Vector3(0, 1, 0))
 		#current_camera.look_at(Vector3(current_camera.global_transform.origin.x + 1, 0, current_camera.global_transform.origin.z + 1), Vector3(0, 1, 0))
+		
 		# face to north
-		current_camera.look_at(Vector3(current_camera.global_transform.origin.x, current_camera.global_transform.origin.y, current_camera.global_transform.origin.z - 10000), Vector3(0, 1, 0))
-		current_camera.set_yaw(-139, false)
-		current_camera.set_pitch(-7, false)
+		#current_camera.look_at(Vector3(current_camera.global_transform.origin.x, current_camera.global_transform.origin.y, current_camera.global_transform.origin.z - 10000), Vector3(0, 1, 0))
+		
+		#current_camera.set_yaw(-139, false)
+		#current_camera.set_pitch(-7, false)
+		current_camera.global_transform.origin = Vector3(-7, 2200, -40)
+		current_camera.set_yaw(-141, false)
+		current_camera.set_pitch(-30, false)
+		
 		#current_camera.global_transform.basis = Basis(Vector3(-1.57, -1.57, 0))
 		# DEBUGRIC
 		scene_initialized = true

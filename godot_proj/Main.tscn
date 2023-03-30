@@ -1,7 +1,22 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://utils/DebugStats.gd" type="Script" id=1]
 [ext_resource path="res://main/TheWorld_Main.gd" type="Script" id=2]
+[ext_resource path="res://Demo1.gd" type="Script" id=3]
+[ext_resource path="res://HTerrain_test/texture_set/Main_slot0_normal_roughness.packed_tex" type="Texture" id=4]
+[ext_resource path="res://addons/zylann.hterrain/hterrain.gd" type="Script" id=5]
+[ext_resource path="res://addons/zylann.hterrain/hterrain_texture_set.gd" type="Script" id=6]
+[ext_resource path="res://HTerrain_test/texture_set/Main_slot0_albedo_bump.packed_tex" type="Texture" id=7]
+[ext_resource path="res://HTerrain_test/terrain_data/data.hterrain" type="Resource" id=8]
+[ext_resource path="res://HTerrain_test/texture_set/Main_slot1_albedo_bump.packed_tex" type="Texture" id=9]
+[ext_resource path="res://HTerrain_test/texture_set/Main_slot2_albedo_bump.packed_tex" type="Texture" id=10]
+[ext_resource path="res://HTerrain_test/texture_set/Main_slot3_albedo_bump.packed_tex" type="Texture" id=11]
+[ext_resource path="res://HTerrain_test/texture_set/Main_slot3_normal_roughness.packed_tex" type="Texture" id=12]
+[ext_resource path="res://HTerrain_test/texture_set/Main_slot2_normal_roughness.packed_tex" type="Texture" id=13]
+[ext_resource path="res://HTerrain_test/texture_set/Main_slot1_normal_roughness.packed_tex" type="Texture" id=14]
+[ext_resource path="res://addons/zylann.hterrain/hterrain_detail_layer.gd" type="Script" id=15]
+[ext_resource path="res://addons/zylann.hterrain/tools/icons/icon_detail_layer_node.svg" type="Texture" id=16]
+[ext_resource path="res://textures/grass/grass_billboard.png" type="Texture" id=17]
 
 [sub_resource type="CubeMesh" id=1]
 size = Vector3( 1, 1, 1 )
@@ -81,6 +96,22 @@ material = SubResource( 8 )
 [sub_resource type="SphereShape" id=10]
 radius = 5.0
 
+[sub_resource type="Resource" id=11]
+script = ExtResource( 6 )
+mode = 0
+textures = [ [ ExtResource( 7 ), ExtResource( 9 ), ExtResource( 10 ), ExtResource( 11 ) ], [ ExtResource( 4 ), ExtResource( 14 ), ExtResource( 13 ), ExtResource( 12 ) ] ]
+
+[sub_resource type="ProceduralSky" id=12]
+
+[sub_resource type="Environment" id=13]
+background_mode = 2
+background_sky = SubResource( 12 )
+fog_depth_end = 648.4
+fog_height_enabled = true
+fog_height_max = -20.0
+tonemap_mode = 3
+ssao_enabled = true
+
 [node name="Main" type="Node"]
 
 [node name="TheWorld_Main" type="Spatial" parent="."]
@@ -130,7 +161,43 @@ skeleton = NodePath("../..")
 [node name="CollisionShape" type="CollisionShape" parent="TheWorld_Main/BallRigidBody"]
 shape = SubResource( 10 )
 
-[node name="Compass" type="Control" parent="TheWorld_Main"]
-visible = false
-margin_right = 40.0
-margin_bottom = 40.0
+[node name="Demo2" type="Spatial" parent="TheWorld_Main"]
+script = ExtResource( 3 )
+
+[node name="HTerrain" type="Spatial" parent="TheWorld_Main"]
+script = ExtResource( 5 )
+ambient_wind = 0.235
+lod_scale = 2.0
+centered = true
+_terrain_data = ExtResource( 8 )
+chunk_size = 32
+collision_enabled = true
+collision_layer = 1
+collision_mask = 1
+shader_type = "Classic4"
+custom_shader = null
+custom_globalmap_shader = null
+texture_set = SubResource( 11 )
+render_layers = 1
+shader_params/u_ground_uv_scale_per_texture = Plane( 20, 20, 20, 20 )
+shader_params/u_depth_blending = true
+shader_params/u_triplanar = false
+shader_params/u_tile_reduction = Plane( 1, 1, 1, 1 )
+shader_params/u_globalmap_blend_start = null
+shader_params/u_globalmap_blend_distance = null
+shader_params/u_colormap_opacity_per_texture = Plane( 1, 1, 1, 1 )
+
+[node name="HTerrainDetailLayer" type="Spatial" parent="TheWorld_Main/HTerrain"]
+script = ExtResource( 15 )
+__meta__ = {
+"_editor_icon": ExtResource( 16 )
+}
+texture = ExtResource( 17 )
+view_distance = 500.0
+shader_params/u_globalmap_tint_bottom = 0.389
+shader_params/u_globalmap_tint_top = 0.226
+shader_params/u_bottom_ao = 0.166
+shader_params/u_instance_scale = Vector3( 1, 1, 1 )
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="TheWorld_Main"]
+environment = SubResource( 13 )
