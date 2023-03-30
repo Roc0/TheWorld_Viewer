@@ -1,0 +1,9 @@
+{
+	"contains_albedo": false,
+	"resolution": 1024,
+	"src": {
+		"a": "res://textures/ground/src/PaintedPlaster017_1K/PaintedPlaster017_1K_Roughness.png",
+		"normalmap_flip_y": true,
+		"rgb": "res://textures/ground/src/PaintedPlaster017_1K/PaintedPlaster017_1K_NormalGL.png"
+	}
+}
