@@ -215,7 +215,9 @@ func _process(_delta):
 		
 		#current_camera.set_yaw(-139, false)
 		#current_camera.set_pitch(-7, false)
-		current_camera.global_transform.origin = Vector3(-7, 2200, -40)
+		
+		#current_camera.global_transform.origin = Vector3(-7, 2200, -40)
+		current_camera.global_transform.origin = Vector3(-7, 140, -40)
 		current_camera.set_yaw(-141, false)
 		current_camera.set_pitch(-30, false)
 		
