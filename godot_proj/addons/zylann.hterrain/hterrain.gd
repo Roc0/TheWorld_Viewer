@@ -963,7 +963,18 @@ func _update_material_params():
 					for slot_index in slots_count:
 						var texture := _texture_set.get_texture(slot_index, type)
 						var shader_param := _get_ground_texture_shader_param_name(type, slot_index)
-						_material.set_shader_param(shader_param, texture)
+						#_material.set_shader_param(shader_param, texture)
+						# DEBUGRIC
+						var h = texture.get_height()
+						var w = texture.get_height()
+						var size = texture.get_size()
+						var alpha = texture.has_alpha()
+						var image = texture.get_data()
+						var texture1 : ImageTexture = ImageTexture.new()
+						texture1.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
+						#texture1.create_from_image(image, 0)
+						_material.set_shader_param(shader_param, texture1)
+						# DEBUGRIC
 
 			HTerrainTextureSet.MODE_TEXTURE_ARRAYS:
 				for type in HTerrainTextureSet.TYPE_COUNT:
