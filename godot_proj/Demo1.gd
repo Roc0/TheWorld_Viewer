@@ -54,50 +54,41 @@ func _ready():
 	if not is_visible():
 		return
 		
-	var file_name : String = "res://textures/ground/grass_albedo_bump.ground"
+	var file_name : String = "res://textures/ground/Ground003_2K_albedo_bump.ground"
 	var image : Image = read_image(file_name)
 	var grass_albedo_bump_tex : ImageTexture = ImageTexture.new()
 	grass_albedo_bump_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
-	file_name = "res://textures/ground/grass_normal_roughness.ground"
+	file_name = "res://textures/ground/Ground003_2K_normal_roughness.ground"
 	image = read_image(file_name)
 	var grass_normal_roughness_tex : ImageTexture = ImageTexture.new()
 	grass_normal_roughness_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
 	
-	file_name = "res://textures/ground/sand_albedo_bump.ground"
+	file_name = "res://textures/ground/Ground049C_1K_albedo_bump.ground"
 	image = read_image(file_name)
 	var sand_albedo_bump_tex : ImageTexture = ImageTexture.new()
 	sand_albedo_bump_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
-	file_name = "res://textures/ground/sand_normal_roughness.ground"
+	file_name = "res://textures/ground/Ground049C_1K_normal_roughness.ground"
 	image = read_image(file_name)
 	var sand_normal_roughness_tex : ImageTexture = ImageTexture.new()
 	sand_normal_roughness_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
 
-	file_name = "res://textures/ground/leaves_albedo_bump.ground"
+	file_name = "res://textures/ground/PaintedPlaster017_1K_albedo_bump.ground"
 	image = read_image(file_name)
-	var leaves_albedo_bump_tex : ImageTexture = ImageTexture.new()
-	leaves_albedo_bump_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
-	file_name = "res://textures/ground/leaves_normal_roughness.ground"
+	var snow_albedo_bump_tex : ImageTexture = ImageTexture.new()
+	snow_albedo_bump_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
+	file_name = "res://textures/ground/PaintedPlaster017_1K_normal_roughness.ground"
 	image = read_image(file_name)
-	var leaves_normal_roughness_tex : ImageTexture = ImageTexture.new()
-	leaves_normal_roughness_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
+	var snow_normal_roughness_tex : ImageTexture = ImageTexture.new()
+	snow_normal_roughness_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
 
-	file_name = "res://textures/ground/Snow005_1K_albedo_bump.ground"
+	file_name = "res://textures/ground/Rock028_1K_albedo_bump.ground"
 	image = read_image(file_name)
-	var Snow005_1K_albedo_bump_tex : ImageTexture = ImageTexture.new()
-	Snow005_1K_albedo_bump_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
-	file_name = "res://textures/ground/Snow005_1K_normal_roughness.ground"
+	var rocks_albedo_bump_tex : ImageTexture = ImageTexture.new()
+	rocks_albedo_bump_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
+	file_name = "res://textures/ground/Rock028_1K_normal_roughness.ground"
 	image = read_image(file_name)
-	var Snow005_1K_normal_roughness_tex : ImageTexture = ImageTexture.new()
-	Snow005_1K_normal_roughness_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
-
-	file_name = "res://textures/ground/rocks07_albedo_bump.ground"
-	image = read_image(file_name)
-	var rocks07_albedo_bump_tex : ImageTexture = ImageTexture.new()
-	rocks07_albedo_bump_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
-	file_name = "res://textures/ground/rocks07_normal_roughness.ground"
-	image = read_image(file_name)
-	var rocks07_normal_roughness_tex : ImageTexture = ImageTexture.new()
-	rocks07_normal_roughness_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
+	var rocks_normal_roughness_tex : ImageTexture = ImageTexture.new()
+	rocks_normal_roughness_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
 
 	var terrain_data = HTerrainData.new()
 	terrain_data.resize(513)
@@ -138,10 +129,12 @@ func _ready():
 			# Sand on the slopes
 			var sand_amount = clamp(1.0 - slope, 0.0, 1.0)
 			# Leaves below sea level
-			var leaves_amount = clamp(0.0 - h, 0.0, 1.0)
+			var snow_amount = clamp(0.0 - h, 0.0, 1.0)
+			var rocks_amount = clamp(slope, 0.0, 1.0)
 			splat = splat.linear_interpolate(Color(0,1,0,0), sand_amount)
-			splat = splat.linear_interpolate(Color(0,0,1,0), leaves_amount)
-
+			splat = splat.linear_interpolate(Color(0,0,1,0), snow_amount)
+			splat = splat.linear_interpolate(Color(0,0,0,1), rocks_amount)
+			
 			heightmap.set_pixel(x, z, Color(h, 0, 0))
 			normalmap.set_pixel(x, z, HTerrainData.encode_normal(normal))
 			splatmap.set_pixel(x, z, splat)
@@ -173,14 +166,14 @@ func _ready():
 	
 	texture_set.insert_slot(-1)
 	#texture_set.set_texture(2, HTerrainTextureSet.TYPE_ALBEDO_BUMP, leaves_texture)
-	texture_set.set_texture(2, HTerrainTextureSet.TYPE_ALBEDO_BUMP, leaves_albedo_bump_tex)
-	texture_set.set_texture(2, HTerrainTextureSet.TYPE_NORMAL_ROUGHNESS, leaves_normal_roughness_tex)
+	texture_set.set_texture(2, HTerrainTextureSet.TYPE_ALBEDO_BUMP, snow_albedo_bump_tex)
+	texture_set.set_texture(2, HTerrainTextureSet.TYPE_NORMAL_ROUGHNESS, snow_normal_roughness_tex)
 	#texture_set.set_texture(2, HTerrainTextureSet.TYPE_ALBEDO_BUMP, Snow005_1K_albedo_bump_tex)
 	#texture_set.set_texture(2, HTerrainTextureSet.TYPE_NORMAL_ROUGHNESS, Snow005_1K_normal_roughness_tex)
 	
-	#texture_set.insert_slot(-1)
-	#texture_set.set_texture(3, HTerrainTextureSet.TYPE_ALBEDO_BUMP, rocks07_albedo_bump_tex)
-	#texture_set.set_texture(3, HTerrainTextureSet.TYPE_NORMAL_ROUGHNESS, rocks07_normal_roughness_tex)
+	texture_set.insert_slot(-1)
+	texture_set.set_texture(3, HTerrainTextureSet.TYPE_ALBEDO_BUMP, rocks_albedo_bump_tex)
+	texture_set.set_texture(3, HTerrainTextureSet.TYPE_NORMAL_ROUGHNESS, rocks_normal_roughness_tex)
 
 	# Create terrain node
 	var terrainDemo2 = HTerrain.new()
