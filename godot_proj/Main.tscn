@@ -3,17 +3,17 @@
 [ext_resource path="res://utils/DebugStats.gd" type="Script" id=1]
 [ext_resource path="res://main/TheWorld_Main.gd" type="Script" id=2]
 [ext_resource path="res://Demo1.gd" type="Script" id=3]
-[ext_resource path="res://HTerrain_test/texture_set/Main_slot0_normal_roughness.packed_tex" type="Texture" id=4]
+[ext_resource path="res://HTerrain_test/terrain_data/data.hterrain" type="Resource" id=4]
 [ext_resource path="res://addons/zylann.hterrain/hterrain.gd" type="Script" id=5]
 [ext_resource path="res://addons/zylann.hterrain/hterrain_texture_set.gd" type="Script" id=6]
-[ext_resource path="res://HTerrain_test/texture_set/Main_slot0_albedo_bump.packed_tex" type="Texture" id=7]
-[ext_resource path="res://HTerrain_test/terrain_data/data.hterrain" type="Resource" id=8]
-[ext_resource path="res://HTerrain_test/texture_set/Main_slot1_albedo_bump.packed_tex" type="Texture" id=9]
-[ext_resource path="res://HTerrain_test/texture_set/Main_slot2_albedo_bump.packed_tex" type="Texture" id=10]
-[ext_resource path="res://HTerrain_test/texture_set/Main_slot3_albedo_bump.packed_tex" type="Texture" id=11]
-[ext_resource path="res://HTerrain_test/texture_set/Main_slot3_normal_roughness.packed_tex" type="Texture" id=12]
-[ext_resource path="res://HTerrain_test/texture_set/Main_slot2_normal_roughness.packed_tex" type="Texture" id=13]
-[ext_resource path="res://HTerrain_test/texture_set/Main_slot1_normal_roughness.packed_tex" type="Texture" id=14]
+[ext_resource path="res://HTerrain_test/texture_set/Main_slot0_normal_roughness.packed_tex" type="Texture" id=7]
+[ext_resource path="res://HTerrain_test/texture_set/Main_slot1_albedo_bump.packed_tex" type="Texture" id=8]
+[ext_resource path="res://HTerrain_test/texture_set/Main_slot2_albedo_bump.packed_tex" type="Texture" id=9]
+[ext_resource path="res://HTerrain_test/texture_set/Main_slot1_normal_roughness.packed_tex" type="Texture" id=10]
+[ext_resource path="res://HTerrain_test/texture_set/Main_slot2_normal_roughness.packed_tex" type="Texture" id=11]
+[ext_resource path="res://HTerrain_test/texture_set/Main_slot3_albedo_bump.packed_tex" type="Texture" id=12]
+[ext_resource path="res://HTerrain_test/texture_set/Main_slot3_normal_roughness.packed_tex" type="Texture" id=13]
+[ext_resource path="res://HTerrain_test/texture_set/Main_slot0_albedo_bump.packed_tex" type="Texture" id=14]
 [ext_resource path="res://addons/zylann.hterrain/hterrain_detail_layer.gd" type="Script" id=15]
 [ext_resource path="res://addons/zylann.hterrain/tools/icons/icon_detail_layer_node.svg" type="Texture" id=16]
 [ext_resource path="res://textures/grass/grass_billboard.png" type="Texture" id=17]
@@ -96,10 +96,10 @@ material = SubResource( 8 )
 [sub_resource type="SphereShape" id=10]
 radius = 5.0
 
-[sub_resource type="Resource" id=11]
+[sub_resource type="Resource" id=14]
 script = ExtResource( 6 )
 mode = 0
-textures = [ [ ExtResource( 7 ), ExtResource( 9 ), ExtResource( 10 ), ExtResource( 11 ) ], [ ExtResource( 4 ), ExtResource( 14 ), ExtResource( 13 ), ExtResource( 12 ) ] ]
+textures = [ [ ExtResource( 14 ), ExtResource( 8 ), ExtResource( 9 ), ExtResource( 12 ) ], [ ExtResource( 7 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 13 ) ] ]
 
 [sub_resource type="ProceduralSky" id=12]
 
@@ -162,7 +162,6 @@ skeleton = NodePath("../..")
 shape = SubResource( 10 )
 
 [node name="Demo2" type="Spatial" parent="TheWorld_Main"]
-visible = false
 script = ExtResource( 3 )
 
 [node name="HTerrain" type="Spatial" parent="TheWorld_Main"]
@@ -170,23 +169,20 @@ script = ExtResource( 5 )
 ambient_wind = 0.235
 lod_scale = 2.0
 centered = true
-_terrain_data = ExtResource( 8 )
+_terrain_data = ExtResource( 4 )
 chunk_size = 32
 collision_enabled = true
 collision_layer = 1
 collision_mask = 1
-shader_type = "Classic4"
+shader_type = "Classic4Lite"
 custom_shader = null
 custom_globalmap_shader = null
-texture_set = SubResource( 11 )
+texture_set = SubResource( 14 )
 render_layers = 1
-shader_params/u_ground_uv_scale_per_texture = Plane( 20, 20, 20, 20 )
+shader_params/u_ground_uv_scale = 20
 shader_params/u_depth_blending = true
 shader_params/u_triplanar = false
-shader_params/u_tile_reduction = Plane( 1, 1, 1, 1 )
-shader_params/u_globalmap_blend_start = null
-shader_params/u_globalmap_blend_distance = null
-shader_params/u_colormap_opacity_per_texture = Plane( 1, 1, 1, 1 )
+shader_params/u_tile_reduction = Plane( 0, 0, 0, 0 )
 
 [node name="HTerrainDetailLayer" type="Spatial" parent="TheWorld_Main/HTerrain"]
 script = ExtResource( 15 )
