@@ -131,6 +131,8 @@ func _ready():
 			# Leaves below sea level
 			var snow_amount = clamp(0.0 - h, 0.0, 1.0)
 			var rocks_amount = clamp(slope, 0.0, 1.0)
+			#if (sand_amount != 0 && sand_amount != 1) || (rocks_amount != 0 && rocks_amount != 1):
+			#	print("a")
 			splat = splat.linear_interpolate(Color(0,1,0,0), sand_amount)
 			splat = splat.linear_interpolate(Color(0,0,1,0), snow_amount)
 			splat = splat.linear_interpolate(Color(0,0,0,1), rocks_amount)

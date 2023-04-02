@@ -966,8 +966,8 @@ func _update_material_params():
 						if Engine.is_editor_hint():
 							_material.set_shader_param(shader_param, texture)
 						if not Engine.is_editor_hint():
-							_material.set_shader_param(shader_param, texture)
-							if type == 0:	# albedo_bump
+							#_material.set_shader_param(shader_param, texture)
+							#if type == 0:	# albedo_bump
 							#if type == 1:	# normal_rough
 								# DEBUGRIC
 								var w = texture.get_width()
