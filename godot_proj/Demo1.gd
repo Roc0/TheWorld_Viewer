@@ -42,6 +42,8 @@ func read_image(file_name : String) -> Image:
 	image.unlock()
 
 	file.close()
+	
+	image.generate_mipmaps()
 
 	return image
 	
@@ -55,47 +57,47 @@ func _ready():
 	var file_name : String = "res://textures/ground/grass_albedo_bump.ground"
 	var image : Image = read_image(file_name)
 	var grass_albedo_bump_tex : ImageTexture = ImageTexture.new()
-	grass_albedo_bump_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS)
+	grass_albedo_bump_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
 	file_name = "res://textures/ground/grass_normal_roughness.ground"
 	image = read_image(file_name)
 	var grass_normal_roughness_tex : ImageTexture = ImageTexture.new()
-	grass_normal_roughness_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS)
+	grass_normal_roughness_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
 	
 	file_name = "res://textures/ground/sand_albedo_bump.ground"
 	image = read_image(file_name)
 	var sand_albedo_bump_tex : ImageTexture = ImageTexture.new()
-	sand_albedo_bump_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS)
+	sand_albedo_bump_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
 	file_name = "res://textures/ground/sand_normal_roughness.ground"
 	image = read_image(file_name)
 	var sand_normal_roughness_tex : ImageTexture = ImageTexture.new()
-	sand_normal_roughness_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS)
+	sand_normal_roughness_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
 
 	file_name = "res://textures/ground/leaves_albedo_bump.ground"
 	image = read_image(file_name)
 	var leaves_albedo_bump_tex : ImageTexture = ImageTexture.new()
-	leaves_albedo_bump_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS)
+	leaves_albedo_bump_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
 	file_name = "res://textures/ground/leaves_normal_roughness.ground"
 	image = read_image(file_name)
 	var leaves_normal_roughness_tex : ImageTexture = ImageTexture.new()
-	leaves_normal_roughness_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS)
+	leaves_normal_roughness_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
 
 	file_name = "res://textures/ground/Snow005_1K_albedo_bump.ground"
 	image = read_image(file_name)
 	var Snow005_1K_albedo_bump_tex : ImageTexture = ImageTexture.new()
-	Snow005_1K_albedo_bump_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS)
+	Snow005_1K_albedo_bump_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
 	file_name = "res://textures/ground/Snow005_1K_normal_roughness.ground"
 	image = read_image(file_name)
 	var Snow005_1K_normal_roughness_tex : ImageTexture = ImageTexture.new()
-	Snow005_1K_normal_roughness_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS)
+	Snow005_1K_normal_roughness_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
 
 	file_name = "res://textures/ground/rocks07_albedo_bump.ground"
 	image = read_image(file_name)
 	var rocks07_albedo_bump_tex : ImageTexture = ImageTexture.new()
-	rocks07_albedo_bump_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS)
+	rocks07_albedo_bump_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
 	file_name = "res://textures/ground/rocks07_normal_roughness.ground"
 	image = read_image(file_name)
 	var rocks07_normal_roughness_tex : ImageTexture = ImageTexture.new()
-	rocks07_normal_roughness_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS)
+	rocks07_normal_roughness_tex.create_from_image(image, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
 
 	var terrain_data = HTerrainData.new()
 	terrain_data.resize(513)
