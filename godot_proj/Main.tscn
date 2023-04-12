@@ -163,6 +163,7 @@ skeleton = NodePath("../..")
 shape = SubResource( 10 )
 
 [node name="Demo2" type="Spatial" parent="TheWorld_Main"]
+visible = false
 script = ExtResource( 3 )
 
 [node name="HTerrain" type="Spatial" parent="TheWorld_Main"]
