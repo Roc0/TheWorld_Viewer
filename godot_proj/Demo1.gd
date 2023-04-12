@@ -96,7 +96,8 @@ func read_image_from_quadrant_file(file_name : String, image_type : int, grid_st
 			image.lock()
 			for y in num_vertices_per_size:
 				for x in num_vertices_per_size:
-					var h := file.get_float() / grid_step_in_wu
+					#var h := file.get_float() / grid_step_in_wu
+					var h := file.get_float()
 					if (x < image_size && y < image_size):
 						image.set_pixel(x, y , Color(h, 0, 0))
 			image.unlock()
@@ -181,7 +182,7 @@ func _ready():
 
 	var terrain_size = 513
 	var quadrant_file := ""
-	#quadrant_file = OS.get_user_data_dir() + "/TheWorld/Cache/ST-2.000000_SZ-2049/L-0/X-0.000000_Z-0.000000.mesh"
+	quadrant_file = OS.get_user_data_dir() + "/TheWorld/Cache/ST-2.000000_SZ-2049/L-0/X-0.000000_Z-0.000000.mesh"
 	
 	var max_terrain_size := 513
 	max_terrain_size = -1
@@ -189,7 +190,8 @@ func _ready():
 	if (heightmap_from_quadrant_file.get_height() > 0):
 		terrain_size = heightmap_from_quadrant_file.get_height()
 
-	var normalmap_from_quadrant_file: Image = read_image_from_quadrant_file(quadrant_file, 1, grid_step_in_wu, max_terrain_size)
+	var normalmap_from_quadrant_file: Image = Image.new()
+	normalmap_from_quadrant_file = read_image_from_quadrant_file(quadrant_file, 1, grid_step_in_wu, max_terrain_size)
 	
 	var terrain_data = HTerrainData.new()
 	terrain_data.resize(terrain_size)
@@ -253,6 +255,19 @@ func _ready():
 				h = heightmap.get_pixel(x, z).r
 				if (normalmap_from_quadrant_file.get_height() > 0):
 					normal = decode_normal(normalmap.get_pixel(x, z)).normalized()
+					# debug
+					if (x < 2048):
+						h_right = heightmap.get_pixel(x + 1, z).r
+					else:
+						h_right = h
+					if (z < 2048):
+						h_forward = heightmap.get_pixel(x, z + 1).r
+					else:
+						h_forward = h
+					var step : float = grid_step_in_wu
+					#var normal = Vector3(h - h_right, 0.1, h_forward - h).normalized()	# original
+					var normal1 = Vector3(h - h_right, step, h - h_forward).normalized()
+					# debug
 				else:
 					if (x < 2048):
 						h_right = heightmap.get_pixel(x + 1, z).r

@@ -31,7 +31,7 @@ uniform sampler2D u_ground_normal_roughness_3;
 // Had to give this uniform a suffix, because it's declared as a simple float
 // in other shaders, and its type cannot be inferred by the plugin.
 // See https://github.com/godotengine/godot/issues/24488
-uniform vec4 u_ground_uv_scale_per_texture = vec4(20.0, 20.0, 20.0, 20.0);
+uniform vec4 u_ground_uv_scale_per_texture = vec4(5.0, 5.0, 5.0, 5.0);
 uniform bool u_depth_blending = true;
 uniform bool u_triplanar = false;
 uniform vec4 u_tile_reduction = vec4(0.0, 0.0, 0.0, 0.0);	// Each component corresponds to a ground texture. Set greater than zero to enable.
