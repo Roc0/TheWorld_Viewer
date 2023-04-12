@@ -162,8 +162,10 @@ vec3 get_normal(vec2 uv){
 void vertex() {
 	vec4 wpos = WORLD_MATRIX * vec4(VERTEX, 1);		// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need to trasform in world coord
 	vec2 cell_coords = (u_terrain_inverse_transform * wpos).xz;		// to calculate cell coords in the heigthmap/normalmap we need to trasfom global coords of the vertex (wpos) in local coords to che quadrant: we do this by using affine inverse matrix of the global trasfomr od the quadtree
+	//vec2 cell_coords_tex = cell_coords;
 	cell_coords /= vec2(u_grid_step_in_wu);		// WARNING: we also need to consider the step (dividing by it) to get correct value from the textures: in the textures heigths/normlas are adjacent in global/local coords are separated by the step
 	cell_coords += vec2(0.5);		// Must add a half-offset so that we sample the center of pixels, otherwise bilinear filtering of the textures will give us mixed results (#183)
+	//cell_coords_tex += vec2(0.5);
 	UV = cell_coords / vec2(textureSize(u_terrain_heightmap, 0));	// Normalized UV to be in the range 0/1
 
 	//float h = texture(u_terrain_heightmap, uv).r * u_terrain_height;
@@ -216,116 +218,126 @@ void fragment() {
 	vec3 global_albedo = texture(u_terrain_globalmap, UV).rgb;
 	ALBEDO = global_albedo;
 
-	// Doing this branch allows to spare a bunch of texture fetches for distant pixels.
-	// Eventually, there could be a split between near and far shaders in the future,
-	// if relevant on high-end GPUs
-	if (globalmap_factor < 1.0) {
-		vec4 ab0, ab1, ab2, ab3;
-		vec4 nr0, nr1, nr2, nr3;
+	if (u_editmode_selected > 0.0) {
 
-		if (u_triplanar) {
-			// Only do triplanar on one texture slot,
-			// because otherwise it would be very expensive and cost many more ifs.
-			// I chose the last slot because first slot is the default on new splatmaps,
-			// and that's a feature used for cliffs, which are usually designed later.
+		ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 
-			vec3 blending = get_triplanar_blend(terrain_normal_world);
+	} else {
 
-			ab3 = texture_triplanar(u_ground_albedo_bump_3, v_ground_uv3, blending);
-			nr3 = texture_triplanar(u_ground_normal_roughness_3, v_ground_uv3, blending);
+		//ALBEDO = vec3(1.0, 1.0, 1.0);		// white
 
-		} else {
-			if (u_tile_reduction[3] > 0.0) {
-				ab3 = texture_antitile(u_ground_albedo_bump_3, u_ground_normal_roughness_3, v_ground_uv3.xz, nr3);
+		// Doing this branch allows to spare a bunch of texture fetches for distant pixels.
+		// Eventually, there could be a split between near and far shaders in the future,
+		// if relevant on high-end GPUs
+		if (globalmap_factor < 1.0) {
+			vec4 ab0, ab1, ab2, ab3;
+			vec4 nr0, nr1, nr2, nr3;
+
+			if (u_triplanar) {
+				// Only do triplanar on one texture slot,
+				// because otherwise it would be very expensive and cost many more ifs.
+				// I chose the last slot because first slot is the default on new splatmaps,
+				// and that's a feature used for cliffs, which are usually designed later.
+
+				vec3 blending = get_triplanar_blend(terrain_normal_world);
+
+				ab3 = texture_triplanar(u_ground_albedo_bump_3, v_ground_uv3, blending);
+				nr3 = texture_triplanar(u_ground_normal_roughness_3, v_ground_uv3, blending);
+
 			} else {
-				ab3 = texture(u_ground_albedo_bump_3, v_ground_uv3.xz);
-				nr3 = texture(u_ground_normal_roughness_3, v_ground_uv3.xz);
+				if (u_tile_reduction[3] > 0.0) {
+					ab3 = texture_antitile(u_ground_albedo_bump_3, u_ground_normal_roughness_3, v_ground_uv3.xz, nr3);
+				} else {
+					ab3 = texture(u_ground_albedo_bump_3, v_ground_uv3.xz);
+					nr3 = texture(u_ground_normal_roughness_3, v_ground_uv3.xz);
+				}
 			}
+
+			if (u_tile_reduction[0] > 0.0) {
+				ab0 = texture_antitile(u_ground_albedo_bump_0, u_ground_normal_roughness_0, v_ground_uv0, nr0);
+			} else {
+				ab0 = texture(u_ground_albedo_bump_0, v_ground_uv0);
+				nr0 = texture(u_ground_normal_roughness_0, v_ground_uv0);
+			}
+			if (u_tile_reduction[1] > 0.0) {
+				ab1 = texture_antitile(u_ground_albedo_bump_1, u_ground_normal_roughness_1, v_ground_uv1, nr1);
+			} else {
+				ab1 = texture(u_ground_albedo_bump_1, v_ground_uv1);
+				nr1 = texture(u_ground_normal_roughness_1, v_ground_uv1);
+			}
+			if (u_tile_reduction[2] > 0.0) {
+				ab2 = texture_antitile(u_ground_albedo_bump_2, u_ground_normal_roughness_2, v_ground_uv2, nr2);
+			} else {
+				ab2 = texture(u_ground_albedo_bump_2, v_ground_uv2);
+				nr2 = texture(u_ground_normal_roughness_2, v_ground_uv2);
+			}
+
+			vec3 col0 = ab0.rgb * v_tint0;	// col(0-3) is the result of the pixel fetched from u_ground_albedo_bump_(0-3) modified by the value fetched from u_terrain_colormap and relative to the vertex corresponding to current pixel
+			vec3 col1 = ab1.rgb * v_tint1;	// the value fetched from u_terrain_colormap if modified to the white according to the vector u_colormap_opacity_per_texture (default value don't modify the color)
+			vec3 col2 = ab2.rgb * v_tint2;
+			vec3 col3 = ab3.rgb * v_tint3;
+
+			vec4 rough = vec4(nr0.a, nr1.a, nr2.a, nr3.a);
+
+			vec3 normal0 = unpack_normal(nr0);
+			vec3 normal1 = unpack_normal(nr1);
+			vec3 normal2 = unpack_normal(nr2);
+			vec3 normal3 = unpack_normal(nr3);
+
+			vec4 w;
+			// TODO An #ifdef macro would be nice! Or copy/paste everything in a different shader...
+			if (u_depth_blending) {
+				w = get_depth_blended_weights(v_splat, vec4(ab0.a, ab1.a, ab2.a, ab3.a));
+			} else {
+				w = v_splat.rgba;
+			}
+
+			float w_sum = (w.r + w.g + w.b + w.a);
+
+			ALBEDO = (
+				w.r * col0.rgb +
+				w.g * col1.rgb +
+				w.b * col2.rgb +
+				w.a * col3.rgb) / w_sum;
+
+			ROUGHNESS = (
+				w.r * rough.r +
+				w.g * rough.g +
+				w.b * rough.b +
+				w.a * rough.a) / w_sum;
+
+			vec3 ground_normal = /*u_terrain_normal_basis **/ (
+				w.r * normal0 +
+				w.g * normal1 +
+				w.b * normal2 +
+				w.a * normal3) / w_sum;
+			// If no splat textures are defined, normal vectors will default to (1,1,1),
+			// which is incorrect, and causes the terrain to be shaded wrongly in some directions.
+			// However, this should not be a problem to fix in the shader,
+			// because there MUST be at least one splat texture set.
+			//ground_normal = normalize(ground_normal);
+			// TODO Make the plugin insert a default normalmap if it's empty
+
+			// Combine terrain normals with detail normals (not sure if correct but looks ok)
+			normal = normalize(vec3(
+				terrain_normal_world.x + ground_normal.x,
+				terrain_normal_world.y,
+				terrain_normal_world.z + ground_normal.z));
+
+			normal = mix(normal, terrain_normal_world, globalmap_factor);
+
+			ALBEDO = mix(ALBEDO, global_albedo, globalmap_factor);
+			ROUGHNESS = mix(ROUGHNESS, 1.0, globalmap_factor);
+
+			// Show splatmap weights
+			//ALBEDO = w.rgb;
 		}
+		// Highlight all pixels undergoing no splatmap at all
+	//	else {
+	//		ALBEDO = vec3(1.0, 0.0, 0.0);
+	//	}
 
-		if (u_tile_reduction[0] > 0.0) {
-			ab0 = texture_antitile(u_ground_albedo_bump_0, u_ground_normal_roughness_0, v_ground_uv0, nr0);
-		} else {
-			ab0 = texture(u_ground_albedo_bump_0, v_ground_uv0);
-			nr0 = texture(u_ground_normal_roughness_0, v_ground_uv0);
-		}
-		if (u_tile_reduction[1] > 0.0) {
-			ab1 = texture_antitile(u_ground_albedo_bump_1, u_ground_normal_roughness_1, v_ground_uv1, nr1);
-		} else {
-			ab1 = texture(u_ground_albedo_bump_1, v_ground_uv1);
-			nr1 = texture(u_ground_normal_roughness_1, v_ground_uv1);
-		}
-		if (u_tile_reduction[2] > 0.0) {
-			ab2 = texture_antitile(u_ground_albedo_bump_2, u_ground_normal_roughness_2, v_ground_uv2, nr2);
-		} else {
-			ab2 = texture(u_ground_albedo_bump_2, v_ground_uv2);
-			nr2 = texture(u_ground_normal_roughness_2, v_ground_uv2);
-		}
-
-		vec3 col0 = ab0.rgb * v_tint0;	// col(0-3) is the result of the pixel fetched from u_ground_albedo_bump_(0-3) modified by the value fetched from u_terrain_colormap and relative to the vertex corresponding to current pixel
-		vec3 col1 = ab1.rgb * v_tint1;	// the value fetched from u_terrain_colormap if modified to the white according to the vector u_colormap_opacity_per_texture (default value don't modify the color)
-		vec3 col2 = ab2.rgb * v_tint2;
-		vec3 col3 = ab3.rgb * v_tint3;
-
-		vec4 rough = vec4(nr0.a, nr1.a, nr2.a, nr3.a);
-
-		vec3 normal0 = unpack_normal(nr0);
-		vec3 normal1 = unpack_normal(nr1);
-		vec3 normal2 = unpack_normal(nr2);
-		vec3 normal3 = unpack_normal(nr3);
-
-		vec4 w;
-		// TODO An #ifdef macro would be nice! Or copy/paste everything in a different shader...
-		if (u_depth_blending) {
-			w = get_depth_blended_weights(v_splat, vec4(ab0.a, ab1.a, ab2.a, ab3.a));
-		} else {
-			w = v_splat.rgba;
-		}
-
-		float w_sum = (w.r + w.g + w.b + w.a);
-
-		ALBEDO = (
-			w.r * col0.rgb +
-			w.g * col1.rgb +
-			w.b * col2.rgb +
-			w.a * col3.rgb) / w_sum;
-
-		ROUGHNESS = (
-			w.r * rough.r +
-			w.g * rough.g +
-			w.b * rough.b +
-			w.a * rough.a) / w_sum;
-
-		vec3 ground_normal = /*u_terrain_normal_basis **/ (
-			w.r * normal0 +
-			w.g * normal1 +
-			w.b * normal2 +
-			w.a * normal3) / w_sum;
-		// If no splat textures are defined, normal vectors will default to (1,1,1),
-		// which is incorrect, and causes the terrain to be shaded wrongly in some directions.
-		// However, this should not be a problem to fix in the shader,
-		// because there MUST be at least one splat texture set.
-		//ground_normal = normalize(ground_normal);
-		// TODO Make the plugin insert a default normalmap if it's empty
-
-		// Combine terrain normals with detail normals (not sure if correct but looks ok)
-		normal = normalize(vec3(
-			terrain_normal_world.x + ground_normal.x,
-			terrain_normal_world.y,
-			terrain_normal_world.z + ground_normal.z));
-
-		normal = mix(normal, terrain_normal_world, globalmap_factor);
-
-		ALBEDO = mix(ALBEDO, global_albedo, globalmap_factor);
-		ROUGHNESS = mix(ROUGHNESS, 1.0, globalmap_factor);
-
-		// Show splatmap weights
-		//ALBEDO = w.rgb;
 	}
-	// Highlight all pixels undergoing no splatmap at all
-//	else {
-//		ALBEDO = vec3(1.0, 0.0, 0.0);
-//	}
 
 	NORMAL = (INV_CAMERA_MATRIX * (vec4(normal, 0.0))).xyz;
 }

@@ -966,33 +966,29 @@ func _update_material_params():
 						if Engine.is_editor_hint():
 							_material.set_shader_param(shader_param, texture)
 						if not Engine.is_editor_hint():
-							#_material.set_shader_param(shader_param, texture)
+							_material.set_shader_param(shader_param, texture)
 							#if type == 0:	# albedo_bump
 							#if type == 1:	# normal_rough
 								# DEBUGRIC
-								var w = texture.get_width()
-								var h = texture.get_height()
-								#var size = texture.get_size()
-								#var alpha = texture.has_alpha()
-								var image = texture.get_data()
-								image.decompress()
-								var image1: Image = Image.new()
-								image1.create(w, h, true, Image.FORMAT_RGBA8)
-								#image1.copy_from(image)
-								image1.lock()
-								image.lock()
-								for y in h:
-									for x in w:
-										var c : Color = image.get_pixel(x, y)
-										image1.set_pixel(x, y, c)
-										c = image1.get_pixel(x, y)
-								image.unlock()
-								image1.unlock()
-								image1.generate_mipmaps()
-								var texture1 : ImageTexture = ImageTexture.new()
-								texture1.create_from_image(image1, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)
-								#texture1.create_from_image(image, ImageTexture.FLAGS_DEFAULT)
-								_material.set_shader_param(shader_param, texture1)
+								#var w = texture.get_width()
+								#var h = texture.get_height()
+								#var image = texture.get_data()
+								#image.decompress()
+								#var image1: Image = Image.new()
+								#image1.create(w, h, true, Image.FORMAT_RGBA8)
+								#image1.lock()
+								#image.lock()
+								#for y in h:
+								#	for x in w:
+								#		var c : Color = image.get_pixel(x, y)
+								#		image1.set_pixel(x, y, c)
+								#		c = image1.get_pixel(x, y)
+								#image.unlock()
+								#image1.unlock()
+								#image1.generate_mipmaps()
+								#var texture1 : ImageTexture = ImageTexture.new()
+								#texture1.create_from_image(image1, ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT)		#texture1.create_from_image(image, ImageTexture.FLAGS_DEFAULT)
+								#_material.set_shader_param(shader_param, texture1)
 								# DEBUGRIC
 
 			HTerrainTextureSet.MODE_TEXTURE_ARRAYS:
