@@ -86,11 +86,20 @@ var prev_hit : Vector3 = Vector3(0, 0, 0)
 		
 func _ready():
 	$BallRigidBody.visible = false
-	var e := get_tree().get_root().connect("size_changed", self, "myfunc")
+	var e := get_tree().get_root().connect("size_changed", self, "resizing")
 	#print(e)
 
-func myfunc():
+func resizing():
 	print("Resizing: ", get_viewport().size)
+
+func TWViewer() -> Spatial:
+	return $TWViever.get_self()
+
+func init():
+	TWViewer().init()
+
+func deinit():
+	TWViewer().deinit()
 
 func _input(event):
 	var status : int = Globals.get_clientstatus()
@@ -144,13 +153,13 @@ func _input(event):
 			test_action_enabled = !test_action_enabled
 			process_test_action = true
 		#elif event.is_action_pressed("ui_dump"):
-		#	Globals.GDN_viewer().dump_required()
+		#	TWViewer().GDN_viewer().dump_required()
 
 func _notification(_what):
 	if (_what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST):
 		Globals.appstatus = Globals.appstatus_deinit_required
 	elif (_what == Spatial.NOTIFICATION_TRANSFORM_CHANGED):
-		var viewer : Spatial = Globals.GDN_viewer()
+		var viewer : Spatial = TWViewer().GDN_viewer()
 		viewer.global_transform = global_transform
 	elif (_what == Spatial.NOTIFICATION_ENTER_WORLD):
 		print("Notification Spatial.NOTIFICATION_ENTER_WORLD")
@@ -159,13 +168,13 @@ func _process(_delta):
 	if Globals.appstatus == Globals.appstatus_deinit_required:
 		Globals.appstatus = Globals.appstatus_deinit_in_progress
 		Globals.debug_print("Pre deinit...")
-		Globals.GDN_main().pre_deinit()
+		TWViewer().pre_deinit()
 		Globals.debug_print("Pre deinit completed...")
 		Globals.appstatus = Globals.appstatus_quit_required
 		return
 		
 	if Globals.appstatus == Globals.appstatus_quit_required:
-		if Globals.GDN_main().can_deinit():
+		if TWViewer().can_deinit():
 			Globals.appstatus = Globals.appstatus_quit_in_progress
 			force_app_to_quit()
 			return
@@ -173,7 +182,7 @@ func _process(_delta):
 	if Globals.appstatus != Globals.appstatus_running:
 		return
 	
-	var clientstatus : int = Globals.get_clientstatus()
+	var clientstatus : int = TWViewer().get_clientstatus()
 	client_status = Globals.status_to_string(clientstatus)
 	
 	if clientstatus < Globals.clientstatus_session_initialized:
@@ -181,7 +190,7 @@ func _process(_delta):
 	
 	fps = Engine.get_frames_per_second()
 	
-	var viewer : Spatial = Globals.GDN_viewer()
+	var viewer : Spatial = TWViewer().GDN_viewer()
 
 	#if init_world_thread.is_alive():
 	#	return
@@ -196,14 +205,6 @@ func _process(_delta):
 	
 	var current_camera := get_viewport().get_camera()
 	if not scene_initialized:
-		# DEBUGRIC
-		$CubeMeshTest.mesh.size = Vector3(1, 1, 1)
-		$CubeMeshTest.global_transform.origin = Vector3(initialViewerPos.x, initialViewerPos.y + 5, initialViewerPos.z)
-		$NoiseMeshTest.mesh.size = Vector2(10, 10)
-		$NoiseMeshTest.get_surface_material(0).set_shader_param("height_scale", 1.5)
-		$NoiseMeshTest.global_transform.origin = initialViewerPos
-		$OmniLightTest.global_transform.origin = Vector3(initialViewerPos.x, initialViewerPos.y + 5, initialViewerPos.z)
-		
 		#current_camera.global_transform.origin = Vector3(current_camera.global_transform.origin.x, initialCameraAltitudeForced, current_camera.global_transform.origin.z)
 		if (initialCameraAltitudeForced != 0):
 			current_camera.global_transform.origin.y = initialCameraAltitudeForced
@@ -238,10 +239,6 @@ func _process(_delta):
 	var _chunk_debug_mode : String = viewer.get_chunk_debug_mode()
 	var _cam_chunk_pos = viewer.get_camera_quadrant_name() + " " + viewer.get_camera_chunk_id()
 	if (_cam_chunk_pos != cam_chunk_pos or _chunk_debug_mode != chunk_debug_mode):
-		#var cam_chunk_t : Transform = Globals.GDN_viewer().get_camera_chunk_global_transform_of_aabb()
-		#var displ : Vector3 = Vector3(cam_chunk_t.basis.x.x, cam_chunk_t.basis.y.y, cam_chunk_t.basis.z.z) / 2
-		#cam_chunk_t.origin += displ
-		#$CubeMeshTest.global_transform = cam_chunk_t
 		var t_aabb : AABB = viewer.get_camera_chunk_local_aabb()
 		var t_mesh : Transform = viewer.get_camera_chunk_global_transform_applied()
 		cam_chunk_mesh_pos_xzy = String(t_mesh.origin.x) + ":" + String(t_mesh.origin.z) + ":" + String(t_mesh.origin.y)
@@ -258,7 +255,6 @@ func _process(_delta):
 		cam_chunk_mesh_pos = t_mesh.origin
 		cam_chunk_mesh_aabb = t_aabb
 		cam_chunk_pos = _cam_chunk_pos
-		#process_test_action = true
 		
 	hit = viewer.get_mouse_hit()
 	if hit != prev_hit:
@@ -284,90 +280,11 @@ func _process(_delta):
 			_test_action_changed = true
 
 		#if _test_action_changed:
-		#tracked_chunk = Globals.GDN_viewer().get_tracked_chunk_str()
+		#tracked_chunk = TWViewer().GDN_viewer().get_tracked_chunk_str()
 		
 		mouse_pos_in_viewport = get_viewport().get_mouse_position()
-		#var ray_origin = current_camera.project_ray_origin(mouse_pos_in_viewport)
-		#var ray_end = ray_origin + current_camera.project_ray_normal(mouse_pos_in_viewport) * current_camera.get_zfar() * 3
-		#var space_state : PhysicsDirectSpaceState = viewer.get_world().direct_space_state
-		#ray_array : Dictionary = space_state.intersect_ray(ray_origin, ray_end)
 
-		#if test_action_enabled:
-		#	DrawLine.Draw_Line3D(1, ray_origin, ray_end, Color_Yellow_Apricot, 1.0)
-
-		#if (test_action_enabled):
-		#	var chunk_mis : Array
-		#	chunk_mis = get_tree().get_nodes_in_group("ChunkMeshInstanceGroup")
-		#	for chunk_mi in chunk_mis:
-		#		var mi : MeshInstance = MeshInstance.new()
-		#		viewer.add_child(mi)
-		#		mi.add_to_group("TestChunkMeshInstanceGroup")
-		#		mi.name = "Test" + chunk_mi.name
-		#		mi.global_transform.origin = chunk_mi.global_transform.origin
-		#		mi.global_transform.origin.y = 250
-		#		mi.visible = true
-				
-		#		#mi.mesh = (chunk_mi as MeshInstance).mesh
-		#		#mi.set_surface_material(0, (chunk_mi as MeshInstance).get_surface_material(0))
-				
-		#		#mi.mesh = $PlaneMeshTest.mesh
-		#		#mi.set_surface_material(0, $PlaneMeshTest.get_surface_material(0))
-				
-		#		chunk_mi.visible = false
-		#		var lod : int = chunk_mi.get_lod()
-		#		var mesh := PlaneMesh.new()
-		#		var size := Vector2(160 * pow(2, lod), 160 * pow(2, lod))
-		#		mesh.size = size
-		#		mesh.subdivide_width = 32
-		#		mesh.subdivide_depth = 32
-		#		mi.mesh = mesh
-		#		mi.global_transform.origin = Vector3(chunk_mi.global_transform.origin.x + (size.x / 2),
-		#											 mi.global_transform.origin.y,
-		#											 chunk_mi.global_transform.origin.z + (size.y / 2))
-		#		print(mi.name + " - " + str(mi.global_transform.origin) + " - " + str(mesh.size))
-		#		#mi.set_surface_material(0, $PlaneMeshTest.get_surface_material(0))
-				
-		#	#$PlaneMeshTest.global_transform.origin = Vector3(cam_chunk_mesh_pos.x + (cam_chunk_mesh_aabb.size.x / 2),
-		#	#	cam_chunk_mesh_pos.y, 
-		#	#	cam_chunk_mesh_pos.z + (cam_chunk_mesh_aabb.size.z / 2))
-		#	#$PlaneMeshTest.visible = true
-		#	#print("$PlaneMeshTest.global_transform.origin=" + str($PlaneMeshTest.global_transform.origin))
-		#	#print("($PlaneMeshTest.mesh as PlaneMesh).size=" + str(($PlaneMeshTest.mesh as PlaneMesh).size))
-		#	#var s := "/root/Main/TheWorld_Main/GDN_TheWorld_Viewer/ChunkDebug_" + cam_chunk_pos.replace(":","")
-		#	#var chunkDebugMeshInstance : MeshInstance = get_node(s)
-		#	#if (chunkDebugMeshInstance != null):
-		#	#	print("chunkDebugMeshInstance.global_transform.origin=" + str(chunkDebugMeshInstance.global_transform.origin))
-		#	#s = "/root/Main/TheWorld_Main/GDN_TheWorld_Viewer/Chunk_" + cam_chunk_pos.replace(":","")
-		#	#var chunkMeshInstance : MeshInstance = get_node(s)
-		#	#if (chunkMeshInstance != null):
-		#	#	print("chunkMeshInstance.global_transform.origin=" + str(chunkMeshInstance.global_transform.origin))
-		#	#	print("mesh 160 x 160")
-		#		#var mdt := MeshDataTool.new()
-		#		#if mdt.create_from_surface(chunkMeshInstance.mesh, 0) == OK:  # Check pass
-		#		#	var v_count := mdt.get_vertex_count()
-		#		#	print("Vertex Count: " + str(v_count))
-		#		#	var dim := sqrt(v_count)
-		#		#	s = ""
-		#		#	var idx : int = 0
-		#		#	for z in range (dim):
-		#		#		for x in range (dim):
-		#		#			s += str(mdt.get_vertex(idx)) + " "
-		#		#			idx = idx + 1
-		#		#		print(s)
-		#		#		s = ""
-		#		#else:
-		#		#	print("Fail...")
-		#else:
-		#	#$PlaneMeshTest.visible = false
-		#	var chunks : Array = get_tree().get_nodes_in_group("TestChunkMeshInstanceGroup")
-		#	for chunk in chunks:
-		#		chunk.visible = false
-		#		chunk.remove_from_group("TestChunkMeshInstanceGroup")
-		#		chunk.queue_free()
-		##var n = get_node("/root/Main/@@2")
-		##print(n)
-
-	chunk_grid_global_pos = Globals.GDN_viewer().global_transform.origin
+	chunk_grid_global_pos = TWViewer().GDN_viewer().global_transform.origin
 	if current_camera:
 		#active_camera_global_rot = current_camera.global_transform.basis.get_euler()
 		active_camera_global_rot = str(current_camera.global_transform.basis.get_euler()) + " | " + "yaw " + str(int(current_camera.get_yaw(false))) + " pitch " + str(int(current_camera.get_pitch(false)))
@@ -522,7 +439,7 @@ func set_debug_window(active : bool) -> void:
 		
 func _init_world() -> void:
 	Globals.debug_print("Initializing world...")
-	Globals.GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
+	TWViewer().GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
 	Globals.debug_print("World initialization completed...")
 	
 #func _pre_deinit() -> void:
