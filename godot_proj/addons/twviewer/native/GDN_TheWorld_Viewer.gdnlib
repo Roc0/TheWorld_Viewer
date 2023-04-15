@@ -1,6 +1,6 @@
 [entry]
 
-Windows.64="res://native/TheWorld_GDN_Viewer_d.dll"
+Windows.64="res://addons/twviewer/native/TheWorld_GDN_Viewer.dll"
 
 [dependencies]
 

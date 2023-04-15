@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=2]
+[gd_scene load_steps=25 format=2]
 
 [ext_resource path="res://utils/DebugStats.gd" type="Script" id=1]
 [ext_resource path="res://main/TheWorld_Main.gd" type="Script" id=2]
@@ -17,75 +17,7 @@
 [ext_resource path="res://addons/zylann.hterrain/hterrain_detail_layer.gd" type="Script" id=15]
 [ext_resource path="res://addons/zylann.hterrain/tools/icons/icon_detail_layer_node.svg" type="Texture" id=16]
 [ext_resource path="res://assets/textures/grass/grass_billboard.png" type="Texture" id=17]
-
-[sub_resource type="CubeMesh" id=1]
-size = Vector3( 1, 1, 1 )
-
-[sub_resource type="SpatialMaterial" id=2]
-albedo_color = Color( 0.945098, 0.0470588, 0.0470588, 1 )
-
-[sub_resource type="PlaneMesh" id=3]
-subdivide_width = 32
-subdivide_depth = 32
-
-[sub_resource type="Shader" id=4]
-code = "shader_type spatial;
-//render_mode unshaded;
-
-uniform float height_scale = 0.5;
-
-float hash(vec2 p) {
-  return fract(sin(dot(p * 17.17, vec2(14.91, 67.31))) * 4791.9511);
-}
-
-float noise(vec2 x) {
-  vec2 p = floor(x);
-  vec2 f = fract(x);
-  f = f * f * (3.0 - 2.0 * f);
-  vec2 a = vec2(1.0, 0.0);
-  return mix(mix(hash(p + a.yy), hash(p + a.xy), f.x),
-         mix(hash(p + a.yx), hash(p + a.xx), f.x), f.y);
-}
-
-float fbm(vec2 x) {
-  float height = 0.0;
-  float amplitude = 0.5;
-  float frequency = 3.0;
-  for (int i = 0; i < 6; i++){
-    height += noise(x * frequency) * amplitude;
-    amplitude *= 0.5;
-    frequency *= 2.0;
-  }
-  return height;
-}
-
-void vertex() {
-	//VERTEX.y += cos(VERTEX.x * 4.0) * sin(VERTEX.z * 4.0) * 0.5;
-
-	float height = fbm(VERTEX.xz * 2.0);
-	VERTEX.y += height * height_scale;
-	
-	COLOR.xyz = vec3(height);
-	
-	vec2 e = vec2(0.01, 0.0);
-	vec3 normal = normalize(vec3(fbm(VERTEX.xz - e) - fbm(VERTEX.xz + e), 2.0 * e.x, fbm(VERTEX.xz - e.yx) - fbm(VERTEX.xz + e.yx)));
-	NORMAL = normal;
-}
-void fragment(){
-  ALBEDO = COLOR.xyz;
-}"
-
-[sub_resource type="ShaderMaterial" id=5]
-shader = SubResource( 4 )
-shader_param/height_scale = 0.5
-
-[sub_resource type="PlaneMesh" id=6]
-size = Vector2( 160, 160 )
-subdivide_width = 32
-subdivide_depth = 32
-
-[sub_resource type="SpatialMaterial" id=7]
-albedo_color = Color( 1, 0, 0, 1 )
+[ext_resource path="res://addons/twviewer/tw_viewer.gd" type="Script" id=18]
 
 [sub_resource type="SpatialMaterial" id=8]
 albedo_color = Color( 0.807843, 0.117647, 0.117647, 1 )
@@ -95,11 +27,6 @@ material = SubResource( 8 )
 
 [sub_resource type="SphereShape" id=10]
 radius = 5.0
-
-[sub_resource type="Resource" id=14]
-script = ExtResource( 6 )
-mode = 0
-textures = [ [ ExtResource( 14 ), ExtResource( 8 ), ExtResource( 9 ), ExtResource( 12 ) ], [ ExtResource( 7 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 13 ) ] ]
 
 [sub_resource type="ProceduralSky" id=12]
 
@@ -112,10 +39,18 @@ fog_height_max = -20.0
 tonemap_mode = 3
 ssao_enabled = true
 
+[sub_resource type="Resource" id=14]
+script = ExtResource( 6 )
+mode = 0
+textures = [ [ ExtResource( 14 ), ExtResource( 8 ), ExtResource( 9 ), ExtResource( 12 ) ], [ ExtResource( 7 ), ExtResource( 10 ), ExtResource( 11 ), ExtResource( 13 ) ] ]
+
 [node name="Main" type="Node"]
 
 [node name="TheWorld_Main" type="Spatial" parent="."]
 script = ExtResource( 2 )
+
+[node name="TWViever" type="Spatial" parent="TheWorld_Main"]
+script = ExtResource( 18 )
 
 [node name="DebugStats" type="MarginContainer" parent="TheWorld_Main"]
 margin_right = 40.0
@@ -133,26 +68,6 @@ __meta__ = {
 transform = Transform( 1, 0, 0, 0, 0.99966, 0.0260897, 0, -0.0260897, 0.99966, -3.0351, 110.529, 5.70724 )
 light_color = Color( 0.866667, 0.815686, 0.027451, 1 )
 
-[node name="CubeMeshTest" type="MeshInstance" parent="TheWorld_Main"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -3.9988, 0, 0 )
-visible = false
-mesh = SubResource( 1 )
-material/0 = SubResource( 2 )
-
-[node name="NoiseMeshTest" type="MeshInstance" parent="TheWorld_Main"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0613702, -0.00268233, 0.00385851 )
-visible = false
-mesh = SubResource( 3 )
-material/0 = SubResource( 5 )
-
-[node name="OmniLightTest" type="OmniLight" parent="TheWorld_Main"]
-visible = false
-
-[node name="PlaneMeshTest" type="MeshInstance" parent="TheWorld_Main"]
-visible = false
-mesh = SubResource( 6 )
-material/0 = SubResource( 7 )
-
 [node name="BallRigidBody" type="RigidBody" parent="TheWorld_Main"]
 
 [node name="SphereMeshTest" type="MeshInstance" parent="TheWorld_Main/BallRigidBody"]
@@ -165,6 +80,9 @@ shape = SubResource( 10 )
 [node name="Demo2" type="Spatial" parent="TheWorld_Main"]
 visible = false
 script = ExtResource( 3 )
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="TheWorld_Main"]
+environment = SubResource( 13 )
 
 [node name="HTerrain" type="Spatial" parent="TheWorld_Main"]
 visible = false
@@ -199,6 +117,3 @@ shader_params/u_globalmap_tint_bottom = 0.389
 shader_params/u_globalmap_tint_top = 0.226
 shader_params/u_bottom_ao = 0.166
 shader_params/u_instance_scale = Vector3( 1, 1, 1 )
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="TheWorld_Main"]
-environment = SubResource( 13 )
