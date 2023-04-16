@@ -93,10 +93,10 @@ func resizing():
 	print("Resizing: ", get_viewport().size)
 
 func TWViewer() -> Spatial:
-	return $TWViever.get_self()
+	return $TWViewer.get_self()
 
 func init():
-	TWViewer().init()
+	var init_done : bool = TWViewer().init()
 
 func deinit():
 	TWViewer().deinit()

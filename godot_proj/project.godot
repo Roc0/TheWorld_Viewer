@@ -40,7 +40,7 @@ settings/stdout/verbose_stdout=true
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/zylann.hterrain/plugin.cfg" )
+enabled=PoolStringArray( "res://addons/twviewer/plugin.cfg", "res://addons/zylann.hterrain/plugin.cfg" )
 
 [input]
 
