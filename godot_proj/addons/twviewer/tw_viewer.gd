@@ -49,6 +49,9 @@ func _enter_tree():
 func _exit_tree():
 	_logger.debug("TWViewer: _exit_tree")
 	
+	if init_done:
+		deinit()
+	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
