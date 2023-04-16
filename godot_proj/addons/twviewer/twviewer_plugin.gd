@@ -58,6 +58,7 @@ func edit(object):
 	if _viewer != null:
 		_viewer.connect("tree_exited", self, "_viewer_exited_scene")
 		
+		_logger.debug(str("TWViewer: edit ", object, " calling ", object, ".init"))
 		var init_done : bool =_viewer.init()
 
 func _viewer_exited_scene():
