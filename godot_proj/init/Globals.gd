@@ -24,10 +24,6 @@ const appstatus_quit_in_progress = 5
 
 var debug_enabled : bool = true
 var debug_enable_set : bool = false
-#var GDNTheWorldMain = preload("res://native/GDN_TheWorld_Viewer_d.gdns").new()
-#var GDNTheWorldMain = preload("res://native/GDN_TheWorld_Viewer.gdns").new()
-#var GDNTheWorldGlobals : Node = null
-#var GDNTheWorldViewer : Spatial = null
 
 var num_vertices_per_chunk_side : int
 var bitmap_resolution : int
@@ -45,17 +41,9 @@ func _ready():
 	assert(connect("tree_exiting", self, "exit_funct",[]) == 0)
 	OS.set_window_maximized(true)
 	
-	#main_node = get_tree().get_root().find_node("Main", true, false)
 	world_main_node = get_tree().get_root().find_node("TheWorld_Main", true, false)
-	#GDN_main().init(main_node, world_main_node)
 	world_main_node.init()
 	debug_print("Globals: _ready")
-	#GDN_globals().connect_to_server()
-
-	#GDN_globals().set_debug_enabled(Globals.debug_enabled)
-	#debug_print("Debug Enabled!")
-
-	#printTerrainDimensions()
 
 func TWViever() -> Spatial:
 	return world_main_node.TWViewer()
@@ -98,6 +86,7 @@ func exit_funct():
 
 func debug_print(var text : String):
 	TWViever().debug_print(text)
+	
 
 func status_to_string(var status : int) -> String:
 	if status == clientstatus_error:

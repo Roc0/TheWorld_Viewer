@@ -5,13 +5,23 @@ extends Spatial
 var GDNTheWorldMain = preload("res://addons/twviewer/native/GDN_TheWorld_Viewer_d.gdns").new()
 #var GDNTheWorldMain = preload("res://addons/twviewer/native/GDN_TheWorld_Viewer.gdns").new()
 
+const HT_Logger = preload("./util/logger.gd")
+
 var GDNTheWorldGlobals : Node = null
 var GDNTheWorldViewer : Spatial = null
+var _logger = HT_Logger.get_for(self)
+var init_done : bool = false
 
-func init():
-	GDN_main().init(self)
-	GDN_globals().connect_to_server()
-	printTerrainDimensions()
+
+func init() -> bool:
+	if init_done:
+		return false
+	else:
+		GDN_main().init(self)
+		GDN_globals().connect_to_server()
+		printTerrainDimensions()
+		init_done = true
+		return true
 
 func pre_deinit():
 	GDN_main().pre_deinit()
@@ -22,22 +32,30 @@ func can_deinit() -> bool:
 func deinit():
 	GDN_globals().disconnect_from_server()
 	GDN_main().deinit()
+	init_done = false
 
+func _init():
+	_logger.debug("TWViewer: _init")
+	
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	print("TWViewer: _ready")
+	_logger.debug("TWViewer: _ready")
+	if GDNTheWorldMain == null:
+		GDNTheWorldMain = GDNTheWorldMain.new()
 
 func _enter_tree():
-	print("TWViewer: _enter_tree")
+	_logger.debug("TWViewer: _enter_tree")
 	
 func _exit_tree():
-	print("TWViewer: _exit_tree")
+	_logger.debug("TWViewer: _exit_tree")
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
 
 func GDN_main():
+	if GDNTheWorldMain == null:
+		GDNTheWorldMain = GDNTheWorldMain.new()
 	return GDNTheWorldMain
 
 func GDN_globals():
