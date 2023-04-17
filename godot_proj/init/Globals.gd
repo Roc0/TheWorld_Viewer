@@ -45,8 +45,8 @@ func _ready():
 	world_main_node.init()
 	debug_print("Globals: _ready")
 
-func TWViever() -> Spatial:
-	return world_main_node.TWViewer()
+#func TWViewer() -> Spatial:
+#	return world_main_node.TWViewer()
 
 func _notification(_what):
 	if (_what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST):
@@ -57,7 +57,7 @@ func _process(_delta):
 	var clientstatus : int = get_clientstatus()
 	if clientstatus >= clientstatus_session_initialized && !debug_enable_set:
 		debug_enable_set = true
-		TWViever().set_debug_enabled(debug_enabled)
+		world_main_node.set_debug_enabled(debug_enabled)
 		
 	if clientstatus < clientstatus_session_initialized:
 		return
@@ -73,7 +73,7 @@ func unitialize_world() -> void:
 	world_main_node.exit_world()
 
 func get_clientstatus() -> int:
-	return TWViever().get_clientstatus()
+	return world_main_node.get_clientstatus()
 
 func get_appstatus() -> int:
 	return appstatus
@@ -85,7 +85,7 @@ func exit_funct():
 	#GDN_main().queue_free()	# crash on exit
 
 func debug_print(var text : String):
-	TWViever().debug_print(text)
+	world_main_node.debug_print(text)
 	
 
 func status_to_string(var status : int) -> String:
