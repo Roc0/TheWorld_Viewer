@@ -102,7 +102,7 @@ func deinit():
 	TWViewer().deinit()
 
 func _input(event):
-	var status : int = Globals.get_clientstatus()
+	var status : int = get_clientstatus()
 	if status < Globals.clientstatus_session_initialized:
 		pass
 		
@@ -148,7 +148,7 @@ func _input(event):
 			collider_mesh_downaltitude_pressed = true
 		elif event.is_action_pressed("ui_cancel"):
 			get_tree().notification(MainLoop.NOTIFICATION_WM_QUIT_REQUEST)
-			Globals.debug_print("ESC pressed...")
+			debug_print("ESC pressed...")
 		elif event.is_action_pressed("ui_test"):
 			test_action_enabled = !test_action_enabled
 			process_test_action = true
@@ -167,9 +167,9 @@ func _notification(_what):
 func _process(_delta):
 	if Globals.appstatus == Globals.appstatus_deinit_required:
 		Globals.appstatus = Globals.appstatus_deinit_in_progress
-		Globals.debug_print("Pre deinit...")
+		debug_print("Pre deinit...")
 		TWViewer().pre_deinit()
-		Globals.debug_print("Pre deinit completed...")
+		debug_print("Pre deinit completed...")
 		Globals.appstatus = Globals.appstatus_quit_required
 		return
 		
@@ -314,7 +314,7 @@ func _process(_delta):
 	debug_draw_mode = viewer.get_debug_draw_mode()
 		
 func enter_world():
-	Globals.debug_print("Entering world...")
+	debug_print("Entering world...")
 	OS.window_maximized = true
 	set_debug_window(true)
 	$DebugStats.add_property(self, "client_status", "")
@@ -369,13 +369,13 @@ func enter_world():
 	#init_world_thread = Thread.new()
 	#var err := init_world_thread.start(self, "_init_world")
 	#if err:
-	#	Globals.debug_print("Start _init_world failure!")
-	Globals.debug_print("World entered...")
+	#	debug_print("Start _init_world failure!")
+	debug_print("World entered...")
 	world_entered = true
 	
 func exit_world():
 	if world_entered:
-		Globals.debug_print("Exiting world...")
+		debug_print("Exiting world...")
 		$DebugStats.remove_property(self, "client_status")
 		$DebugStats.remove_property(self, "fps")
 		$DebugStats.remove_property(self, "process_durations_mcs")
@@ -426,7 +426,7 @@ func exit_world():
 		#$DebugStats.remove_property(self, "tracked_chunk")
 		#if init_world_thread.is_active():
 		#	init_world_thread.wait_to_finish()
-		Globals.debug_print("World exited...")
+		debug_print("World exited...")
 		world_entered = false
 	
 func set_debug_window(active : bool) -> void:
@@ -438,17 +438,25 @@ func set_debug_window(active : bool) -> void:
 		$DebugStats.visible = false
 		
 func _init_world() -> void:
-	Globals.debug_print("Initializing world...")
+	debug_print("Initializing world...")
 	TWViewer().GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
-	Globals.debug_print("World initialization completed...")
+	debug_print("World initialization completed...")
 	
 #func _pre_deinit() -> void:
-#	Globals.debug_print("Pre deinit...")
-#	Globals.GDN_main().pre_deinit()
-#	Globals.debug_print("Pre deinit completed...")
+#	debug_print("Pre deinit...")
+#	TWViewer().pre_deinit()
+#	debug_print("Pre deinit completed...")
 	
 func force_app_to_quit() -> void:
 	get_tree().set_input_as_handled()
 	exit_world()
 	get_tree().quit()
 	
+func set_debug_enabled(debug_mode : bool):
+	TWViewer().set_debug_enabled(debug_mode)
+
+func get_clientstatus() -> int:
+	return TWViewer().get_clientstatus()
+	
+func debug_print(var text : String):
+	TWViewer().debug_print(text)
