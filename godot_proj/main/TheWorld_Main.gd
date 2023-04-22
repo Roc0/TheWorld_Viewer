@@ -3,22 +3,25 @@ extends Spatial
 var debug_window_Active : bool = false
 var world_entered : bool = false
 
-var initialCameraDistanceFromTerrain = 300
+const HT_Logger = preload("res://addons/twviewer/util/logger.gd")
+var _logger = HT_Logger.get_for(self)
 
-var initialViewerPos := Vector3(0, 0, 0)
-#var initialViewerPos := Vector3(2000, 0, 9000)
-#var initialViewerPos := Vector3(2000, 0, 15000)
-#var initialViewerPos := Vector3(1196000, 0, 5464000)
-#var initialViewerPos := Vector3(1196000, 0, 5467000)
+const initialCameraDistanceFromTerrain = 300
 
-#var initialCameraAltitudeForced = 0
-var initialCameraAltitudeForced = 2000
-#var initialCameraAltitudeForced = 7000
-#var initialCameraAltitudeForced = 2900
-#var initialCameraAltitudeForced = 1485
-#var initialCameraAltitudeForced = 9417
+const initialViewerPos := Vector3(0, 0, 0)
+#const initialViewerPos := Vector3(2000, 0, 9000)
+#const initialViewerPos := Vector3(2000, 0, 15000)
+#const initialViewerPos := Vector3(1196000, 0, 5464000)
+#const initialViewerPos := Vector3(1196000, 0, 5467000)
 
-var initialLevel := 0
+#const initialCameraAltitudeForced = 0
+const initialCameraAltitudeForced = 2000
+#const initialCameraAltitudeForced = 7000
+#const initialCameraAltitudeForced = 2900
+#const initialCameraAltitudeForced = 1485
+#const initialCameraAltitudeForced = 9417
+
+const initialLevel := 0
 #var init_world_thread : Thread
 var test_action_enabled : bool = false
 var prev_test_action_enabled : bool = false
@@ -52,7 +55,8 @@ var num_flushed_quadrant : String
 var num_active_chunks : int
 var process_durations_mcs : String
 var num_process_locked : int
-var client_status : String
+var _client_status : String
+var _clientstatus : int
 var debug_draw_mode : String
 var chunk_debug_mode  : String = ""
 var cam_chunk_pos : String = ""
@@ -97,13 +101,22 @@ func TWViewer() -> Spatial:
 
 func init():
 	var init_done : bool = TWViewer().init()
+	var result = TWViewer().GDN_globals().connect("tw_status_changed", self, "_on_tw_status_changed") == 0
+	_logger.debug(str("signal tw_status_changed connected (result=", result, ")"))
 
 func deinit():
 	TWViewer().deinit()
 
+func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> void:
+	_clientstatus = new_client_status
+	_client_status = Globals.Constants.status_to_string(new_client_status)
+	var old_client_status_str : String = Globals.Constants.status_to_string(old_client_status)
+	var new_client_status_str : String = Globals.Constants.status_to_string(new_client_status)
+	_logger.debug(str("_on_tw_status_changed: ", old_client_status_str, "(", old_client_status, ") ==> ", new_client_status_str, "(", new_client_status, ")"))
+
 func _input(event):
 	var status : int = get_clientstatus()
-	if status < Globals.clientstatus_session_initialized:
+	if status < Globals.Constants.clientstatus_session_initialized:
 		pass
 		
 	if event is InputEventKey:
@@ -182,10 +195,10 @@ func _process(_delta):
 	if Globals.appstatus != Globals.appstatus_running:
 		return
 	
-	var clientstatus : int = TWViewer().get_clientstatus()
-	client_status = Globals.status_to_string(clientstatus)
+	#var clientstatus : int = TWViewer().get_clientstatus()
+	#client_status = Globals.Constants.status_to_string(clientstatus)
 	
-	if clientstatus < Globals.clientstatus_session_initialized:
+	if _clientstatus < Globals.Constants.clientstatus_session_initialized:
 		return
 	
 	fps = Engine.get_frames_per_second()
@@ -226,14 +239,14 @@ func _process(_delta):
 		# DEBUGRIC
 		scene_initialized = true
 	
-	if scene_initialized && !post_world_deploy_initialized && clientstatus >= Globals.clientstatus_world_deployed:
+	if scene_initialized && !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 		$BallRigidBody.global_transform.origin = Vector3(initialViewerPos.x + 1, initialViewerPos.y + 1500, initialViewerPos.z + 1)
 		#if (initialCameraAltitudeForced != 0):
 		#	$BallRigidBody.global_transform.origin.y = initialCameraAltitudeForced
 		$BallRigidBody.visible = true
 		post_world_deploy_initialized = true
 	
-	if scene_initialized && post_world_deploy_initialized && clientstatus >= Globals.clientstatus_world_deployed:
+	if scene_initialized && post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 		ball_pos = $BallRigidBody.global_transform.origin
 	
 	var _chunk_debug_mode : String = viewer.get_chunk_debug_mode()
@@ -317,7 +330,7 @@ func enter_world():
 	debug_print("Entering world...")
 	OS.window_maximized = true
 	set_debug_window(true)
-	$DebugStats.add_property(self, "client_status", "")
+	$DebugStats.add_property(self, "_client_status", "")
 	$DebugStats.add_property(self, "fps", "")
 	$DebugStats.add_property(self, "process_durations_mcs", "")
 	$DebugStats.add_property(self, "num_process_locked", "")
@@ -376,7 +389,7 @@ func enter_world():
 func exit_world():
 	if world_entered:
 		debug_print("Exiting world...")
-		$DebugStats.remove_property(self, "client_status")
+		$DebugStats.remove_property(self, "_client_status")
 		$DebugStats.remove_property(self, "fps")
 		$DebugStats.remove_property(self, "process_durations_mcs")
 		$DebugStats.remove_property(self, "num_process_locked")

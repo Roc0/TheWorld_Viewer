@@ -115,6 +115,11 @@ func _add_layer():
 	var detail_layer_icon = HT_EditorUtil.load_texture(DETAIL_LAYER_ICON_TEXTURE, _logger)
 	node.set_meta("_editor_icon", detail_layer_icon)
 	node.name = "HTerrainDetailLayer"
+	_terrain.add_child(node)
+	node.owner = get_tree().edited_scene_root
+	#print(str("_add_layer ", node))
+	#return
+	#print(str("dopo return", node))
 	var map_index := terrain_data._edit_add_map(HTerrainData.CHANNEL_DETAIL)
 	var map_image := terrain_data.get_image(HTerrainData.CHANNEL_DETAIL)
 	var map_image_cache_id := _image_cache.save_image(map_image)
@@ -123,17 +128,15 @@ func _add_layer():
 	# Then, create an action
 	_undo_redo.create_action("Add Detail Layer {0}".format([map_index]))
 	
-	_undo_redo.add_do_method(terrain_data, "_edit_insert_map_from_image_cache", 
-		HTerrainData.CHANNEL_DETAIL, map_index, _image_cache, map_image_cache_id)
-	_undo_redo.add_do_method(_terrain, "add_child", node)
-	_undo_redo.add_do_property(node, "owner", get_tree().edited_scene_root)
-	_undo_redo.add_do_method(self, "_update_list")
-	_undo_redo.add_do_reference(node)
+	#_undo_redo.add_do_method(terrain_data, "_edit_insert_map_from_image_cache", HTerrainData.CHANNEL_DETAIL, map_index, _image_cache, map_image_cache_id)
+	#_undo_redo.add_do_method(_terrain, "add_child", node)
+	#_undo_redo.add_do_property(node, "owner", get_tree().edited_scene_root)
+	#_undo_redo.add_do_method(self, "_update_list")
+	#_undo_redo.add_do_reference(node)
 	
-	_undo_redo.add_undo_method(_terrain, "remove_child", node)
-	_undo_redo.add_undo_method(
-		terrain_data, "_edit_remove_map", HTerrainData.CHANNEL_DETAIL, map_index)
-	_undo_redo.add_undo_method(self, "_update_list")
+	#_undo_redo.add_undo_method(_terrain, "remove_child", node)
+	#_undo_redo.add_undo_method(terrain_data, "_edit_remove_map", HTerrainData.CHANNEL_DETAIL, map_index)
+	#_undo_redo.add_undo_method(self, "_update_list")
 	
 	# Yet another instance of this hack, to prevent UndoRedo from running some of the functions,
 	# which we had to run already

@@ -51,6 +51,7 @@ script = ExtResource( 2 )
 
 [node name="TWViewer" type="Spatial" parent="TheWorld_Main"]
 script = ExtResource( 18 )
+_status = "session_initialized"
 
 [node name="DebugStats" type="MarginContainer" parent="TheWorld_Main"]
 margin_right = 40.0
@@ -112,8 +113,7 @@ __meta__ = {
 "_editor_icon": ExtResource( 16 )
 }
 texture = ExtResource( 17 )
-view_distance = 500.0
-shader_params/u_globalmap_tint_bottom = 0.389
-shader_params/u_globalmap_tint_top = 0.226
-shader_params/u_bottom_ao = 0.166
+shader_params/u_globalmap_tint_bottom = null
+shader_params/u_globalmap_tint_top = null
+shader_params/u_bottom_ao = null
 shader_params/u_instance_scale = Vector3( 1, 1, 1 )
