@@ -1,19 +1,6 @@
 extends Node
 
-const clientstatus_error = -1
-const clientstatus_str_error = "error"
-const clientstatus_uninitialized = 0
-const clientstatus_str_uninitialized = "uninitialized"
-const clientstatus_initialized = 1
-const clientstatus_str_initialized = "initialized"
-const clientstatus_connected_to_server = 2
-const clientstatus_str_connected_to_server = "connected_to_server"
-const clientstatus_session_initialized = 3
-const clientstatus_str_session_initialized = "session_initialized"
-const clientstatus_world_deploy_in_progress = 4
-const clientstatus_str_world_deploy_in_progress = "world_deploy_in_progress"
-const clientstatus_world_deployed = 5
-const clientstatus_str_world_deployed = "world_deployed"
+var Constants = preload("res://addons/twviewer/tw_const.gd")
 
 var appstatus : int
 const appstatus_running = 1
@@ -43,6 +30,7 @@ func _ready():
 	
 	world_main_node = get_tree().get_root().find_node("TheWorld_Main", true, false)
 	world_main_node.init()
+
 	debug_print("Globals: _ready")
 
 #func TWViewer() -> Spatial:
@@ -55,11 +43,11 @@ func _notification(_what):
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	var clientstatus : int = get_clientstatus()
-	if clientstatus >= clientstatus_session_initialized && !debug_enable_set:
+	if clientstatus >= Constants.clientstatus_session_initialized && !debug_enable_set:
 		debug_enable_set = true
 		world_main_node.set_debug_enabled(debug_enabled)
 		
-	if clientstatus < clientstatus_session_initialized:
+	if clientstatus < Constants.clientstatus_session_initialized:
 		return
 
 	if not world_initialized:
@@ -82,26 +70,6 @@ func exit_funct():
 	debug_print ("Quitting...")
 	unitialize_world()
 	world_main_node.deinit()
-	#GDN_main().queue_free()	# crash on exit
 
 func debug_print(var text : String):
 	world_main_node.debug_print(text)
-	
-
-func status_to_string(var status : int) -> String:
-	if status == clientstatus_error:
-		return clientstatus_str_error
-	elif status == clientstatus_uninitialized:
-		return clientstatus_str_uninitialized
-	elif status == clientstatus_initialized:
-		return clientstatus_str_initialized
-	elif status == clientstatus_connected_to_server:
-		return clientstatus_str_connected_to_server
-	elif status == clientstatus_session_initialized:
-		return clientstatus_str_session_initialized
-	elif status == clientstatus_world_deploy_in_progress:
-		return clientstatus_str_world_deploy_in_progress
-	elif status == clientstatus_world_deployed:
-		return clientstatus_str_world_deployed
-	else:
-		return ""
