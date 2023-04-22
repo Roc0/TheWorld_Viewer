@@ -19,13 +19,14 @@ var _world_initialized : bool = false
 var _logger = HT_Logger.get_for(self)
 var _viewer : TWViewer = null
 var _init_done : bool = false
+var _viewer_connected : bool = false
 #var _tw_test : TWTest = null
 
 #const AUTOLOAD_NAME = "Globals"
 #const AUTOLOAD_SCRIPT = "res://addons/twviewer/init/Globals.gd"
 
 func _enter_tree():
-	_logger.debug("TWViewer plugin: _enter_tree")
+	_logger.debug("_enter_tree")
 	
 	add_custom_type("TWViewer", "Spatial", TWViewer, get_icon("heightmap_node"))
 	#add_custom_type("TWTest", "Spatial", TWTest, get_icon("heightmap_node"))
@@ -33,7 +34,7 @@ func _enter_tree():
 	#add_autoload_singleton(AUTOLOAD_NAME, AUTOLOAD_SCRIPT)
 
 func _exit_tree():
-	_logger.debug("TWViewer plugin: _exit_tree")
+	_logger.debug("_exit_tree")
 	
 	#remove_custom_type("TWTest")
 	remove_custom_type("TWViewer")
@@ -41,10 +42,10 @@ func _exit_tree():
 	#remove_autoload_singleton(AUTOLOAD_NAME)
 
 func _process(delta: float):
-	#_logger.debug(str("TWViewer plugin: _process "))
+	#_logger.debug(str("_process "))
 	
 	if _viewer != null && !_init_done:
-		_logger.debug(str("TWViewer plugin: _process calling ", _viewer, ".init"))
+		_logger.debug(str("_process calling ", _viewer, ".init"))
 		var init_done : bool =_viewer.init()
 		_logger.debug(str("init_done ", init_done))
 		if (init_done):
@@ -65,7 +66,7 @@ func _process(delta: float):
 func handles(object):
 	var b : bool = _get_custom_object(object) != null
 	#if b:
-	#	_logger.debug(str("TWViewer plugin: handles ", object))
+	#	_logger.debug(str("handles ", object))
 	return b
 
 func make_visible(visible: bool):
@@ -83,12 +84,13 @@ func make_visible(visible: bool):
 		edit(null)
 
 func edit(object):
-	_logger.debug(str("TWViewer plugin: edit ", object))
+	_logger.debug(str("edit ", object))
 
 	var custom_object = _get_custom_object(object)
 	
-	if _viewer != null:
+	if _viewer != null && _viewer_connected:
 		_viewer.disconnect("tree_exited", self, "_viewer_exited_scene")
+		_viewer_connected = false
 		#_viewer = null
 
 	if custom_object == null:
@@ -97,10 +99,12 @@ func edit(object):
 	if custom_object != null && custom_object is TWViewer:
 		_viewer = custom_object
 	
-	if _viewer != null:
+	if _viewer != null && !_viewer_connected:
 		_viewer.connect("tree_exited", self, "_viewer_exited_scene")
-		
-		#_logger.debug(str("TWViewer plugin: edit ", object, " calling ", object, ".init"))
+		_viewer_connected = true
+	
+	#if _viewer != null:
+		#_logger.debug(str("edit ", object, " calling ", object, ".init"))
 		#var init_done : bool =_viewer.init()
 		#print(str("init_done ", init_done))
 		#if (init_done):
@@ -132,7 +136,7 @@ func edit(object):
 	#		_tw_test = null
 		
 func _viewer_exited_scene():
-	_logger.debug("TWViewer plugin: exited the scene")
+	_logger.debug("exited the scene")
 	edit(null)
 
 static func _get_custom_object(object):
