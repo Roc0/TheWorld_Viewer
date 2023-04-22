@@ -189,6 +189,10 @@ ui_toggle_edit_mode={
  ]
 }
 
+[network]
+
+limits/debugger_stdout/max_chars_per_second=10000
+
 [physics]
 
 common/enable_pause_aware_picking=true

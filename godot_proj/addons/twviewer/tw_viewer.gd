@@ -17,15 +17,15 @@ var _init_done : bool = false
 export var _status : String = ""
 
 func init() -> bool:
-	_logger.debug("TWViewer: init")
+	_logger.debug("init")
 	if _init_done:
 		return false
 	else:
 		GDN_main().init(self)
 		GDN_globals().connect_to_server()
-		_logger.debug(str("TWViewer, init: server connected"))
+		_logger.debug(str("server connected"))
 		var result = GDN_globals().connect("tw_status_changed", self, "_on_tw_status_changed") == 0
-		_logger.debug(str("TWViewer, init: signal tw_status_changed connected (result=", result, ")"))
+		_logger.debug(str("signal tw_status_changed connected (result=", result, ")"))
 		printTerrainDimensions()
 		_init_done = true
 		return true
@@ -37,7 +37,7 @@ func can_deinit() -> bool:
 	return GDN_main().can_deinit()
 
 func deinit():
-	_logger.debug("TWViewer: deinit")
+	_logger.debug("deinit")
 	if _init_done:
 		GDN_globals().disconnect("tw_status_changed", self, "_on_tw_status_changed")
 		GDN_globals().disconnect_from_server()
@@ -48,31 +48,31 @@ func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> 
 	_status = tw_constants.status_to_string(new_client_status)
 	var old_client_status_str : String = tw_constants.status_to_string(old_client_status)
 	var new_client_status_str : String = tw_constants.status_to_string(new_client_status)
-	_logger.debug(str("TWViewer, _on_tw_status_changed: ", old_client_status_str, "(", old_client_status, ") ==> ", new_client_status_str, "(", new_client_status, ")"))
+	_logger.debug(str("_on_tw_status_changed ", old_client_status_str, "(", old_client_status, ") ==> ", new_client_status_str, "(", new_client_status, ")"))
 
 func _init():
-	_logger.debug("TWViewer: _init")
+	_logger.debug("_init")
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	_logger.debug("TWViewer: _ready")
+	_logger.debug("_ready")
 	if GDNTheWorldMain == null:
 		GDNTheWorldMain = GDNTheWorldMain.new()
 	if Engine.editor_hint:
 		delete_children()
 
 func _enter_tree():
-	_logger.debug("TWViewer: _enter_tree")
+	_logger.debug("_enter_tree")
 	
 func _exit_tree():
-	_logger.debug("TWViewer: _exit_tree")
+	_logger.debug("_exit_tree")
 	
 	if _init_done:
 		deinit()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	#_logger.debug("TWViewer: _process")
+	#_logger.debug("_process")
 	
 	#if Engine.editor_hint:
 	#	var clientstatus : int = get_clientstatus()

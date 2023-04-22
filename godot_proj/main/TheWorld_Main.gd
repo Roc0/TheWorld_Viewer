@@ -113,7 +113,7 @@ func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> 
 	_client_status = Globals.Constants.status_to_string(new_client_status)
 	var old_client_status_str : String = Globals.Constants.status_to_string(old_client_status)
 	var new_client_status_str : String = Globals.Constants.status_to_string(new_client_status)
-	_logger.debug(str("_on_tw_status_changed: ", old_client_status_str, "(", old_client_status, ") ==> ", new_client_status_str, "(", new_client_status, ")"))
+	_logger.debug(str("_on_tw_status_changed ", old_client_status_str, "(", old_client_status, ") ==> ", new_client_status_str, "(", new_client_status, ")"))
 
 func _input(event):
 	var status : int = get_clientstatus()
