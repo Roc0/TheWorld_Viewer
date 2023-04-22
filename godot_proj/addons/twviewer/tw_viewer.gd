@@ -39,6 +39,7 @@ func can_deinit() -> bool:
 func deinit():
 	_logger.debug("TWViewer: deinit")
 	if _init_done:
+		GDN_globals().disconnect("tw_status_changed", self, "_on_tw_status_changed")
 		GDN_globals().disconnect_from_server()
 		GDN_main().deinit()
 		_init_done = false
