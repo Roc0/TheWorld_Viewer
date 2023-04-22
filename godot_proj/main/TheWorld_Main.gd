@@ -105,6 +105,7 @@ func init():
 	_logger.debug(str("signal tw_status_changed connected (result=", result, ")"))
 
 func deinit():
+	TWViewer().GDN_globals().disconnect("tw_status_changed", self, "_on_tw_status_changed")
 	TWViewer().deinit()
 
 func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> void:
