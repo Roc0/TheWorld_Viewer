@@ -46,21 +46,21 @@ func _process(delta: float):
 	#_logger.debug(str("_process "))
 	
 	if _viewer != null && !_init_done:
-		_logger.debug(str("_process calling ", _viewer, ".init"))
-		var init_done : bool =_viewer.init()
-		_logger.debug(str("init_done ", init_done))
-		if (init_done):
-			var editor_interface := get_editor_interface()
-			_logger.debug (str("EditorInterface ", editor_interface))
-			_viewer.set_editor_interface(editor_interface)
-			_init_done = true
+		#_logger.debug(str("_process calling ", _viewer, ".init"))
+		#var init_done : bool =_viewer.init()
+		#_logger.debug(str("init_done ", init_done))
+		#if (init_done):
+		var editor_interface := get_editor_interface()
+		_logger.debug (str("EditorInterface ", editor_interface))
+		_viewer.set_editor_interface(editor_interface)
+		_init_done = true
 
 	var clientstatus : int = 0
-	#clientstatus = get_clientstatus()
+	clientstatus = get_clientstatus()
 	#print(str("self",self,"_viewer",_viewer))
-	if clientstatus >= tw_constants.clientstatus_session_initialized && !_debug_enable_set:
-		_debug_enable_set = true
-		set_debug_enabled(_debug_enabled)
+	#if clientstatus >= tw_constants.clientstatus_session_initialized && !_debug_enable_set:
+	#	_debug_enable_set = true
+	#	set_debug_enabled(_debug_enabled)
 
 	if clientstatus >= tw_constants.clientstatus_session_initialized && !_world_initialized:
 		#_viewer.GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)

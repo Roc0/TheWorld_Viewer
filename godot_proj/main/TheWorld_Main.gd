@@ -492,25 +492,34 @@ func get_clientstatus() -> int:
 	return TWViewer().get_clientstatus()
 	
 func log_debug(var text : String) -> void:
-	_logger.debug(text)
+	var _text = text
+	if Engine.editor_hint:
+		_text = str("***EDITOR*** ", _text)
+	_logger.debug(_text)
 	var ctx : String = _logger.get_context()
-	debug_print(ctx, text, false)
+	debug_print(ctx, _text, false)
 
 func debug_print(var context : String, var text : String, var godot_print : bool):
 	TWViewer().debug_print(context, text, godot_print)
 
 func log_info(var text : String) -> void:
-	_logger.info(text)
+	var _text = text
+	if Engine.editor_hint:
+		_text = str("***EDITOR*** ", _text)
+	_logger.info(_text)
 	var ctx : String = _logger.get_context()
-	info_print(ctx, text, false)
+	info_print(ctx, _text, false)
 
 func info_print(var context : String, var text : String, var godot_print : bool):
 	TWViewer().info_print(context, text, godot_print)
 
 func log_error(var text : String) -> void:
-	_logger.error(text)
+	var _text = text
+	if Engine.editor_hint:
+		_text = str("***EDITOR*** ", _text)
+	_logger.error(_text)
 	var ctx : String = _logger.get_context()
-	error_print(ctx, text, false)
+	error_print(ctx, _text, false)
 
 func error_print(var context : String, var text : String, var godot_print : bool):
 	TWViewer().error_print(context, text, godot_print)
