@@ -4,10 +4,12 @@ extends EditorPlugin
 
 const TWViewer = preload("./tw_viewer.gd")
 const tw_editor_util = preload("./tools/util/editor_util.gd")
-const HT_Logger = preload("./util/logger.gd")
 var tw_constants = preload("res://addons/twviewer/tw_const.gd")
 #const TWTest = preload("./tw_test.gd")
 #const HTerrainDetailLayer = preload("../zylann.hterrain/hterrain_detail_layer.gd")
+
+const HT_Logger = preload("./util/logger.gd")
+var _logger = HT_Logger.get_for(self)
 
 const initialViewerPos := Vector3(0, 0, 0)
 const initialCameraDistanceFromTerrain = 300
@@ -16,7 +18,6 @@ const initialLevel := 0
 var _debug_enabled : bool = true
 var _debug_enable_set : bool = false
 var _world_initialized : bool = false
-var _logger = HT_Logger.get_for(self)
 var _viewer : TWViewer = null
 var _init_done : bool = false
 var _viewer_connected : bool = false
@@ -54,7 +55,9 @@ func _process(delta: float):
 			_viewer.set_editor_interface(editor_interface)
 			_init_done = true
 
-	var clientstatus : int = get_clientstatus()
+	var clientstatus : int = 0
+	#clientstatus = get_clientstatus()
+	#print(str("self",self,"_viewer",_viewer))
 	if clientstatus >= tw_constants.clientstatus_session_initialized && !_debug_enable_set:
 		_debug_enable_set = true
 		set_debug_enabled(_debug_enabled)
@@ -156,8 +159,10 @@ func get_icon(icon_name: String) -> Texture:
 
 func get_clientstatus() -> int:
 	if _viewer == null:
+		#print("a")
 		return tw_constants.clientstatus_uninitialized
 	else:
+		#print("b")
 		return _viewer.get_clientstatus()
 
 func set_debug_enabled(debug_mode : bool):
