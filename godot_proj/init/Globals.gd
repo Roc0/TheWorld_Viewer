@@ -2,6 +2,9 @@ extends Node
 
 var Constants = preload("res://addons/twviewer/tw_const.gd")
 
+const HT_Logger = preload("res://addons/twviewer/util/logger.gd")
+var _logger = HT_Logger.get_for(self)
+
 var appstatus : int
 const appstatus_running = 1
 const appstatus_deinit_required = 2
@@ -31,7 +34,7 @@ func _ready():
 	world_main_node = get_tree().get_root().find_node("TheWorld_Main", true, false)
 	world_main_node.init()
 
-	debug_print("Globals: _ready")
+	log_debug("_ready")
 
 #func TWViewer() -> Spatial:
 #	return world_main_node.TWViewer()
@@ -67,9 +70,30 @@ func get_appstatus() -> int:
 	return appstatus
 	
 func exit_funct():
-	debug_print ("Quitting...")
+	log_debug ("Quitting...")
 	unitialize_world()
 	world_main_node.deinit()
 
-func debug_print(var text : String):
-	world_main_node.debug_print(text)
+func log_debug(var text : String) -> void:
+	_logger.debug(text)
+	var ctx : String = _logger.get_context()
+	debug_print(ctx, text, false)
+
+func debug_print(var context : String, var text : String, var godot_print : bool):
+	world_main_node.debug_print(context, text, godot_print)
+
+func log_info(var text : String) -> void:
+	_logger.info(text)
+	var ctx : String = _logger.get_context()
+	info_print(ctx, text, false)
+
+func info_print(var context : String, var text : String, var godot_print : bool):
+	world_main_node.info_print(context, text, godot_print)
+
+func log_error(var text : String) -> void:
+	_logger.error(text)
+	var ctx : String = _logger.get_context()
+	error_print(ctx, text, false)
+
+func error_print(var context : String, var text : String, var godot_print : bool):
+	world_main_node.error_print(context, text, godot_print)

@@ -5,6 +5,9 @@ class HT_LoggerBase:
 	func _init(p_context):
 		_context = p_context
 	
+	func get_context() -> String:
+		return _context
+	
 	func debug(msg: String):
 		pass
 
@@ -14,6 +17,8 @@ class HT_LoggerBase:
 	func error(msg: String):
 		push_error("{0}: {1}".format([_context, msg]))
 
+	func info(msg: String):
+		print(_context, ": ", msg)
 
 class HT_LoggerVerbose extends HT_LoggerBase:
 	func _init(p_context: String).(p_context):
