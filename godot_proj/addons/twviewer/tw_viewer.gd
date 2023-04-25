@@ -22,6 +22,7 @@ func init() -> bool:
 		return false
 	else:
 		GDN_main().init(self)
+		set_debug_enabled(_logger.is_verbose())
 		GDN_globals().connect_to_server()
 		log_debug(str("server connected"))
 		var result = GDN_globals().connect("tw_status_changed", self, "_on_tw_status_changed") == 0
@@ -31,9 +32,11 @@ func init() -> bool:
 		return true
 
 func pre_deinit():
+	log_debug("pre_deinit")
 	GDN_main().pre_deinit()
 	
 func can_deinit() -> bool:
+	log_debug("can_deinit")
 	return GDN_main().can_deinit()
 
 func deinit():
@@ -59,7 +62,10 @@ func _ready():
 	var GDNMain = GDN_main()
 	if Engine.editor_hint:
 		delete_children()
-
+	else:
+		delete_children()
+		init()
+		
 func _enter_tree():
 	log_debug("_enter_tree")
 	

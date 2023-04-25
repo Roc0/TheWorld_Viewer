@@ -3,6 +3,8 @@ extends Spatial
 var debug_window_Active : bool = false
 var world_entered : bool = false
 
+var tw_const = preload("res://addons/twviewer/tw_const.gd")
+
 const HT_Logger = preload("res://addons/twviewer/util/logger.gd")
 var _logger = HT_Logger.get_for(self)
 
@@ -23,6 +25,7 @@ const initialCameraAltitudeForced = 2000
 
 const initialLevel := 0
 #var init_world_thread : Thread
+var world_initialized : bool = false
 var test_action_enabled : bool = false
 var prev_test_action_enabled : bool = false
 var process_test_action : bool = false
@@ -56,7 +59,7 @@ var num_active_chunks : int
 var process_durations_mcs : String
 var num_process_locked : int
 var _client_status : String
-var _clientstatus : int
+var _clientstatus : int = tw_const.clientstatus_uninitialized
 var debug_draw_mode : String
 var chunk_debug_mode  : String = ""
 var cam_chunk_pos : String = ""
@@ -89,9 +92,9 @@ var ball_pos := Vector3(0, 0, 0)
 var prev_hit : Vector3 = Vector3(0, 0, 0)
 		
 func _ready():
+	init()
 	$BallRigidBody.visible = false
 	var e := get_tree().get_root().connect("size_changed", self, "resizing")
-	#print(e)
 
 func resizing():
 	print("Resizing: ", get_viewport().size)
@@ -100,24 +103,28 @@ func TWViewer() -> Spatial:
 	return $TWViewer.get_self()
 
 func init():
-	var init_done : bool = TWViewer().init()
+	log_debug("init")
+	#var init_done : bool = TWViewer().init()
 	var result = TWViewer().GDN_globals().connect("tw_status_changed", self, "_on_tw_status_changed") == 0
-	_logger.debug(str("signal tw_status_changed connected (result=", result, ")"))
+	log_debug(str("signal tw_status_changed connected (result=", result, ")"))
+	_clientstatus = get_clientstatus()
+	_client_status = tw_const.status_to_string(_clientstatus)
 
 func deinit():
+	log_debug("deinit")
 	TWViewer().GDN_globals().disconnect("tw_status_changed", self, "_on_tw_status_changed")
-	TWViewer().deinit()
+	#TWViewer().deinit()
 
 func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> void:
 	_clientstatus = new_client_status
 	_client_status = Globals.Constants.status_to_string(new_client_status)
 	var old_client_status_str : String = Globals.Constants.status_to_string(old_client_status)
 	var new_client_status_str : String = Globals.Constants.status_to_string(new_client_status)
-	_logger.debug(str("_on_tw_status_changed ", old_client_status_str, "(", old_client_status, ") ==> ", new_client_status_str, "(", new_client_status, ")"))
+	log_debug(str("_on_tw_status_changed ", old_client_status_str, "(", old_client_status, ") ==> ", new_client_status_str, "(", new_client_status, ")"))
 
 func _input(event):
-	var status : int = get_clientstatus()
-	if status < Globals.Constants.clientstatus_session_initialized:
+	_clientstatus = get_clientstatus()
+	if _clientstatus < Globals.Constants.clientstatus_session_initialized:
 		pass
 		
 	if event is InputEventKey:
@@ -178,6 +185,14 @@ func _notification(_what):
 	elif (_what == Spatial.NOTIFICATION_ENTER_WORLD):
 		print("Notification Spatial.NOTIFICATION_ENTER_WORLD")
 		
+func _enter_tree():
+	log_debug("_enter_tree")
+	
+func _exit_tree():
+	log_debug("_exit_tree")
+	exit_world()
+	deinit()
+	
 func _process(_delta):
 	if Globals.appstatus == Globals.appstatus_deinit_required:
 		Globals.appstatus = Globals.appstatus_deinit_in_progress
@@ -199,6 +214,10 @@ func _process(_delta):
 	#var clientstatus : int = TWViewer().get_clientstatus()
 	#client_status = Globals.Constants.status_to_string(clientstatus)
 	
+	if not world_initialized && get_clientstatus() >= tw_const.clientstatus_session_initialized:
+		enter_world()
+		world_initialized = true
+
 	if _clientstatus < Globals.Constants.clientstatus_session_initialized:
 		return
 	
@@ -463,7 +482,7 @@ func _init_world() -> void:
 	
 func force_app_to_quit() -> void:
 	get_tree().set_input_as_handled()
-	exit_world()
+	#exit_world()
 	get_tree().quit()
 	
 func set_debug_enabled(debug_mode : bool):
