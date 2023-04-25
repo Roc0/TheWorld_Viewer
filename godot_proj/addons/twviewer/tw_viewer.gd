@@ -62,6 +62,7 @@ func _ready():
 	var GDNMain = GDN_main()
 	if Engine.editor_hint:
 		delete_children()
+		init()
 	else:
 		delete_children()
 		init()
@@ -142,9 +143,12 @@ func set_editor_interface(editor_interface : EditorInterface):
 	GDN_viewer().set_editor_interface(editor_interface)
 
 func log_debug(var text : String) -> void:
-	_logger.debug(text)
+	var _text = text
+	if Engine.editor_hint:
+		_text = str("***EDITOR*** ", _text)
+	_logger.debug(_text)
 	var ctx : String = _logger.get_context()
-	debug_print(ctx, text, false)
+	debug_print(ctx, _text, false)
 	
 func debug_print(var context: String, var text : String, var godot_print : bool):
 	var gdn_globals = GDN_globals()
@@ -152,9 +156,12 @@ func debug_print(var context: String, var text : String, var godot_print : bool)
 		gdn_globals.debug_print(str(context,": ", text), godot_print)
 
 func log_info(var text : String) -> void:
-	_logger.info(text)
+	var _text = text
+	if Engine.editor_hint:
+		_text = str("***EDITOR*** ", _text)
+	_logger.info(_text)
 	var ctx : String = _logger.get_context()
-	info_print(ctx, text, false)
+	info_print(ctx, _text, false)
 	
 func info_print(var context: String, var text : String, var godot_print : bool):
 	var gdn_globals = GDN_globals()
@@ -162,9 +169,12 @@ func info_print(var context: String, var text : String, var godot_print : bool):
 		gdn_globals.info_print(str(context,": ", text), godot_print)
 
 func log_error(var text : String) -> void:
-	_logger.error(text)
+	var _text = text
+	if Engine.editor_hint:
+		_text = str("***EDITOR*** ", _text)
+	_logger.error(_text)
 	var ctx : String = _logger.get_context()
-	error_print(ctx, text, false)
+	error_print(ctx, _text, false)
 	
 func error_print(var context: String, var text : String, var godot_print : bool):
 	var gdn_globals = GDN_globals()
