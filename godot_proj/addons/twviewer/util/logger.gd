@@ -1,12 +1,16 @@
 # thanks to Zylann (godot_heightmap_plugin)
 class HT_LoggerBase:
 	var _context := ""
+	var verbose : bool = false
 	
 	func _init(p_context):
 		_context = p_context
 	
 	func get_context() -> String:
 		return _context
+	
+	func is_verbose() -> bool:
+		return verbose
 	
 	func debug(msg: String):
 		pass
@@ -22,7 +26,7 @@ class HT_LoggerBase:
 
 class HT_LoggerVerbose extends HT_LoggerBase:
 	func _init(p_context: String).(p_context):
-		pass
+		verbose = true
 		
 	func debug(msg: String):
 		print(_context, ": ", msg)
