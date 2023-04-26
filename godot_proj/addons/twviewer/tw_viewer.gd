@@ -2,8 +2,9 @@ tool
 
 extends Spatial
 
-var GDNTheWorldMain = preload("res://addons/twviewer/native/GDN_TheWorld_Viewer_d.gdns").new()
+var GDNTheWorldMain = preload("res://addons/twviewer/native/GDN_TheWorld_Viewer_d.gdns")
 #var GDNTheWorldMain = preload("res://addons/twviewer/native/GDN_TheWorld_Viewer.gdns").new()
+var GDNTheWorldMain_instance : Node = null
 
 var tw_constants = preload("res://addons/twviewer/tw_const.gd")
 
@@ -61,10 +62,10 @@ func _ready():
 	log_debug("_ready")
 	var GDNMain = GDN_main()
 	if Engine.editor_hint:
-		delete_children()
+		#delete_children()
 		init()
 	else:
-		delete_children()
+		#delete_children()
 		init()
 		
 func _enter_tree():
@@ -86,12 +87,29 @@ func _process(delta):
 	pass
 	
 func GDN_main():
-	if GDNTheWorldMain == null:
-		GDNTheWorldMain = GDNTheWorldMain.new()
-	return GDNTheWorldMain
+	#if GDNTheWorldMain == null:
+	#	GDNTheWorldMain = GDNTheWorldMain.new()
+	#return GDNTheWorldMain
+	if GDNTheWorldMain_instance == null:
+		if Engine.editor_hint:
+			var scene : SceneTree = get_tree()
+			if scene == null:
+				return null
+			GDNTheWorldMain_instance = get_tree().get_edited_scene_root().find_node("GDN_TheWorld_Main", true, false)
+		else:
+			var scene : SceneTree = get_tree()
+			if scene == null:
+				return null
+			var node : Node = scene.get_root()
+			GDNTheWorldMain_instance = get_tree().get_root().find_node("GDN_TheWorld_Main", true, false)
+		#GDNTheWorldMain_instance = GDNTheWorldMain.new()
+	return GDNTheWorldMain_instance
 
 func GDN_globals():
 	if GDNTheWorldGlobals == null:
+		var main = GDN_main()
+		if main == null:
+			return null
 		GDNTheWorldGlobals = GDN_main().globals(true)
 	return GDNTheWorldGlobals
 
