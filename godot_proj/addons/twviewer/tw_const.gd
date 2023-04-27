@@ -13,6 +13,13 @@ const clientstatus_str_world_deploy_in_progress := "world_deploy_in_progress"
 const clientstatus_world_deployed := 5
 const clientstatus_str_world_deployed := "world_deployed"
 
+const tw_viewer_node_name := "TWViewer"
+const tw_gdn_main_node_name := "GDN_TW_Main"
+const tw_gdn_globals_node_name := "GDN_TW_Globals"
+const tw_gdn_viewer_node_name := "GDN_TW_Viewer"
+const tw_gdn_camera_node_name := "GDN_TW_Camera"
+const tw_gdn_edit_mode_ui_node_name := "GDN_TW_EditModeUI"
+
 static func status_to_string(var status : int) -> String:
 	if status == clientstatus_error:
 		return clientstatus_str_error

@@ -2,9 +2,9 @@ tool
 
 extends Spatial
 
-var GDNTheWorldMain = preload("res://addons/twviewer/native/GDN_TheWorld_Viewer_d.gdns")
-#var GDNTheWorldMain = preload("res://addons/twviewer/native/GDN_TheWorld_Viewer.gdns").new()
-var GDNTheWorldMain_instance : Node = null
+var TWViewerGDNMain = preload("res://addons/twviewer/native/GDN_TheWorld_Viewer_d.gdns")
+#var TWViewerGDNMain = preload("res://addons/twviewer/native/GDN_TheWorld_Viewer.gdns")
+var TWViewerGDNMain_instance : Node = null
 
 var tw_constants = preload("res://addons/twviewer/tw_const.gd")
 
@@ -14,9 +14,48 @@ var GDNTheWorldGlobals : Node = null
 var GDNTheWorldViewer : Spatial = null
 var _logger = HT_Logger.get_for(self)
 var _init_done : bool = false
+var _is_ready : bool = false
 
 export var _status : String = ""
 
+func _init():
+	log_debug("_init")
+	name = tw_constants.tw_viewer_node_name
+	
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	log_debug("_ready")
+	var GDNMain : Node = GDN_main()
+	if GDNMain == null:
+		GDNMain = TWViewerGDNMain.new()
+		GDNMain.name = tw_constants.tw_gdn_main_node_name
+		add_child(GDNMain)
+	if Engine.editor_hint:
+		#delete_children()
+		init()
+	else:
+		#delete_children()
+		init()
+	_is_ready = true
+		
+func _enter_tree():
+	log_debug("_enter_tree")
+	
+func _exit_tree():
+	log_debug("_exit_tree")
+	_is_ready = false	
+	if _init_done:
+		deinit()
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	#log_debug("_process")
+	
+	#if Engine.editor_hint:
+	#	var clientstatus : int = get_clientstatus()
+	#	_status = tw_constants.status_to_string(clientstatus)
+	pass
+	
 func init() -> bool:
 	log_debug("init")
 	if _init_done:
@@ -54,56 +93,25 @@ func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> 
 	var new_client_status_str : String = tw_constants.status_to_string(new_client_status)
 	log_debug(str("_on_tw_status_changed ", old_client_status_str, "(", old_client_status, ") ==> ", new_client_status_str, "(", new_client_status, ")"))
 
-func _init():
-	log_debug("_init")
-	
-# Called when the node enters the scene tree for the first time.
-func _ready():
-	log_debug("_ready")
-	var GDNMain = GDN_main()
-	if Engine.editor_hint:
-		#delete_children()
-		init()
-	else:
-		#delete_children()
-		init()
-		
-func _enter_tree():
-	log_debug("_enter_tree")
-	
-func _exit_tree():
-	log_debug("_exit_tree")
-	
-	if _init_done:
-		deinit()
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	#log_debug("_process")
-	
-	#if Engine.editor_hint:
-	#	var clientstatus : int = get_clientstatus()
-	#	_status = tw_constants.status_to_string(clientstatus)
-	pass
-	
-func GDN_main():
-	#if GDNTheWorldMain == null:
-	#	GDNTheWorldMain = GDNTheWorldMain.new()
-	#return GDNTheWorldMain
-	if GDNTheWorldMain_instance == null:
+func find_node_by_name(node_name : String) -> Node:
 		if Engine.editor_hint:
 			var scene : SceneTree = get_tree()
 			if scene == null:
 				return null
-			GDNTheWorldMain_instance = get_tree().get_edited_scene_root().find_node("GDN_TheWorld_Main", true, false)
+			var node : Node = get_tree().get_edited_scene_root().find_node(node_name, true, false)
+			return node
 		else:
 			var scene : SceneTree = get_tree()
 			if scene == null:
 				return null
-			var node : Node = scene.get_root()
-			GDNTheWorldMain_instance = get_tree().get_root().find_node("GDN_TheWorld_Main", true, false)
+			var node : Node = get_tree().get_root().find_node(node_name, true, false)
+			return node
+	
+func GDN_main():
+	if TWViewerGDNMain_instance == null:
+		TWViewerGDNMain_instance = find_node_by_name(tw_constants.tw_gdn_main_node_name)
 		#GDNTheWorldMain_instance = GDNTheWorldMain.new()
-	return GDNTheWorldMain_instance
+	return TWViewerGDNMain_instance
 
 func GDN_globals():
 	if GDNTheWorldGlobals == null:
@@ -126,7 +134,10 @@ func set_debug_enabled(debug_mode : bool):
 
 func get_clientstatus() -> int:
 	if _init_done:
-		var status : int = GDN_globals().get_status()
+		var gdn_globals = GDN_globals()
+		if gdn_globals == null:
+			return tw_constants.clientstatus_uninitialized
+		var status : int = gdn_globals.get_status()
 		#log_debug(str("status=",status))
 		return status
 	else:
@@ -169,6 +180,8 @@ func log_debug(var text : String) -> void:
 	debug_print(ctx, _text, false)
 	
 func debug_print(var context: String, var text : String, var godot_print : bool):
+	if Engine.editor_hint:
+		return
 	var gdn_globals = GDN_globals()
 	if gdn_globals != null:
 		gdn_globals.debug_print(str(context,": ", text), godot_print)
@@ -182,6 +195,8 @@ func log_info(var text : String) -> void:
 	info_print(ctx, _text, false)
 	
 func info_print(var context: String, var text : String, var godot_print : bool):
+	if Engine.editor_hint:
+		return
 	var gdn_globals = GDN_globals()
 	if gdn_globals != null:
 		gdn_globals.info_print(str(context,": ", text), godot_print)
@@ -195,6 +210,8 @@ func log_error(var text : String) -> void:
 	error_print(ctx, _text, false)
 	
 func error_print(var context: String, var text : String, var godot_print : bool):
+	if Engine.editor_hint:
+		return
 	var gdn_globals = GDN_globals()
 	if gdn_globals != null:
 		gdn_globals.error_print(str(context,": ", text), godot_print)
