@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=26 format=2]
 
 [ext_resource path="res://utils/DebugStats.gd" type="Script" id=1]
 [ext_resource path="res://main/TheWorld_Main.gd" type="Script" id=2]
@@ -18,16 +18,7 @@
 [ext_resource path="res://addons/zylann.hterrain/tools/icons/icon_detail_layer_node.svg" type="Texture" id=16]
 [ext_resource path="res://assets/textures/grass/grass_billboard.png" type="Texture" id=17]
 [ext_resource path="res://addons/twviewer/tw_viewer.gd" type="Script" id=18]
-[ext_resource path="res://addons/twviewer/native/GDN_TheWorld_Viewer_d.gdns" type="Script" id=19]
-[ext_resource path="res://addons/twviewer/native/GDN_TheWorld_Viewer_d.gdnlib" type="GDNativeLibrary" id=20]
-
-[sub_resource type="NativeScript" id=15]
-class_name = "GDN_TheWorld_Globals"
-library = ExtResource( 20 )
-
-[sub_resource type="NativeScript" id=16]
-class_name = "GDN_TheWorld_Viewer"
-library = ExtResource( 20 )
+[ext_resource path="res://addons/twviewer/native/GDN_TheWorld_Viewer_d.gdns" type="Script" id=20]
 
 [sub_resource type="SpatialMaterial" id=8]
 albedo_color = Color( 0.807843, 0.117647, 0.117647, 1 )
@@ -63,14 +54,8 @@ script = ExtResource( 2 )
 script = ExtResource( 18 )
 _status = "session_initialized"
 
-[node name="GDN_TheWorld_Main" type="Node" parent="TheWorld_Main/TWViewer"]
-script = ExtResource( 19 )
-
-[node name="GDN_TheWorld_Globals" type="Node" parent="TheWorld_Main/TWViewer"]
-script = SubResource( 15 )
-
-[node name="GDN_TheWorld_Viewer" type="Spatial" parent="TheWorld_Main/TWViewer"]
-script = SubResource( 16 )
+[node name="GDN_TW_Main" type="Node" parent="TheWorld_Main/TWViewer"]
+script = ExtResource( 20 )
 
 [node name="DebugStats" type="MarginContainer" parent="TheWorld_Main"]
 margin_right = 40.0
