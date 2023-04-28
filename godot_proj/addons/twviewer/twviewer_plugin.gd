@@ -63,8 +63,8 @@ func _process(delta: float):
 	var clientstatus : int = 0
 	clientstatus = get_clientstatus()
 
-	if clientstatus >= tw_constants.clientstatus_session_initialized && !_world_initialized:
-		#_viewer.GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
+	if _viewer != null && clientstatus >= tw_constants.clientstatus_session_initialized && !_world_initialized:
+		_viewer.GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
 		_world_initialized = true
 
 func handles(object):
