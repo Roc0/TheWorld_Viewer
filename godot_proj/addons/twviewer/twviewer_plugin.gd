@@ -129,10 +129,15 @@ func get_icon(icon_name: String) -> Texture:
 	return tw_editor_util.load_texture("res://addons/zylann.hterrain/tools/icons/icon_" + icon_name + ".svg")
 
 func get_clientstatus() -> int:
-	if _viewer == null:
-		return tw_constants.clientstatus_uninitialized
-	else:
-		return _viewer.get_clientstatus()
+	var clientstatus = tw_constants.clientstatus_uninitialized
+	if _viewer != null:
+		var _clientstatus = _viewer.get_clientstatus()
+		if _clientstatus != null:
+			clientstatus = _clientstatus
+			#_logger.debug(str("_viewer.get_clientstatus() OK: ", _clientstatus))
+		#else:
+		#	_logger.debug(str("PID=", OS.get_process_id()))
+	return clientstatus
 
 func set_debug_enabled(debug_mode : bool):
 	if _viewer != null:

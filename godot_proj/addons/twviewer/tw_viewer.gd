@@ -134,9 +134,14 @@ func set_debug_enabled(debug_mode : bool):
 
 func get_clientstatus() -> int:
 	if _init_done:
-		var gdn_globals = GDN_globals()
+		var gdn_globals : Node = GDN_globals()
 		if gdn_globals == null:
+			#log_debug(str("gdn_globals null"))
 			return tw_constants.clientstatus_uninitialized
+		if !gdn_globals.has_method("get_status"):
+			return tw_constants.clientstatus_uninitialized
+		#else:
+		#	log_debug("gdn_globals.has_method(get_status)")
 		var status : int = gdn_globals.get_status()
 		#log_debug(str("status=",status))
 		return status
