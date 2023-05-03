@@ -64,6 +64,7 @@ textures = [ [ ExtResource( 14 ), ExtResource( 8 ), ExtResource( 9 ), ExtResourc
 script = ExtResource( 2 )
 
 [node name="TWViewer" type="Spatial" parent="TheWorld_Main"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20.5477, 93.3237, 176.975 )
 script = ExtResource( 18 )
 _status = "world_deploy_in_progress"
 
