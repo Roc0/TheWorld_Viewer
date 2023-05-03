@@ -54,8 +54,9 @@ func _process(delta: float):
 			var editor_interface := get_editor_interface()
 			_logger.debug (str("EditorInterface ", editor_interface))
 			_viewer.set_editor_interface(editor_interface)
-			_viewer.connect("tree_exited", self, "_viewer_exited_scene")
-			_logger.debug ("TWViever connected")
+			if !_viewer.is_connected("tree_exited",self, "_viewer_exited_scene"):
+				_viewer.connect("tree_exited", self, "_viewer_exited_scene")
+				_logger.debug ("TWViewer connected")
 			_viewer_connected = true
 			_viewer_init_done = true
 			_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done))
@@ -148,11 +149,17 @@ func find_node_by_name(node_name : String) -> Node:
 			var scene : SceneTree = get_tree()
 			if scene == null:
 				return null
-			var node : Node = get_tree().get_edited_scene_root().find_node(node_name, true, false)
+			var root = scene.get_edited_scene_root()
+			if root == null:
+				return null
+			var node : Node = scene.root.find_node(node_name, true, false)
 			return node
 		else:
 			var scene : SceneTree = get_tree()
 			if scene == null:
 				return null
-			var node : Node = get_tree().get_root().find_node(node_name, true, false)
+			var root = scene.get_root()
+			if root == null:
+				return null
+			var node : Node = scene.root.find_node(node_name, true, false)
 			return node

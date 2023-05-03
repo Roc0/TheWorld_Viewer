@@ -15,6 +15,8 @@ var GDNTheWorldViewer : Spatial = null
 var _logger = HT_Logger.get_for(self)
 var _init_done : bool = false
 var _is_ready : bool = false
+var _transform_changed : bool = false
+var _visibility_changed : bool = false
 
 export var _status : String = ""
 
@@ -37,6 +39,17 @@ func _ready():
 		#delete_children()
 		init()
 	_is_ready = true
+	var e := get_tree().get_root().connect("size_changed", self, "resizing")
+	log_debug(str("connect size_changed result=", e))
+	set_notify_transform(true)
+	var viewer = GDN_viewer()
+	if viewer == null:
+		log_debug("GDN_viewer null")
+	else:
+		viewer.global_transform = global_transform
+		viewer.visible = is_visible_in_tree()
+		log_debug("global_transform changed")
+	log_debug("_ready done")
 		
 func _enter_tree():
 	log_debug("_enter_tree")
@@ -51,11 +64,33 @@ func _exit_tree():
 func _process(delta):
 	#log_debug("_process")
 	
+	if _transform_changed && GDN_viewer() != null:
+		GDN_viewer().global_transform = global_transform
+		log_debug(str("_process: global transform changed: ", global_transform))
+		_transform_changed = false
+	
+	if _visibility_changed && GDN_viewer() != null:
+		GDN_viewer().visible = is_visible_in_tree()
+		log_debug(str("_process: visibility changed: ", is_visible_in_tree()))
+		_visibility_changed = false
+
 	#if Engine.editor_hint:
 	#	var clientstatus : int = get_clientstatus()
 	#	_status = tw_constants.status_to_string(clientstatus)
 	pass
 	
+func _notification(_what):
+	#log_debug(str("_notification: ", _what))
+	if (_what == Spatial.NOTIFICATION_TRANSFORM_CHANGED):
+		log_debug("_notification: global transform changed")
+		_transform_changed = true
+	elif (_what == Spatial.NOTIFICATION_VISIBILITY_CHANGED):
+		log_debug("_notification: visibility changed")
+		_visibility_changed = true
+
+func resizing():
+	log_debug(str("Resizing: ", get_viewport().size))
+
 func init() -> bool:
 	log_debug("init")
 	if _init_done:
@@ -115,15 +150,22 @@ func GDN_main():
 
 func GDN_globals():
 	if GDNTheWorldGlobals == null:
-		var main = GDN_main()
+		var main : Node = GDN_main()
 		if main == null:
 			return null
-		GDNTheWorldGlobals = GDN_main().globals(true)
+		if !main.has_method("globals"):
+			return null
+		GDNTheWorldGlobals = main.globals(true)
 	return GDNTheWorldGlobals
 
 func GDN_viewer():
 	if GDNTheWorldViewer == null:
-		GDNTheWorldViewer = GDN_globals().viewer(true)
+		var globals : Node = GDN_globals()
+		if globals == null:
+			return null
+		if !globals.has_method("viewer"):
+			return null
+		GDNTheWorldViewer = globals.viewer(true)
 	return GDNTheWorldViewer
 
 func get_self() -> Spatial:
@@ -185,11 +227,12 @@ func log_debug(var text : String) -> void:
 	debug_print(ctx, _text, false)
 	
 func debug_print(var context: String, var text : String, var godot_print : bool):
-	if Engine.editor_hint:
-		return
+	#if Engine.editor_hint:
+	#	return
 	var gdn_globals = GDN_globals()
 	if gdn_globals != null:
-		gdn_globals.debug_print(str(context,": ", text), godot_print)
+		if gdn_globals.has_method("debug_print"):
+			gdn_globals.debug_print(str(context,": ", text), godot_print)
 
 func log_info(var text : String) -> void:
 	var _text = text
@@ -200,11 +243,12 @@ func log_info(var text : String) -> void:
 	info_print(ctx, _text, false)
 	
 func info_print(var context: String, var text : String, var godot_print : bool):
-	if Engine.editor_hint:
-		return
+	#if Engine.editor_hint:
+	#	return
 	var gdn_globals = GDN_globals()
 	if gdn_globals != null:
-		gdn_globals.info_print(str(context,": ", text), godot_print)
+		if gdn_globals.has_method("info_print"):
+			gdn_globals.info_print(str(context,": ", text), godot_print)
 
 func log_error(var text : String) -> void:
 	var _text = text
@@ -215,8 +259,9 @@ func log_error(var text : String) -> void:
 	error_print(ctx, _text, false)
 	
 func error_print(var context: String, var text : String, var godot_print : bool):
-	if Engine.editor_hint:
-		return
+	#if Engine.editor_hint:
+	#	return
 	var gdn_globals = GDN_globals()
 	if gdn_globals != null:
-		gdn_globals.error_print(str(context,": ", text), godot_print)
+		if gdn_globals.has_method("error_print"):
+			gdn_globals.error_print(str(context,": ", text), godot_print)

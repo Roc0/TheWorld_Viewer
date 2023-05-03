@@ -95,9 +95,12 @@ func _ready():
 	init()
 	$BallRigidBody.visible = false
 	var e := get_tree().get_root().connect("size_changed", self, "resizing")
+	log_debug(str("connect size_changed result=", e))
+	#set_notify_transform(true)
+	#TWViewer().global_transform = global_transform
 
 func resizing():
-	print("Resizing: ", get_viewport().size)
+	log_debug(str("Resizing: ", get_viewport().size))
 
 func TWViewer() -> Spatial:
 	return $TWViewer.get_self()
@@ -179,11 +182,11 @@ func _input(event):
 func _notification(_what):
 	if (_what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST):
 		Globals.appstatus = Globals.appstatus_deinit_required
-	elif (_what == Spatial.NOTIFICATION_TRANSFORM_CHANGED):
-		var viewer : Spatial = TWViewer().GDN_viewer()
-		viewer.global_transform = global_transform
+	#elif (_what == Spatial.NOTIFICATION_TRANSFORM_CHANGED):
+		#var viewer : Spatial = TWViewer().GDN_viewer()
+		#viewer.global_transform = global_transform
 	elif (_what == Spatial.NOTIFICATION_ENTER_WORLD):
-		print("Notification Spatial.NOTIFICATION_ENTER_WORLD")
+		log_debug("Notification Spatial.NOTIFICATION_ENTER_WORLD")
 		
 func _enter_tree():
 	log_debug("_enter_tree")
