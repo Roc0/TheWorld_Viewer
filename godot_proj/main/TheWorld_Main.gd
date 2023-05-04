@@ -488,9 +488,6 @@ func force_app_to_quit() -> void:
 	#exit_world()
 	get_tree().quit()
 	
-func set_debug_enabled(debug_mode : bool):
-	TWViewer().set_debug_enabled(debug_mode)
-
 func get_clientstatus() -> int:
 	return TWViewer().get_clientstatus()
 	

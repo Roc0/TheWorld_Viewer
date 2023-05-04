@@ -18,9 +18,9 @@ func read_image_from_ground_file(file_name : String) -> Image:
 		print ("Error: file " + file_name + "does not exist")
 		return image
 
-	var e := file.open(file_name, File.READ)
+	var _e := file.open(file_name, File.READ)
 	var file_size : int = file.get_len()
-	var image_size : int = sqrt(file_size / 4)
+	var image_size : int = int(sqrt(file_size / 4))
 	if (image_size * image_size * 4 != file_size):
 		print ("Error: " + file_name + "with wrong length")
 		return image
@@ -47,11 +47,11 @@ func read_image_from_ground_file(file_name : String) -> Image:
 
 	file.close()
 	
-	image.generate_mipmaps()
+	var _ret = image.generate_mipmaps()
 
 	return image
 
-func read_image_from_quadrant_file(file_name : String, image_type : int, grid_step_in_wu : float, max_terrain_size : int) -> Image:
+func read_image_from_quadrant_file(file_name : String, image_type : int, _grid_step_in_wu : float, max_terrain_size : int) -> Image:
 	var image : Image = Image.new()
 
 	var file : File = File.new()
@@ -59,21 +59,21 @@ func read_image_from_quadrant_file(file_name : String, image_type : int, grid_st
 		print ("Error: file " + file_name + "does not exist")
 		return image
 
-	var e := file.open(file_name, File.READ)
-	var file_size : int = file.get_len()
+	var _e := file.open(file_name, File.READ)
+	var _file_size : int = file.get_len()
 	var offset : int = 0
 	
-	var file_size_from_file := file.get_64()
+	var _file_size_from_file := file.get_64()
 	offset += 8
-	var char_zero := file.get_8()
+	var _char_zero := file.get_8()
 	offset += 1
 	var meshid_size := file.get_64()
 	offset += 8
-	var meshid := file.get_buffer(meshid_size)
+	var _meshid := file.get_buffer(meshid_size)
 	offset += meshid_size
 	var terrain_edit_value_size := file.get_64()
 	offset += 8
-	var terrain_edit := file.get_buffer(terrain_edit_value_size)
+	var _terrain_edit := file.get_buffer(terrain_edit_value_size)
 	offset += terrain_edit_value_size
 	var num_vertices := file.get_64()
 	offset += 8
@@ -82,8 +82,8 @@ func read_image_from_quadrant_file(file_name : String, image_type : int, grid_st
 	if (max_terrain_size > 0):
 		image_size = max_terrain_size
 	if (num_vertices > 0):
-		var min_altitude := file.get_float()
-		var max_altitude := file.get_float()
+		var _min_altitude := file.get_float()
+		var _max_altitude := file.get_float()
 		offset += 8
 		
 		if image_type == 0:			# Heights
@@ -266,7 +266,7 @@ func _ready():
 						h_forward = h
 					var step : float = grid_step_in_wu
 					#var normal = Vector3(h - h_right, 0.1, h_forward - h).normalized()	# original
-					var normal1 = Vector3(h - h_right, step, h - h_forward).normalized()
+					var _normal1 = Vector3(h - h_right, step, h - h_forward).normalized()
 					# debug
 				else:
 					if (x < 2048):
@@ -298,7 +298,7 @@ func _ready():
 			
 			var snow_amount : float = 4.0 * ((h - min_height) / diff) - 2.0		# ranges from -2 (at min_height) and 2 (at max_height)
 			snow_amount = clamp(snow_amount, 0.0, 1.0)	# we cap fram 0 and 1 so that -2 / 0 no snow and 1 / 2 max snow
-			var grass_amount = 1.0 - snow_amount
+			var _grass_amount = 1.0 - snow_amount
 			var rocks_amount : float = clamp(slope, 0.0, 1.0)		# rocks on the slopes: we ignore slopes less than 0 (not enough vertical)
 			var sand_amount : float = rocks_amount * 2
 
