@@ -18,15 +18,63 @@ var _is_ready : bool = false
 var _transform_changed : bool = false
 var _visibility_changed : bool = false
 
-export var _status : String = ""
+var _status : String = ""
+
+enum debug_mode {DEFAULT = 0, ENABLED=1, DISABLED=2}
+export(debug_mode) var _debug_mode : int = 0 setget _set_debug_mode
+func _set_debug_mode(p_debug_mode : int):
+	_debug_mode = p_debug_mode
+	log_debug(str("debug mode: ", _debug_mode))
+	set_debug_mode(_debug_mode)
+
+const MAX_DEPTH_QUAD=3
+export var _depth_quad := 3 setget _set_depth_quad, _get_depth_quad
+func _set_depth_quad(depth_quad : int):
+	if depth_quad >= 0 && depth_quad <= MAX_DEPTH_QUAD:
+		_depth_quad = depth_quad
+	var viewer = GDN_viewer()
+	if viewer == null:
+		print("GDN_viewer() null")
+	else:
+		viewer.set_depth_quad(_depth_quad)
+		log_debug(str("depth quad: ", _depth_quad))
+func _get_depth_quad() -> int:
+	#var viewer = GDN_viewer()
+	#if viewer == null:
+	#	print("GDN_viewer() null")
+	#else:
+	#	_depth_quad = viewer.get_depth_quad()
+	return _depth_quad
+
+const MAX_CACHE_QUAD=2
+export var _cache_quad : int = 1 setget _set_cache_quad, _get_cache_quad
+func _set_cache_quad(cache_quad : int):
+	if cache_quad >= 0 && cache_quad <= MAX_CACHE_QUAD:
+		_cache_quad = cache_quad
+	var viewer = GDN_viewer()
+	if viewer == null:
+		print("GDN_viewer() null")
+	else:
+		viewer.set_cache_quad(_cache_quad)
+		log_debug(str("cache quad: ", _cache_quad))
+func _get_cache_quad() -> int:
+#	var viewer = GDN_viewer()
+#	if viewer == null:
+#		print("GDN_viewer() null")
+#	else:
+#		_cache_quad = viewer.get_cache_quad()
+	return _cache_quad
 
 func _init():
-	log_debug("_init")
+	_logger.debug("_init")
 	name = tw_constants.tw_viewer_node_name
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	log_debug("_ready")
+	_logger.debug("_ready")
+	if Engine.editor_hint:
+		_depth_quad = 1
+		_cache_quad = 1
 	var GDNMain : Node = GDN_main()
 	if GDNMain == null:
 		GDNMain = TWViewerGDNMain.new()
@@ -52,7 +100,7 @@ func _ready():
 	log_debug("_ready done")
 		
 func _enter_tree():
-	log_debug("_enter_tree")
+	_logger.debug("_enter_tree")
 	
 func _exit_tree():
 	log_debug("_exit_tree")
@@ -97,7 +145,7 @@ func init() -> bool:
 		return false
 	else:
 		GDN_main().init(self)
-		set_debug_enabled(_logger.is_verbose())
+		set_debug_mode(_debug_mode)
 		GDN_globals().connect_to_server()
 		log_debug(str("server connected"))
 		var result = GDN_globals().connect("tw_status_changed", self, "_on_tw_status_changed") == 0
@@ -121,6 +169,10 @@ func deinit():
 		GDN_globals().disconnect_from_server()
 		GDN_main().deinit()
 		_init_done = false
+
+func set_editor_camera(camera : Camera):
+	GDN_viewer().set_editor_camera(camera)
+	return
 
 func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> void:
 	_status = tw_constants.status_to_string(new_client_status)
@@ -171,8 +223,21 @@ func GDN_viewer():
 func get_self() -> Spatial:
 	return self
 
-func set_debug_enabled(debug_mode : bool):
-	GDN_globals().set_debug_enabled(debug_mode)
+func set_debug_mode(debug_mode : int):
+	var debug_enabled = false
+	if debug_mode == 0:		# DEFAULT
+		if _logger.is_verbose():
+			debug_enabled = true
+	if debug_mode == 1:		# ENABLED
+		debug_enabled = true
+	var globals = GDN_globals()
+	if globals == null:
+		print("GDN_globals() null")
+		return
+	if !globals.has_method("set_debug_enabled"):
+		print("GDN_globals() does not have method set_debug_enabled")
+		return
+	globals.set_debug_enabled(debug_enabled)
 
 func get_clientstatus() -> int:
 	if _init_done:
@@ -265,3 +330,24 @@ func error_print(var context: String, var text : String, var godot_print : bool)
 	if gdn_globals != null:
 		if gdn_globals.has_method("error_print"):
 			gdn_globals.error_print(str(context,": ", text), godot_print)
+
+# debug
+#enum Tile {TILE_AIR = 0, TILE_BLOCK, TILE_ICE}
+#export(Tile) var tile_type : int = 0 setget set_tile_type
+#func set_tile_type(p_tile_type : int):
+#	tile_type = p_tile_type
+#	print(tile_type)
+#export({user = 0, moderator = 50, admin = 100}) var role : int = 100 setget set_role
+#func set_role(p_role : int):
+#	role = p_role
+#	print(role)
+#export({"user": 0, "moderator": 50, "admin": 100}) var role_alt : int = 100 setget set_role_alt
+#func set_role_alt(p_role_alt : int):
+#	role_alt = p_role_alt
+#	print(role_alt)
+#const Utils = {"Util 1": 0, "Util 2": 1, "Util 3": 10}
+#export(Utils) var util : int setget set_util
+#func set_util(p_util):
+#	util = p_util
+#	print(util)
+# debug

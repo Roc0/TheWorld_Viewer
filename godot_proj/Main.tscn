@@ -66,7 +66,7 @@ script = ExtResource( 2 )
 [node name="TWViewer" type="Spatial" parent="TheWorld_Main"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20.5477, 93.3237, 176.975 )
 script = ExtResource( 18 )
-_status = "world_deploy_in_progress"
+_depth_quad = 1
 
 [node name="GDN_TW_Main" type="Node" parent="TheWorld_Main/TWViewer"]
 script = ExtResource( 20 )
