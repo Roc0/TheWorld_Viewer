@@ -5,9 +5,7 @@ extends EditorPlugin
 const TWViewer = preload("./tw_viewer.gd")
 const GDNTheWorldMain = preload("./native/GDN_TheWorld_Viewer_d.gdns")
 const tw_editor_util = preload("./tools/util/editor_util.gd")
-var tw_constants = preload("res://addons/twviewer/tw_const.gd")
-#const TWTest = preload("./tw_test.gd")
-#const HTerrainDetailLayer = preload("../zylann.hterrain/hterrain_detail_layer.gd")
+const tw_constants = preload("res://addons/twviewer/tw_const.gd")
 
 const HT_Logger = preload("./util/logger.gd")
 var _logger = HT_Logger.get_for(self)
@@ -22,7 +20,6 @@ var _world_initialized : bool = false
 #var _viewer_id : int = 0
 var _viewer : TWViewer = null
 var _viewer_init_done : bool = false
-var _viewer_connected : bool = false
 
 var _alt_pressed : bool = false
 var _ctrl_pressed : bool = false
@@ -49,14 +46,6 @@ func _exit_tree():
 	remove_custom_type("TWViewerGDNMain")
 	remove_custom_type("TWViewer")
 	
-	if _info_panel != null:
-		remove_control_from_container(EditorPlugin.CONTAINER_SPATIAL_EDITOR_SIDE_LEFT, _info_panel)
-		_info_panel = null
-	
-	if _edit_mode_ui_control != null:
-		remove_control_from_container(EditorPlugin.CONTAINER_SPATIAL_EDITOR_SIDE_RIGHT, _edit_mode_ui_control)
-		_edit_mode_ui_control = null
-
 	#remove_autoload_singleton(AUTOLOAD_NAME)
 
 func _process(delta: float):
@@ -76,18 +65,9 @@ func _process(delta: float):
 			
 			editor_interface.edit_node(_viewer)
 			
-			_info_panel = _viewer.get_info_panel()
-			add_control_to_container(EditorPlugin.CONTAINER_SPATIAL_EDITOR_SIDE_LEFT, _info_panel)
-			_edit_mode_ui_control = _viewer.get_or_create_edit_mode_ui_control()
-			if _edit_mode_ui_control != null:
-				print(str("_edit_mode_ui_control=", _edit_mode_ui_control))
-				var parent : Node = _edit_mode_ui_control.get_parent()
-				if (parent != null):
-					parent.remove_child(_edit_mode_ui_control)
-				add_control_to_container(EditorPlugin.CONTAINER_SPATIAL_EDITOR_SIDE_RIGHT, _edit_mode_ui_control)
-				_edit_mode_ui_control.hide()
+			update_overlays()
 			
-			_viewer_connected = true
+			#_viewer_connected = true
 			_viewer_init_done = true
 			_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done))
 
@@ -140,6 +120,11 @@ func edit(object):
 	#	_viewer.connect("tree_exited", self, "_viewer_exited_scene")
 	#	_logger.debug ("TWViever connected")
 	#	_viewer_connected = true
+	
+func forward_spatial_draw_over_viewport(overlay : Control):
+	#print("forward_spatial_draw_over_viewport")
+	if _viewer != null:
+		_viewer.set_editor_3d_overlay(overlay)
 	
 func forward_spatial_gui_input(p_camera: Camera, p_event: InputEvent) -> bool:
 	var captured_event = false
