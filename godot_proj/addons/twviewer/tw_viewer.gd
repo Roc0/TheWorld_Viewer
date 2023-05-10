@@ -2,16 +2,19 @@ tool
 
 extends Spatial
 
-var TWViewerGDNMain = preload("res://addons/twviewer/native/GDN_TheWorld_Viewer_d.gdns")
-#var TWViewerGDNMain = preload("res://addons/twviewer/native/GDN_TheWorld_Viewer.gdns")
-var TWViewerGDNMain_instance : Node = null
+var _gdn_main = preload("res://addons/twviewer/native/GDN_TheWorld_Viewer_d.gdns")
+#var _gdn_main = preload("res://addons/twviewer/native/GDN_TheWorld_Viewer.gdns")
+var _gdn_main_instance : Node = null
 
-var tw_constants = preload("res://addons/twviewer/tw_const.gd")
-
+const tw_constants = preload("res://addons/twviewer/tw_const.gd")
 const HT_Logger = preload("./util/logger.gd")
 
-var GDNTheWorldGlobals : Node = null
-var GDNTheWorldViewer : Spatial = null
+var _editor_interface : EditorInterface = null
+var _editor_camera : Camera = null
+var _editor_3d_overlay : Control = null
+
+var _gdn_globals : Node = null
+var _gdn_viewer : Spatial = null
 var _logger = HT_Logger.get_for(self)
 var _init_done : bool = false
 var _is_ready : bool = false
@@ -27,8 +30,8 @@ var _ctrl_pressed : bool = false
 var _shift_pressed : bool = false
 
 var _edit_panel_visibility_changed = false
-
-var _info_panel_visible : bool = false
+var _info_panel_added_to_editor_overlay : bool = false
+var _edit_mode_ui_control_added_to_editor_overlay : bool = false
 
 var _info_panel_external_labels = []
 
@@ -63,6 +66,9 @@ var _chunk_hit_name_label : Label
 var _chunk_hit_pos_label : Label
 var _chunk_hit_size_label : Label
 var _chunk_hit_dist_from_cam_label : Label
+
+#var _test : Label = null
+#var _test_added_to_editor_overlay : bool = false
 
 enum debug_mode {DEFAULT = 0, ENABLED=1, DISABLED=2}
 export(debug_mode) var _debug_mode : int = 0 setget _set_debug_mode
@@ -109,6 +115,13 @@ func _get_cache_quad() -> int:
 #		_cache_quad = viewer.get_cache_quad()
 	return _cache_quad
 
+export var _info_panel_visible : bool setget _set_info_panel_visible #, _get_info_panel_visible
+func _set_info_panel_visible(info_panel_visible : bool):
+	_info_panel_visible = info_panel_visible
+	_info_panel_visibility_changed = true
+func _get_info_panel_visible() -> bool:
+	return _info_panel_visible
+
 func _init():
 	_logger.debug("_init")
 	name = tw_constants.tw_viewer_node_name
@@ -123,7 +136,7 @@ func _ready():
 	
 	var GDNMain : Node = GDN_main()
 	if GDNMain == null:
-		GDNMain = TWViewerGDNMain.new()
+		GDNMain = _gdn_main.new()
 		GDNMain.name = tw_constants.tw_gdn_main_node_name
 		add_child(GDNMain)
 	if Engine.editor_hint:
@@ -144,7 +157,18 @@ func _ready():
 		log_debug("global_transform changed")
 	
 	create_info_panel()
-		
+	
+	#_test = Label.new()
+	#add_child(_test)
+	#_test.text = "AAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAA"
+	#var dpi_scale : float = 0.1
+	#if _test.rect_min_size != Vector2(0, 0):
+	#	_test.rect_min_size *= dpi_scale
+	#_test.margin_bottom *= dpi_scale
+	#_test.margin_left *= dpi_scale
+	#_test.margin_top *= dpi_scale
+	#_test.margin_right *= dpi_scale
+					
 	log_debug("_ready done")
 	_is_ready = true
 		
@@ -156,6 +180,9 @@ func _exit_tree():
 	_is_ready = false	
 	if _init_done:
 		deinit()
+	#if _test != null:
+	#	_test.queue_free()
+	#	_test = null
 	#if _info_panel != null:
 	#	_info_panel.queue_free()
 	#	_info_panel = null
@@ -212,6 +239,33 @@ func _process(delta):
 			viewer.toggle_edit_mode()
 			_edit_panel_visibility_changed = false
 
+	if Engine.editor_hint:
+		#if _editor_3d_overlay != null && _test != null && !_test_added_to_editor_overlay:
+		#	var parent : Node = _test.get_parent()
+		#	if parent != null:
+		#		parent.remove_child(_test)
+		#	_editor_3d_overlay.add_child(_test)
+		#	log_debug(str("_editor_3d_overlay=", _editor_3d_overlay))
+		#	_test_added_to_editor_overlay = true
+
+		if _editor_3d_overlay != null && !_info_panel_added_to_editor_overlay && _info_panel != null:
+			var parent : Node = _info_panel.get_parent()
+			if parent != null:
+				parent.remove_child(_info_panel)
+			_editor_3d_overlay.add_child(_info_panel)
+			log_debug(str("_info_panel added"))
+			_info_panel_added_to_editor_overlay = true
+
+		if _editor_3d_overlay != null && !_edit_mode_ui_control_added_to_editor_overlay:
+			var edit_mode_ui_control : Control = get_or_create_edit_mode_ui_control()
+			if edit_mode_ui_control != null:
+				var parent : Node = edit_mode_ui_control.get_parent()
+				if parent != null:
+					parent.remove_child(edit_mode_ui_control)
+				_editor_3d_overlay.add_child(edit_mode_ui_control)
+				log_debug(str("edit_mode_ui_control added"))
+				_edit_mode_ui_control_added_to_editor_overlay = true
+	
 	if _info_panel != null && _info_panel.visible:
 		if !Engine.editor_hint:
 			_fps_label.text = String(Engine.get_frames_per_second())
@@ -343,7 +397,15 @@ func deinit():
 		GDN_main().deinit()
 		_init_done = false
 
+func set_editor_3d_overlay(overlay : Control):
+	_editor_3d_overlay = overlay
+
+func set_editor_interface(editor_interface : EditorInterface):
+	_editor_interface = editor_interface
+	GDN_viewer().set_editor_interface(editor_interface)
+
 func set_editor_camera(camera : Camera):
+	_editor_camera = camera
 	GDN_viewer().set_editor_camera(camera)
 	return
 
@@ -368,30 +430,30 @@ func find_node_by_name(node_name : String) -> Node:
 			return node
 	
 func GDN_main():
-	if TWViewerGDNMain_instance == null:
-		TWViewerGDNMain_instance = find_node_by_name(tw_constants.tw_gdn_main_node_name)
-		#GDNTheWorldMain_instance = GDNTheWorldMain.new()
-	return TWViewerGDNMain_instance
+	if _gdn_main_instance == null:
+		_gdn_main_instance = find_node_by_name(tw_constants.tw_gdn_main_node_name)
+		#_gdn_main_instance = _gdn_main.new()
+	return _gdn_main_instance
 
 func GDN_globals():
-	if GDNTheWorldGlobals == null:
+	if _gdn_globals == null:
 		var main : Node = GDN_main()
 		if main == null:
 			return null
 		if !main.has_method("globals"):
 			return null
-		GDNTheWorldGlobals = main.globals(true)
-	return GDNTheWorldGlobals
+		_gdn_globals = main.globals(true)
+	return _gdn_globals
 
 func GDN_viewer():
-	if GDNTheWorldViewer == null:
+	if _gdn_viewer == null:
 		var globals : Node = GDN_globals()
 		if globals == null:
 			return null
 		if !globals.has_method("viewer"):
 			return null
-		GDNTheWorldViewer = globals.viewer(true)
-	return GDNTheWorldViewer
+		_gdn_viewer = globals.viewer(true)
+	return _gdn_viewer
 
 func get_self() -> Spatial:
 	return self
@@ -452,9 +514,6 @@ func delete_children():
 		n.owner = null
 		remove_child(n)
 		n.queue_free()
-
-func set_editor_interface(editor_interface : EditorInterface):
-	GDN_viewer().set_editor_interface(editor_interface)
 
 func log_debug(var text : String) -> void:
 	var _text = text
@@ -519,17 +578,19 @@ func create_info_panel():
 	_info_panel = PanelContainer.new()
 	#_info_panel = Control.new()
 	#_info_panel = Panel.new()
-	_info_panel.self_modulate = Color(1, 1, 1, 0.5)
 	log_debug(str("_info_panel:", _info_panel))
 	_info_panel.name = "InfoPanel"
 	if Engine.editor_hint:
 		_info_panel_visible = false
+		add_child(_info_panel)
 	else:
 		_info_panel_visible = false
 		add_child(_info_panel)
+	_info_panel.self_modulate = Color(1, 1, 1, 0.5)
 	_info_panel_visibility_changed = true
 	_info_panel_main_vboxcontainer = VBoxContainer.new()
 	_info_panel.add_child(_info_panel_main_vboxcontainer)
+	#_info_panel_main_vboxcontainer.self_modulate = Color(1, 1, 1, 0.5)
 	#var i : int = _info_panel_main_vboxcontainer.get_constant("hseparation=")
 	#print(str("hseparation", i))
 	#i = _info_panel_main_vboxcontainer.get_constant("vseparation=")
@@ -579,6 +640,8 @@ func create_info_panel():
 		_chunk_hit_dist_from_cam_label = add_info_panel_line("Chunk dist from camera:", 1)
 	
 	set_size_info_panel()
+	
+	#apply_dpi_scale(_info_panel, 0.5)
 	
 func get_info_panel() -> Control:
 	return _info_panel
@@ -634,12 +697,12 @@ func set_info_panel_external_value(text : String, index : int):
 		_info_panel_external_labels[index].text = text
 
 func set_size_info_panel():
-	pass
+	#pass
 	#_info_panel.anchor_left = 0
 	#_info_panel.anchor_right = 0
 	#_info_panel.anchor_top = 0
 	#_info_panel.anchor_left = 0
-	#_info_panel.margin_top = 0
+	_info_panel.margin_top = 40
 	#_info_panel.margin_left = 0
 	#_info_panel.margin_right = 100
 	#_info_panel.margin_bottom = 100
@@ -653,6 +716,30 @@ func get_or_create_edit_mode_ui_control() -> Control:
 	if viewer != null && viewer.has_method("get_or_create_edit_mode_ui_control"):
 		control = viewer.get_or_create_edit_mode_ui_control()
 	return control
+
+# Generic way to apply editor scale to a plugin UI scene.
+# It is slower than doing it manually on specific controls.
+static func apply_dpi_scale(root: Control, dpi_scale: float):
+	if dpi_scale == 1.0:
+		return
+	var to_process := [root]
+	while len(to_process) > 0:
+		var node : Node = to_process[-1]
+		to_process.pop_back()
+		if node is Viewport:
+			continue
+		if node is Control:
+			if node.rect_min_size != Vector2(0, 0):
+				node.rect_min_size *= dpi_scale
+			var parent = node.get_parent()
+			if parent != null:
+				if not (parent is Container):
+					node.margin_bottom *= dpi_scale
+					node.margin_left *= dpi_scale
+					node.margin_top *= dpi_scale
+					node.margin_right *= dpi_scale
+		for i in node.get_child_count():
+			to_process.append(node.get_child(i))
 
 # debug
 #enum Tile {TILE_AIR = 0, TILE_BLOCK, TILE_ICE}
