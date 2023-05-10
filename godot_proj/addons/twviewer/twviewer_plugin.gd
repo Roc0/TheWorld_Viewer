@@ -23,7 +23,14 @@ var _world_initialized : bool = false
 var _viewer : TWViewer = null
 var _viewer_init_done : bool = false
 var _viewer_connected : bool = false
-#var _tw_test : TWTest = null
+
+var _alt_pressed : bool = false
+var _ctrl_pressed : bool = false
+var _shift_pressed : bool = false
+
+var _info_panel_visible : bool = false
+var _info_panel : Control = null
+var _edit_mode_ui_control : Control = null
 
 #const AUTOLOAD_NAME = "Globals"
 #const AUTOLOAD_SCRIPT = "res://addons/twviewer/init/Globals.gd"
@@ -35,29 +42,51 @@ func _enter_tree():
 	add_custom_type("TWViewerGDNMain", "Node", GDNTheWorldMain, get_icon("heightmap_node"))
 	
 	#add_autoload_singleton(AUTOLOAD_NAME, AUTOLOAD_SCRIPT)
-
+	
 func _exit_tree():
 	_logger.debug("_exit_tree")
 	
 	remove_custom_type("TWViewerGDNMain")
 	remove_custom_type("TWViewer")
 	
+	if _info_panel != null:
+		remove_control_from_container(EditorPlugin.CONTAINER_SPATIAL_EDITOR_SIDE_LEFT, _info_panel)
+		_info_panel = null
+	
+	if _edit_mode_ui_control != null:
+		remove_control_from_container(EditorPlugin.CONTAINER_SPATIAL_EDITOR_SIDE_RIGHT, _edit_mode_ui_control)
+		_edit_mode_ui_control = null
+
 	#remove_autoload_singleton(AUTOLOAD_NAME)
 
 func _process(delta: float):
 	#_logger.debug(str("_process "))
 	
 	if !_viewer_init_done:
-		_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done))
+		#_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done))
 		_viewer = find_node_by_name(tw_constants.tw_viewer_node_name)
-		if _viewer != null:
+		if _viewer != null && _viewer.has_method("is_ready") && _viewer.is_ready():
 			var editor_interface := get_editor_interface()
 			_logger.debug (str("EditorInterface ", editor_interface))
 			_viewer.set_editor_interface(editor_interface)
+			
 			if !_viewer.is_connected("tree_exited",self, "_viewer_exited_scene"):
 				_viewer.connect("tree_exited", self, "_viewer_exited_scene")
 				_logger.debug ("TWViewer connected")
+			
 			editor_interface.edit_node(_viewer)
+			
+			_info_panel = _viewer.get_info_panel()
+			add_control_to_container(EditorPlugin.CONTAINER_SPATIAL_EDITOR_SIDE_LEFT, _info_panel)
+			_edit_mode_ui_control = _viewer.get_or_create_edit_mode_ui_control()
+			if _edit_mode_ui_control != null:
+				print(str("_edit_mode_ui_control=", _edit_mode_ui_control))
+				var parent : Node = _edit_mode_ui_control.get_parent()
+				if (parent != null):
+					parent.remove_child(_edit_mode_ui_control)
+				add_control_to_container(EditorPlugin.CONTAINER_SPATIAL_EDITOR_SIDE_RIGHT, _edit_mode_ui_control)
+				_edit_mode_ui_control.hide()
+			
 			_viewer_connected = true
 			_viewer_init_done = true
 			_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done))
@@ -118,6 +147,35 @@ func forward_spatial_gui_input(p_camera: Camera, p_event: InputEvent) -> bool:
 	if _viewer != null:
 		_viewer.set_editor_camera(p_camera)
 	
+	if p_event is InputEventKey:
+		if p_event.scancode == KEY_ALT:
+			if p_event.is_pressed():
+				_alt_pressed = true
+			else:
+				_alt_pressed = false
+		if p_event.scancode == KEY_CONTROL:
+			if p_event.is_pressed():
+				_ctrl_pressed = true
+			else:
+				_ctrl_pressed = false
+		if p_event.scancode == KEY_SHIFT:
+			if p_event.is_pressed():
+				_shift_pressed = true
+			else:
+				_shift_pressed = false
+		
+		if p_event.is_pressed() && p_event.scancode == KEY_I && _alt_pressed:
+			if _viewer != null && _viewer.has_method("toggle_info_panel_visibility"):
+				_viewer.toggle_info_panel_visibility()
+			
+		if p_event.is_pressed() && p_event.scancode == KEY_T && _alt_pressed:
+			if _viewer != null && _viewer.has_method("toggle_track_mouse"):
+				_viewer.toggle_track_mouse()
+
+		if p_event.is_pressed() && p_event.scancode == KEY_E && _alt_pressed:
+			if _viewer != null && _viewer.has_method("toggle_edit_mode"):
+				_viewer.toggle_edit_mode()
+
 	return captured_event
 	
 func _viewer_exited_scene():
@@ -140,7 +198,7 @@ func get_icon(icon_name: String) -> Texture:
 
 func get_clientstatus() -> int:
 	var clientstatus = tw_constants.clientstatus_uninitialized
-	if _viewer != null:
+	if _viewer != null && _viewer.has_method("get_clientstatus"):
 		var _clientstatus = _viewer.get_clientstatus()
 		if _clientstatus != null:
 			clientstatus = _clientstatus

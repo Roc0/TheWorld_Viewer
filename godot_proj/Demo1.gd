@@ -20,7 +20,7 @@ func read_image_from_ground_file(file_name : String) -> Image:
 
 	var _e := file.open(file_name, File.READ)
 	var file_size : int = file.get_len()
-	var image_size : int = int(sqrt(file_size / 4))
+	var image_size : int = int(sqrt(float(file_size) / 4))
 	if (image_size * image_size * 4 != file_size):
 		print ("Error: " + file_name + "with wrong length")
 		return image
@@ -36,7 +36,7 @@ func read_image_from_ground_file(file_name : String) -> Image:
 		var idx : int = 0
 		
 		for x in image_size:
-			var c : Color
+			var c : Color = Color(1, 1, 1, 1)
 			c.r = float(image_row_buffer[idx]) / 255
 			c.g = float(image_row_buffer[idx + 1]) / 255
 			c.b = float(image_row_buffer[idx + 2]) / 255
@@ -78,7 +78,7 @@ func read_image_from_quadrant_file(file_name : String, image_type : int, _grid_s
 	var num_vertices := file.get_64()
 	offset += 8
 	var num_vertices_per_size := sqrt(num_vertices)
-	var image_size : int = num_vertices_per_size
+	var image_size : int = int(num_vertices_per_size)
 	if (max_terrain_size > 0):
 		image_size = max_terrain_size
 	if (num_vertices > 0):
