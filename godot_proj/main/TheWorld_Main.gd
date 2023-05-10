@@ -1,6 +1,6 @@
 extends Spatial
 
-var debug_window_Active : bool = false
+var debug_window_active : bool = false
 var world_entered : bool = false
 
 var tw_const = preload("res://addons/twviewer/tw_const.gd")
@@ -88,6 +88,7 @@ const Color_Yellow_Apricot := Color(251.0 / 255.0, 206.0 / 255.0, 177.0 / 255.0)
 var altPressed := false
 var ctrlPressed := false
 var ball_pos := Vector3(0, 0, 0)
+var _ball_pos_info_line_index : int = 0
 
 var prev_hit : Vector3 = Vector3(0, 0, 0)
 		
@@ -96,6 +97,7 @@ func _ready():
 	$BallRigidBody.visible = false
 	var e := get_tree().get_root().connect("size_changed", self, "resizing")
 	log_debug(str("connect size_changed result=", e))
+	#get_tree().get_root().set_transparent_background(true)
 	#set_notify_transform(true)
 	#TWViewer().global_transform = global_transform
 
@@ -112,6 +114,7 @@ func init():
 	log_debug(str("signal tw_status_changed connected (result=", result, ")"))
 	_clientstatus = get_clientstatus()
 	_client_status = tw_const.status_to_string(_clientstatus)
+	_ball_pos_info_line_index = TWViewer().add_info_panel_external_line("Ball pos:", 0)
 
 func deinit():
 	log_debug("deinit")
@@ -142,7 +145,7 @@ func _input(event):
 			ctrlPressed = false
 
 		if event.is_action_pressed("ui_toggle_debug_stats"):
-			if debug_window_Active:
+			if debug_window_active:
 				set_debug_window(false)
 			else:
 				set_debug_window(true)
@@ -224,8 +227,6 @@ func _process(_delta):
 	if _clientstatus < Globals.Constants.clientstatus_session_initialized:
 		return
 	
-	fps = Engine.get_frames_per_second()
-	
 	var viewer : Spatial = TWViewer().GDN_viewer()
 
 	#if init_world_thread.is_alive():
@@ -271,88 +272,88 @@ func _process(_delta):
 	
 	if scene_initialized && post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 		ball_pos = $BallRigidBody.global_transform.origin
+		TWViewer().set_info_panel_external_value(str(ball_pos), _ball_pos_info_line_index)
 	
-	var _chunk_debug_mode : String = viewer.get_chunk_debug_mode()
-	var _cam_chunk_pos = viewer.get_camera_quadrant_name() + " " + viewer.get_camera_chunk_id()
-	if (_cam_chunk_pos != cam_chunk_pos or _chunk_debug_mode != chunk_debug_mode):
-		var t_aabb : AABB = viewer.get_camera_chunk_local_aabb()
-		var t_mesh : Transform = viewer.get_camera_chunk_global_transform_applied()
-		cam_chunk_mesh_pos_xzy = String(t_mesh.origin.x) + ":" + String(t_mesh.origin.z) + ":" + String(t_mesh.origin.y)
-		cam_chunk_mesh_aabb_x = String(t_mesh.origin.x) + ":" + String(t_mesh.origin.x + t_aabb.size.x)
-		cam_chunk_mesh_aabb_y = String(t_mesh.origin.y) + ":" + String(t_mesh.origin.y + t_aabb.size.y)
-		cam_chunk_mesh_aabb_z = String(t_mesh.origin.z) + ":" + String(t_mesh.origin.z + t_aabb.size.z)
-		t_aabb = viewer.get_camera_chunk_local_debug_aabb()
-		t_mesh = viewer.get_camera_chunk_debug_global_transform_applied()
-		cam_chunk_dmesh_pos_xzy = String(t_mesh.origin.x) + ":" + String(t_mesh.origin.z) + ":" + String(t_mesh.origin.y)
-		cam_chunk_dmesh_aabb_x = String(t_mesh.origin.x) + ":" + String(t_mesh.origin.x + t_aabb.size.x)
-		cam_chunk_dmesh_aabb_y = String(t_mesh.origin.y) + ":" + String(t_mesh.origin.y + t_aabb.size.y)
-		cam_chunk_dmesh_aabb_z = String(t_mesh.origin.z) + ":" + String(t_mesh.origin.z + t_aabb.size.z)
-		chunk_debug_mode = _chunk_debug_mode
-		cam_chunk_mesh_pos = t_mesh.origin
-		cam_chunk_mesh_aabb = t_aabb
-		cam_chunk_pos = _cam_chunk_pos
+	if debug_window_active:
+		fps = Engine.get_frames_per_second()
+		var _chunk_debug_mode : String = viewer.get_chunk_debug_mode()
+		var _cam_chunk_pos = viewer.get_camera_quadrant_name() + " " + viewer.get_camera_chunk_id()
+		if (_cam_chunk_pos != cam_chunk_pos or _chunk_debug_mode != chunk_debug_mode):
+			var t_aabb : AABB = viewer.get_camera_chunk_local_aabb()
+			var t_mesh : Transform = viewer.get_camera_chunk_global_transform_applied()
+			cam_chunk_mesh_pos_xzy = String(t_mesh.origin.x) + ":" + String(t_mesh.origin.z) + ":" + String(t_mesh.origin.y)
+			cam_chunk_mesh_aabb_x = String(t_mesh.origin.x) + ":" + String(t_mesh.origin.x + t_aabb.size.x)
+			cam_chunk_mesh_aabb_y = String(t_mesh.origin.y) + ":" + String(t_mesh.origin.y + t_aabb.size.y)
+			cam_chunk_mesh_aabb_z = String(t_mesh.origin.z) + ":" + String(t_mesh.origin.z + t_aabb.size.z)
+			t_aabb = viewer.get_camera_chunk_local_debug_aabb()
+			t_mesh = viewer.get_camera_chunk_debug_global_transform_applied()
+			cam_chunk_dmesh_pos_xzy = String(t_mesh.origin.x) + ":" + String(t_mesh.origin.z) + ":" + String(t_mesh.origin.y)
+			cam_chunk_dmesh_aabb_x = String(t_mesh.origin.x) + ":" + String(t_mesh.origin.x + t_aabb.size.x)
+			cam_chunk_dmesh_aabb_y = String(t_mesh.origin.y) + ":" + String(t_mesh.origin.y + t_aabb.size.y)
+			cam_chunk_dmesh_aabb_z = String(t_mesh.origin.z) + ":" + String(t_mesh.origin.z + t_aabb.size.z)
+			chunk_debug_mode = _chunk_debug_mode
+			cam_chunk_mesh_pos = t_mesh.origin
+			cam_chunk_mesh_aabb = t_aabb
+			cam_chunk_pos = _cam_chunk_pos
 		
-	hit = viewer.get_mouse_hit()
-	if hit != prev_hit:
-		deltaPos = hit - prev_hit
-		prev_hit = hit
-	quad_hit_name = viewer.get_mouse_quadrant_hit_name() + " " + viewer.get_mouse_quadrant_hit_tag()
-	quad_hit_pos = viewer.get_mouse_quadrant_hit_pos()
-	quad_hit_size = viewer.get_mouse_quadrant_hit_size()
-	chunk_hit_name = viewer.get_mouse_chunk_hit_name()
-	chunk_hit_pos = viewer.get_mouse_chunk_hit_pos()
-	chunk_hit_size = viewer.get_mouse_chunk_hit_size()
-	chunk_hit_dist_from_cam = viewer.get_mouse_chunk_hit_dist_from_cam()
+		hit = viewer.get_mouse_hit()
+		if hit != prev_hit:
+			deltaPos = hit - prev_hit
+			prev_hit = hit
+		quad_hit_name = viewer.get_mouse_quadrant_hit_name() + " " + viewer.get_mouse_quadrant_hit_tag()
+		quad_hit_pos = viewer.get_mouse_quadrant_hit_pos()
+		quad_hit_size = viewer.get_mouse_quadrant_hit_size()
+		chunk_hit_name = viewer.get_mouse_chunk_hit_name()
+		chunk_hit_pos = viewer.get_mouse_chunk_hit_pos()
+		chunk_hit_size = viewer.get_mouse_chunk_hit_size()
+		chunk_hit_dist_from_cam = viewer.get_mouse_chunk_hit_dist_from_cam()
+		mouse_pos_in_viewport = get_viewport().get_mouse_position()
+		chunk_grid_global_pos = TWViewer().GDN_viewer().global_transform.origin
+		if current_camera:
+			#active_camera_global_rot = current_camera.global_transform.basis.get_euler()
+			active_camera_global_rot = str(current_camera.global_transform.basis.get_euler()) + " | " + "yaw " + str(int(current_camera.get_yaw(false))) + " pitch " + str(int(current_camera.get_pitch(false)))
+			active_camera_global_pos = current_camera.global_transform.origin
+			degree_from_north = current_camera.get_angle_from_north()
+		num_splits = viewer.get_num_splits()
+		num_joins = viewer.get_num_joins()
+		num_active_chunks = viewer.get_num_active_chunks()
+		num_quadrant = str(viewer.get_num_initialized_quadrant()) + ":" + str(viewer.get_num_quadrant())
+		num_visible_quadrant = str(viewer.get_num_initialized_visible_quadrant()) + ":" + str(viewer.get_num_visible_quadrant())
+		num_empty_quadrant = str(viewer.get_num_empty_quadrant())
+		num_flushed_quadrant = str(viewer.get_num_flushed_quadrant())
+		var update_quads1_duration : int = viewer.get_update_quads1_duration()
+		var update_quads2_duration : int = viewer.get_update_quads2_duration()
+		var update_quads3_duration : int = viewer.get_update_quads3_duration()
+		process_durations_mcs = String(viewer.get_process_duration()) \
+			+ " UQ " + String (update_quads1_duration + update_quads2_duration + update_quads3_duration) \
+			+ " (" + String(update_quads1_duration) \
+			+ " " + String(update_quads2_duration) \
+			+ " " + String(update_quads3_duration)\
+			+ ") UC " + String(viewer.get_update_chunks_duration()) \
+			+ " UM " + String(viewer.get_update_material_params_duration()) \
+			+ " RQ " + String(viewer.get_refresh_quads_duration()) \
+			+ " T " + String(viewer.get_mouse_track_hit_duration())
+		num_process_locked = viewer.get_num_process_not_owns_lock()
+		debug_draw_mode = viewer.get_debug_draw_mode()
 
 	# check mouse pos on the ground
-	var current_time : int = Time.get_ticks_msec()
-	if (process_test_action || current_time - time_of_last_ray > 250):
-		time_of_last_ray = current_time
-		process_test_action = false
+	#var current_time : int = Time.get_ticks_msec()
+	#if (process_test_action || current_time - time_of_last_ray > 250):
+	#	time_of_last_ray = current_time
+	#	process_test_action = false
 		
-		var _test_action_changed := false
-		if test_action_enabled != prev_test_action_enabled:
-			prev_test_action_enabled = test_action_enabled
-			_test_action_changed = true
+	#	var _test_action_changed := false
+	#	if test_action_enabled != prev_test_action_enabled:
+	#		prev_test_action_enabled = test_action_enabled
+	#		_test_action_changed = true
 
 		#if _test_action_changed:
 		#tracked_chunk = TWViewer().GDN_viewer().get_tracked_chunk_str()
 		
-		mouse_pos_in_viewport = get_viewport().get_mouse_position()
-
-	chunk_grid_global_pos = TWViewer().GDN_viewer().global_transform.origin
-	if current_camera:
-		#active_camera_global_rot = current_camera.global_transform.basis.get_euler()
-		active_camera_global_rot = str(current_camera.global_transform.basis.get_euler()) + " | " + "yaw " + str(int(current_camera.get_yaw(false))) + " pitch " + str(int(current_camera.get_pitch(false)))
-		active_camera_global_pos = current_camera.global_transform.origin
-		degree_from_north = current_camera.get_angle_from_north()
-	
-	num_splits = viewer.get_num_splits()
-	num_joins = viewer.get_num_joins()
-	num_active_chunks = viewer.get_num_active_chunks()
-	num_quadrant = str(viewer.get_num_initialized_quadrant()) + ":" + str(viewer.get_num_quadrant())
-	num_visible_quadrant = str(viewer.get_num_initialized_visible_quadrant()) + ":" + str(viewer.get_num_visible_quadrant())
-	num_empty_quadrant = str(viewer.get_num_empty_quadrant())
-	num_flushed_quadrant = str(viewer.get_num_flushed_quadrant())
-	var update_quads1_duration : int = viewer.get_update_quads1_duration()
-	var update_quads2_duration : int = viewer.get_update_quads2_duration()
-	var update_quads3_duration : int = viewer.get_update_quads3_duration()
-	process_durations_mcs = String(viewer.get_process_duration()) \
-		+ " UQ " + String (update_quads1_duration + update_quads2_duration + update_quads3_duration) \
-		+ " (" + String(update_quads1_duration) \
-		+ " " + String(update_quads2_duration) \
-		+ " " + String(update_quads3_duration)\
-		+ ") UC " + String(viewer.get_update_chunks_duration()) \
-		+ " UM " + String(viewer.get_update_material_params_duration()) \
-		+ " RQ " + String(viewer.get_refresh_quads_duration()) \
-		+ " T " + String(viewer.get_mouse_track_hit_duration())
-	num_process_locked = viewer.get_num_process_not_owns_lock()
-	debug_draw_mode = viewer.get_debug_draw_mode()
-		
 func enter_world():
 	log_debug("Entering world...")
 	OS.window_maximized = true
-	set_debug_window(true)
+	set_debug_window(false)
 	$DebugStats.add_property(self, "_client_status", "")
 	$DebugStats.add_property(self, "fps", "")
 	$DebugStats.add_property(self, "process_durations_mcs", "")
@@ -467,10 +468,10 @@ func exit_world():
 	
 func set_debug_window(active : bool) -> void:
 	if active:
-		debug_window_Active = true
+		debug_window_active = true
 		$DebugStats.visible = true
 	else:
-		debug_window_Active = false
+		debug_window_active = false
 		$DebugStats.visible = false
 		
 func _init_world() -> void:
