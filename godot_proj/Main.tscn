@@ -67,6 +67,7 @@ script = ExtResource( 2 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20.5477, 93.3237, 176.975 )
 script = ExtResource( 18 )
 _depth_quad = 1
+_info_panel_visible = true
 
 [node name="GDN_TW_Main" type="Node" parent="TheWorld_Main/TWViewer"]
 script = ExtResource( 20 )

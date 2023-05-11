@@ -16,6 +16,7 @@ var _editor_3d_overlay : Control = null
 var _gdn_globals : Node = null
 var _gdn_viewer : Spatial = null
 var _logger = HT_Logger.get_for(self)
+var _tree_entered := false
 var _init_done : bool = false
 var _is_ready : bool = false
 var _transform_changed : bool = false
@@ -45,34 +46,32 @@ var _info_panel_quadrants_label : Label = null
 var _info_panel_chunks_label : Label = null
 var _info_panel_mouse_tracking_label : Label = null
 
-#var _fps_label : Label = null
-#var _client_status_label : Label = null
-#var _render_process_durations_mcs_label : Label = null
-#var _num_locks_label : Label = null
-#var _draw_mode_label : Label
-#var _grid_origin_label : Label
-#var _mouse_pos_in_viewport : Label
-#var _camera_degree_from_north_label : Label
-#var _camera_yaw_label : Label
-#var _camera_pitch_label : Label
-#var _camera_rot_label : Label
-#var _camera_pos_label : Label
-#var _num_quadrant_label : Label
-#var _num_visible_quadrant_label : Label
-#var _num_empty_quadrant_label : Label
-#var _num_flushed_quadrant_label : Label
-#var _num_active_chunks_label : Label
-#var _num_chunk_split_label : Label
-#var _num_chunk_join_label : Label
-#var _hit_pos_label : Label
-#var _delta_pos_label : Label
-#var _quad_hit_name_label : Label
-#var _quad_hit_pos_label : Label
-#var _quad_hit_size_label : Label
-#var _chunk_hit_name_label : Label
-#var _chunk_hit_pos_label : Label
-#var _chunk_hit_size_label : Label
-#var _chunk_hit_dist_from_cam_label : Label
+var _info_panel_status := ""
+var _info_panel_render_process_durations_mcs := ""
+var _info_panel_draw_mode := ""
+var _info_panel_num_locks := ""
+var _info_panel_grid_origin := ""
+var _info_panel_camera_degree_from_north := ""
+var _info_panel_camera_yaw := ""
+var _info_panel_camera_pitch := ""
+var _info_panel_camera_rot := ""
+var _info_panel_camera_pos := ""
+var _info_label_num_quadrants := ""
+var _info_label_num_visible_quadrants := ""
+var _info_label_num_empty_quadrants := ""
+var _info_label_num_flushed_quadrants := ""
+var _info_panel_num_active_chunks := ""
+var _info_panel_num_chunk_splits := ""
+var _info_panel_num_chunk_joins := ""
+var _info_panel_hit_pos := ""
+var _info_panel_delta_pos := ""
+var _info_panel_quad_hit_name := ""
+var _info_panel_quad_hit_pos := ""
+var _info_panel_quad_hit_size := ""
+var _info_panel_chunk_hit_name := ""
+var _info_panel_chunk_hit_pos := ""
+var _info_panel_chunk_hit_size := ""
+var _info_panel_chunk_hit_dist_from_camera := ""
 
 #var _test : Label = null
 #var _test_added_to_editor_overlay : bool = false
@@ -91,7 +90,7 @@ func _set_depth_quad(depth_quad : int):
 		_depth_quad = depth_quad
 	var viewer = GDN_viewer()
 	if viewer == null:
-		print("GDN_viewer() null")
+		print("GDN_viewer() null 1")
 	else:
 		viewer.set_depth_quad(_depth_quad)
 		log_debug(str("depth quad: ", _depth_quad))
@@ -110,7 +109,7 @@ func _set_cache_quad(cache_quad : int):
 		_cache_quad = cache_quad
 	var viewer = GDN_viewer()
 	if viewer == null:
-		print("GDN_viewer() null")
+		print("GDN_viewer() null 2")
 	else:
 		viewer.set_cache_quad(_cache_quad)
 		log_debug(str("cache quad: ", _cache_quad))
@@ -122,11 +121,11 @@ func _get_cache_quad() -> int:
 #		_cache_quad = viewer.get_cache_quad()
 	return _cache_quad
 
-var _info_panel_visible : bool = false
-#export var _info_panel_visible : bool setget _set_info_panel_visible #, _get_info_panel_visible
-#func _set_info_panel_visible(info_panel_visible : bool):
-#	_info_panel_visible = info_panel_visible
-#	_info_panel_visibility_changed = true
+#var _info_panel_visible : bool = false
+export var _info_panel_visible : bool setget _set_info_panel_visible #, _get_info_panel_visible
+func _set_info_panel_visible(info_panel_visible : bool):
+	_info_panel_visible = info_panel_visible
+	_info_panel_visibility_changed = true
 #func _get_info_panel_visible() -> bool:
 #	return _info_panel_visible
 
@@ -182,6 +181,7 @@ func _ready():
 
 func _enter_tree():
 	_logger.debug("_enter_tree")
+	_tree_entered = true
 
 func _exit_tree():
 	log_debug("_exit_tree")
@@ -194,6 +194,7 @@ func _exit_tree():
 	if _info_panel != null:
 		_info_panel.queue_free()
 		_info_panel = null
+	_tree_entered = false
 
 func _input(event):
 	if Engine.editor_hint:
@@ -274,82 +275,57 @@ func _process(delta):
 				log_debug(str("edit_mode_ui_control added"))
 				_edit_mode_ui_control_added_to_editor_overlay = true
 	
-	if _info_panel != null && _info_panel.visible:
-		var _info_panel_render_process_durations_mcs := ""
-		var _info_panel_draw_mode := ""
-		var _info_panel_num_locks := ""
-		var _info_panel_grid_origin := ""
-		var _info_panel_camera_degree_from_north := ""
-		var _info_panel_camera_yaw := ""
-		var _info_panel_camera_pitch := ""
-		var _info_panel_camera_rot := ""
-		var _info_panel_camera_pos := ""
-		var _info_label_num_quadrants := ""
-		var _info_label_num_visible_quadrants := ""
-		var _info_label_num_empty_quadrants := ""
-		var _info_label_num_flushed_quadrants := ""
-		var _info_panel_num_active_chunks := ""
-		var _info_panel_num_chunk_splits := ""
-		var _info_panel_num_chunk_joins := ""
-		var _info_panel_hit_pos := ""
-		var _info_panel_delta_pos := ""
-		var _info_panel_quad_hit_name := ""
-		var _info_panel_quad_hit_pos := ""
-		var _info_panel_quad_hit_size := ""
-		var _info_panel_chunk_hit_name := ""
-		var _info_panel_chunk_hit_pos := ""
-		var _info_panel_chunk_hit_size := ""
-		var _info_panel_chunk_hit_dist_from_camera := ""
-		if viewer != null && viewer.has_method("get_camera"):
-			var camera : Camera = null
-			camera = viewer.get_camera()
-			var update_quads1_duration : int = viewer.get_update_quads1_duration()
-			var update_quads2_duration : int = viewer.get_update_quads2_duration()
-			var update_quads3_duration : int = viewer.get_update_quads3_duration()
-			var delta_pos : Vector3
-			_hit_pos = viewer.get_mouse_hit()
-			if _hit_pos != _prev_hit_pos:
-				delta_pos = _hit_pos - _prev_hit_pos
-				_prev_hit_pos = _hit_pos
-			if !Engine.editor_hint:
-				_info_panel_draw_mode = "Draw mode: " +  viewer.get_debug_draw_mode() + "\n"
-				_info_panel_num_locks = "Locks: " +  str(viewer.get_num_process_not_owns_lock()) + "\n"
-				if camera != null && camera.has_method("get_yaw"):
-					_info_panel_camera_degree_from_north = "  Deg. north: " + str(camera.get_angle_from_north()) + "\n"
-					_info_panel_camera_yaw = "  Yaw :" + str(camera.get_yaw(false)) + "\n"
-					_info_panel_camera_pitch = "  Pitch :" + str(camera.get_pitch(false)) + "\n"
-			_info_panel_grid_origin = "Grid origin: " + str(viewer.global_transform.origin) + "\n"
-			_info_panel_render_process_durations_mcs = "Render process (mcs): " + str(viewer.get_process_duration()) + "\n"
-			#+ " UQ " + String (update_quads1_duration + update_quads2_duration + update_quads3_duration) \
-			#+ " (" + String(update_quads1_duration) \
-			#+ " " + String(update_quads2_duration) \
-			#+ " " + String(update_quads3_duration)\
-			#+ ") UC " + String(viewer.get_update_chunks_duration()) \
-			#+ " UM " + String(viewer.get_update_material_params_duration()) \
-			#+ " RQ " + String(viewer.get_refresh_quads_duration()) \
-			#+ " T " + String(viewer.get_mouse_track_hit_duration()) + "\n"
-			if camera != null:
-				_info_panel_camera_rot = "  Rot: " + str(camera.global_transform.basis.get_euler()) + "\n"
-				_info_panel_camera_pos = "  Pos :" + str(camera.global_transform.origin)
-			_info_label_num_quadrants = "  Total: " + str(viewer.get_num_initialized_quadrant(), ":", viewer.get_num_quadrant()) + "\n"
-			_info_label_num_visible_quadrants = "  Visible: " + str(viewer.get_num_initialized_visible_quadrant(), ":", viewer.get_num_visible_quadrant()) + "\n"
-			_info_label_num_empty_quadrants = "  Empty: " + str(viewer.get_num_empty_quadrant()) + "\n"
-			_info_label_num_flushed_quadrants = "  Flushed: " + str(viewer.get_num_flushed_quadrant())
-			_info_panel_num_active_chunks = "  Active: " + str(viewer.get_num_active_chunks()) + "\n"
-			_info_panel_num_chunk_splits = "  Splits: " + str(viewer.get_num_splits()) + "\n"
-			_info_panel_num_chunk_joins = "  Joins: " + str(viewer.get_num_joins())
-			_info_panel_hit_pos = "  Hit pos: " + str(viewer.get_mouse_hit()) + "\n"
-			_info_panel_delta_pos = "  Delta pos: " + str(delta_pos) + "\n"
-			_info_panel_quad_hit_name = "  Quad name: " + viewer.get_mouse_quadrant_hit_name() + " " + viewer.get_mouse_quadrant_hit_tag() + "\n"
-			_info_panel_quad_hit_pos = "  Quad pos: " + str(viewer.get_mouse_quadrant_hit_pos()) + "\n"
-			_info_panel_quad_hit_size = "  Quad size: " + str(viewer.get_mouse_quadrant_hit_size()) + "\n"
-			_info_panel_chunk_hit_name = "  Chunk name: " + viewer.get_mouse_chunk_hit_name() + "\n"
-			_info_panel_chunk_hit_pos = "  Chunk pos: " + str(viewer.get_mouse_chunk_hit_pos()) + "\n"
-			_info_panel_chunk_hit_size = "  Chunk size: " + str(viewer.get_mouse_chunk_hit_size()) + "\n"
-			_info_panel_chunk_hit_dist_from_camera = "  Chunk dist from camera: " + str(viewer.get_mouse_chunk_hit_dist_from_cam())
+	if _info_panel != null && _info_panel.visible && viewer != null && viewer.has_method("get_camera"):
+		_info_panel_status = "Status: " + tw_constants.status_to_string(_client_status) + "\n"
+		var camera : Camera = null
+		camera = viewer.get_camera()
+		var update_quads1_duration : int = viewer.get_update_quads1_duration()
+		var update_quads2_duration : int = viewer.get_update_quads2_duration()
+		var update_quads3_duration : int = viewer.get_update_quads3_duration()
+		var delta_pos : Vector3
+		_hit_pos = viewer.get_mouse_hit()
+		if _hit_pos != _prev_hit_pos:
+			delta_pos = _hit_pos - _prev_hit_pos
+			_prev_hit_pos = _hit_pos
+		if !Engine.editor_hint:
+			_info_panel_draw_mode = "Draw mode: " +  viewer.get_debug_draw_mode() + "\n"
+			_info_panel_num_locks = "Locks: " +  str(viewer.get_num_process_not_owns_lock()) + "\n"
+			if camera != null && camera.has_method("get_yaw"):
+				_info_panel_camera_degree_from_north = "  Deg. north: " + str(camera.get_angle_from_north()) + "\n"
+				_info_panel_camera_yaw = "  Yaw :" + str(camera.get_yaw(false)) + "\n"
+				_info_panel_camera_pitch = "  Pitch :" + str(camera.get_pitch(false)) + "\n"
+		_info_panel_grid_origin = "Grid origin: " + str(viewer.global_transform.origin) + "\n"
+		_info_panel_render_process_durations_mcs = "Render process (mcs): " + str(viewer.get_process_duration()) + "\n"
+		#+ " UQ " + String (update_quads1_duration + update_quads2_duration + update_quads3_duration) \
+		#+ " (" + String(update_quads1_duration) \
+		#+ " " + String(update_quads2_duration) \
+		#+ " " + String(update_quads3_duration)\
+		#+ ") UC " + String(viewer.get_update_chunks_duration()) \
+		#+ " UM " + String(viewer.get_update_material_params_duration()) \
+		#+ " RQ " + String(viewer.get_refresh_quads_duration()) \
+		#+ " T " + String(viewer.get_mouse_track_hit_duration()) + "\n"
+		if camera != null:
+			_info_panel_camera_rot = "  Rot: " + str(camera.global_transform.basis.get_euler()) + "\n"
+			_info_panel_camera_pos = "  Pos :" + str(camera.global_transform.origin)
+		_info_label_num_quadrants = "  Total: " + str(viewer.get_num_initialized_quadrant(), ":", viewer.get_num_quadrant()) + "\n"
+		_info_label_num_visible_quadrants = "  Visible: " + str(viewer.get_num_initialized_visible_quadrant(), ":", viewer.get_num_visible_quadrant()) + "\n"
+		_info_label_num_empty_quadrants = "  Empty: " + str(viewer.get_num_empty_quadrant()) + "\n"
+		_info_label_num_flushed_quadrants = "  Flushed: " + str(viewer.get_num_flushed_quadrant())
+		_info_panel_num_active_chunks = "  Active: " + str(viewer.get_num_active_chunks()) + "\n"
+		_info_panel_num_chunk_splits = "  Splits: " + str(viewer.get_num_splits()) + "\n"
+		_info_panel_num_chunk_joins = "  Joins: " + str(viewer.get_num_joins())
+		_info_panel_hit_pos = "  Hit pos: " + str(viewer.get_mouse_hit()) + "\n"
+		_info_panel_delta_pos = "  Delta pos: " + str(delta_pos) + "\n"
+		_info_panel_quad_hit_name = "  Quad name: " + viewer.get_mouse_quadrant_hit_name() + " " + viewer.get_mouse_quadrant_hit_tag() + "\n"
+		_info_panel_quad_hit_pos = "  Quad pos: " + str(viewer.get_mouse_quadrant_hit_pos()) + "\n"
+		_info_panel_quad_hit_size = "  Quad size: " + str(viewer.get_mouse_quadrant_hit_size()) + "\n"
+		_info_panel_chunk_hit_name = "  Chunk name: " + viewer.get_mouse_chunk_hit_name() + "\n"
+		_info_panel_chunk_hit_pos = "  Chunk pos: " + str(viewer.get_mouse_chunk_hit_pos()) + "\n"
+		_info_panel_chunk_hit_size = "  Chunk size: " + str(viewer.get_mouse_chunk_hit_size()) + "\n"
+		_info_panel_chunk_hit_dist_from_camera = "  Chunk dist from camera: " + str(viewer.get_mouse_chunk_hit_dist_from_cam())
 		
 		_info_panel_general_label.text = "FPS: " + str(Engine.get_frames_per_second()) + "\n" \
-			+ "Status: " + tw_constants.status_to_string(_client_status) + "\n" \
+			+ _info_panel_status \
 			+ _info_panel_render_process_durations_mcs \
 			+ _info_panel_draw_mode \
 			+ _info_panel_num_locks \
@@ -384,90 +360,7 @@ func _process(delta):
 		+ _info_panel_chunk_hit_pos \
 		+ _info_panel_chunk_hit_size \
 		+ _info_panel_chunk_hit_dist_from_camera
-		
-	#if _info_panel != null && _info_panel.visible:
-		#if !Engine.editor_hint:
-		#	_fps_label.text = String(Engine.get_frames_per_second())
-		#	_num_locks_label.text = ""
-		#	_draw_mode_label.text = ""
-		#	_camera_degree_from_north_label.text = ""
-		#	_camera_yaw_label.text = ""
-		#	_camera_pitch_label.text = ""
-		#	_chunk_hit_dist_from_cam_label.text = ""
-		#	_num_empty_quadrant_label.text = ""
-		#	_num_flushed_quadrant_label.text = ""
-		#_camera_rot_label.text = ""
-		#_camera_pos_label.text = ""
-		#_client_status_label.text = tw_constants.status_to_string(_client_status)
-		#_render_process_durations_mcs_label.text = ""
-		#_grid_origin_label.text = ""
-		#_mouse_pos_in_viewport.text = str(get_viewport().get_mouse_position())
-		#_num_quadrant_label.text = ""
-		#_num_visible_quadrant_label.text = ""
-		#_num_active_chunks_label.text = ""
-		#_num_chunk_split_label.text = ""
-		#_num_chunk_join_label.text = ""
-		#_hit_pos_label.text = ""
-		#_delta_pos_label.text = ""
-		#_quad_hit_name_label.text = ""
-		#_quad_hit_pos_label.text = ""
-		#_quad_hit_size_label.text = ""
-		#_chunk_hit_name_label.text = ""
-		#_chunk_hit_pos_label.text = ""
-		#_chunk_hit_size_label.text = ""
-
-		#if viewer != null && viewer.has_method("get_camera"):
-		#	var camera : Camera = null
-		#	camera = viewer.get_camera()
-		#	var update_quads1_duration : int = viewer.get_update_quads1_duration()
-		#	var update_quads2_duration : int = viewer.get_update_quads2_duration()
-		#	var update_quads3_duration : int = viewer.get_update_quads3_duration()
-		#	var delta_pos : Vector3
-		#	_hit_pos = viewer.get_mouse_hit()
-		#	if _hit_pos != _prev_hit_pos:
-		#		delta_pos = _hit_pos - _prev_hit_pos
-		#		_prev_hit_pos = _hit_pos
-		#	_render_process_durations_mcs_label.text = String(viewer.get_process_duration())
-		#	#_render_process_durations_mcs_label.text = String(viewer.get_process_duration()) \
-		#	#+ " UQ " + String (update_quads1_duration + update_quads2_duration + update_quads3_duration) \
-		#	#+ " (" + String(update_quads1_duration) \
-		#	#+ " " + String(update_quads2_duration) \
-		#	#+ " " + String(update_quads3_duration)\
-		#	#+ ") UC " + String(viewer.get_update_chunks_duration()) \
-		#	#+ " UM " + String(viewer.get_update_material_params_duration()) \
-		#	#+ " RQ " + String(viewer.get_refresh_quads_duration()) \
-		#	#+ " T " + String(viewer.get_mouse_track_hit_duration())
-		#	if !Engine.editor_hint:
-		#		_num_locks_label.text = str(viewer.get_num_process_not_owns_lock())
-		#		_draw_mode_label.text = viewer.get_debug_draw_mode()
-		#		if camera != null:
-		#			if camera.has_method("get_angle_from_north"):
-		#				_camera_degree_from_north_label.text = str(camera.get_angle_from_north())
-		#			if camera.has_method("get_yaw"):
-		#				_camera_yaw_label.text = str(camera.get_yaw(false))
-		#			if camera.has_method("get_pitch"):
-		#				_camera_pitch_label.text = str(camera.get_pitch(false))
-		#		_chunk_hit_dist_from_cam_label.text = str(viewer.get_mouse_chunk_hit_dist_from_cam())
-		#		_num_empty_quadrant_label.text = str(viewer.get_num_empty_quadrant())
-		#		_num_flushed_quadrant_label.text = str(viewer.get_num_flushed_quadrant())
-		#	if camera != null:
-		#		_camera_rot_label.text = str(camera.global_transform.basis.get_euler())
-		#		_camera_pos_label.text = str(camera.global_transform.origin)
-		#	_grid_origin_label.text = str(viewer.global_transform.origin)
-		#	_num_quadrant_label.text = str(viewer.get_num_initialized_quadrant(), ":", viewer.get_num_quadrant())
-		#	_num_visible_quadrant_label.text = str(viewer.get_num_initialized_visible_quadrant(), ":", viewer.get_num_visible_quadrant())
-		#	_num_active_chunks_label.text = str(viewer.get_num_active_chunks())
-		#	_num_chunk_split_label.text = str(viewer.get_num_splits())
-		#	_num_chunk_join_label.text = str(viewer.get_num_joins())
-		#	_hit_pos_label.text = str(viewer.get_mouse_hit())
-		#	_delta_pos_label.text = str(delta_pos)
-		#	_quad_hit_name_label.text = viewer.get_mouse_quadrant_hit_name() + " " + viewer.get_mouse_quadrant_hit_tag()
-		#	_quad_hit_pos_label.text = str(viewer.get_mouse_quadrant_hit_pos())
-		#	_quad_hit_size_label.text = str(viewer.get_mouse_quadrant_hit_size())
-		#	_chunk_hit_name_label.text = viewer.get_mouse_chunk_hit_name()
-		#	_chunk_hit_pos_label.text = str(viewer.get_mouse_chunk_hit_pos())
-		#	_chunk_hit_size_label.text = str(viewer.get_mouse_chunk_hit_size())
-
+	
 func _notification(_what):
 	#log_debug(str("_notification: ", _what))
 	if (_what == Spatial.NOTIFICATION_TRANSFORM_CHANGED):
@@ -532,13 +425,17 @@ func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> 
 
 func find_node_by_name(node_name : String) -> Node:
 		if Engine.editor_hint:
-			var scene : SceneTree = get_tree()
+			var scene : SceneTree = null
+			#if _tree_entered:
+			scene = get_tree()
 			if scene == null:
 				return null
 			var node : Node = get_tree().get_edited_scene_root().find_node(node_name, true, false)
 			return node
 		else:
-			var scene : SceneTree = get_tree()
+			var scene : SceneTree = null
+			if _tree_entered:
+				scene = get_tree()
 			if scene == null:
 				return null
 			var node : Node = get_tree().get_root().find_node(node_name, true, false)
@@ -695,19 +592,22 @@ func create_info_panel():
 	#_info_panel = Panel.new()
 	log_debug(str("_info_panel:", _info_panel))
 	_info_panel.name = "InfoPanel"
-	if Engine.editor_hint:
-		_info_panel_visible = false
-		add_child(_info_panel)
-	else:
-		_info_panel_visible = false
-		add_child(_info_panel)
+	add_child(_info_panel)
 	_info_panel_visibility_changed = true
 	_info_panel.self_modulate = Color(1, 1, 1, 0.5)
-	var panel = TabContainer.new()
-	_info_panel.add_child(panel)
-	panel.self_modulate = Color(1, 1, 1, 0.5)
+	
 	_info_panel_main_vboxcontainer = VBoxContainer.new()
-	panel.add_child(_info_panel_main_vboxcontainer)
+	_info_panel_main_vboxcontainer.name = "Info"
+
+	if Engine.editor_hint:
+		var panel = TabContainer.new()
+		_info_panel.add_child(panel)
+		panel.name = "Info"
+		panel.self_modulate = Color(1, 1, 1, 0.5)
+		panel.add_child(_info_panel_main_vboxcontainer)
+	else:
+		_info_panel.add_child(_info_panel_main_vboxcontainer)
+		
 	#_info_panel_main_vboxcontainer.self_modulate = Color(1, 1, 1, 0.5)
 	#var i : int = _info_panel_main_vboxcontainer.get_constant("hseparation=")
 	#print(str("hseparation", i))
@@ -723,57 +623,6 @@ func create_info_panel():
 	_info_panel_chunks_label = add_info_panel_empty_line()
 	add_info_panel_separator()
 	_info_panel_mouse_tracking_label = add_info_panel_empty_line()
-	
-	#if !Engine.editor_hint:
-	#	_fps_label = add_info_panel_line("FPS:", 0)
-	#_client_status_label = add_info_panel_line("Status:", 0)
-	#if !Engine.editor_hint:
-	#	_draw_mode_label = add_info_panel_line("Draw mode:", 0)
-	#if !Engine.editor_hint:
-	#	_num_locks_label = add_info_panel_line("Locks:", 0)
-	#_render_process_durations_mcs_label = add_info_panel_line("Render process (mcs):", 0)
-	#_grid_origin_label = add_info_panel_line("Grid origin:", 0)
-	#_mouse_pos_in_viewport = add_info_panel_line("Pos in viewport:", 0)
-	
-	#add_info_panel_separator()
-	
-	#add_info_panel_block("Camera", 0)
-	#if !Engine.editor_hint:
-	#	_camera_degree_from_north_label = add_info_panel_line("Deg. north:", 1)
-	#	_camera_yaw_label = add_info_panel_line("Yaw:", 1)
-	#	_camera_pitch_label = add_info_panel_line("Pitch:", 1)
-	#_camera_rot_label = add_info_panel_line("Rot:", 1)
-	#_camera_pos_label = add_info_panel_line("Pos:", 1)
-	
-	#add_info_panel_separator()
-	
-	#add_info_panel_block("Quadrants", 0)
-	#_num_quadrant_label = add_info_panel_line("Total:", 1)
-	#_num_visible_quadrant_label = add_info_panel_line("Visible:", 1)
-	#if !Engine.editor_hint:
-	#	_num_empty_quadrant_label = add_info_panel_line("Empty:", 1)
-	#	_num_flushed_quadrant_label = add_info_panel_line("Flushed:", 1)
-		
-	#add_info_panel_separator()
-	
-	#add_info_panel_block("Chunks", 0)
-	#_num_active_chunks_label = add_info_panel_line("Active:", 1)
-	#_num_chunk_split_label = add_info_panel_line("Split:", 1)
-	#_num_chunk_join_label = add_info_panel_line("Join:", 1)
-	
-	#add_info_panel_separator()
-	
-	#add_info_panel_block("Mouse tracking", 0)
-	#_hit_pos_label = add_info_panel_line("Hit pos:", 1)
-	#_delta_pos_label = add_info_panel_line("Delta:", 1)
-	#_quad_hit_name_label = add_info_panel_line("Quad name:", 1)
-	#_quad_hit_pos_label = add_info_panel_line("Quad pos:", 1)
-	#_quad_hit_size_label = add_info_panel_line("Quad size:", 1)
-	#_chunk_hit_name_label = add_info_panel_line("Chunk name:", 1)
-	#_chunk_hit_pos_label = add_info_panel_line("Chunk pos:", 1)
-	#_chunk_hit_size_label = add_info_panel_line("Chunk size:", 1)
-	#if !Engine.editor_hint:
-	#	_chunk_hit_dist_from_cam_label = add_info_panel_line("Chunk dist from camera:", 1)
 	
 	set_size_info_panel()
 	
