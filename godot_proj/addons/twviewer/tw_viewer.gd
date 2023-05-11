@@ -25,6 +25,8 @@ var _visibility_changed : bool = false
 var _client_status : int
 var _hit_pos : Vector3 = Vector3(0, 0, 0)
 var _prev_hit_pos : Vector3 = Vector3(0, 0, 0)
+var _last_check_delta_pos := 0
+var _delta_pos := Vector3(0, 0, 0)
 
 var _alt_pressed : bool = false
 var _ctrl_pressed : bool = false
@@ -90,7 +92,7 @@ func _set_depth_quad(depth_quad : int):
 		_depth_quad = depth_quad
 	var viewer = GDN_viewer()
 	if viewer == null:
-		print("GDN_viewer() null 1")
+		print("_depth_quad setter: GDN_viewer() null")
 	else:
 		viewer.set_depth_quad(_depth_quad)
 		log_debug(str("depth quad: ", _depth_quad))
@@ -109,7 +111,7 @@ func _set_cache_quad(cache_quad : int):
 		_cache_quad = cache_quad
 	var viewer = GDN_viewer()
 	if viewer == null:
-		print("GDN_viewer() null 2")
+		print("_cache_quad setter: GDN_viewer() null")
 	else:
 		viewer.set_cache_quad(_cache_quad)
 		log_debug(str("cache quad: ", _cache_quad))
@@ -282,11 +284,12 @@ func _process(delta):
 		var update_quads1_duration : int = viewer.get_update_quads1_duration()
 		var update_quads2_duration : int = viewer.get_update_quads2_duration()
 		var update_quads3_duration : int = viewer.get_update_quads3_duration()
-		var delta_pos : Vector3
 		_hit_pos = viewer.get_mouse_hit()
-		if _hit_pos != _prev_hit_pos:
-			delta_pos = _hit_pos - _prev_hit_pos
-			_prev_hit_pos = _hit_pos
+		if OS.get_ticks_msec() - _last_check_delta_pos > 500:
+			if _hit_pos != _prev_hit_pos:
+				_delta_pos = _hit_pos - _prev_hit_pos
+				_prev_hit_pos = _hit_pos
+			_last_check_delta_pos = OS.get_ticks_msec()
 		if !Engine.editor_hint:
 			_info_panel_draw_mode = "Draw mode: " +  viewer.get_debug_draw_mode() + "\n"
 			_info_panel_num_locks = "Locks: " +  str(viewer.get_num_process_not_owns_lock()) + "\n"
@@ -315,7 +318,7 @@ func _process(delta):
 		_info_panel_num_chunk_splits = "  Splits: " + str(viewer.get_num_splits()) + "\n"
 		_info_panel_num_chunk_joins = "  Joins: " + str(viewer.get_num_joins())
 		_info_panel_hit_pos = "  Hit pos: " + str(viewer.get_mouse_hit()) + "\n"
-		_info_panel_delta_pos = "  Delta pos: " + str(delta_pos) + "\n"
+		_info_panel_delta_pos = "  Delta pos: " + str(_delta_pos) + "\n"
 		_info_panel_quad_hit_name = "  Quad name: " + viewer.get_mouse_quadrant_hit_name() + " " + viewer.get_mouse_quadrant_hit_tag() + "\n"
 		_info_panel_quad_hit_pos = "  Quad pos: " + str(viewer.get_mouse_quadrant_hit_pos()) + "\n"
 		_info_panel_quad_hit_size = "  Quad size: " + str(viewer.get_mouse_quadrant_hit_size()) + "\n"
