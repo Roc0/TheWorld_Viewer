@@ -38,6 +38,8 @@ func _enter_tree():
 	add_custom_type("TWViewer", "Spatial", TWViewer, get_icon("heightmap_node"))
 	add_custom_type("TWViewerGDNMain", "Node", GDNTheWorldMain, get_icon("heightmap_node"))
 	
+	#set_input_event_forwarding_always_enabled()
+	
 	#add_autoload_singleton(AUTOLOAD_NAME, AUTOLOAD_SCRIPT)
 	
 func _exit_tree():
@@ -161,7 +163,16 @@ func forward_spatial_gui_input(p_camera: Camera, p_event: InputEvent) -> bool:
 			if _viewer != null && _viewer.has_method("toggle_edit_mode"):
 				_viewer.toggle_edit_mode()
 
+		if p_event.is_pressed() && p_event.scancode == KEY_SPACE && _alt_pressed:
+			if _viewer != null && _viewer.has_method("toggle_quadrant_selected"):
+				_viewer.toggle_quadrant_selected()
+
 	return captured_event
+
+func apply_changes():
+	_logger.debug("apply_changes")
+	if _viewer != null:
+		_viewer.apply_changes()
 	
 func _viewer_exited_scene():
 	_logger.debug("tw_viewer exited the scene")

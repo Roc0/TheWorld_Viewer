@@ -13,6 +13,11 @@ var _editor_interface : EditorInterface = null
 var _editor_camera : Camera = null
 var _editor_3d_overlay : Control = null
 
+const EXIT_STATUS_RUNNING = 0
+const EXIT_STATUS_DEINIT_REQUIRED = 1
+const EXIT_STATUS_QUIT_REQUIRED = 2
+var _exit_status : int = EXIT_STATUS_RUNNING
+
 var _gdn_globals : Node = null
 var _gdn_viewer : Spatial = null
 var _logger = HT_Logger.get_for(self)
@@ -74,6 +79,7 @@ var _info_panel_chunk_hit_name := ""
 var _info_panel_chunk_hit_pos := ""
 var _info_panel_chunk_hit_size := ""
 var _info_panel_chunk_hit_dist_from_camera := ""
+var _info_panel_track_mouse_state := ""
 
 #var _test : Label = null
 #var _test_added_to_editor_overlay : bool = false
@@ -133,11 +139,16 @@ func _set_info_panel_visible(info_panel_visible : bool):
 
 func _init():
 	_logger.debug("_init")
+	_logger.debug(str("_init_done=", _init_done))
 	name = tw_constants.tw_viewer_node_name
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	_logger.debug("_ready")
+	
+	_exit_status = EXIT_STATUS_RUNNING
+	if !Engine.editor_hint:
+		get_tree().set_auto_accept_quit(false)
 	
 	if Engine.editor_hint:
 		_depth_quad = 1
@@ -148,12 +159,8 @@ func _ready():
 		GDNMain = _gdn_main.new()
 		GDNMain.name = tw_constants.tw_gdn_main_node_name
 		add_child(GDNMain)
-	if Engine.editor_hint:
-		#delete_children()
-		init()
-	else:
-		#delete_children()
-		init()
+
+	init()
 	var e := get_tree().get_root().connect("size_changed", self, "resizing")
 	log_debug(str("connect size_changed result=", e))
 	set_notify_transform(true)
@@ -186,16 +193,21 @@ func _enter_tree():
 	_tree_entered = true
 
 func _exit_tree():
-	log_debug("_exit_tree")
-	_is_ready = false	
 	if _init_done:
-		deinit()
+		log_debug("_exit_tree")
+	
+	#_is_ready = false	
+	#if _init_done:
+	#	deinit()
+	
 	#if _test != null:
 	#	_test.queue_free()
 	#	_test = null
-	if _info_panel != null:
-		_info_panel.queue_free()
-		_info_panel = null
+	
+	#if _info_panel != null:
+	#	_info_panel.queue_free()
+	#	_info_panel = null
+	
 	_tree_entered = false
 
 func _input(event):
@@ -226,8 +238,28 @@ func _input(event):
 func _process(delta):
 	#log_debug("_process")
 	
+	if _exit_status == EXIT_STATUS_DEINIT_REQUIRED:
+		pre_deinit()
+		_exit_status = EXIT_STATUS_QUIT_REQUIRED
+		return
+
+	if _exit_status == EXIT_STATUS_QUIT_REQUIRED:
+		if can_deinit():
+			_is_ready = false
+			deinit()
+			if _info_panel != null:
+				_info_panel.queue_free()
+				_info_panel = null
+			force_app_to_quit()
+		return
+	
 	_client_status = get_clientstatus()
 	var viewer = GDN_viewer()
+	#if viewer != null:
+	#	if viewer.has_method("get_camera"):
+	#		print ("has method")
+	#	else:
+	#		print ("does not have method")
 	
 	if _transform_changed && viewer != null:
 		viewer.global_transform = global_transform
@@ -309,7 +341,7 @@ func _process(delta):
 		#+ " T " + String(viewer.get_mouse_track_hit_duration()) + "\n"
 		if camera != null:
 			_info_panel_camera_rot = "  Rot: " + str(camera.global_transform.basis.get_euler()) + "\n"
-			_info_panel_camera_pos = "  Pos :" + str(camera.global_transform.origin)
+			_info_panel_camera_pos = "  Pos: " + str(camera.global_transform.origin)
 		_info_label_num_quadrants = "  Total: " + str(viewer.get_num_initialized_quadrant(), ":", viewer.get_num_quadrant()) + "\n"
 		_info_label_num_visible_quadrants = "  Visible: " + str(viewer.get_num_initialized_visible_quadrant(), ":", viewer.get_num_visible_quadrant()) + "\n"
 		_info_label_num_empty_quadrants = "  Empty: " + str(viewer.get_num_empty_quadrant()) + "\n"
@@ -326,7 +358,11 @@ func _process(delta):
 		_info_panel_chunk_hit_pos = "  Chunk pos: " + str(viewer.get_mouse_chunk_hit_pos()) + "\n"
 		_info_panel_chunk_hit_size = "  Chunk size: " + str(viewer.get_mouse_chunk_hit_size()) + "\n"
 		_info_panel_chunk_hit_dist_from_camera = "  Chunk dist from camera: " + str(viewer.get_mouse_chunk_hit_dist_from_cam())
-		
+		if viewer.get_track_mouse_state():
+			_info_panel_track_mouse_state = "on"
+		else:
+			_info_panel_track_mouse_state = "off"
+			
 		_info_panel_general_label.text = "FPS: " + str(Engine.get_frames_per_second()) + "\n" \
 			+ _info_panel_status \
 			+ _info_panel_render_process_durations_mcs \
@@ -353,7 +389,7 @@ func _process(delta):
 		+ _info_panel_num_chunk_splits \
 		+ _info_panel_num_chunk_joins
 		
-		_info_panel_mouse_tracking_label.text = "Mouse tracking\n" \
+		_info_panel_mouse_tracking_label.text = "Mouse tracking: " + _info_panel_track_mouse_state + "\n" \
 		+ _info_panel_hit_pos \
 		+ _info_panel_delta_pos \
 		+ _info_panel_quad_hit_name \
@@ -365,13 +401,33 @@ func _process(delta):
 		+ _info_panel_chunk_hit_dist_from_camera
 	
 func _notification(_what):
-	#log_debug(str("_notification: ", _what))
+	#log_debug(str("_notification: ", self.name, " ", self.get_path(), " ", _what))
+	
 	if (_what == Spatial.NOTIFICATION_TRANSFORM_CHANGED):
 		log_debug("_notification: global transform changed")
 		_transform_changed = true
 	elif (_what == Spatial.NOTIFICATION_VISIBILITY_CHANGED):
 		log_debug("_notification: visibility changed")
 		_visibility_changed = true
+	elif (_what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST):
+		log_debug("Quit request")
+		if Engine.editor_hint:
+			_is_ready = false	
+			pre_deinit()
+			var can_deinit : bool = false
+			while(can_deinit == false):
+				can_deinit = can_deinit()
+			deinit()
+			if _info_panel != null:
+				_info_panel.queue_free()
+				_info_panel = null
+		else:
+			_exit_status = EXIT_STATUS_DEINIT_REQUIRED
+
+		#if _test != null:
+		#	_test.queue_free()
+		#	_test = null
+		
 
 func resizing():
 	log_debug(str("Resizing: ", get_viewport().size))
@@ -395,7 +451,8 @@ func init() -> bool:
 func pre_deinit():
 	log_debug("pre_deinit")
 	GDN_main().pre_deinit()
-	
+	log_debug("Pre deinit completed...")
+
 func can_deinit() -> bool:
 	log_debug("can_deinit")
 	return GDN_main().can_deinit()
@@ -582,8 +639,18 @@ func toggle_info_panel_visibility():
 	_info_panel_visible = !_info_panel_visible
 	_info_panel_visibility_changed = true
 
+func toggle_track_mouse():
+	var gdn_viewer = GDN_viewer()
+	if gdn_viewer != null:
+		gdn_viewer.toggle_track_mouse()
+
 func toggle_edit_mode():
 	_edit_panel_visibility_changed = true
+
+func toggle_quadrant_selected():
+	var gdn_viewer = GDN_viewer()
+	if gdn_viewer != null:
+		gdn_viewer.toggle_quadrant_selected()
 
 func create_info_panel():
 	var label : Label
@@ -733,6 +800,21 @@ static func apply_dpi_scale(root: Control, dpi_scale: float):
 					node.margin_right *= dpi_scale
 		for i in node.get_child_count():
 			to_process.append(node.get_child(i))
+
+func apply_changes():
+	_logger.debug("apply_changes")
+	_logger.debug(str("apply_changes: _init_done=", _init_done))
+	#if _init_done:
+	#	deinit()
+	#	if _info_panel != null:
+	#		_info_panel.queue_free()
+	#		_info_panel = null
+
+
+func force_app_to_quit() -> void:
+	get_tree().set_input_as_handled()
+	#exit_world()
+	get_tree().quit()
 
 # debug
 #enum Tile {TILE_AIR = 0, TILE_BLOCK, TILE_ICE}

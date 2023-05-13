@@ -15,7 +15,7 @@ const appstatus_quit_in_progress = 5
 var world_main_node : Spatial
 
 func _ready():
-	get_tree().set_auto_accept_quit(false)
+	#get_tree().set_auto_accept_quit(false)
 	appstatus = appstatus_running
 	assert(connect("tree_exiting", self, "exit_funct",[]) == 0)
 	world_main_node = get_tree().get_root().find_node("TheWorld_Main", true, false)
