@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=2]
+[gd_scene load_steps=27 format=2]
 
 [ext_resource path="res://utils/DebugStats.gd" type="Script" id=1]
 [ext_resource path="res://main/TheWorld_Main.gd" type="Script" id=2]
@@ -19,15 +19,6 @@
 [ext_resource path="res://assets/textures/grass/grass_billboard.png" type="Texture" id=17]
 [ext_resource path="res://addons/twviewer/tw_viewer.gd" type="Script" id=18]
 [ext_resource path="res://addons/twviewer/native/GDN_TheWorld_Viewer_d.gdnlib" type="GDNativeLibrary" id=19]
-[ext_resource path="res://addons/twviewer/native/GDN_TheWorld_Viewer_d.gdns" type="Script" id=20]
-
-[sub_resource type="NativeScript" id=15]
-class_name = "GDN_TheWorld_Globals"
-library = ExtResource( 19 )
-
-[sub_resource type="NativeScript" id=16]
-class_name = "GDN_TheWorld_Viewer"
-library = ExtResource( 19 )
 
 [sub_resource type="NativeScript" id=17]
 class_name = "GDN_TheWorld_Camera"
@@ -64,19 +55,9 @@ textures = [ [ ExtResource( 14 ), ExtResource( 8 ), ExtResource( 9 ), ExtResourc
 script = ExtResource( 2 )
 
 [node name="TWViewer" type="Spatial" parent="TheWorld_Main"]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20.5477, 93.3237, 176.975 )
 script = ExtResource( 18 )
 _depth_quad = 1
 _info_panel_visible = true
-
-[node name="GDN_TW_Main" type="Node" parent="TheWorld_Main/TWViewer"]
-script = ExtResource( 20 )
-
-[node name="GDN_TW_Globals" type="Node" parent="TheWorld_Main/TWViewer"]
-script = SubResource( 15 )
-
-[node name="GDN_TW_Viewer" type="Spatial" parent="TheWorld_Main/TWViewer"]
-script = SubResource( 16 )
 
 [node name="GDN_TW_Camera" type="Camera" parent="TheWorld_Main/TWViewer"]
 transform = Transform( -0.707107, 0.408248, -0.57735, 0, 0.816497, 0.57735, 0.707107, 0.408248, -0.57735, 0, 505.625, 0 )

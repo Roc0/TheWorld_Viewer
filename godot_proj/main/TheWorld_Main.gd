@@ -184,6 +184,7 @@ func _input(event):
 
 func _notification(_what):
 	if (_what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST):
+		log_debug("Quit request")
 		Globals.appstatus = Globals.appstatus_deinit_required
 	#elif (_what == Spatial.NOTIFICATION_TRANSFORM_CHANGED):
 		#var viewer : Spatial = TWViewer().GDN_viewer()
@@ -192,9 +193,11 @@ func _notification(_what):
 		log_debug("Notification Spatial.NOTIFICATION_ENTER_WORLD")
 		
 func _enter_tree():
+	_logger.debug("_enter_tree")
 	log_debug("_enter_tree")
 	
 func _exit_tree():
+	_logger.debug("_exit_tree")
 	log_debug("_exit_tree")
 	exit_world()
 	deinit()
@@ -202,15 +205,16 @@ func _exit_tree():
 func _process(_delta):
 	if Globals.appstatus == Globals.appstatus_deinit_required:
 		Globals.appstatus = Globals.appstatus_deinit_in_progress
-		log_debug("Pre deinit...")
-		TWViewer().pre_deinit()
-		log_debug("Pre deinit completed...")
+	#	log_debug("Pre deinit...")
+	#	TWViewer().pre_deinit()
+	#	log_debug("Pre deinit completed...")
 		Globals.appstatus = Globals.appstatus_quit_required
 		return
 		
 	if Globals.appstatus == Globals.appstatus_quit_required:
-		if TWViewer().can_deinit():
-			Globals.appstatus = Globals.appstatus_quit_in_progress
+	#	if TWViewer().can_deinit():
+	#		TWViewer().deinit()
+	#		Globals.appstatus = Globals.appstatus_quit_in_progress
 			force_app_to_quit()
 			return
 
