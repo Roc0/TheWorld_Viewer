@@ -171,6 +171,7 @@ func forward_spatial_gui_input(p_camera: Camera, p_event: InputEvent) -> bool:
 
 func apply_changes():
 	_logger.debug("apply_changes")
+	_viewer_init_done = false
 	if _viewer != null:
 		_viewer.apply_changes()
 	
