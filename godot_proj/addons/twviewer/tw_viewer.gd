@@ -139,8 +139,8 @@ func _set_info_panel_visible(info_panel_visible : bool):
 
 func _init():
 	_logger.debug("_init")
-	_logger.debug(str("_init_done=", _init_done))
 	name = tw_constants.tw_viewer_node_name
+	restore_init()
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -816,6 +816,9 @@ func force_app_to_quit() -> void:
 	#exit_world()
 	get_tree().quit()
 
+func restore_init():
+	_logger.debug(str("_init_done=", _init_done))
+	
 # debug
 #enum Tile {TILE_AIR = 0, TILE_BLOCK, TILE_ICE}
 #export(Tile) var tile_type : int = 0 setget set_tile_type
