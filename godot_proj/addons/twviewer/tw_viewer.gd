@@ -140,7 +140,6 @@ func _set_info_panel_visible(info_panel_visible : bool):
 func _init():
 	_logger.debug("_init")
 	name = tw_constants.tw_viewer_node_name
-	restore_init()
 	
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -154,11 +153,14 @@ func _ready():
 		_depth_quad = 1
 		_cache_quad = 1
 	
-	var GDNMain : Node = GDN_main()
-	if GDNMain == null:
-		GDNMain = _gdn_main.new()
-		GDNMain.name = tw_constants.tw_gdn_main_node_name
-		add_child(GDNMain)
+	# first time after adding this node to the scene we check if gdn_main exist
+	# and if it does not exist it is added as child (at this point it is choosen the debug/release version)
+	# if it exists we use that
+	var gdn_main : Node = GDN_main()
+	if gdn_main == null:
+		gdn_main = _gdn_main.new()
+		gdn_main.name = tw_constants.tw_gdn_main_node_name
+		add_child(gdn_main)
 
 	init()
 	var e := get_tree().get_root().connect("size_changed", self, "resizing")
@@ -195,18 +197,6 @@ func _enter_tree():
 func _exit_tree():
 	if _init_done:
 		log_debug("_exit_tree")
-	
-	#_is_ready = false	
-	#if _init_done:
-	#	deinit()
-	
-	#if _test != null:
-	#	_test.queue_free()
-	#	_test = null
-	
-	#if _info_panel != null:
-	#	_info_panel.queue_free()
-	#	_info_panel = null
 	
 	_tree_entered = false
 
@@ -253,8 +243,15 @@ func _process(delta):
 			force_app_to_quit()
 		return
 	
-	_client_status = get_clientstatus()
 	var viewer = GDN_viewer()
+	var gdn_main = GDN_main()
+	
+	if gdn_main != null && gdn_main.has_method("initialized"):
+		if !_init_done && gdn_main.initialized():
+			restore_init()
+	
+	_client_status = get_clientstatus()
+	
 	#if viewer != null:
 	#	if viewer.has_method("get_camera"):
 	#		print ("has method")
@@ -504,7 +501,6 @@ func find_node_by_name(node_name : String) -> Node:
 func GDN_main():
 	if _gdn_main_instance == null:
 		_gdn_main_instance = find_node_by_name(tw_constants.tw_gdn_main_node_name)
-		#_gdn_main_instance = _gdn_main.new()
 	return _gdn_main_instance
 
 func GDN_globals():
@@ -660,8 +656,8 @@ func create_info_panel():
 	_info_panel = PanelContainer.new()
 	#_info_panel = Control.new()
 	#_info_panel = Panel.new()
-	log_debug(str("_info_panel:", _info_panel))
 	_info_panel.name = "InfoPanel"
+	log_debug(str("_info_panel:", _info_panel, " ", _info_panel.name))
 	add_child(_info_panel)
 	_info_panel_visibility_changed = true
 	_info_panel.self_modulate = Color(1, 1, 1, 0.5)
@@ -698,6 +694,17 @@ func create_info_panel():
 	
 	#apply_dpi_scale(_info_panel, 0.5)
 	
+func remove_info_panel():
+	if _info_panel != null:
+		_logger.debug("Removing InfoPanel ...")
+		_info_panel.name = "_InfoPanel"
+		var parent = _info_panel.get_parent()
+		if parent != null:
+			parent.remove_child(_info_panel)
+		_info_panel.queue_free()
+		_info_panel = null
+
+
 func get_info_panel() -> Control:
 	return _info_panel
 
@@ -803,13 +810,11 @@ static func apply_dpi_scale(root: Control, dpi_scale: float):
 
 func apply_changes():
 	_logger.debug("apply_changes")
-	_logger.debug(str("apply_changes: _init_done=", _init_done))
-	#if _init_done:
-	#	deinit()
-	#	if _info_panel != null:
-	#		_info_panel.queue_free()
-	#		_info_panel = null
+	_logger.debug(str("apply_changes: _init_done=", _init_done, " _info_panel=", _info_panel))
 
+	#print_variables_to_restore()	
+	
+	remove_info_panel()
 
 func force_app_to_quit() -> void:
 	get_tree().set_input_as_handled()
@@ -817,7 +822,50 @@ func force_app_to_quit() -> void:
 	get_tree().quit()
 
 func restore_init():
-	_logger.debug(str("_init_done=", _init_done))
+	_logger.debug("restore_init")
+	
+	var gdn_main = GDN_main()
+	if gdn_main == null || !gdn_main.has_method("initialized"):
+		return
+	
+	_init_done = gdn_main.initialized()
+	var gdn_globals = GDN_globals()
+	var gdn_viewer = GDN_viewer()
+	_exit_status = EXIT_STATUS_RUNNING
+	_tree_entered = true
+	_is_ready = true
+	var info_panel = find_node_by_name("InfoPanel")
+	if info_panel != null:
+		_logger.debug(str("InfoPanel found, removing it ..."))
+		info_panel.name = "_InfoPanel"
+		var parent = info_panel.get_parent()
+		if parent != null:
+			parent.remove_child(info_panel)
+		info_panel.queue_free()
+	create_info_panel()
+	
+	#print_variables_to_restore()
+	
+func print_variables_to_restore():
+	print(str("_gdn_main=", _gdn_main))
+	print(str("_gdn_main_instance=", _gdn_main_instance))
+	print(str("_gdn_globals=", _gdn_globals))
+	print(str("_gdn_viewer=", _gdn_viewer))
+	print(str("_init_done=", _init_done))
+	print(str("_editor_interface=", _editor_interface))
+	print(str("_editor_camera=", _editor_camera))
+	print(str("_editor_3d_overlay=", _editor_3d_overlay))
+	print(str("_exit_status=", _exit_status))
+	#print(str("_logger=", _logger))
+	print(str("_tree_entered=", _tree_entered))
+	print(str("_is_ready=", _is_ready))
+	print(str("_info_panel=", _info_panel))
+	print(str("_info_panel_main_vboxcontainer=", _info_panel_main_vboxcontainer))
+	print(str("_info_panel_general_label=", _info_panel_general_label))
+	print(str("_info_panel_camera_label=", _info_panel_camera_label))
+	print(str("_info_panel_quadrants_label=", _info_panel_quadrants_label))
+	print(str("_info_panel_chunks_label=", _info_panel_chunks_label))
+	print(str("_info_panel_mouse_tracking_label=", _info_panel_mouse_tracking_label))
 	
 # debug
 #enum Tile {TILE_AIR = 0, TILE_BLOCK, TILE_ICE}
