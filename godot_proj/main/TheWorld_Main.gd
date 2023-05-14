@@ -197,7 +197,6 @@ func _enter_tree():
 	log_debug("_enter_tree")
 	
 func _exit_tree():
-	_logger.debug("_exit_tree")
 	log_debug("_exit_tree")
 	exit_world()
 	deinit()
