@@ -167,6 +167,18 @@ func forward_spatial_gui_input(p_camera: Camera, p_event: InputEvent) -> bool:
 			if _viewer != null && _viewer.has_method("toggle_quadrant_selected"):
 				_viewer.toggle_quadrant_selected()
 
+		if p_event.is_pressed() && p_event.scancode == KEY_F1 && _shift_pressed:
+			if _viewer != null && _viewer.has_method("toggle_debug_visibility"):
+				_viewer.toggle_debug_visibility()
+
+		if p_event.is_pressed() && p_event.scancode == KEY_F2 && _shift_pressed:
+			if _viewer != null && _viewer.has_method("rotate_chunk_debug_mode"):
+				_viewer.rotate_chunk_debug_mode()
+
+		if p_event.is_pressed() && p_event.scancode == KEY_F3 && _shift_pressed:
+			if _viewer != null && _viewer.has_method("rotate_drawing_mode"):
+				_viewer.rotate_drawing_mode
+
 	return captured_event
 
 func apply_changes():
