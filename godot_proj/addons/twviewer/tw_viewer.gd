@@ -80,6 +80,8 @@ var _info_panel_chunk_hit_pos := ""
 var _info_panel_chunk_hit_size := ""
 var _info_panel_chunk_hit_dist_from_camera := ""
 var _info_panel_track_mouse_state := ""
+var _info_panel_info_camera := ""
+var _info_panel_camera_projection := ""
 
 #var _test : Label = null
 #var _test_added_to_editor_overlay : bool = false
@@ -359,6 +361,16 @@ func _process(delta):
 			_info_panel_track_mouse_state = "on"
 		else:
 			_info_panel_track_mouse_state = "off"
+		var projection : int = viewer.get_camera_projection_mode()
+		if projection == 0:
+			_info_panel_camera_projection = "Perspective"
+		elif projection == 1:
+			_info_panel_camera_projection = "Orthogonal"
+		elif projection == 2:
+			_info_panel_camera_projection = "Frustum"
+		else:
+			_info_panel_camera_projection = "Unknown"
+		#_info_panel_info_camera = "  info: " + viewer.get_info_camera() + "\n"
 			
 		_info_panel_general_label.text = "FPS: " + str(Engine.get_frames_per_second()) + "\n" \
 			+ _info_panel_status \
@@ -368,10 +380,11 @@ func _process(delta):
 			+ _info_panel_grid_origin \
 			+ "Pos in viewport: " + str(get_viewport().get_mouse_position())
 		
-		_info_panel_camera_label.text = "Camera\n" \
+		_info_panel_camera_label.text = "Camera: " + _info_panel_camera_projection + "\n" \
 		+ _info_panel_camera_degree_from_north \
 		+ _info_panel_camera_yaw \
 		+ _info_panel_camera_pitch \
+		+ _info_panel_info_camera \
 		+ _info_panel_camera_rot \
 		+ _info_panel_camera_pos
 		
