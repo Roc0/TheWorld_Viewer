@@ -71,6 +71,7 @@ var _info_panel_num_active_chunks := ""
 var _info_panel_num_chunk_splits := ""
 var _info_panel_num_chunk_joins := ""
 var _info_panel_hit_pos := ""
+var _info_panel_hit_distance_from_camera := ""
 var _info_panel_delta_pos := ""
 var _info_panel_quad_hit_name := ""
 var _info_panel_quad_hit_pos := ""
@@ -349,6 +350,7 @@ func _process(delta):
 		_info_panel_num_chunk_splits = "  Splits: " + str(viewer.get_num_splits()) + "\n"
 		_info_panel_num_chunk_joins = "  Joins: " + str(viewer.get_num_joins())
 		_info_panel_hit_pos = "  Hit pos: " + str(viewer.get_mouse_hit()) + "\n"
+		_info_panel_hit_distance_from_camera = "  Hit pos dist: " + str(viewer.get_mouse_hit_distance_from_camera()) + "\n"
 		_info_panel_delta_pos = "  Delta pos: " + str(_delta_pos) + "\n"
 		_info_panel_quad_hit_name = "  Quad name: " + viewer.get_mouse_quadrant_hit_name() + " " + viewer.get_mouse_quadrant_hit_tag() + "\n"
 		_info_panel_quad_hit_pos = "  Quad pos: " + str(viewer.get_mouse_quadrant_hit_pos()) + "\n"
@@ -401,6 +403,7 @@ func _process(delta):
 		
 		_info_panel_mouse_tracking_label.text = "Mouse tracking: " + _info_panel_track_mouse_state + "\n" \
 		+ _info_panel_hit_pos \
+		+ _info_panel_hit_distance_from_camera \
 		+ _info_panel_delta_pos \
 		+ _info_panel_quad_hit_name \
 		+ _info_panel_quad_hit_pos \
@@ -483,8 +486,8 @@ func set_editor_interface(editor_interface : EditorInterface):
 	GDN_viewer().set_editor_interface(editor_interface)
 
 func set_editor_camera(camera : Camera):
-	_editor_camera = camera
 	GDN_viewer().set_editor_camera(camera)
+	_editor_camera = camera
 	return
 
 func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> void:
@@ -661,6 +664,21 @@ func toggle_quadrant_selected():
 	if gdn_viewer != null:
 		gdn_viewer.toggle_quadrant_selected()
 
+func toggle_debug_visibility():
+	var gdn_viewer = GDN_viewer()
+	if gdn_viewer != null && gdn_viewer.has_method("toggle_debug_visibility"):
+		gdn_viewer.toggle_debug_visibility()
+
+func rotate_chunk_debug_mode():
+	var gdn_viewer = GDN_viewer()
+	if gdn_viewer != null && gdn_viewer.has_method("rotate_chunk_debug_mode"):
+		gdn_viewer.rotate_chunk_debug_mode()
+
+func rotate_drawing_mode():
+	var gdn_viewer = GDN_viewer()
+	if gdn_viewer != null && gdn_viewer.has_method("rotate_drawing_mode"):
+		gdn_viewer.rotate_drawing_mode()
+
 func create_info_panel():
 	var label : Label
 	var hseparator : HSeparator
@@ -825,7 +843,7 @@ func apply_changes():
 	_logger.debug("apply_changes")
 	_logger.debug(str("apply_changes: _init_done=", _init_done, " _info_panel=", _info_panel))
 
-	#print_variables_to_restore()	
+	print_variables_to_restore()	
 	
 	remove_info_panel()
 
@@ -857,7 +875,7 @@ func restore_init():
 		info_panel.queue_free()
 	create_info_panel()
 	
-	#print_variables_to_restore()
+	print_variables_to_restore()
 	
 func print_variables_to_restore():
 	print(str("_gdn_main=", _gdn_main))
