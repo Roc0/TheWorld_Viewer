@@ -9,6 +9,15 @@ var _gdn_main_instance : Node = null
 const tw_constants = preload("res://addons/twviewer/tw_const.gd")
 const HT_Logger = preload("./util/logger.gd")
 
+#exports _get_property_list
+var _ground_uv_scale : float = 1.0
+var _depth_blending : bool = false
+var _triplanar : bool = false
+var _tile_reduction : bool = false
+var _globalmap_blend_start : float = 0.0
+var _globalmap_blend_distance : float = 0.0
+var _colormap_opacity : float = 1.0
+
 var _editor_interface : EditorInterface = null
 var _editor_camera : Camera = null
 var _editor_3d_overlay : Control = null
@@ -140,6 +149,110 @@ func _set_info_panel_visible(info_panel_visible : bool):
 #func _get_info_panel_visible() -> bool:
 #	return _info_panel_visible
 
+func _get_property_list():
+	var props = [
+		{
+			"name": "Shader Params",
+			"type": TYPE_NIL,
+			"usage": PROPERTY_USAGE_GROUP
+		},
+		{
+			"name": "ground_uv_scale",
+			"type": TYPE_REAL,
+			"usage": PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_STORAGE,
+			"hint": PROPERTY_HINT_RANGE,
+			"hint_string": "1.0,200.0,,or_greater,or_lesser"
+		},
+		{
+			"name": "depth_blending",
+			"type": TYPE_BOOL,
+			"usage": PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_STORAGE
+		},
+		{
+			"name": "triplanar",
+			"type": TYPE_BOOL,
+			"usage": PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_STORAGE
+		},
+		{
+			"name": "tile_reduction",
+			"type": TYPE_BOOL,
+			"usage": PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_STORAGE
+		},
+		{
+			"name": "globalmap_blend_start",
+			"type": TYPE_REAL,
+			"usage": PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_STORAGE
+		},
+		{
+			"name": "globalmap_blend_distance",
+			"type": TYPE_REAL,
+			"usage": PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_STORAGE
+		},
+		{
+			"name": "colormap_opacity",
+			"type": TYPE_REAL,
+			"usage": PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_STORAGE,
+			"hint": PROPERTY_HINT_RANGE,
+			"hint_string": "0.0,1.0,,or_greater,or_lesser"
+		}
+	]
+	
+	return props
+
+func _get(key: String):
+	if key == "ground_uv_scale":
+		#print(str("ground_uv_scale=", _ground_uv_scale))
+		return _ground_uv_scale
+	elif key == "depth_blending":
+		return _depth_blending
+	elif key == "triplanar":
+		return _triplanar
+	elif key == "tile_reduction":
+		return _tile_reduction
+	elif key == "globalmap_blend_start":
+		return _globalmap_blend_start
+	elif key == "globalmap_blend_distance":
+		return _globalmap_blend_distance
+	elif key == "colormap_opacity":
+		return _colormap_opacity
+
+func _set(key: String, value):
+	if key == "ground_uv_scale":
+		_ground_uv_scale = value
+		var gdn_viewer = GDN_viewer()
+		if (gdn_viewer != null && gdn_viewer.has_method("set_shader_param")):
+			gdn_viewer.set_shader_param("ground_uv_scale", _ground_uv_scale)
+	elif key == "depth_blending":
+		_depth_blending = value
+		var gdn_viewer = GDN_viewer()
+		if (gdn_viewer != null && gdn_viewer.has_method("set_shader_param")):
+			gdn_viewer.set_shader_param("depth_blending", _depth_blending)
+	elif key == "triplanar":
+		_triplanar = value
+		var gdn_viewer = GDN_viewer()
+		if (gdn_viewer != null && gdn_viewer.has_method("set_shader_param")):
+			gdn_viewer.set_shader_param("triplanar", _triplanar)
+	elif key == "tile_reduction":
+		_tile_reduction = value
+		var gdn_viewer = GDN_viewer()
+		if (gdn_viewer != null && gdn_viewer.has_method("set_shader_param")):
+			gdn_viewer.set_shader_param("tile_reduction", _tile_reduction)
+	elif key == "globalmap_blend_start":
+		_globalmap_blend_start = value
+		var gdn_viewer = GDN_viewer()
+		if (gdn_viewer != null && gdn_viewer.has_method("set_shader_param")):
+			gdn_viewer.set_shader_param("globalmap_blend_start", _globalmap_blend_start)
+	elif key == "globalmap_blend_distance":
+		_globalmap_blend_distance = value
+		var gdn_viewer = GDN_viewer()
+		if (gdn_viewer != null && gdn_viewer.has_method("set_shader_param")):
+			gdn_viewer.set_shader_param("globalmap_blend_distance", _globalmap_blend_distance)
+	elif key == "colormap_opacity":
+		_colormap_opacity = value
+		var gdn_viewer = GDN_viewer()
+		if (gdn_viewer != null && gdn_viewer.has_method("set_shader_param")):
+			gdn_viewer.set_shader_param("colormap_opacity", _colormap_opacity)
+
 func _init():
 	_logger.debug("_init")
 	name = tw_constants.tw_viewer_node_name
@@ -165,17 +278,10 @@ func _ready():
 		gdn_main.name = tw_constants.tw_gdn_main_node_name
 		add_child(gdn_main)
 
-	init()
+	init_gdn_viewer()
 	var e := get_tree().get_root().connect("size_changed", self, "resizing")
 	log_debug(str("connect size_changed result=", e))
 	set_notify_transform(true)
-	var viewer = GDN_viewer()
-	if viewer == null:
-		log_debug("GDN_viewer null")
-	else:
-		viewer.global_transform = global_transform
-		viewer.visible = is_visible_in_tree()
-		log_debug("global_transform changed")
 	
 	create_info_panel()
 	
@@ -446,18 +552,45 @@ func resizing():
 	log_debug(str("Resizing: ", get_viewport().size))
 	set_size_info_panel()
 
-func init() -> bool:
+func init_gdn_viewer() -> bool:
 	log_debug("init")
+
 	if _init_done:
 		return false
 	else:
 		GDN_main().init(self)
 		set_debug_mode(_debug_mode)
+
 		GDN_globals().connect_to_server()
 		log_debug(str("server connected"))
+
 		var result = GDN_globals().connect("tw_status_changed", self, "_on_tw_status_changed") == 0
 		log_debug(str("signal tw_status_changed connected (result=", result, ")"))
+
 		printTerrainDimensions()
+
+		var gdn_viewer = GDN_viewer()
+		if gdn_viewer == null:
+			log_debug("GDN_viewer null")
+		else:
+			gdn_viewer.global_transform = global_transform
+			gdn_viewer.visible = is_visible_in_tree()
+			log_debug("global_transform changed")
+			gdn_viewer.set_shader_param("ground_uv_scale", _ground_uv_scale)
+			log_debug(str("set_shader_param ground_uv_scale=", _ground_uv_scale))
+			gdn_viewer.set_shader_param("depth_blending", _depth_blending)
+			log_debug(str("set_shader_param depth_blending=", _depth_blending))
+			gdn_viewer.set_shader_param("triplanar", _triplanar)
+			log_debug(str("set_shader_param triplanar=", _triplanar))
+			gdn_viewer.set_shader_param("tile_reduction", _tile_reduction)
+			log_debug(str("set_shader_param tile_reduction=", _tile_reduction))
+			gdn_viewer.set_shader_param("globalmap_blend_start", _globalmap_blend_start)
+			log_debug(str("set_shader_param globalmap_blend_start=", _globalmap_blend_start))
+			gdn_viewer.set_shader_param("globalmap_blend_distance", _globalmap_blend_distance)
+			log_debug(str("set_shader_param globalmap_blend_distance=", _globalmap_blend_distance))
+			gdn_viewer.set_shader_param("colormap_opacity", _colormap_opacity)
+			log_debug(str("set_shader_param colormap_opacity=", _colormap_opacity))
+			
 		_init_done = true
 		return true
 

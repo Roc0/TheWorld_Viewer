@@ -13,7 +13,7 @@ uniform mat4 u_terrain_inverse_transform;
 uniform mat3 u_terrain_normal_basis;
 uniform float u_grid_step_in_wu = 2.0;
 uniform float u_editmode_selected = 0.0;
-uniform float u_terrain_height = 1.0;
+uniform float u_terrain_height = 1.0;	// NOTSET
 
 // the reason bump is preferred with albedo is, roughness looks better with normal maps.
 // If we want no normal mapping, roughness would only give flat mirror surfaces,
@@ -32,12 +32,12 @@ uniform sampler2D u_ground_normal_roughness_3;
 // in other shaders, and its type cannot be inferred by the plugin.
 // See https://github.com/godotengine/godot/issues/24488
 uniform vec4 u_ground_uv_scale_per_texture = vec4(5.0, 5.0, 5.0, 5.0);
-uniform bool u_depth_blending = true;
-uniform bool u_triplanar = false;
-uniform vec4 u_tile_reduction = vec4(0.0, 0.0, 0.0, 0.0);	// Each component corresponds to a ground texture. Set greater than zero to enable.
-uniform float u_globalmap_blend_start = 0;
-uniform float u_globalmap_blend_distance = 0;
-uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);
+uniform bool u_depth_blending = true;	// NOTSET
+uniform bool u_triplanar = false;		// NOTSET
+uniform vec4 u_tile_reduction_per_texture = vec4(0.0, 0.0, 0.0, 0.0);	// NOTSET	// Each component corresponds to a ground texture. Set greater than zero to enable.
+uniform float u_globalmap_blend_start = 0;	// NOTSET
+uniform float u_globalmap_blend_distance = 0;	// NOTSET
+uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);	// NOTSET
 
 varying float v_hole;
 varying vec3 v_tint0;
@@ -160,24 +160,24 @@ vec3 get_normal(vec2 uv){
 }
 
 void vertex() {
-	vec4 wpos = WORLD_MATRIX * vec4(VERTEX, 1);		// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need to trasform in world coord
-	vec2 cell_coords = (u_terrain_inverse_transform * wpos).xz;		// to calculate cell coords in the heigthmap/normalmap we need to trasfom global coords of the vertex (wpos) in local coords to che quadrant: we do this by using affine inverse matrix of the global trasfomr od the quadtree
-	//vec2 cell_coords_tex = cell_coords;
-	cell_coords /= vec2(u_grid_step_in_wu);		// WARNING: we also need to consider the step (dividing by it) to get correct value from the textures: in the textures heigths/normlas are adjacent in global/local coords are separated by the step
-	cell_coords += vec2(0.5);		// Must add a half-offset so that we sample the center of pixels, otherwise bilinear filtering of the textures will give us mixed results (#183)
-	//cell_coords_tex += vec2(0.5);
-	UV = cell_coords / vec2(textureSize(u_terrain_heightmap, 0));	// Normalized UV to be in the range 0/1
+	vec4 vertex_world_pos = WORLD_MATRIX * vec4(VERTEX, 1);		// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need to trasform in world coord
+	vec2 quadrant_coords = (u_terrain_inverse_transform * vertex_world_pos).xz;		// to calculate cell coords in the heigthmap/normalmap we need to trasfom global coords of the vertex (vertex_world_pos) in local coords to che quadrant: we do this by using affine inverse matrix of the global trasform of the quadtree
+	//vec2 quadrant_coords_tex = quadrant_coords;
+	quadrant_coords /= vec2(u_grid_step_in_wu);		// WARNING: we also need to consider the step (dividing by it) to get correct value from the textures: in the textures heigths/normlas are adjacent in global/local coords are separated by the step
+	quadrant_coords += vec2(0.5);		// Must add a half-offset so that we sample the center of pixels, otherwise bilinear filtering of the textures will give us mixed results (#183)
+	//quadrant_coords_tex += vec2(0.5);
+	UV = quadrant_coords / vec2(textureSize(u_terrain_heightmap, 0));	// Normalized UV to be in the range 0/1
 
 	//float h = texture(u_terrain_heightmap, uv).r * u_terrain_height;
 	float h = get_height(UV);		// Height displacement from heigthmap
 	VERTEX.y = h;
-	wpos.y = h;
+	vertex_world_pos.y = h;
 
 	//u_ground_uv_scale_per_texture.x = textureSize(u_terrain_heightmap, 0) / textureSize(u_ground_albedo_bump_0, 0)
 	//u_ground_uv_scale_per_texture.y = textureSize(u_terrain_heightmap, 0) / textureSize(u_ground_albedo_bump_1, 0)
 	//u_ground_uv_scale_per_texture.z = textureSize(u_terrain_heightmap, 0) / textureSize(u_ground_albedo_bump_2, 0)
 	//u_ground_uv_scale_per_texture.w = textureSize(u_terrain_heightmap, 0) / textureSize(u_ground_albedo_bump_3, 0)
-	vec3 base_ground_uv = vec3(cell_coords.x, h * WORLD_MATRIX[1][1], cell_coords.y);
+	vec3 base_ground_uv = vec3(quadrant_coords.x, h * WORLD_MATRIX[1][1], quadrant_coords.y);
 	v_ground_uv0 = base_ground_uv.xz / u_ground_uv_scale_per_texture.x;		// 2-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor
 	v_ground_uv1 = base_ground_uv.xz / u_ground_uv_scale_per_texture.y;		// these coordinates are used to fetch u_ground_albedo_bump_0 and u_ground_normal_roughness_0 
 	v_ground_uv2 = base_ground_uv.xz / u_ground_uv_scale_per_texture.z;
@@ -199,7 +199,7 @@ void vertex() {
 	//NORMAL = u_terrain_normal_basis * unpack_normal(texture(u_terrain_normalmap, uv));
 	NORMAL = get_normal(UV);
 	
-	v_distance_to_camera = distance(wpos.xyz, CAMERA_MATRIX[3].xyz);
+	v_distance_to_camera = distance(vertex_world_pos.xyz, CAMERA_MATRIX[3].xyz);
 }
 
 void fragment() {
@@ -245,7 +245,7 @@ void fragment() {
 				nr3 = texture_triplanar(u_ground_normal_roughness_3, v_ground_uv3, blending);
 
 			} else {
-				if (u_tile_reduction[3] > 0.0) {
+				if (u_tile_reduction_per_texture[3] > 0.0) {
 					ab3 = texture_antitile(u_ground_albedo_bump_3, u_ground_normal_roughness_3, v_ground_uv3.xz, nr3);
 				} else {
 					ab3 = texture(u_ground_albedo_bump_3, v_ground_uv3.xz);
@@ -253,19 +253,19 @@ void fragment() {
 				}
 			}
 
-			if (u_tile_reduction[0] > 0.0) {
+			if (u_tile_reduction_per_texture[0] > 0.0) {
 				ab0 = texture_antitile(u_ground_albedo_bump_0, u_ground_normal_roughness_0, v_ground_uv0, nr0);
 			} else {
 				ab0 = texture(u_ground_albedo_bump_0, v_ground_uv0);
 				nr0 = texture(u_ground_normal_roughness_0, v_ground_uv0);
 			}
-			if (u_tile_reduction[1] > 0.0) {
+			if (u_tile_reduction_per_texture[1] > 0.0) {
 				ab1 = texture_antitile(u_ground_albedo_bump_1, u_ground_normal_roughness_1, v_ground_uv1, nr1);
 			} else {
 				ab1 = texture(u_ground_albedo_bump_1, v_ground_uv1);
 				nr1 = texture(u_ground_normal_roughness_1, v_ground_uv1);
 			}
-			if (u_tile_reduction[2] > 0.0) {
+			if (u_tile_reduction_per_texture[2] > 0.0) {
 				ab2 = texture_antitile(u_ground_albedo_bump_2, u_ground_normal_roughness_2, v_ground_uv2, nr2);
 			} else {
 				ab2 = texture(u_ground_albedo_bump_2, v_ground_uv2);
@@ -336,6 +336,8 @@ void fragment() {
 	//	else {
 	//		ALBEDO = vec3(1.0, 0.0, 0.0);
 	//	}
+
+		//ALBEDO = vec3(1.0, 1.0, 1.0);		// white
 
 	}
 
