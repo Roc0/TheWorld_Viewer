@@ -332,7 +332,6 @@ script = ExtResource( 2 )
 [node name="TWViewer" type="Spatial" parent="TheWorld_Main"]
 script = ExtResource( 18 )
 _depth_quad = 1
-_info_panel_visible = true
 
 [node name="GDN_TW_Camera" type="Camera" parent="TheWorld_Main/TWViewer"]
 transform = Transform( -0.707107, 0.408248, -0.57735, 0, 0.816497, 0.57735, 0.707107, 0.408248, -0.57735, 0, 505.625, 0 )
@@ -397,7 +396,6 @@ script = ExtResource( 3 )
 environment = SubResource( 13 )
 
 [node name="HTerrain" type="Spatial" parent="TheWorld_Main"]
-visible = false
 script = ExtResource( 5 )
 ambient_wind = 0.235
 lod_scale = 2.0

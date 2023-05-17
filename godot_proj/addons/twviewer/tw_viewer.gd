@@ -486,9 +486,10 @@ func set_editor_interface(editor_interface : EditorInterface):
 	GDN_viewer().set_editor_interface(editor_interface)
 
 func set_editor_camera(camera : Camera):
-	GDN_viewer().set_editor_camera(camera)
+	var gdn_viewer = GDN_viewer()
+	if (gdn_viewer != null && gdn_viewer.has_method("set_editor_camera")):
+		gdn_viewer.set_editor_camera(camera)
 	_editor_camera = camera
-	return
 
 func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> void:
 	#var status : String = tw_constants.status_to_string(new_client_status)
