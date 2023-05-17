@@ -47,7 +47,6 @@ radius = 5.0
 [sub_resource type="Environment" id=13]
 background_mode = 2
 background_sky = SubResource( 12 )
-fog_enabled = true
 fog_color = Color( 0.431373, 0.639216, 0.639216, 1 )
 fog_sun_color = Color( 0.937255, 0.207843, 0.619608, 1 )
 fog_sun_amount = 0.18
@@ -73,6 +72,7 @@ script = ExtResource( 2 )
 [node name="TWViewer" type="Spatial" parent="TheWorld_Main"]
 script = ExtResource( 18 )
 _depth_quad = 1
+_info_panel_visible = true
 ground_uv_scale = 200.0
 depth_blending = true
 triplanar = true
