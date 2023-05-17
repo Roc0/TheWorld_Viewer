@@ -57,6 +57,8 @@ func _process(delta: float):
 		#_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done))
 		_viewer = find_node_by_name(tw_constants.tw_viewer_node_name)
 		if _viewer != null && _viewer.has_method("is_ready") && _viewer.is_ready():
+			_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done, " initializing ..."))
+			
 			var editor_interface := get_editor_interface()
 			_logger.debug (str("EditorInterface ", editor_interface))
 			_viewer.set_editor_interface(editor_interface)

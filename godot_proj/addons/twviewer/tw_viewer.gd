@@ -846,6 +846,9 @@ func apply_changes():
 	print_variables_to_restore()	
 	
 	remove_info_panel()
+	_init_done = false	# force restore_init to be executed
+	_info_panel_added_to_editor_overlay = false	# force _info_panel to be added to overlay
+	_info_panel_visibility_changed = true # force to adjust _info_panel visibility
 
 func force_app_to_quit() -> void:
 	get_tree().set_input_as_handled()
@@ -878,25 +881,26 @@ func restore_init():
 	print_variables_to_restore()
 	
 func print_variables_to_restore():
-	print(str("_gdn_main=", _gdn_main))
-	print(str("_gdn_main_instance=", _gdn_main_instance))
-	print(str("_gdn_globals=", _gdn_globals))
-	print(str("_gdn_viewer=", _gdn_viewer))
-	print(str("_init_done=", _init_done))
-	print(str("_editor_interface=", _editor_interface))
-	print(str("_editor_camera=", _editor_camera))
-	print(str("_editor_3d_overlay=", _editor_3d_overlay))
-	print(str("_exit_status=", _exit_status))
+	return
 	#print(str("_logger=", _logger))
-	print(str("_tree_entered=", _tree_entered))
-	print(str("_is_ready=", _is_ready))
-	print(str("_info_panel=", _info_panel))
-	print(str("_info_panel_main_vboxcontainer=", _info_panel_main_vboxcontainer))
-	print(str("_info_panel_general_label=", _info_panel_general_label))
-	print(str("_info_panel_camera_label=", _info_panel_camera_label))
-	print(str("_info_panel_quadrants_label=", _info_panel_quadrants_label))
-	print(str("_info_panel_chunks_label=", _info_panel_chunks_label))
-	print(str("_info_panel_mouse_tracking_label=", _info_panel_mouse_tracking_label))
+	_logger.debug(str("_gdn_main=", _gdn_main))
+	_logger.debug(str("_gdn_main_instance=", _gdn_main_instance))
+	_logger.debug(str("_gdn_globals=", _gdn_globals))
+	_logger.debug(str("_gdn_viewer=", _gdn_viewer))
+	_logger.debug(str("_init_done=", _init_done))
+	_logger.debug(str("_editor_interface=", _editor_interface))
+	_logger.debug(str("_editor_camera=", _editor_camera))
+	_logger.debug(str("_editor_3d_overlay=", _editor_3d_overlay))
+	_logger.debug(str("_exit_status=", _exit_status))
+	_logger.debug(str("_tree_entered=", _tree_entered))
+	_logger.debug(str("_is_ready=", _is_ready))
+	_logger.debug(str("_info_panel=", _info_panel))
+	_logger.debug(str("_info_panel_main_vboxcontainer=", _info_panel_main_vboxcontainer))
+	_logger.debug(str("_info_panel_general_label=", _info_panel_general_label))
+	_logger.debug(str("_info_panel_camera_label=", _info_panel_camera_label))
+	_logger.debug(str("_info_panel_quadrants_label=", _info_panel_quadrants_label))
+	_logger.debug(str("_info_panel_chunks_label=", _info_panel_chunks_label))
+	_logger.debug(str("_info_panel_mouse_tracking_label=", _info_panel_mouse_tracking_label))
 	
 # debug
 #enum Tile {TILE_AIR = 0, TILE_BLOCK, TILE_ICE}
