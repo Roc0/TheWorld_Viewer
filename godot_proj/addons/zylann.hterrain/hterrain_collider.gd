@@ -84,6 +84,8 @@ func create_from_terrain_data(terrain_data):
 		"max_height": aabb.end.y
 	}
 
+	_logger.debug(str("resolution=", terrain_data.get_resolution()))
+
 	PhysicsServer.shape_set_data(_shape_rid, shape_data)
 
 	_update_transform(aabb)
