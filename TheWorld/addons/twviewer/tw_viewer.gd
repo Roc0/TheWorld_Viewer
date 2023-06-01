@@ -1,10 +1,9 @@
 @tool
-
 extends Node3D
 
 var _gdn_main_instance : Node = null
 
-const tw_constants = preload("res://addons/twviewer/tw_const.gd")
+const tw_constants = preload("./tw_const.gd")
 const HT_Logger = preload("./util/logger.gd")
 
 #exports _get_property_list
@@ -271,6 +270,8 @@ func _ready():
 		_depth_quad = 1
 		_cache_quad = 1
 	
+	# everything done here has to be undone in _exit_tree
+	
 	# first time after adding this node to the scene we check if gdn_main exist
 	# and if it does not exist it is added as child (at this point it is choosen the debug/release version)
 	# if it exists we use that
@@ -308,6 +309,25 @@ func _enter_tree():
 func _exit_tree():
 	if _init_done:
 		log_debug("_exit_tree")
+		
+		deinit()
+
+		if _info_panel != null:
+			_info_panel.queue_free()
+			_info_panel = null
+
+		var gdn_main : Node = GDN_main()
+		if gdn_main != null:
+			#var parent = gdn_main.get_parent()
+			#if parent != null:
+			#	parent.remove_child(gdn_main)
+			gdn_main.queue_free()
+		
+		_gdn_main_instance = null
+		
+		_is_ready = false
+	
+	queue_free()
 	
 	_tree_entered = false
 
@@ -530,6 +550,8 @@ func _notification(_what):
 	elif (_what == Node3D.NOTIFICATION_VISIBILITY_CHANGED):
 		log_debug("_notification: visibility changed")
 		_visibility_changed = true
+	elif (_what == NOTIFICATION_PREDELETE):
+		print("_notification: NOTIFICATION_PREDELETE - Destroy tw_viewer")
 	elif (_what == NOTIFICATION_WM_CLOSE_REQUEST):
 		log_debug("Quit request")
 		if Engine.is_editor_hint():

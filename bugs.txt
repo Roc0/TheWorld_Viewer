@@ -1,0 +1,3 @@
+* se si riapre non riconosce il viewer come custom type
+* crash in uscita
+* il pannello delle info non visualizza i dati correttamente

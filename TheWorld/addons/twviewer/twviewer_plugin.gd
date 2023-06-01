@@ -4,7 +4,7 @@ extends EditorPlugin
 
 const TWViewer = preload("./tw_viewer.gd")
 const tw_editor_util = preload("./tools/util/editor_util.gd")
-const tw_constants = preload("res://addons/twviewer/tw_const.gd")
+const tw_constants = preload("./tw_const.gd")
 
 const HT_Logger = preload("./util/logger.gd")
 var _logger = HT_Logger.get_for(self)
@@ -34,8 +34,7 @@ var _edit_mode_ui_control : Control = null
 func _enter_tree():
 	_logger.debug("_enter_tree")
 	
-	add_custom_type("TWViewer", "Node3D", TWViewer, preload("icon.png"))
-	#add_custom_type("TWViewerGDNMain", "Node", GDNTheWorldMain, get_icon("heightmap_node"))
+	add_custom_type("TWViewer", "Node3D", TWViewer, preload("./Node3D.svg"))
 	
 	#set_input_event_forwarding_always_enabled()
 	
@@ -44,7 +43,6 @@ func _enter_tree():
 func _exit_tree():
 	_logger.debug("_exit_tree")
 	
-	#remove_custom_type("TWViewerGDNMain")
 	remove_custom_type("TWViewer")
 	
 	#remove_autoload_singleton(AUTOLOAD_NAME)
@@ -81,7 +79,7 @@ func _process(delta: float):
 		_viewer.GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
 		_world_initialized = true
 
-func handles(object):
+func _handles(object):
 	var b : bool = _get_custom_object(object) != null
 	#if b:
 	#	_logger.debug(str("handles ", object))
@@ -99,9 +97,9 @@ func _make_visible(visible: bool):
 	# loaded in memory, so if the user closes the scene and reopens it later, the changes will
 	# still be partially present, and this is not expected.
 	if not visible:
-		edit(null)
+		_edit(null)
 
-func edit(object):
+func _edit(object):
 	_logger.debug(str("edit ", object))
 
 	var custom_object = _get_custom_object(object)
@@ -125,12 +123,15 @@ func edit(object):
 	#	_viewer_connected = true
 	
 func _forward_3d_draw_over_viewport(overlay : Control):
-	#print("forward_spatial_draw_over_viewport")
+	#print("_forward_3d_draw_over_viewport")
+	
 	if _viewer != null:
 		_viewer.set_editor_3d_overlay(overlay)
 	
 func _forward_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:
 	var ret : int = EditorPlugin.AFTER_GUI_INPUT_PASS
+	
+	#print("_forward_3d_gui_input")
 	
 	if _viewer != null:
 		_viewer.set_editor_camera(p_camera)
@@ -182,10 +183,11 @@ func _apply_changes():
 	
 func _viewer_exited_scene():
 	_logger.debug("tw_viewer exited the scene")
+	_world_initialized = false
 	_viewer_init_done = false
 	_logger.debug(str("_viewer_exited_scene: _viewer_init_done=", _viewer_init_done))
 	_viewer = null
-	edit(null)
+	_edit(null)
 
 static func _get_custom_object(object):
 	if object != null and object is Node3D:
