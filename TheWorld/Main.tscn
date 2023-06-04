@@ -9,6 +9,7 @@
 [node name="TWViewer" type="Node3D" parent="Main"]
 script = ExtResource("1_mxuin")
 _depth_quad = 1
+_info_panel_visible = true
 _initial_viewer_pos = Vector3(0, 300, 0)
 _shader_param_ground_uv_scale = 171.57
 _shader_param_depth_blending = true
