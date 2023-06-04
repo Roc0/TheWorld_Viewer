@@ -6,15 +6,6 @@ var _gdn_main_instance : Node = null
 const tw_constants = preload("./tw_const.gd")
 const HT_Logger = preload("./util/logger.gd")
 
-#exports _get_property_list
-var _ground_uv_scale : float = 1.0
-var _depth_blending : bool = false
-var _triplanar : bool = false
-var _tile_reduction : bool = false
-var _globalmap_blend_start : float = 0.0
-var _globalmap_blend_distance : float = 0.0
-var _colormap_opacity : float = 1.0
-
 var _editor_interface : EditorInterface = null
 var _editor_camera : Camera3D = null
 var _editor_3d_overlay : Control = null
@@ -49,7 +40,6 @@ var _edit_mode_ui_control_added_to_editor_overlay : bool = false
 
 var _info_panel_external_labels = []
 
-var _info_panel_visibility_changed = false
 var _info_panel : Control = null
 var _info_panel_main_vboxcontainer : VBoxContainer = null
 
@@ -93,166 +83,99 @@ var _info_panel_camera_projection := ""
 #var _test : Label = null
 #var _test_added_to_editor_overlay : bool = false
 
-enum debug_mode {DEFAULT = 0, ENABLED=1, DISABLED=2}
-@export var _debug_mode: int = 0: get = _get_debug_mode, set = _set_debug_mode
-func _get_debug_mode() -> int:
-	return _debug_mode
+var _debug_mode_changed := false
+@export_enum("Default:0", "Enabled:1", "Disabled:2") var _debug_mode: int:
+	set = _set_debug_mode
 func _set_debug_mode(p_debug_mode : int):
 	_debug_mode = p_debug_mode
-	log_debug(str("debug mode: ", _debug_mode))
-	set_debug_mode(_debug_mode)
+	_debug_mode_changed = true
 
+var _depth_quad_changed := false
 const MAX_DEPTH_QUAD=3
-@export var _depth_quad := 3: get = _get_depth_quad, set = _set_depth_quad
+@export var _depth_quad := 3:
+	set = _set_depth_quad
 func _set_depth_quad(depth_quad : int):
 	if depth_quad >= 0 && depth_quad <= MAX_DEPTH_QUAD:
 		_depth_quad = depth_quad
-	var viewer = GDN_viewer()
-	if viewer == null:
-		print("_depth_quad setter: GDN_viewer() null")
-	else:
-		viewer.set_depth_quad(_depth_quad)
-		log_debug(str("depth quad: ", _depth_quad))
-func _get_depth_quad() -> int:
-	#var viewer = GDN_viewer()
-	#if viewer == null:
-	#	print("GDN_viewer() null")
-	#else:
-	#	_depth_quad = viewer.get_depth_quad()
-	return _depth_quad
+		_depth_quad_changed = true
 
+var _cache_quad_changed := false
 const MAX_CACHE_QUAD=2
-@export var _cache_quad : int = 1: get = _get_cache_quad, set = _set_cache_quad
+@export var _cache_quad := 1:
+	set = _set_cache_quad
 func _set_cache_quad(cache_quad : int):
 	if cache_quad >= 0 && cache_quad <= MAX_CACHE_QUAD:
 		_cache_quad = cache_quad
-	var viewer = GDN_viewer()
-	if viewer == null:
-		print("_cache_quad setter: GDN_viewer() null")
-	else:
-		viewer.set_cache_quad(_cache_quad)
-		log_debug(str("cache quad: ", _cache_quad))
-func _get_cache_quad() -> int:
-#	var viewer = GDN_viewer()
-#	if viewer == null:
-#		print("GDN_viewer() null")
-#	else:
-#		_cache_quad = viewer.get_cache_quad()
-	return _cache_quad
+		_cache_quad_changed = true
 
-#var _info_panel_visible : bool = false
-@export var _info_panel_visible : bool: set = _set_info_panel_visible
+var _info_panel_visibility_changed := false
+@export var _info_panel_visible : bool:
+	set = _set_info_panel_visible
 func _set_info_panel_visible(info_panel_visible : bool):
 	_info_panel_visible = info_panel_visible
 	_info_panel_visibility_changed = true
-#func _get_info_panel_visible() -> bool:
-#	return _info_panel_visible
 
-func _get_property_list():
-	var props = [
-		{
-			"name": "Shader Params",
-			"type": TYPE_NIL,
-			"usage": PROPERTY_USAGE_GROUP
-		},
-		{
-			"name": "ground_uv_scale",
-			"type": TYPE_FLOAT,
-			"usage": PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_STORAGE,
-			"hint": PROPERTY_HINT_RANGE,
-			"hint_string": "1.0,200.0,,or_greater,or_lesser"
-		},
-		{
-			"name": "depth_blending",
-			"type": TYPE_BOOL,
-			"usage": PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_STORAGE
-		},
-		{
-			"name": "triplanar",
-			"type": TYPE_BOOL,
-			"usage": PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_STORAGE
-		},
-		{
-			"name": "tile_reduction",
-			"type": TYPE_BOOL,
-			"usage": PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_STORAGE
-		},
-		{
-			"name": "globalmap_blend_start",
-			"type": TYPE_FLOAT,
-			"usage": PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_STORAGE
-		},
-		{
-			"name": "globalmap_blend_distance",
-			"type": TYPE_FLOAT,
-			"usage": PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_STORAGE
-		},
-		{
-			"name": "colormap_opacity",
-			"type": TYPE_FLOAT,
-			"usage": PROPERTY_USAGE_EDITOR | PROPERTY_USAGE_STORAGE,
-			"hint": PROPERTY_HINT_RANGE,
-			"hint_string": "0.0,1.0,,or_greater,or_lesser"
-		}
-	]
+var _initial_viewer_pos_changed := false
+@export var _initial_viewer_pos : Vector3:
+	get = _get_initial_viewer_pos, set = _set_initial_viewer_pos
+func _set_initial_viewer_pos(initial_viewer_pos : Vector3):
+	_initial_viewer_pos = initial_viewer_pos
+	_initial_viewer_pos_changed = true
+func _get_initial_viewer_pos():
+	return _initial_viewer_pos
 	
-	return props
+@export_group("Shader Params", "_shader_param")
 
-func _get(key : StringName) -> Variant:
-	if key == "ground_uv_scale":
-		#print(str("ground_uv_scale=", _ground_uv_scale))
-		return _ground_uv_scale
-	elif key == "depth_blending":
-		return _depth_blending
-	elif key == "triplanar":
-		return _triplanar
-	elif key == "tile_reduction":
-		return _tile_reduction
-	elif key == "globalmap_blend_start":
-		return _globalmap_blend_start
-	elif key == "globalmap_blend_distance":
-		return _globalmap_blend_distance
-	elif key == "colormap_opacity":
-		return _colormap_opacity
-	
-	return ""
+var _shader_param_ground_uv_scale_changed := false
+@export_range(1.0, 200.0, 0.01, "or_greater", "or_less") var _shader_param_ground_uv_scale : float = 1.0:
+	set = _set_shader_param_ground_uv_scale
+func _set_shader_param_ground_uv_scale(ground_uv_scale : float):
+	_shader_param_ground_uv_scale = ground_uv_scale
+	_shader_param_ground_uv_scale_changed = true
 
-func _set(key: StringName, value : Variant):
-	if key == "ground_uv_scale":
-		_ground_uv_scale = value
-		var gdn_viewer = GDN_viewer()
-		if (gdn_viewer != null && gdn_viewer.has_method("set_shader_parameter")):
-			gdn_viewer.set_shader_parameter("ground_uv_scale", _ground_uv_scale)
-	elif key == "depth_blending":
-		_depth_blending = value
-		var gdn_viewer = GDN_viewer()
-		if (gdn_viewer != null && gdn_viewer.has_method("set_shader_parameter")):
-			gdn_viewer.set_shader_parameter("depth_blending", _depth_blending)
-	elif key == "triplanar":
-		_triplanar = value
-		var gdn_viewer = GDN_viewer()
-		if (gdn_viewer != null && gdn_viewer.has_method("set_shader_parameter")):
-			gdn_viewer.set_shader_parameter("triplanar", _triplanar)
-	elif key == "tile_reduction":
-		_tile_reduction = value
-		var gdn_viewer = GDN_viewer()
-		if (gdn_viewer != null && gdn_viewer.has_method("set_shader_parameter")):
-			gdn_viewer.set_shader_parameter("tile_reduction", _tile_reduction)
-	elif key == "globalmap_blend_start":
-		_globalmap_blend_start = value
-		var gdn_viewer = GDN_viewer()
-		if (gdn_viewer != null && gdn_viewer.has_method("set_shader_parameter")):
-			gdn_viewer.set_shader_parameter("globalmap_blend_start", _globalmap_blend_start)
-	elif key == "globalmap_blend_distance":
-		_globalmap_blend_distance = value
-		var gdn_viewer = GDN_viewer()
-		if (gdn_viewer != null && gdn_viewer.has_method("set_shader_parameter")):
-			gdn_viewer.set_shader_parameter("globalmap_blend_distance", _globalmap_blend_distance)
-	elif key == "colormap_opacity":
-		_colormap_opacity = value
-		var gdn_viewer = GDN_viewer()
-		if (gdn_viewer != null && gdn_viewer.has_method("set_shader_parameter")):
-			gdn_viewer.set_shader_parameter("colormap_opacity", _colormap_opacity)
+var _shader_param_depth_blending_changed := false
+@export var _shader_param_depth_blending : bool = false:
+	set = _set_shader_param_depth_blending
+func _set_shader_param_depth_blending(depth_blending : bool):
+	_shader_param_depth_blending = depth_blending
+	_shader_param_depth_blending_changed = true
+
+var _shader_param_triplanar_changed := false
+@export var _shader_param_triplanar : bool = false:
+	set = _set_shader_param_triplanar
+func _set_shader_param_triplanar(triplanar : bool):
+	_shader_param_triplanar = triplanar
+	_shader_param_triplanar_changed = true
+
+var _shader_param_tile_reduction_changed := false
+@export var _shader_param_tile_reduction : bool = false:
+	set = _set_shader_param_tile_reduction
+func _set_shader_param_tile_reduction(tile_reduction : bool):
+	_shader_param_tile_reduction = tile_reduction
+	_shader_param_tile_reduction_changed = true
+
+var _shader_param_globalmap_blend_start_changed := false
+@export var _shader_param_globalmap_blend_start : float = 0.0:
+	set = _set_shader_param_globalmap_blend_start
+func _set_shader_param_globalmap_blend_start(globalmap_blend_start : float):
+	_shader_param_globalmap_blend_start = globalmap_blend_start
+	_shader_param_globalmap_blend_start_changed = true
+
+var _shader_param_globalmap_blend_distance_changed := false
+@export var _shader_param_globalmap_blend_distance : float = 0.0:
+	set = _set_shader_param_globalmap_blend_distance
+func _set_shader_param_globalmap_blend_distance(globalmap_blend_distance : float):
+	_shader_param_globalmap_blend_distance = globalmap_blend_distance
+	_shader_param_globalmap_blend_distance_changed = true
+
+var _shader_param_colormap_opacity_changed := false
+@export var _shader_param_colormap_opacity : float = 1.0:
+	set = _set_shader_param_colormap_opacity
+func _set_shader_param_colormap_opacity(colormap_opacity : float):
+	_shader_param_colormap_opacity = colormap_opacity
+	_shader_param_colormap_opacity_changed = true
+
+@export_group("", "")
 
 func _init():
 	_logger.debug("_init")
@@ -269,6 +192,8 @@ func _ready():
 	if Engine.is_editor_hint():
 		_depth_quad = 1
 		_cache_quad = 1
+	
+	_initial_viewer_pos = Vector3(0, 300, 0)
 	
 	# everything done here has to be undone in _exit_tree
 	
@@ -374,7 +299,7 @@ func _process(delta):
 			force_app_to_quit()
 		return
 	
-	var viewer = GDN_viewer()
+	var gdn_viewer = GDN_viewer()
 	var gdn_main = GDN_main()
 	
 	if gdn_main != null && gdn_main.has_method("initialized"):
@@ -383,21 +308,40 @@ func _process(delta):
 	
 	_client_status = get_clientstatus()
 	
-	#if viewer != null:
-	#	if viewer.has_method("get_camera"):
+	if gdn_viewer == null:
+		return
+	
+	#if gdn_viewer != null:
+	#	if gdn_viewer.has_method("get_camera"):
 	#		print ("has method")
 	#	else:
 	#		print ("does not have method")
 	
-	if _transform_changed && viewer != null:
-		viewer.global_transform = global_transform
+	if _transform_changed:
+		gdn_viewer.global_transform = global_transform
 		log_debug(str("_process: global transform changed: ", global_transform))
 		_transform_changed = false
 	
-	if _visibility_changed && viewer != null:
-		viewer.visible = is_visible_in_tree()
+	if _visibility_changed:
+		gdn_viewer.visible = is_visible_in_tree()
 		log_debug(str("_process: visibility changed: ", is_visible_in_tree()))
 		_visibility_changed = false
+
+	if _debug_mode_changed:
+		set_debug_mode(_debug_mode)
+		_debug_mode_changed = false
+		
+	if _depth_quad_changed:
+		if gdn_viewer.has_method("set_depth_quad"):
+			gdn_viewer.set_depth_quad(_depth_quad)
+			log_debug(str("depth quad: ", _depth_quad))
+		_depth_quad_changed = false
+
+	if _cache_quad_changed:
+		if gdn_viewer.has_method("set_cache_quad"):
+			gdn_viewer.set_cache_quad(_cache_quad)
+			log_debug(str("cache quad: ", _cache_quad))
+		_cache_quad_changed = false
 
 	if _info_panel_visibility_changed:
 		if _info_panel != null:
@@ -405,10 +349,42 @@ func _process(delta):
 			#print(str("_info_panel_visible=", _info_panel.visible))
 		_info_panel_visibility_changed = false
 
+	if _initial_viewer_pos_changed:
+		_initial_viewer_pos_changed = false
+
+	if gdn_viewer.has_method("set_shader_parameter"):
+		
+		if _shader_param_ground_uv_scale_changed:
+			gdn_viewer.set_shader_parameter("ground_uv_scale", _shader_param_ground_uv_scale)
+			_shader_param_ground_uv_scale_changed = false
+
+		if _shader_param_depth_blending_changed:
+			gdn_viewer.set_shader_parameter("depth_blending", _shader_param_depth_blending)
+			_shader_param_depth_blending_changed = false
+
+		if _shader_param_triplanar_changed:
+			gdn_viewer.set_shader_parameter("triplanar", _shader_param_triplanar)
+			_shader_param_triplanar_changed = false
+
+		if _shader_param_tile_reduction_changed:
+			gdn_viewer.set_shader_parameter("tile_reduction", _shader_param_tile_reduction)
+			_shader_param_tile_reduction_changed = false
+
+		if _shader_param_globalmap_blend_start_changed:
+			gdn_viewer.set_shader_parameter("globalmap_blend_start", _shader_param_globalmap_blend_start)
+			_shader_param_globalmap_blend_start_changed = false
+
+		if _shader_param_globalmap_blend_distance_changed:
+			gdn_viewer.set_shader_parameter("globalmap_blend_distance", _shader_param_globalmap_blend_distance)
+			_shader_param_globalmap_blend_distance_changed = false
+
+		if _shader_param_colormap_opacity_changed:
+			gdn_viewer.set_shader_parameter("colormap_opacity", _shader_param_colormap_opacity)
+			_shader_param_colormap_opacity_changed = false
+
 	if _edit_panel_visibility_changed:
-		if viewer != null:
-			viewer.toggle_edit_mode()
-			_edit_panel_visibility_changed = false
+		gdn_viewer.toggle_edit_mode()
+		_edit_panel_visibility_changed = false
 
 	if Engine.is_editor_hint():
 		#if _editor_3d_overlay != null && _test != null && !_test_added_to_editor_overlay:
@@ -437,28 +413,28 @@ func _process(delta):
 				log_debug(str("edit_mode_ui_control added"))
 				_edit_mode_ui_control_added_to_editor_overlay = true
 	
-	if _info_panel != null && _info_panel.visible && viewer != null && viewer.has_method("get_camera_3d"):
+	if _info_panel != null && _info_panel.visible && gdn_viewer.has_method("get_camera_3d"):
 		_info_panel_status = "Status: " + tw_constants.status_to_string(_client_status) + "\n"
 		var camera : Camera3D = null
-		camera = viewer.get_camera_3d()
-		var update_quads1_duration : int = viewer.get_update_quads1_duration()
-		var update_quads2_duration : int = viewer.get_update_quads2_duration()
-		var update_quads3_duration : int = viewer.get_update_quads3_duration()
-		_hit_pos = viewer.get_mouse_hit()
+		camera = gdn_viewer.get_camera_3d()
+		var update_quads1_duration : int = gdn_viewer.get_update_quads1_duration()
+		var update_quads2_duration : int = gdn_viewer.get_update_quads2_duration()
+		var update_quads3_duration : int = gdn_viewer.get_update_quads3_duration()
+		_hit_pos = gdn_viewer.get_mouse_hit()
 		if Time.get_ticks_msec() - _last_check_delta_pos > 500:
 			if _hit_pos != _prev_hit_pos:
 				_delta_pos = _hit_pos - _prev_hit_pos
 				_prev_hit_pos = _hit_pos
 			_last_check_delta_pos = Time.get_ticks_msec()
 		if !Engine.is_editor_hint():
-			_info_panel_draw_mode = "Draw mode: " +  viewer.get_debug_draw_mode() + "\n"
-			_info_panel_num_locks = "Locks: " +  str(viewer.get_num_process_not_owns_lock()) + "\n"
+			_info_panel_draw_mode = "Draw mode: " +  gdn_viewer.get_debug_draw_mode() + "\n"
+			_info_panel_num_locks = "Locks: " +  str(gdn_viewer.get_num_process_not_owns_lock()) + "\n"
 			if camera != null && camera.has_method("get_yaw"):
 				_info_panel_camera_degree_from_north = "  Deg. north: " + str(camera.get_angle_from_north()) + "\n"
 				_info_panel_camera_yaw = "  Yaw :" + str(camera.get_yaw(false)) + "\n"
 				_info_panel_camera_pitch = "  Pitch :" + str(camera.get_pitch(false)) + "\n"
-		_info_panel_grid_origin = "Grid origin: " + str(viewer.global_transform.origin) + "\n"
-		_info_panel_render_process_durations_mcs = "Render process (mcs): " + str(viewer.get_process_duration()) + "\n"
+		_info_panel_grid_origin = "Grid origin: " + str(gdn_viewer.global_transform.origin) + "\n"
+		_info_panel_render_process_durations_mcs = "Render process (mcs): " + str(gdn_viewer.get_process_duration()) + "\n"
 		#+ " UQ " + String (update_quads1_duration + update_quads2_duration + update_quads3_duration) \
 		#+ " (" + String(update_quads1_duration) \
 		#+ " " + String(update_quads2_duration) \
@@ -470,28 +446,28 @@ func _process(delta):
 		if camera != null:
 			_info_panel_camera_rot = "  Rot: " + str(camera.global_transform.basis.get_euler()) + "\n"
 			_info_panel_camera_pos = "  Pos: " + str(camera.global_transform.origin)
-		_info_label_num_quadrants = "  Total: " + str(viewer.get_num_initialized_quadrant(), ":", viewer.get_num_quadrant()) + "\n"
-		_info_label_num_visible_quadrants = "  Visible: " + str(viewer.get_num_initialized_visible_quadrant(), ":", viewer.get_num_visible_quadrant()) + "\n"
-		_info_label_num_empty_quadrants = "  Empty: " + str(viewer.get_num_empty_quadrant()) + "\n"
-		_info_label_num_flushed_quadrants = "  Flushed: " + str(viewer.get_num_flushed_quadrant())
-		_info_panel_num_active_chunks = "  Active: " + str(viewer.get_num_active_chunks()) + "\n"
-		_info_panel_num_chunk_splits = "  Splits: " + str(viewer.get_num_splits()) + "\n"
-		_info_panel_num_chunk_joins = "  Joins: " + str(viewer.get_num_joins())
-		_info_panel_hit_pos = "  Hit pos: " + str(viewer.get_mouse_hit()) + "\n"
-		_info_panel_hit_distance_from_camera = "  Hit pos dist: " + str(viewer.get_mouse_hit_distance_from_camera()) + "\n"
+		_info_label_num_quadrants = "  Total: " + str(gdn_viewer.get_num_initialized_quadrant(), ":", gdn_viewer.get_num_quadrant()) + "\n"
+		_info_label_num_visible_quadrants = "  Visible: " + str(gdn_viewer.get_num_initialized_visible_quadrant(), ":", gdn_viewer.get_num_visible_quadrant()) + "\n"
+		_info_label_num_empty_quadrants = "  Empty: " + str(gdn_viewer.get_num_empty_quadrant()) + "\n"
+		_info_label_num_flushed_quadrants = "  Flushed: " + str(gdn_viewer.get_num_flushed_quadrant())
+		_info_panel_num_active_chunks = "  Active: " + str(gdn_viewer.get_num_active_chunks()) + "\n"
+		_info_panel_num_chunk_splits = "  Splits: " + str(gdn_viewer.get_num_splits()) + "\n"
+		_info_panel_num_chunk_joins = "  Joins: " + str(gdn_viewer.get_num_joins())
+		_info_panel_hit_pos = "  Hit pos: " + str(gdn_viewer.get_mouse_hit()) + "\n"
+		_info_panel_hit_distance_from_camera = "  Hit pos dist: " + str(gdn_viewer.get_mouse_hit_distance_from_camera()) + "\n"
 		_info_panel_delta_pos = "  Delta pos: " + str(_delta_pos) + "\n"
-		_info_panel_quad_hit_name = "  Quad name: " + viewer.get_mouse_quadrant_hit_name() + " " + viewer.get_mouse_quadrant_hit_tag() + "\n"
-		_info_panel_quad_hit_pos = "  Quad pos: " + str(viewer.get_mouse_quadrant_hit_pos()) + "\n"
-		_info_panel_quad_hit_size = "  Quad size: " + str(viewer.get_mouse_quadrant_hit_size()) + "\n"
-		_info_panel_chunk_hit_name = "  Chunk name: " + viewer.get_mouse_chunk_hit_name() + "\n"
-		_info_panel_chunk_hit_pos = "  Chunk pos: " + str(viewer.get_mouse_chunk_hit_pos()) + "\n"
-		_info_panel_chunk_hit_size = "  Chunk size: " + str(viewer.get_mouse_chunk_hit_size()) + "\n"
-		_info_panel_chunk_hit_dist_from_camera = "  Chunk dist from camera: " + str(viewer.get_mouse_chunk_hit_dist_from_cam())
-		if viewer.get_track_mouse_state():
+		_info_panel_quad_hit_name = "  Quad name: " + gdn_viewer.get_mouse_quadrant_hit_name() + " " + gdn_viewer.get_mouse_quadrant_hit_tag() + "\n"
+		_info_panel_quad_hit_pos = "  Quad pos: " + str(gdn_viewer.get_mouse_quadrant_hit_pos()) + "\n"
+		_info_panel_quad_hit_size = "  Quad size: " + str(gdn_viewer.get_mouse_quadrant_hit_size()) + "\n"
+		_info_panel_chunk_hit_name = "  Chunk name: " + gdn_viewer.get_mouse_chunk_hit_name() + "\n"
+		_info_panel_chunk_hit_pos = "  Chunk pos: " + str(gdn_viewer.get_mouse_chunk_hit_pos()) + "\n"
+		_info_panel_chunk_hit_size = "  Chunk size: " + str(gdn_viewer.get_mouse_chunk_hit_size()) + "\n"
+		_info_panel_chunk_hit_dist_from_camera = "  Chunk dist from camera: " + str(gdn_viewer.get_mouse_chunk_hit_dist_from_cam())
+		if gdn_viewer.get_track_mouse_state():
 			_info_panel_track_mouse_state = "on"
 		else:
 			_info_panel_track_mouse_state = "off"
-		var projection : int = viewer.get_camera_projection_mode()
+		var projection : int = gdn_viewer.get_camera_projection_mode()
 		if projection == 0:
 			_info_panel_camera_projection = "Perspective"
 		elif projection == 1:
@@ -600,20 +576,20 @@ func init_gdn_viewer() -> bool:
 			gdn_viewer.global_transform = global_transform
 			gdn_viewer.visible = is_visible_in_tree()
 			log_debug("global_transform changed")
-			gdn_viewer.set_shader_parameter("ground_uv_scale", _ground_uv_scale)
-			log_debug(str("set_shader_parameter ground_uv_scale=", _ground_uv_scale))
-			gdn_viewer.set_shader_parameter("depth_blending", _depth_blending)
-			log_debug(str("set_shader_parameter depth_blending=", _depth_blending))
-			gdn_viewer.set_shader_parameter("triplanar", _triplanar)
-			log_debug(str("set_shader_parameter triplanar=", _triplanar))
-			gdn_viewer.set_shader_parameter("tile_reduction", _tile_reduction)
-			log_debug(str("set_shader_parameter tile_reduction=", _tile_reduction))
-			gdn_viewer.set_shader_parameter("globalmap_blend_start", _globalmap_blend_start)
-			log_debug(str("set_shader_parameter globalmap_blend_start=", _globalmap_blend_start))
-			gdn_viewer.set_shader_parameter("globalmap_blend_distance", _globalmap_blend_distance)
-			log_debug(str("set_shader_parameter globalmap_blend_distance=", _globalmap_blend_distance))
-			gdn_viewer.set_shader_parameter("colormap_opacity", _colormap_opacity)
-			log_debug(str("set_shader_parameter colormap_opacity=", _colormap_opacity))
+			gdn_viewer.set_shader_parameter("ground_uv_scale", _shader_param_ground_uv_scale)
+			log_debug(str("set_shader_parameter ground_uv_scale=", _shader_param_ground_uv_scale))
+			gdn_viewer.set_shader_parameter("depth_blending", _shader_param_depth_blending)
+			log_debug(str("set_shader_parameter depth_blending=", _shader_param_depth_blending))
+			gdn_viewer.set_shader_parameter("triplanar", _shader_param_triplanar)
+			log_debug(str("set_shader_parameter triplanar=", _shader_param_triplanar))
+			gdn_viewer.set_shader_parameter("tile_reduction", _shader_param_tile_reduction)
+			log_debug(str("set_shader_parameter tile_reduction=", _shader_param_tile_reduction))
+			gdn_viewer.set_shader_parameter("globalmap_blend_start", _shader_param_globalmap_blend_start)
+			log_debug(str("set_shader_parameter globalmap_blend_start=", _shader_param_globalmap_blend_start))
+			gdn_viewer.set_shader_parameter("globalmap_blend_distance", _shader_param_globalmap_blend_distance)
+			log_debug(str("set_shader_parameter globalmap_blend_distance=", _shader_param_globalmap_blend_distance))
+			gdn_viewer.set_shader_parameter("colormap_opacity", _shader_param_colormap_opacity)
+			log_debug(str("set_shader_parameter colormap_opacity=", _shader_param_colormap_opacity))
 			
 		_init_done = true
 		return true
@@ -715,6 +691,7 @@ func set_debug_mode(debug_mode : int):
 		print("GDN_globals() does not have method set_debug_enabled")
 		return
 	globals.set_debug_enabled(debug_enabled)
+	log_debug(str("debug mode: ", debug_mode))
 
 func get_clientstatus() -> int:
 	if _init_done:

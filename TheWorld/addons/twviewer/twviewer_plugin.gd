@@ -1,8 +1,8 @@
 @tool
-
 extends EditorPlugin
 
 const TWViewer = preload("./tw_viewer.gd")
+
 const tw_editor_util = preload("./tools/util/editor_util.gd")
 const tw_constants = preload("./tw_const.gd")
 
@@ -17,7 +17,7 @@ var _debug_enabled : bool = true
 var _debug_enable_set : bool = false
 var _world_initialized : bool = false
 #var _viewer_id : int = 0
-var _viewer : TWViewer = null
+var _viewer : Node3D = null
 var _viewer_init_done : bool = false
 
 var _alt_pressed : bool = false
