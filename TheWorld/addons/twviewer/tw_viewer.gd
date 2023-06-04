@@ -350,6 +350,9 @@ func _process(delta):
 		_info_panel_visibility_changed = false
 
 	if _initial_viewer_pos_changed:
+		#if gdn_viewer.has_method("get_camera"):
+		#	var camera : Camera3D = gdn_viewer.get_camera()
+		#	camera.global_transform.origin = _initial_viewer_pos
 		_initial_viewer_pos_changed = false
 
 	if gdn_viewer.has_method("set_shader_parameter"):
@@ -413,10 +416,11 @@ func _process(delta):
 				log_debug(str("edit_mode_ui_control added"))
 				_edit_mode_ui_control_added_to_editor_overlay = true
 	
-	if _info_panel != null && _info_panel.visible && gdn_viewer.has_method("get_camera_3d"):
+	#print(gdn_viewer.has_method("get_camera_3d"))
+	if _info_panel != null && _info_panel.visible && gdn_viewer.has_method("get_camera"):
 		_info_panel_status = "Status: " + tw_constants.status_to_string(_client_status) + "\n"
 		var camera : Camera3D = null
-		camera = gdn_viewer.get_camera_3d()
+		camera = gdn_viewer.get_camera()
 		var update_quads1_duration : int = gdn_viewer.get_update_quads1_duration()
 		var update_quads2_duration : int = gdn_viewer.get_update_quads2_duration()
 		var update_quads3_duration : int = gdn_viewer.get_update_quads3_duration()
@@ -1014,7 +1018,13 @@ func restore_init():
 	create_info_panel()
 	
 	print_variables_to_restore()
-	
+
+func dump_required():
+	var gdn_viewer = GDN_viewer()
+	if gdn_viewer != null && gdn_viewer.has_method("dump_required"):
+		gdn_viewer.dump_required()
+
+
 func print_variables_to_restore():
 	return
 	#print(str("_logger=", _logger))

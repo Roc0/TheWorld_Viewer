@@ -129,30 +129,42 @@ func _forward_3d_draw_over_viewport(overlay : Control):
 		_viewer.set_editor_3d_overlay(overlay)
 	
 func _forward_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:
+	#print(str("_forward_3d_gui_input: keycode="))
+
 	var ret : int = EditorPlugin.AFTER_GUI_INPUT_PASS
-	
-	#print("_forward_3d_gui_input")
 	
 	if _viewer != null:
 		_viewer.set_editor_camera(p_camera)
 	
 	if p_event is InputEventKey:
+		#print(str("_forward_3d_gui_input: keycode=", p_event.keycode))
 		if p_event.keycode == KEY_ALT:
 			if p_event.is_pressed():
 				_alt_pressed = true
+				#print("alt pressed")
 			else:
 				_alt_pressed = false
+				#print("alt released")
 		if p_event.keycode == KEY_CTRL:
 			if p_event.is_pressed():
 				_ctrl_pressed = true
+				#print("control pressed")
 			else:
 				_ctrl_pressed = false
+				#print("control released")
 		if p_event.keycode == KEY_SHIFT:
 			if p_event.is_pressed():
 				_shift_pressed = true
+				#print("shift pressed")
 			else:
 				_shift_pressed = false
+				#print("shift released")
 		
+		if p_event.is_pressed() && p_event.keycode == KEY_D && _shift_pressed:
+			if _viewer != null && _viewer.has_method("dump_required"):
+				_viewer.dump_required()
+			ret = EditorPlugin.AFTER_GUI_INPUT_STOP
+
 		if p_event.is_pressed() && p_event.keycode == KEY_I && _alt_pressed:
 			if _viewer != null && _viewer.has_method("toggle_info_panel_visibility"):
 				_viewer.toggle_info_panel_visibility()

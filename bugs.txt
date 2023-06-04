@@ -1,2 +1,2 @@
 * crash in uscita
-* il pannello delle info non visualizza i dati correttamente
+* lentezza al primo caricamento
