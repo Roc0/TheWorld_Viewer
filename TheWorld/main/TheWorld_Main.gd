@@ -94,7 +94,7 @@ var prev_hit : Vector3 = Vector3(0, 0, 0)
 		
 func _ready():
 	init()
-	$BallRigidBody.visible = false
+	$TestBallRigidBody.visible = false
 	var e := get_tree().get_root().connect("size_changed", Callable(self, "resizing"))
 	log_debug(str("connect size_changed result=", e))
 	#get_tree().get_root().set_transparent_background(true)
@@ -267,14 +267,14 @@ func _process(_delta):
 		scene_initialized = true
 	
 	if scene_initialized && !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
-		$BallRigidBody.global_transform.origin = Vector3(initialViewerPos.x + 1, initialViewerPos.y + 1500, initialViewerPos.z + 1)
+		$TestBallRigidBody.global_transform.origin = Vector3(initialViewerPos.x + 1, initialViewerPos.y + 1500, initialViewerPos.z + 1)
 		#if (initialCameraAltitudeForced != 0):
-		#	$BallRigidBody.global_transform.origin.y = initialCameraAltitudeForced
-		$BallRigidBody.visible = true
+		#	$TestBallRigidBody.global_transform.origin.y = initialCameraAltitudeForced
+		$TestBallRigidBody.visible = true
 		post_world_deploy_initialized = true
 	
 	if scene_initialized && post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
-		ball_pos = $BallRigidBody.global_transform.origin
+		ball_pos = $TestBallRigidBody.global_transform.origin
 		TWViewer().set_info_panel_external_value(str(ball_pos), _ball_pos_info_line_index)
 	
 	if debug_window_active:

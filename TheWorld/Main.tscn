@@ -1,12 +1,26 @@
-[gd_scene load_steps=2 format=3 uid="uid://c4ukh1kw4impi"]
+[gd_scene load_steps=7 format=3 uid="uid://c4ukh1kw4impi"]
 
+[ext_resource type="Script" path="res://main/TheWorld_Main.gd" id="1_760ml"]
 [ext_resource type="Script" path="res://addons/twviewer/tw_viewer.gd" id="1_mxuin"]
+[ext_resource type="Script" path="res://utils/DebugStats.gd" id="3_og4hm"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_5i8f1"]
+radius = 5.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0u8xk"]
+albedo_color = Color(0.803922, 0.117647, 0.117647, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_crtqm"]
+material = SubResource("StandardMaterial3D_0u8xk")
+radius = 5.0
+height = 10.0
 
 [node name="RootNode" type="Node"]
 
-[node name="Main" type="Node3D" parent="."]
+[node name="TheWorld_Main" type="Node3D" parent="."]
+script = ExtResource("1_760ml")
 
-[node name="TWViewer" type="Node3D" parent="Main"]
+[node name="TWViewer" type="Node3D" parent="TheWorld_Main"]
 script = ExtResource("1_mxuin")
 _depth_quad = 1
 _info_panel_visible = true
@@ -15,11 +29,30 @@ _shader_param_ground_uv_scale = 171.57
 _shader_param_depth_blending = true
 _shader_param_tile_reduction = true
 
-[node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="Main/TWViewer"]
+[node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main/TWViewer"]
 
-[node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="Main/TWViewer"]
+[node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main/TWViewer"]
 
-[node name="GDN_TW_Viewer" type="GDN_TheWorld_Viewer" parent="Main/TWViewer"]
+[node name="GDN_TW_Viewer" type="GDN_TheWorld_Viewer" parent="TheWorld_Main/TWViewer"]
 
-[node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="Main/TWViewer"]
+[node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/TWViewer"]
 far = 20000.0
+
+[node name="TestBallRigidBody" type="RigidBody3D" parent="TheWorld_Main"]
+
+[node name="TestBallCollisionShape" type="CollisionShape3D" parent="TheWorld_Main/TestBallRigidBody"]
+shape = SubResource("SphereShape3D_5i8f1")
+
+[node name="TestBallMesh" type="MeshInstance3D" parent="TheWorld_Main/TestBallRigidBody"]
+mesh = SubResource("SphereMesh_crtqm")
+
+[node name="Sun" type="DirectionalLight3D" parent="TheWorld_Main"]
+light_color = Color(0.784314, 0.784314, 0.784314, 1)
+
+[node name="DebugStats" type="MarginContainer" parent="TheWorld_Main"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("3_og4hm")
+
+[node name="Column" type="VBoxContainer" parent="TheWorld_Main/DebugStats"]
+layout_mode = 2
