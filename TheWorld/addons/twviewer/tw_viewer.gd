@@ -11,7 +11,7 @@ var _editor_camera : Camera3D = null
 var _editor_3d_overlay : Control = null
 
 const EXIT_STATUS_RUNNING = 0
-const EXIT_STATUS_DEINIT_REQUIRED = 1
+const EXIT_STATUS_PREDEINIT_REQUIRED = 1
 const EXIT_STATUS_QUIT_REQUIRED = 2
 var _exit_status : int = EXIT_STATUS_RUNNING
 
@@ -190,8 +190,13 @@ func _ready():
 		get_tree().set_auto_accept_quit(false)
 	
 	if Engine.is_editor_hint():
-		_depth_quad = 1
-		_cache_quad = 1
+		_depth_quad = 0
+		_cache_quad = 0
+	else:
+		#_depth_quad = 3
+		#_cache_quad = 1
+		_depth_quad = 0
+		_cache_quad = 0
 	
 	_initial_viewer_pos = Vector3(0, 300, 0)
 	
@@ -284,7 +289,7 @@ func _input(event):
 func _process(delta):
 	#log_debug("_process")
 	
-	if _exit_status == EXIT_STATUS_DEINIT_REQUIRED:
+	if _exit_status == EXIT_STATUS_PREDEINIT_REQUIRED:
 		pre_deinit()
 		_exit_status = EXIT_STATUS_QUIT_REQUIRED
 		return
@@ -545,7 +550,7 @@ func _notification(_what):
 				_info_panel.queue_free()
 				_info_panel = null
 		else:
-			_exit_status = EXIT_STATUS_DEINIT_REQUIRED
+			_exit_status = EXIT_STATUS_PREDEINIT_REQUIRED
 
 		#if _test != null:
 		#	_test.queue_free()

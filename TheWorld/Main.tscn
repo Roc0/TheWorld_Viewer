@@ -22,7 +22,8 @@ script = ExtResource("1_760ml")
 
 [node name="TWViewer" type="Node3D" parent="TheWorld_Main"]
 script = ExtResource("1_mxuin")
-_depth_quad = 1
+_depth_quad = 0
+_cache_quad = 0
 _info_panel_visible = true
 _initial_viewer_pos = Vector3(0, 300, 0)
 _shader_param_ground_uv_scale = 171.57
