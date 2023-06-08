@@ -8,7 +8,7 @@ var tw_const = preload("res://addons/twviewer/tw_const.gd")
 const HT_Logger = preload("res://addons/twviewer/util/logger.gd")
 var _logger = HT_Logger.get_for(self)
 
-var initialCameraDistanceFromTerrain = 300
+var initialCameraDistanceFromTerrain : float = 300
 
 var initialViewerPos := Vector3(0, 0, 0)
 #var initialViewerPos := Vector3(2000, 0, 9000)
@@ -16,12 +16,12 @@ var initialViewerPos := Vector3(0, 0, 0)
 #var initialViewerPos := Vector3(1196000, 0, 5464000)
 #var initialViewerPos := Vector3(1196000, 0, 5467000)
 
-#const initialCameraAltitudeForced = 0
-const initialCameraAltitudeForced = 2000
-#const initialCameraAltitudeForced = 7000
-#const initialCameraAltitudeForced = 2900
-#const initialCameraAltitudeForced = 1485
-#const initialCameraAltitudeForced = 9417
+#var initialCameraAltitudeForced = 0
+var initialCameraAltitudeForced = 2000
+#var initialCameraAltitudeForced = 7000
+#var initialCameraAltitudeForced = 2900
+#var initialCameraAltitudeForced = 1485
+#var initialCameraAltitudeForced = 9417
 
 const initialLevel := 0
 #var init_world_thread : Thread
@@ -254,7 +254,7 @@ func _process(_delta):
 	var current_camera := get_viewport().get_camera_3d()
 	if not scene_initialized:
 		#current_camera.global_transform.origin = Vector3(current_camera.global_transform.origin.x, initialCameraAltitudeForced, current_camera.global_transform.origin.z)
-		if (initialCameraAltitudeForced != 0):
+		if (initialCameraDistanceFromTerrain == 0):
 			current_camera.global_transform.origin.y = initialCameraAltitudeForced
 		#current_camera.look_at(initialViewerPos, Vector3(0, 1, 0))
 		#current_camera.look_at(Vector3(current_camera.global_transform.origin.x + 1, 0, current_camera.global_transform.origin.z + 1), Vector3(0, 1, 0))
@@ -488,7 +488,8 @@ func set_debug_window(active : bool) -> void:
 func _init_world() -> void:
 	log_debug("Initializing world...")
 	initialViewerPos = TWViewer()._get_initial_viewer_pos()
-	initialCameraDistanceFromTerrain = initialViewerPos.y
+	initialCameraDistanceFromTerrain = TWViewer()._get_dist_from_terr()
+	initialCameraAltitudeForced = initialViewerPos.y
 	TWViewer().GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
 	log_debug("World initialization completed...")
 	

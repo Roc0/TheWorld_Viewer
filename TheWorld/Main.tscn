@@ -44,7 +44,7 @@ script = ExtResource("1_mxuin")
 _depth_quad = 1
 _cache_quad = 0
 _info_panel_visible = true
-_initial_viewer_pos = Vector3(0, 300, 0)
+_initial_viewer_pos = Vector3(0, 2200, 0)
 _shader_param_ground_uv_scale = 150.0
 _shader_param_depth_blending = true
 _shader_param_tile_reduction = true
@@ -56,4 +56,5 @@ _shader_param_tile_reduction = true
 [node name="GDN_TW_Viewer" type="GDN_TheWorld_Viewer" parent="TheWorld_Main/TWViewer"]
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/TWViewer"]
+transform = Transform3D(-0.707107, 0, -0.707107, 0, 1, 0, 0.707107, 0, -0.707107, 0, 205.625, 0)
 far = 20000.0
