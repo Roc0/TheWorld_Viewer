@@ -124,6 +124,15 @@ func _set_initial_viewer_pos(initial_viewer_pos : Vector3):
 func _get_initial_viewer_pos():
 	return _initial_viewer_pos
 	
+var _dist_from_terr_changed := false
+@export var _dist_from_terr : float:
+	get = _get_dist_from_terr, set = _set_dist_from_terr
+func _set_dist_from_terr(dist_from_terr : float):
+	_dist_from_terr = dist_from_terr
+	_dist_from_terr_changed = true
+func _get_dist_from_terr() -> float:
+	return _dist_from_terr
+
 @export_group("Shader Params", "_shader_param")
 
 var _shader_param_ground_uv_scale_changed := false
@@ -200,7 +209,8 @@ func _ready():
 		_depth_quad = 0
 		_cache_quad = 0
 	
-	_initial_viewer_pos = Vector3(0, 300, 0)
+	_initial_viewer_pos = Vector3(0, 2200, 0)
+	_dist_from_terr = 0
 	
 	# everything done here has to be undone in _exit_tree
 	
@@ -428,6 +438,7 @@ func _process(delta):
 		_info_panel_status = "Status: " + tw_constants.status_to_string(_client_status) + "\n"
 		var camera : Camera3D = null
 		camera = gdn_viewer.get_camera()
+		var e : Vector3 = camera.global_transform.basis.get_euler()
 		var update_quads1_duration : int = gdn_viewer.get_update_quads1_duration()
 		var update_quads2_duration : int = gdn_viewer.get_update_quads2_duration()
 		var update_quads3_duration : int = gdn_viewer.get_update_quads3_duration()
@@ -441,7 +452,7 @@ func _process(delta):
 			_info_panel_draw_mode = "Draw mode: " +  gdn_viewer.get_debug_draw_mode() + "\n"
 			_info_panel_num_locks = "Locks: " +  str(gdn_viewer.get_num_process_not_owns_lock()) + "\n"
 			if camera != null && camera.has_method("get_yaw"):
-				_info_panel_camera_degree_from_north = "  Deg. north: " + str(camera.get_angle_from_north()) + "\n"
+				_info_panel_camera_degree_from_north = "  Deg. north: " + str(camera.get_angle_from_north_degree()) + "\n"
 				_info_panel_camera_yaw = "  Yaw :" + str(camera.get_yaw(false)) + "\n"
 				_info_panel_camera_pitch = "  Pitch :" + str(camera.get_pitch(false)) + "\n"
 		_info_panel_grid_origin = "Grid origin: " + str(gdn_viewer.global_transform.origin) + "\n"
