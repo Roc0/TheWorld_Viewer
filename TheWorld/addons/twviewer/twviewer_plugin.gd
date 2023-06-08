@@ -71,13 +71,9 @@ func _process(delta: float):
 			#var m = editor_interface.get_editor_main_screen()
 			#var editor_3d = null
 			#if m != null:
-			#	print(str("m.get_child_count(false)", m.get_child_count(false)))
-			#	var ctrls = m.get_children()
-			#	for c in ctrls:
-			#		if c.get_class() == "Node3DEditor":
-			#			editor_3d = c
-			#			print(str("editor_3d=", editor_3d))
-			#			break
+			#	print(str("m.get_child_count(false)", m.get_child_count(true)))
+			#	var ctrls : Array = m.get_children(true)
+			#	recurse_in_children(ctrls, 0)
 			#if editor_3d != null:
 			#	_viewer.set_editor_3d_overlay(editor_3d)
 			
@@ -88,9 +84,19 @@ func _process(delta: float):
 	var clientstatus : int = 0
 	clientstatus = get_clientstatus()
 
+	#print(_world_initialized)
 	if _viewer != null && clientstatus >= tw_constants.clientstatus_session_initialized && !_world_initialized:
 		_viewer.GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
 		_world_initialized = true
+
+func recurse_in_children(children : Array, num : int):
+	if !children.is_empty():
+		var header : String = ""
+		for i in num:
+			header = header + "  "
+		for c in children:
+			print(str(header, c.name, " ", c.get_class(), " ", c.get_child_count(true)))
+			recurse_in_children(c.get_children(), num + 1)
 
 func _handles(object):
 	var b : bool = _get_custom_object(object) != null
@@ -144,6 +150,7 @@ func _forward_3d_draw_over_viewport(overlay : Control):
 	
 	if _viewer != null:
 		_viewer.set_editor_3d_overlay(overlay)
+		#print(str("overlay ", overlay.name, " ", overlay.get_class(), " ", overlay.get_parent().name, " ", overlay.get_class()))
 		#print("_viewer.set_editor_3d_overlay")
 	
 func _forward_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:

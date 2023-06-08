@@ -8,13 +8,13 @@ var tw_const = preload("res://addons/twviewer/tw_const.gd")
 const HT_Logger = preload("res://addons/twviewer/util/logger.gd")
 var _logger = HT_Logger.get_for(self)
 
-const initialCameraDistanceFromTerrain = 300
+var initialCameraDistanceFromTerrain = 300
 
-const initialViewerPos := Vector3(0, 0, 0)
-#const initialViewerPos := Vector3(2000, 0, 9000)
-#const initialViewerPos := Vector3(2000, 0, 15000)
-#const initialViewerPos := Vector3(1196000, 0, 5464000)
-#const initialViewerPos := Vector3(1196000, 0, 5467000)
+var initialViewerPos := Vector3(0, 0, 0)
+#var initialViewerPos := Vector3(2000, 0, 9000)
+#var initialViewerPos := Vector3(2000, 0, 15000)
+#var initialViewerPos := Vector3(1196000, 0, 5464000)
+#var initialViewerPos := Vector3(1196000, 0, 5467000)
 
 #const initialCameraAltitudeForced = 0
 const initialCameraAltitudeForced = 2000
@@ -487,6 +487,8 @@ func set_debug_window(active : bool) -> void:
 		
 func _init_world() -> void:
 	log_debug("Initializing world...")
+	initialViewerPos = TWViewer()._get_initial_viewer_pos()
+	initialCameraDistanceFromTerrain = initialViewerPos.y
 	TWViewer().GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
 	log_debug("World initialization completed...")
 	
