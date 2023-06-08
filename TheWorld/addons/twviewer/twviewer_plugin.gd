@@ -64,9 +64,22 @@ func _process(delta: float):
 				_viewer.connect("tree_exited", Callable(self, "_viewer_exited_scene"))
 				_logger.debug ("TWViewer connected")
 			
+			update_overlays()
+			
 			editor_interface.edit_node(_viewer)
 			
-			update_overlays()
+			#var m = editor_interface.get_editor_main_screen()
+			#var editor_3d = null
+			#if m != null:
+			#	print(str("m.get_child_count(false)", m.get_child_count(false)))
+			#	var ctrls = m.get_children()
+			#	for c in ctrls:
+			#		if c.get_class() == "Node3DEditor":
+			#			editor_3d = c
+			#			print(str("editor_3d=", editor_3d))
+			#			break
+			#if editor_3d != null:
+			#	_viewer.set_editor_3d_overlay(editor_3d)
 			
 			#_viewer_connected = true
 			_viewer_init_done = true
@@ -101,16 +114,20 @@ func _make_visible(visible: bool):
 
 func _edit(object):
 	_logger.debug(str("edit ", object))
+	
+	#if !_viewer_init_done:
+	#	update_overlays()
+	#	print("update_overlays")
 
-	var custom_object = _get_custom_object(object)
+	#var custom_object = _get_custom_object(object)
 	
 	#if _viewer != null && _viewer_connected:
 	#	_viewer.disconnect("tree_exited", self, "_viewer_exited_scene")
 	#	_logger.debug ("TWViever disconnected")
 	#	_viewer_connected = false
 
-	if custom_object == null:
-		return
+	#if custom_object == null:
+	#	return
 		
 	#if custom_object != null && custom_object is TWViewer:
 	#	_viewer = custom_object
@@ -127,6 +144,7 @@ func _forward_3d_draw_over_viewport(overlay : Control):
 	
 	if _viewer != null:
 		_viewer.set_editor_3d_overlay(overlay)
+		#print("_viewer.set_editor_3d_overlay")
 	
 func _forward_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:
 	#print(str("_forward_3d_gui_input: keycode="))
