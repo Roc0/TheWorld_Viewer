@@ -991,10 +991,10 @@ func _apply_changes():
 
 	print_variables_to_restore()	
 	
-	remove_info_panel()
-	_init_done = false	# force restore_init to be executed
-	_info_panel_added_to_editor_overlay = false	# force _info_panel to be added to overlay
-	_info_panel_visibility_changed = true # force to adjust _info_panel visibility
+	#remove_info_panel()
+	#_init_done = false	# force restore_init to be executed
+	#_info_panel_added_to_editor_overlay = false	# force _info_panel to be added to overlay
+	#_info_panel_visibility_changed = true # force to adjust _info_panel visibility
 
 func force_app_to_quit() -> void:
 	get_viewport().set_input_as_handled()
