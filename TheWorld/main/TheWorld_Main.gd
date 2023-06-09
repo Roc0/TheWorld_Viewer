@@ -109,7 +109,6 @@ func TWViewer() -> Node3D:
 
 func init():
 	log_debug("init")
-	#var init_done : bool = TWViewer().init()
 	var result = TWViewer().GDN_globals().connect("tw_status_changed", Callable(self, "_on_tw_status_changed")) == 0
 	log_debug(str("signal tw_status_changed connected (result=", result, ")"))
 	_clientstatus = get_clientstatus()
@@ -119,7 +118,6 @@ func init():
 func deinit():
 	log_debug("deinit")
 	TWViewer().GDN_globals().disconnect("tw_status_changed", Callable(self, "_on_tw_status_changed"))
-	#TWViewer().deinit()
 
 func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> void:
 	_clientstatus = new_client_status
@@ -185,7 +183,6 @@ func _input(event):
 func _notification(_what):
 	if (_what == NOTIFICATION_WM_CLOSE_REQUEST):
 		log_debug("Quit request")
-		#Globals.appstatus = Globals.appstatus_deinit_required
 	#elif (_what == Spatial.NOTIFICATION_TRANSFORM_CHANGED):
 		#var viewer : Spatial = TWViewer().GDN_viewer()
 		#viewer.global_transform = global_transform
@@ -202,20 +199,6 @@ func _exit_tree():
 	#deinit()
 	
 func _process(_delta):
-	#if Globals.appstatus == Globals.appstatus_deinit_required:
-	#	Globals.appstatus = Globals.appstatus_deinit_in_progress
-	##	log_debug("Pre deinit...")
-	##	TWViewer().pre_deinit()
-	##	log_debug("Pre deinit completed...")
-	#	Globals.appstatus = Globals.appstatus_quit_required
-	#	return
-		
-	#if Globals.appstatus == Globals.appstatus_quit_required:
-	##	if TWViewer().can_deinit():
-	##		TWViewer().deinit()
-	##		Globals.appstatus = Globals.appstatus_quit_in_progress
-	#		force_app_to_quit()
-	#		return
 
 	if Globals.appstatus != Globals.appstatus_running:
 		return
@@ -229,8 +212,6 @@ func _process(_delta):
 
 	if _clientstatus < Globals.Constants.clientstatus_session_initialized:
 		return
-	
-	#var 
 	
 	var tw_viewer = TWViewer()
 	if tw_viewer == null:
@@ -256,19 +237,19 @@ func _process(_delta):
 		#current_camera.global_transform.origin = Vector3(current_camera.global_transform.origin.x, initialCameraAltitudeForced, current_camera.global_transform.origin.z)
 		if (initialCameraDistanceFromTerrain == 0):
 			current_camera.global_transform.origin.y = initialCameraAltitudeForced
+
 		#current_camera.look_at(initialViewerPos, Vector3(0, 1, 0))
 		#current_camera.look_at(Vector3(current_camera.global_transform.origin.x + 1, 0, current_camera.global_transform.origin.z + 1), Vector3(0, 1, 0))
 		
 		# face to north
 		#current_camera.look_at(Vector3(current_camera.global_transform.origin.x, current_camera.global_transform.origin.y, current_camera.global_transform.origin.z - 10000), Vector3(0, 1, 0))
 		
-		#current_camera.set_yaw(-139, false)
-		#current_camera.set_pitch(-7, false)
+		current_camera.set_yaw(-139.0, false)
+		current_camera.set_pitch(-7.0, false)
 		
-		current_camera.global_transform.origin = Vector3(-7, 2200, -40)	# Procedural HTerrain view
-		#current_camera.global_transform.origin = Vector3(-7, 140, -40)		# HTerrain view
-		current_camera.set_yaw(-141, false)
-		current_camera.set_pitch(-30, false)
+		#current_camera.global_transform.origin = Vector3(-7, 2200, -40)	# Procedural HTerrain view
+		#current_camera.set_yaw(-141.0, false)
+		#current_camera.set_pitch(-30.0, false)
 		
 		#current_camera.global_transform.basis = Basis(Vector3(-1.57, -1.57, 0))
 		# DEBUGRIC
@@ -324,7 +305,7 @@ func _process(_delta):
 			#active_camera_global_rot = current_camera.global_transform.basis.get_euler()
 			active_camera_global_rot = str(current_camera.global_transform.basis.get_euler()) + " | " + "yaw " + str(int(current_camera.get_yaw(false))) + " pitch " + str(int(current_camera.get_pitch(false)))
 			active_camera_global_pos = current_camera.global_transform.origin
-			degree_from_north = current_camera.get_angle_from_north()
+			degree_from_north = current_camera.get_angle_from_north_degree()
 		num_splits = gdn_viewer.get_num_splits()
 		num_joins = gdn_viewer.get_num_joins()
 		num_active_chunks = gdn_viewer.get_num_active_chunks()
@@ -335,7 +316,7 @@ func _process(_delta):
 		var update_quads1_duration : int = gdn_viewer.get_update_quads1_duration()
 		var update_quads2_duration : int = gdn_viewer.get_update_quads2_duration()
 		var update_quads3_duration : int = gdn_viewer.get_update_quads3_duration()
-		process_durations_mcs = String(gdn_viewer.get_process_duration()) \
+		process_durations_mcs = str(gdn_viewer.get_process_duration()) \
 			+ " UQ " + str (update_quads1_duration + update_quads2_duration + update_quads3_duration) \
 			+ " (" + str(update_quads1_duration) \
 			+ " " + str(update_quads2_duration) \
@@ -364,7 +345,7 @@ func _process(_delta):
 func enter_world():
 	log_debug("Entering world...")
 	get_window().mode = Window.MODE_MAXIMIZED if (true) else Window.MODE_WINDOWED
-	set_debug_window(false)
+	set_debug_window(true)
 	$DebugStats.add_property(self, "_client_status", "")
 	$DebugStats.add_property(self, "fps", "")
 	$DebugStats.add_property(self, "process_durations_mcs", "")
@@ -492,11 +473,6 @@ func _init_world() -> void:
 	initialCameraAltitudeForced = initialViewerPos.y
 	TWViewer().GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
 	log_debug("World initialization completed...")
-	
-#func _pre_deinit() -> void:
-#	log_debug("Pre deinit...")
-#	TWViewer().pre_deinit()
-#	log_debug("Pre deinit completed...")
 	
 func force_app_to_quit() -> void:
 	get_viewport().set_input_as_handled()

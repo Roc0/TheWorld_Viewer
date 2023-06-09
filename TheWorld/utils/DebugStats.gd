@@ -18,7 +18,7 @@ class Property:
 
 	func set_label():
 		# Sets the label's text.
-		var s = object.name + "/" + property + " : "
+		var s = object.name + "/" + str(property) + " : "
 		var p = object.get_indexed(property)
 		match display:
 			"":

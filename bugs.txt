@@ -1,4 +1,5 @@
 * in run non si vede niente
 * in run performance lente ad intervalli
+* colldet non funziona
 * crash in uscita
 * lentezza al primo caricamento

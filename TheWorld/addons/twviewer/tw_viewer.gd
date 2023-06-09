@@ -199,15 +199,15 @@ func _ready():
 		get_tree().set_auto_accept_quit(false)
 	
 	if Engine.is_editor_hint():
-		#_depth_quad = 0
-		#_cache_quad = 0
 		_depth_quad = 1
 		_cache_quad = 0
+		#_depth_quad = 0
+		#_cache_quad = 0
 	else:
-		#_depth_quad = 3
-		#_cache_quad = 1
-		_depth_quad = 0
-		_cache_quad = 0
+		_depth_quad = 3
+		_cache_quad = 1
+		#_depth_quad = 0
+		#_cache_quad = 0
 	
 	_initial_viewer_pos = Vector3(0, 2200, 0)
 	_dist_from_terr = 0
