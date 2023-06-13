@@ -86,7 +86,7 @@ func _process(delta: float):
 
 	#print(_world_initialized)
 	if _viewer != null && clientstatus >= tw_constants.clientstatus_session_initialized && !_world_initialized:
-		_viewer.GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
+		#_viewer.GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.y, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
 		_world_initialized = true
 
 func recurse_in_children(children : Array, num : int):

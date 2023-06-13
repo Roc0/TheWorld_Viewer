@@ -23,6 +23,7 @@ var _init_done : bool = false
 var _is_ready : bool = false
 var _transform_changed : bool = false
 var _visibility_changed : bool = false
+var _world_initialized : bool = false
 
 var _client_status : int
 var _hit_pos : Vector3 = Vector3(0, 0, 0)
@@ -57,6 +58,7 @@ var _info_panel_grid_origin := ""
 var _info_panel_camera_degree_from_north := ""
 var _info_panel_camera_yaw := ""
 var _info_panel_camera_pitch := ""
+var _info_panel_camera_roll := ""
 var _info_panel_camera_rot := ""
 var _info_panel_camera_pos := ""
 var _info_label_num_quadrants := ""
@@ -82,6 +84,8 @@ var _info_panel_camera_projection := ""
 
 #var _test : Label = null
 #var _test_added_to_editor_overlay : bool = false
+
+var _initial_level : int = 0
 
 var _debug_mode_changed := false
 @export_enum("Default:0", "Enabled:1", "Disabled:2") var _debug_mode: int:
@@ -115,23 +119,34 @@ func _set_info_panel_visible(info_panel_visible : bool):
 	_info_panel_visible = info_panel_visible
 	_info_panel_visibility_changed = true
 
-var _initial_viewer_pos_changed := false
-@export var _initial_viewer_pos : Vector3:
-	get = _get_initial_viewer_pos, set = _set_initial_viewer_pos
-func _set_initial_viewer_pos(initial_viewer_pos : Vector3):
-	_initial_viewer_pos = initial_viewer_pos
-	_initial_viewer_pos_changed = true
-func _get_initial_viewer_pos():
-	return _initial_viewer_pos
-	
-var _dist_from_terr_changed := false
-@export var _dist_from_terr : float:
-	get = _get_dist_from_terr, set = _set_dist_from_terr
-func _set_dist_from_terr(dist_from_terr : float):
-	_dist_from_terr = dist_from_terr
-	_dist_from_terr_changed = true
-func _get_dist_from_terr() -> float:
-	return _dist_from_terr
+@export_group("Camera", "_camera_param")
+
+var _camera_param_initial_pos_changed := false
+@export var _camera_param_initial_pos : Vector3:
+	get = _get_camera_param_initial_pos, set = _set_camera_param_initial_pos
+func _set_camera_param_initial_pos(initial_pos : Vector3):
+	_camera_param_initial_pos = initial_pos
+	_camera_param_initial_pos_changed = true
+func _get_camera_param_initial_pos():
+	return _camera_param_initial_pos
+
+var _camera_param_initial_alt_forced_changed := false
+@export var _camera_param_initial_alt_forced : float:
+	get = _get_camera_param_initial_alt_forced, set = _set_camera_param_initial_alt_forced
+func _set_camera_param_initial_alt_forced(initial_alt_forced : float):
+	_camera_param_initial_alt_forced = initial_alt_forced
+	_camera_param_initial_alt_forced_changed = true
+func _get_camera_param_initial_alt_forced() -> float:
+	return _camera_param_initial_alt_forced
+
+var _camera_param_initial_yaw_pitch_roll_changed := false
+@export var _camera_param_initial_yaw_pitch_roll : Vector3:
+	get = _get_camera_param_initial_yaw_pitch_roll, set = _set_camera_param_initial_yaw_pitch_roll
+func _set_camera_param_initial_yaw_pitch_roll(initial_yaw_pitch_roll : Vector3):
+	_camera_param_initial_yaw_pitch_roll = initial_yaw_pitch_roll
+	_camera_param_initial_yaw_pitch_roll_changed = true
+func _get_camera_param_initial_yaw_pitch_roll():
+	return _camera_param_initial_yaw_pitch_roll
 
 @export_group("Shader Params", "_shader_param")
 
@@ -209,8 +224,9 @@ func _ready():
 		#_depth_quad = 0
 		#_cache_quad = 0
 	
-	_initial_viewer_pos = Vector3(0, 2200, 0)
-	_dist_from_terr = 0
+	_camera_param_initial_pos = Vector3(0, 2200, 0)
+	_camera_param_initial_alt_forced = 0
+	_camera_param_initial_yaw_pitch_roll = Vector3(-139.0, -7.0, 0.0)
 	
 	# everything done here has to be undone in _exit_tree
 	
@@ -227,6 +243,8 @@ func _ready():
 	var e := get_tree().get_root().connect("size_changed", Callable(self, "resizing"))
 	log_debug(str("connect size_changed result=", e))
 	set_notify_transform(true)
+	
+	_client_status = get_clientstatus()
 	
 	create_info_panel()
 	
@@ -297,6 +315,11 @@ func _input(event):
 		if event.is_pressed() && event.keycode == KEY_I && _alt_pressed:
 			toggle_info_panel_visibility()
 
+func init_world() -> void:
+	log_debug("Initializing world...")
+	GDN_viewer().reset_initial_world_viewer_pos(_camera_param_initial_pos.x, _camera_param_initial_pos.y, _camera_param_initial_pos.z, _camera_param_initial_alt_forced, _camera_param_initial_yaw_pitch_roll.x, _camera_param_initial_yaw_pitch_roll.y, _camera_param_initial_yaw_pitch_roll.z, _initial_level, -1 , -1)
+	log_debug("World initialization completed...")
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	#log_debug("_process")
@@ -323,10 +346,12 @@ func _process(delta):
 		if !_init_done && gdn_main.initialized():
 			restore_init()
 	
-	_client_status = get_clientstatus()
-	
 	if gdn_viewer == null:
 		return
+	
+	if not _world_initialized && _client_status >= tw_constants.clientstatus_session_initialized:
+		init_world()
+		_world_initialized = true
 	
 	#if gdn_viewer != null:
 	#	if gdn_viewer.has_method("get_camera"):
@@ -365,12 +390,6 @@ func _process(delta):
 			_info_panel.visible =  _info_panel_visible
 			#print(str("_info_panel_visible=", _info_panel.visible))
 		_info_panel_visibility_changed = false
-
-	if _initial_viewer_pos_changed:
-		#if gdn_viewer.has_method("get_camera"):
-		#	var camera : Camera3D = gdn_viewer.get_camera()
-		#	camera.global_transform.origin = _initial_viewer_pos
-		_initial_viewer_pos_changed = false
 
 	if gdn_viewer.has_method("set_shader_parameter"):
 		
@@ -455,6 +474,7 @@ func _process(delta):
 				_info_panel_camera_degree_from_north = "  Deg. north: " + str(camera.get_angle_from_north_degree()) + "\n"
 				_info_panel_camera_yaw = "  Yaw :" + str(camera.get_yaw(false)) + "\n"
 				_info_panel_camera_pitch = "  Pitch :" + str(camera.get_pitch(false)) + "\n"
+				_info_panel_camera_roll = "  Roll :" + str(camera.get_roll(false)) + "\n"
 		_info_panel_grid_origin = "Grid origin: " + str(gdn_viewer.global_transform.origin) + "\n"
 		_info_panel_render_process_durations_mcs = "Render process (mcs): " + str(gdn_viewer.get_process_duration()) + "\n"
 		#+ " UQ " + String (update_quads1_duration + update_quads2_duration + update_quads3_duration) \
@@ -512,6 +532,7 @@ func _process(delta):
 		+ _info_panel_camera_degree_from_north \
 		+ _info_panel_camera_yaw \
 		+ _info_panel_camera_pitch \
+		+ _info_panel_camera_roll \
 		+ _info_panel_info_camera \
 		+ _info_panel_camera_rot \
 		+ _info_panel_camera_pos
@@ -628,6 +649,7 @@ func can_deinit() -> bool:
 func deinit():
 	log_debug("deinit")
 	if _init_done:
+		_world_initialized = false
 		GDN_globals().disconnect("tw_status_changed", Callable(self, "_on_tw_status_changed"))
 		GDN_globals().disconnect_from_server()
 		GDN_main().deinit()
@@ -650,6 +672,7 @@ func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> 
 	#var status : String = tw_constants.status_to_string(new_client_status)
 	var old_client_status_str : String = tw_constants.status_to_string(old_client_status)
 	var new_client_status_str : String = tw_constants.status_to_string(new_client_status)
+	_client_status = new_client_status
 	log_debug(str("_on_tw_status_changed ", old_client_status_str, "(", old_client_status, ") ==> ", new_client_status_str, "(", new_client_status, ")"))
 
 func find_node_by_name(node_name : String) -> Node:
@@ -1021,6 +1044,9 @@ func restore_init():
 	
 	_init_done = gdn_main.initialized()
 	var gdn_globals = GDN_globals()
+	var client_status : int = get_clientstatus()
+	if client_status >= tw_constants.clientstatus_world_deploy_in_progress:
+		_world_initialized = true
 	var gdn_viewer = GDN_viewer()
 	_exit_status = EXIT_STATUS_RUNNING
 	_tree_entered = true

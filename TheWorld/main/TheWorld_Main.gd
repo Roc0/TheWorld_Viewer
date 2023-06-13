@@ -41,7 +41,7 @@ var collider_mesh_left_pressed : bool = false
 var collider_mesh_right_pressed : bool = false
 var collider_mesh_upaltitude_pressed : bool = false
 var collider_mesh_downaltitude_pressed : bool = false
-var scene_initialized : bool = false
+#var scene_initialized : bool = false
 var post_world_deploy_initialized : bool = false
 var fps := 0.0
 var chunk_grid_global_pos : Vector3
@@ -233,10 +233,11 @@ func _process(_delta):
 		return
 	
 	var current_camera := get_viewport().get_camera_3d()
-	if not scene_initialized:
+	
+	#if not scene_initialized:
 		#current_camera.global_transform.origin = Vector3(current_camera.global_transform.origin.x, initialCameraAltitudeForced, current_camera.global_transform.origin.z)
-		if (initialCameraDistanceFromTerrain == 0):
-			current_camera.global_transform.origin.y = initialCameraAltitudeForced
+		#if (initialCameraDistanceFromTerrain == 0):
+		#	current_camera.global_transform.origin.y = initialCameraAltitudeForced
 
 		#current_camera.look_at(initialViewerPos, Vector3(0, 1, 0))
 		#current_camera.look_at(Vector3(current_camera.global_transform.origin.x + 1, 0, current_camera.global_transform.origin.z + 1), Vector3(0, 1, 0))
@@ -244,8 +245,8 @@ func _process(_delta):
 		# face to north
 		#current_camera.look_at(Vector3(current_camera.global_transform.origin.x, current_camera.global_transform.origin.y, current_camera.global_transform.origin.z - 10000), Vector3(0, 1, 0))
 		
-		current_camera.set_yaw(-139.0, false)
-		current_camera.set_pitch(-7.0, false)
+		#current_camera.set_yaw(-139.0, false)
+		#current_camera.set_pitch(-7.0, false)
 		
 		#current_camera.global_transform.origin = Vector3(-7, 2200, -40)	# Procedural HTerrain view
 		#current_camera.set_yaw(-141.0, false)
@@ -253,16 +254,18 @@ func _process(_delta):
 		
 		#current_camera.global_transform.basis = Basis(Vector3(-1.57, -1.57, 0))
 		# DEBUGRIC
-		scene_initialized = true
+		#scene_initialized = true
 	
-	if scene_initialized && !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
+	#if scene_initialized && !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
+	if !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 		$TestBallRigidBody.global_transform.origin = Vector3(initialViewerPos.x + 1, initialViewerPos.y + 1500, initialViewerPos.z + 1)
 		#if (initialCameraAltitudeForced != 0):
 		#	$TestBallRigidBody.global_transform.origin.y = initialCameraAltitudeForced
 		$TestBallRigidBody.visible = true
 		post_world_deploy_initialized = true
 	
-	if scene_initialized && post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
+	#if scene_initialized && post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
+	if post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 		ball_pos = $TestBallRigidBody.global_transform.origin
 		tw_viewer.set_info_panel_external_value(str(ball_pos), _ball_pos_info_line_index)
 	
@@ -345,7 +348,7 @@ func _process(_delta):
 func enter_world():
 	log_debug("Entering world...")
 	get_window().mode = Window.MODE_MAXIMIZED if (true) else Window.MODE_WINDOWED
-	set_debug_window(true)
+	set_debug_window(false)
 	$DebugStats.add_property(self, "_client_status", "")
 	$DebugStats.add_property(self, "fps", "")
 	$DebugStats.add_property(self, "process_durations_mcs", "")
@@ -394,7 +397,9 @@ func enter_world():
 	$DebugStats.add_property(self, "chunk_hit_dist_from_cam", "")
 	$DebugStats.add_property(self, "ball_pos", "")
 	#$DebugStats.add_property(self, "tracked_chunk", "")
-	_init_world()
+	
+	#_init_world()
+	
 	#init_world_thread = Thread.new()
 	#var err := init_world_thread.start(self, "_init_world")
 	#if err:
@@ -466,17 +471,16 @@ func set_debug_window(active : bool) -> void:
 		debug_window_active = false
 		$DebugStats.visible = false
 		
-func _init_world() -> void:
-	log_debug("Initializing world...")
-	initialViewerPos = TWViewer()._get_initial_viewer_pos()
-	initialCameraDistanceFromTerrain = TWViewer()._get_dist_from_terr()
-	initialCameraAltitudeForced = initialViewerPos.y
-	TWViewer().GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
-	log_debug("World initialization completed...")
+#func _init_world() -> void:
+#	log_debug("Initializing world...")
+#	initialViewerPos = TWViewer()._get_initial_viewer_pos()
+#	initialCameraDistanceFromTerrain = TWViewer()._get_dist_from_terr()
+#	initialCameraAltitudeForced = initialViewerPos.y
+#	TWViewer().GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
+#	log_debug("World initialization completed...")
 	
 func force_app_to_quit() -> void:
 	get_viewport().set_input_as_handled()
-	#exit_world()
 	get_tree().quit()
 	
 func get_clientstatus() -> int:
