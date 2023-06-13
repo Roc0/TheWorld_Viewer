@@ -1,4 +1,3 @@
 * in run performance lente ad intervalli
-* colldet non funziona
 * lentezza al primo caricamento
 * crash in uscita

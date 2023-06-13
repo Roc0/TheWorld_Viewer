@@ -224,9 +224,13 @@ func _ready():
 		#_depth_quad = 0
 		#_cache_quad = 0
 	
+	_debug_mode = 0
 	_camera_param_initial_pos = Vector3(0, 2200, 0)
 	_camera_param_initial_alt_forced = 0
 	_camera_param_initial_yaw_pitch_roll = Vector3(-139.0, -7.0, 0.0)
+	_shader_param_ground_uv_scale = 150.0
+	_shader_param_depth_blending = true
+	_shader_param_tile_reduction = true
 	
 	# everything done here has to be undone in _exit_tree
 	
