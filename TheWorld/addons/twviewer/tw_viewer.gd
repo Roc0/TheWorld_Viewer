@@ -383,6 +383,27 @@ func _process(delta):
 				deinit_world()
 				_deploy_world_changed = false
 	
+	if _camera_param_initial_pos_changed:
+		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
+			var camera : Camera3D = null
+			camera = gdn_viewer.get_camera()
+			if (camera != null):
+				camera.global_transform.origin = _camera_param_initial_pos
+		_camera_param_initial_pos_changed = false
+	
+	if _camera_param_initial_yaw_pitch_roll_changed:
+		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
+			var camera : Camera3D = null
+			camera = gdn_viewer.get_camera()
+			if (camera != null):
+				if camera.has_method("set_yaw"):
+					camera.set_yaw(_camera_param_initial_yaw_pitch_roll.x, false)
+				if camera.has_method("set_pitch"):
+					camera.set_pitch(_camera_param_initial_yaw_pitch_roll.y, false)
+				if camera.has_method("set_roll"):
+					camera.set_roll(_camera_param_initial_yaw_pitch_roll.z, false)
+		_camera_param_initial_yaw_pitch_roll_changed = false
+		
 	if _transform_changed:
 		gdn_viewer.global_transform = global_transform
 		log_debug(str("_process: global transform changed: ", global_transform))
