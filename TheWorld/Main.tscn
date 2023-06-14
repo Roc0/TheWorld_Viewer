@@ -47,6 +47,7 @@ _info_panel_visible = true
 _camera_param_initial_pos = Vector3(0, 2200, 0)
 _camera_param_initial_yaw_pitch_roll = Vector3(-139, -7, 0)
 _shader_param_ground_uv_scale = 150.0
+_shader_param_depth_blending = true
 _shader_param_tile_reduction = true
 
 [node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main/TWViewer"]

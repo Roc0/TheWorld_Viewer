@@ -379,9 +379,10 @@ func _process(delta):
 			elif _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
 				_deploy_world_changed = false
 		else:
-			if _client_status >= tw_constants.clientstatus_world_deployed:
-				deinit_world()
-				_deploy_world_changed = false
+			if Engine.is_editor_hint():
+				if _client_status >= tw_constants.clientstatus_world_deployed:
+					deinit_world()
+					_deploy_world_changed = false
 	
 	if _camera_param_initial_pos_changed:
 		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
