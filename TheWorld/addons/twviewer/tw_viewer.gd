@@ -23,7 +23,6 @@ var _init_done : bool = false
 var _is_ready : bool = false
 var _transform_changed : bool = false
 var _visibility_changed : bool = false
-var _world_initialized : bool = false
 
 var _client_status : int
 var _hit_pos : Vector3 = Vector3(0, 0, 0)
@@ -118,6 +117,13 @@ var _info_panel_visibility_changed := false
 func _set_info_panel_visible(info_panel_visible : bool):
 	_info_panel_visible = info_panel_visible
 	_info_panel_visibility_changed = true
+
+var _deploy_world_changed := false
+@export var _deploy_world : bool = false :
+	set = _set_deploy_world
+func _set_deploy_world(init_deploy_world : bool):
+	_deploy_world = init_deploy_world
+	_deploy_world_changed = true
 
 @export_group("Camera", "_camera_param")
 
@@ -218,19 +224,20 @@ func _ready():
 		_cache_quad = 0
 		#_depth_quad = 0
 		#_cache_quad = 0
+		_debug_mode = 0
+		_camera_param_initial_pos = Vector3(0, 2200, 0)
+		_camera_param_initial_alt_forced = 0
+		_camera_param_initial_yaw_pitch_roll = Vector3(-139.0, -7.0, 0.0)
+		_shader_param_ground_uv_scale = 150.0
+		_shader_param_depth_blending = true
+		_shader_param_tile_reduction = true
 	else:
+		_set_deploy_world(true)
 		_depth_quad = 3
 		_cache_quad = 1
 		#_depth_quad = 0
 		#_cache_quad = 0
 	
-	_debug_mode = 0
-	_camera_param_initial_pos = Vector3(0, 2200, 0)
-	_camera_param_initial_alt_forced = 0
-	_camera_param_initial_yaw_pitch_roll = Vector3(-139.0, -7.0, 0.0)
-	_shader_param_ground_uv_scale = 150.0
-	_shader_param_depth_blending = true
-	_shader_param_tile_reduction = true
 	
 	# everything done here has to be undone in _exit_tree
 	
@@ -321,8 +328,13 @@ func _input(event):
 
 func init_world() -> void:
 	log_debug("Initializing world...")
-	GDN_viewer().reset_initial_world_viewer_pos(_camera_param_initial_pos.x, _camera_param_initial_pos.y, _camera_param_initial_pos.z, _camera_param_initial_alt_forced, _camera_param_initial_yaw_pitch_roll.x, _camera_param_initial_yaw_pitch_roll.y, _camera_param_initial_yaw_pitch_roll.z, _initial_level, -1 , -1)
+	GDN_viewer().deploy_world(_camera_param_initial_pos.x, _camera_param_initial_pos.y, _camera_param_initial_pos.z, _camera_param_initial_alt_forced, _camera_param_initial_yaw_pitch_roll.x, _camera_param_initial_yaw_pitch_roll.y, _camera_param_initial_yaw_pitch_roll.z, _initial_level, -1 , -1)
 	log_debug("World initialization completed...")
+
+func deinit_world() -> void:
+	log_debug("De-initializing world...")
+	GDN_viewer().undeploy_world()
+	log_debug("World de-initialization completed...")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -353,15 +365,23 @@ func _process(delta):
 	if gdn_viewer == null:
 		return
 	
-	if not _world_initialized && _client_status >= tw_constants.clientstatus_session_initialized:
-		init_world()
-		_world_initialized = true
-	
 	#if gdn_viewer != null:
 	#	if gdn_viewer.has_method("get_camera"):
 	#		print ("has method")
 	#	else:
 	#		print ("does not have method")
+	
+	if _deploy_world_changed:
+		if _deploy_world:
+			if _client_status == tw_constants.clientstatus_session_initialized:
+				init_world()
+				_deploy_world_changed = false
+			elif _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
+				_deploy_world_changed = false
+		else:
+			if _client_status >= tw_constants.clientstatus_world_deployed:
+				deinit_world()
+				_deploy_world_changed = false
 	
 	if _transform_changed:
 		gdn_viewer.global_transform = global_transform
@@ -653,7 +673,6 @@ func can_deinit() -> bool:
 func deinit():
 	log_debug("deinit")
 	if _init_done:
-		_world_initialized = false
 		GDN_globals().disconnect("tw_status_changed", Callable(self, "_on_tw_status_changed"))
 		GDN_globals().disconnect_from_server()
 		GDN_main().deinit()
@@ -1049,8 +1068,7 @@ func restore_init():
 	_init_done = gdn_main.initialized()
 	var gdn_globals = GDN_globals()
 	var client_status : int = get_clientstatus()
-	if client_status >= tw_constants.clientstatus_world_deploy_in_progress:
-		_world_initialized = true
+	#if client_status >= tw_constants.clientstatus_world_deploy_in_progress:
 	var gdn_viewer = GDN_viewer()
 	_exit_status = EXIT_STATUS_RUNNING
 	_tree_entered = true
