@@ -1,3 +1,4 @@
-* in run performance lente ad intervalli
+* in run performance lente ad intervalli (comscumo memoria dedicata GPU eccessivo)
 * lentezza al primo caricamento
 * crash in uscita
+* se si esce senza slavare la scena dopo il popup che chiede se salvare o meno viene ricreato tw_viewer
