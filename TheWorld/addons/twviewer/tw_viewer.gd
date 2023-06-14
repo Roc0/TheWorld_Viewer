@@ -220,6 +220,7 @@ func _ready():
 		get_tree().set_auto_accept_quit(false)
 	
 	if Engine.is_editor_hint():
+		_set_deploy_world(false)
 		_depth_quad = 1
 		_cache_quad = 0
 		#_depth_quad = 0
