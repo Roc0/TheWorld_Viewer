@@ -267,8 +267,9 @@ func custom_ready():
 		add_child(gdn_main)
 
 	init_gdn_viewer()
-	var e := get_tree().get_root().connect("size_changed", Callable(self, "resizing"))
-	log_debug(str("connect size_changed result=", e))
+	if !get_tree().get_root().is_connected("size_changed", Callable(self, "resizing")):
+		var e := get_tree().get_root().connect("size_changed", Callable(self, "resizing"))
+		log_debug(str("connect size_changed result=", e))
 	set_notify_transform(true)
 	
 	_client_status = get_clientstatus()

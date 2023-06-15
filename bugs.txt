@@ -1,4 +1,8 @@
-* in run performance lente ad intervalli (conflitto su GPU tra Editor e app running?)
-* lentezza al primo caricamento
+* in run performance lente ad intervalli (conflitto su GPU tra Editor e app running memoria GPU dedicata insufficiente?)
 * crash in uscita
-* se si esce senza salvare la scena dopo il popup che chiede se salvare o meno viene ricreato tw_viewer
+
+
+
+
+
+* se si esce senza salvare la scena dopo il popup che chiede se salvare o meno viene ricreato tw_viewer: risolto con un workaround
