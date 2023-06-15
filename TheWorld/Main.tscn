@@ -41,8 +41,6 @@ layout_mode = 2
 
 [node name="TWViewer" type="Node3D" parent="TheWorld_Main"]
 script = ExtResource("1_mxuin")
-_world_param_depth_quad = 3
-_world_param_cache_quad = 1
 _world_param_info_visible = true
 
 [node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main/TWViewer"]

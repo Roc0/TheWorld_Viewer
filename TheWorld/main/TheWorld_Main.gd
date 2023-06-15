@@ -188,6 +188,8 @@ func _notification(_what):
 		#viewer.global_transform = global_transform
 	elif (_what == Node3D.NOTIFICATION_ENTER_WORLD):
 		log_debug("Notification Node3D.NOTIFICATION_ENTER_WORLD")
+	elif (_what == NOTIFICATION_PREDELETE):
+		print("_notification: NOTIFICATION_PREDELETE - Destroy TheWorld_Main")
 		
 func _enter_tree():
 	_logger.debug("_enter_tree")
