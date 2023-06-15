@@ -21,6 +21,8 @@ Globals="*res://init/Globals.gd"
 
 [debug]
 
+settings/stdout/print_fps=true
+settings/stdout/print_gpu_profile=true
 settings/stdout/verbose_stdout=true
 
 [editor_plugins]
