@@ -13,6 +13,7 @@ var _editor_3d_overlay : Control = null
 const EXIT_STATUS_RUNNING = 0
 const EXIT_STATUS_PREDEINIT_REQUIRED = 1
 const EXIT_STATUS_QUIT_REQUIRED = 2
+const EXIT_STATUS_QUITTING = 3
 var _exit_status : int = EXIT_STATUS_RUNNING
 
 var _gdn_globals : Node = null
@@ -219,6 +220,13 @@ func _init():
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	_logger.debug("_ready")
+	if !Engine.is_editor_hint():
+		custom_ready()
+	_is_ready = true
+	log_debug("_ready done")
+	
+func custom_ready():
+	_logger.debug("custom_ready")
 	
 	_exit_status = EXIT_STATUS_RUNNING
 	if !Engine.is_editor_hint():
@@ -278,8 +286,7 @@ func _ready():
 	#_test.margin_top *= dpi_scale
 	#_test.margin_right *= dpi_scale
 
-	log_debug("_ready done")
-	_is_ready = true
+	log_debug("custom_ready done")
 
 func _enter_tree():
 	_logger.debug("_enter_tree")
@@ -306,6 +313,7 @@ func _exit_tree():
 		
 		_is_ready = false
 	
+	#print("_exit_tree")
 	queue_free()
 	
 	_tree_entered = false
@@ -360,6 +368,7 @@ func _process(delta):
 			if _info_panel != null:
 				_info_panel.queue_free()
 				_info_panel = null
+			_exit_status = EXIT_STATUS_QUITTING
 			force_app_to_quit()
 		return
 	
@@ -637,6 +646,7 @@ func _notification(_what):
 			if _info_panel != null:
 				_info_panel.queue_free()
 				_info_panel = null
+			_exit_status = EXIT_STATUS_QUITTING
 		else:
 			_exit_status = EXIT_STATUS_PREDEINIT_REQUIRED
 

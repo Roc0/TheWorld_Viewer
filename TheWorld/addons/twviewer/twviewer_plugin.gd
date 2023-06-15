@@ -28,6 +28,8 @@ var _info_panel_visible : bool = false
 var _info_panel : Control = null
 var _edit_mode_ui_control : Control = null
 
+var _close_requested : bool = false
+
 #const AUTOLOAD_NAME = "Globals"
 #const AUTOLOAD_SCRIPT = "res://addons/twviewer/init/Globals.gd"
 
@@ -50,10 +52,11 @@ func _exit_tree():
 func _process(delta: float):
 	#_logger.debug(str("_process "))
 	
-	if !_viewer_init_done:
+	if !_viewer_init_done && !_close_requested:
 		#_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done))
 		_viewer = find_node_by_name(tw_constants.tw_viewer_node_name)
 		if _viewer != null && _viewer.has_method("is_ready") && _viewer.is_ready():
+			_viewer.custom_ready()
 			_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done, " initializing ..."))
 			
 			var editor_interface := get_editor_interface()
@@ -211,6 +214,13 @@ func _forward_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:
 				_viewer.rotate_chunk_debug_mode()
 
 	return ret
+
+func _notification(_what):
+	#log_debug(str("_notification: ", self.name, " ", self.get_path(), " ", _what))
+	
+	if (_what == NOTIFICATION_WM_CLOSE_REQUEST):
+		_logger.debug("_notification: WM_CLOSE requested")
+		_close_requested = true
 
 func _apply_changes():
 	_logger.debug("_apply_changes")
