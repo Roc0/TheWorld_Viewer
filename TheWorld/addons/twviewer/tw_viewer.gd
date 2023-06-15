@@ -86,49 +86,54 @@ var _info_panel_camera_projection := ""
 
 var _initial_level : int = 0
 
-var _debug_mode_changed := false
-@export_enum("Default:0", "Enabled:1", "Disabled:2") var _debug_mode: int:
+var _debug_mode_changed := true
+@export_enum("Default:0", "Enabled:1", "Disabled:2") var _debug_mode: int = 0:
 	set = _set_debug_mode
 func _set_debug_mode(p_debug_mode : int):
 	_debug_mode = p_debug_mode
 	_debug_mode_changed = true
 
-var _depth_quad_changed := false
+@export_group("World", "_world_param")
+
+var _world_param_depth_quad_changed := true
 const MAX_DEPTH_QUAD=3
-@export var _depth_quad := 3:
-	set = _set_depth_quad
-func _set_depth_quad(depth_quad : int):
+@export var _world_param_depth_quad := 1:		# 3
+	set = _set_world_param_depth_quad
+func _set_world_param_depth_quad(depth_quad : int):
 	if depth_quad >= 0 && depth_quad <= MAX_DEPTH_QUAD:
-		_depth_quad = depth_quad
-		_depth_quad_changed = true
+		_world_param_depth_quad = depth_quad
+		_world_param_depth_quad_changed = true
 
-var _cache_quad_changed := false
+var _world_param_cache_quad_changed := true
 const MAX_CACHE_QUAD=2
-@export var _cache_quad := 1:
-	set = _set_cache_quad
-func _set_cache_quad(cache_quad : int):
+@export var _world_param_cache_quad := 0:		# 1
+	set = _set_world_param_cache_quad
+func _set_world_param_cache_quad(cache_quad : int):
 	if cache_quad >= 0 && cache_quad <= MAX_CACHE_QUAD:
-		_cache_quad = cache_quad
-		_cache_quad_changed = true
+		_world_param_cache_quad = cache_quad
+		_world_param_cache_quad_changed = true
 
-var _info_panel_visibility_changed := false
-@export var _info_panel_visible : bool:
-	set = _set_info_panel_visible
-func _set_info_panel_visible(info_panel_visible : bool):
-	_info_panel_visible = info_panel_visible
-	_info_panel_visibility_changed = true
+var _world_param_info_panel_visibility_changed := true
+@export var _world_param_info_visible : bool:
+	set = _set_world_param_info_panel_visible
+func _set_world_param_info_panel_visible(info_panel_visible : bool):
+	_world_param_info_visible = info_panel_visible
+	_world_param_info_panel_visibility_changed = true
 
-var _deploy_world_changed := false
-@export var _deploy_world : bool = false :
-	set = _set_deploy_world
-func _set_deploy_world(init_deploy_world : bool):
-	_deploy_world = init_deploy_world
-	_deploy_world_changed = true
+var _deploy_world_forced_runtime : bool = true
+var _world_param_deploy_world_changed := true
+@export var _world_param_deploy_world : bool = false :
+	set = _set_world_param_deploy_world
+func _set_world_param_deploy_world(deploy_world : bool):
+	if !Engine.is_editor_hint():
+		return
+	_world_param_deploy_world = deploy_world
+	_world_param_deploy_world_changed = true
 
 @export_group("Camera", "_camera_param")
 
-var _camera_param_initial_pos_changed := false
-@export var _camera_param_initial_pos : Vector3:
+var _camera_param_initial_pos_changed := true
+@export var _camera_param_initial_pos : Vector3 = Vector3(0, 2200, 0):
 	get = _get_camera_param_initial_pos, set = _set_camera_param_initial_pos
 func _set_camera_param_initial_pos(initial_pos : Vector3):
 	_camera_param_initial_pos = initial_pos
@@ -136,8 +141,8 @@ func _set_camera_param_initial_pos(initial_pos : Vector3):
 func _get_camera_param_initial_pos():
 	return _camera_param_initial_pos
 
-var _camera_param_initial_alt_forced_changed := false
-@export var _camera_param_initial_alt_forced : float:
+var _camera_param_initial_alt_forced_changed := true
+@export var _camera_param_initial_alt_forced : float = 0:
 	get = _get_camera_param_initial_alt_forced, set = _set_camera_param_initial_alt_forced
 func _set_camera_param_initial_alt_forced(initial_alt_forced : float):
 	_camera_param_initial_alt_forced = initial_alt_forced
@@ -145,8 +150,8 @@ func _set_camera_param_initial_alt_forced(initial_alt_forced : float):
 func _get_camera_param_initial_alt_forced() -> float:
 	return _camera_param_initial_alt_forced
 
-var _camera_param_initial_yaw_pitch_roll_changed := false
-@export var _camera_param_initial_yaw_pitch_roll : Vector3:
+var _camera_param_initial_yaw_pitch_roll_changed := true
+@export var _camera_param_initial_yaw_pitch_roll : Vector3 = Vector3(-139.0, -7.0, 0.0):
 	get = _get_camera_param_initial_yaw_pitch_roll, set = _set_camera_param_initial_yaw_pitch_roll
 func _set_camera_param_initial_yaw_pitch_roll(initial_yaw_pitch_roll : Vector3):
 	_camera_param_initial_yaw_pitch_roll = initial_yaw_pitch_roll
@@ -156,49 +161,49 @@ func _get_camera_param_initial_yaw_pitch_roll():
 
 @export_group("Shader Params", "_shader_param")
 
-var _shader_param_ground_uv_scale_changed := false
-@export_range(1.0, 200.0, 0.01, "or_greater", "or_less") var _shader_param_ground_uv_scale : float = 1.0:
+var _shader_param_ground_uv_scale_changed := true
+@export_range(1.0, 200.0, 0.01, "or_greater", "or_less") var _shader_param_ground_uv_scale : float = 150.0:
 	set = _set_shader_param_ground_uv_scale
 func _set_shader_param_ground_uv_scale(ground_uv_scale : float):
 	_shader_param_ground_uv_scale = ground_uv_scale
 	_shader_param_ground_uv_scale_changed = true
 
-var _shader_param_depth_blending_changed := false
-@export var _shader_param_depth_blending : bool = false:
+var _shader_param_depth_blending_changed := true
+@export var _shader_param_depth_blending : bool = true:
 	set = _set_shader_param_depth_blending
 func _set_shader_param_depth_blending(depth_blending : bool):
 	_shader_param_depth_blending = depth_blending
 	_shader_param_depth_blending_changed = true
 
-var _shader_param_triplanar_changed := false
+var _shader_param_triplanar_changed := true
 @export var _shader_param_triplanar : bool = false:
 	set = _set_shader_param_triplanar
 func _set_shader_param_triplanar(triplanar : bool):
 	_shader_param_triplanar = triplanar
 	_shader_param_triplanar_changed = true
 
-var _shader_param_tile_reduction_changed := false
-@export var _shader_param_tile_reduction : bool = false:
+var _shader_param_tile_reduction_changed := true
+@export var _shader_param_tile_reduction : bool = true:
 	set = _set_shader_param_tile_reduction
 func _set_shader_param_tile_reduction(tile_reduction : bool):
 	_shader_param_tile_reduction = tile_reduction
 	_shader_param_tile_reduction_changed = true
 
-var _shader_param_globalmap_blend_start_changed := false
+var _shader_param_globalmap_blend_start_changed := true
 @export var _shader_param_globalmap_blend_start : float = 0.0:
 	set = _set_shader_param_globalmap_blend_start
 func _set_shader_param_globalmap_blend_start(globalmap_blend_start : float):
 	_shader_param_globalmap_blend_start = globalmap_blend_start
 	_shader_param_globalmap_blend_start_changed = true
 
-var _shader_param_globalmap_blend_distance_changed := false
+var _shader_param_globalmap_blend_distance_changed := true
 @export var _shader_param_globalmap_blend_distance : float = 0.0:
 	set = _set_shader_param_globalmap_blend_distance
 func _set_shader_param_globalmap_blend_distance(globalmap_blend_distance : float):
 	_shader_param_globalmap_blend_distance = globalmap_blend_distance
 	_shader_param_globalmap_blend_distance_changed = true
 
-var _shader_param_colormap_opacity_changed := false
+var _shader_param_colormap_opacity_changed := true
 @export var _shader_param_colormap_opacity : float = 1.0:
 	set = _set_shader_param_colormap_opacity
 func _set_shader_param_colormap_opacity(colormap_opacity : float):
@@ -220,24 +225,26 @@ func _ready():
 		get_tree().set_auto_accept_quit(false)
 	
 	if Engine.is_editor_hint():
-		_set_deploy_world(false)
-		_depth_quad = 1
-		_cache_quad = 0
-		#_depth_quad = 0
+		_set_world_param_deploy_world(false)
+		#_depth_quad = 1
 		#_cache_quad = 0
-		_debug_mode = 0
-		_camera_param_initial_pos = Vector3(0, 2200, 0)
-		_camera_param_initial_alt_forced = 0
-		_camera_param_initial_yaw_pitch_roll = Vector3(-139.0, -7.0, 0.0)
-		_shader_param_ground_uv_scale = 150.0
-		_shader_param_depth_blending = true
-		_shader_param_tile_reduction = true
+		##_depth_quad = 0
+		##_cache_quad = 0
+		#_debug_mode = 0
+		#_camera_param_initial_pos = Vector3(0, 2200, 0)
+		#_camera_param_initial_alt_forced = 0
+		#_camera_param_initial_yaw_pitch_roll = Vector3(-139.0, -7.0, 0.0)
+		#_shader_param_ground_uv_scale = 150.0
+		#_shader_param_depth_blending = true
+		#_shader_param_tile_reduction = true
 	else:
-		_set_deploy_world(true)
-		_depth_quad = 3
-		_cache_quad = 1
-		#_depth_quad = 0
-		#_cache_quad = 0
+		_deploy_world_forced_runtime = true
+		_world_param_deploy_world_changed = true
+		#_set_world_param_deploy_world(true)
+		#_depth_quad = 3
+		#_cache_quad = 1
+		##_depth_quad = 0
+		##_cache_quad = 0
 	
 	
 	# everything done here has to be undone in _exit_tree
@@ -372,40 +379,6 @@ func _process(delta):
 	#	else:
 	#		print ("does not have method")
 	
-	if _deploy_world_changed:
-		if _deploy_world:
-			if _client_status == tw_constants.clientstatus_session_initialized:
-				init_world()
-				_deploy_world_changed = false
-			elif _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
-				_deploy_world_changed = false
-		else:
-			if Engine.is_editor_hint():
-				if _client_status >= tw_constants.clientstatus_world_deployed:
-					deinit_world()
-					_deploy_world_changed = false
-	
-	if _camera_param_initial_pos_changed:
-		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
-			var camera : Camera3D = null
-			camera = gdn_viewer.get_camera()
-			if (camera != null):
-				camera.global_transform.origin = _camera_param_initial_pos
-		_camera_param_initial_pos_changed = false
-	
-	if _camera_param_initial_yaw_pitch_roll_changed:
-		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
-			var camera : Camera3D = null
-			camera = gdn_viewer.get_camera()
-			if (camera != null):
-				if camera.has_method("set_yaw"):
-					camera.set_yaw(_camera_param_initial_yaw_pitch_roll.x, false)
-				if camera.has_method("set_pitch"):
-					camera.set_pitch(_camera_param_initial_yaw_pitch_roll.y, false)
-				if camera.has_method("set_roll"):
-					camera.set_roll(_camera_param_initial_yaw_pitch_roll.z, false)
-		_camera_param_initial_yaw_pitch_roll_changed = false
-		
 	if _transform_changed:
 		gdn_viewer.global_transform = global_transform
 		log_debug(str("_process: global transform changed: ", global_transform))
@@ -420,23 +393,23 @@ func _process(delta):
 		set_debug_mode(_debug_mode)
 		_debug_mode_changed = false
 		
-	if _depth_quad_changed:
+	if _world_param_depth_quad_changed:
 		if gdn_viewer.has_method("set_depth_quad"):
-			gdn_viewer.set_depth_quad(_depth_quad)
-			log_debug(str("depth quad: ", _depth_quad))
-		_depth_quad_changed = false
+			gdn_viewer.set_depth_quad(_world_param_depth_quad)
+			log_debug(str("depth quad: ", _world_param_depth_quad))
+		_world_param_depth_quad_changed = false
 
-	if _cache_quad_changed:
+	if _world_param_cache_quad_changed:
 		if gdn_viewer.has_method("set_cache_quad"):
-			gdn_viewer.set_cache_quad(_cache_quad)
-			log_debug(str("cache quad: ", _cache_quad))
-		_cache_quad_changed = false
+			gdn_viewer.set_cache_quad(_world_param_cache_quad)
+			log_debug(str("cache quad: ", _world_param_cache_quad))
+		_world_param_cache_quad_changed = false
 
-	if _info_panel_visibility_changed:
+	if _world_param_info_panel_visibility_changed:
 		if _info_panel != null:
-			_info_panel.visible =  _info_panel_visible
+			_info_panel.visible = _world_param_info_visible
 			#print(str("_info_panel_visible=", _info_panel.visible))
-		_info_panel_visibility_changed = false
+		_world_param_info_panel_visibility_changed = false
 
 	if gdn_viewer.has_method("set_shader_parameter"):
 		
@@ -472,6 +445,40 @@ func _process(delta):
 		gdn_viewer.toggle_edit_mode()
 		_edit_panel_visibility_changed = false
 
+	if _world_param_deploy_world_changed:
+		if _world_param_deploy_world || (_deploy_world_forced_runtime && !Engine.is_editor_hint()):
+			if _client_status == tw_constants.clientstatus_session_initialized:
+				init_world()
+				_world_param_deploy_world_changed = false
+			elif _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
+				_world_param_deploy_world_changed = false
+		else:
+			if Engine.is_editor_hint():
+				if _client_status >= tw_constants.clientstatus_world_deployed:
+					deinit_world()
+					_world_param_deploy_world_changed = false
+	
+	if _camera_param_initial_pos_changed:
+		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
+			var camera : Camera3D = null
+			camera = gdn_viewer.get_camera()
+			if (camera != null):
+				camera.global_transform.origin = _camera_param_initial_pos
+		_camera_param_initial_pos_changed = false
+	
+	if _camera_param_initial_yaw_pitch_roll_changed:
+		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
+			var camera : Camera3D = null
+			camera = gdn_viewer.get_camera()
+			if (camera != null):
+				if camera.has_method("set_yaw"):
+					camera.set_yaw(_camera_param_initial_yaw_pitch_roll.x, false)
+				if camera.has_method("set_pitch"):
+					camera.set_pitch(_camera_param_initial_yaw_pitch_roll.y, false)
+				if camera.has_method("set_roll"):
+					camera.set_roll(_camera_param_initial_yaw_pitch_roll.z, false)
+		_camera_param_initial_yaw_pitch_roll_changed = false
+		
 	if Engine.is_editor_hint():
 		#if _editor_3d_overlay != null && _test != null && !_test_added_to_editor_overlay:
 		#	var parent : Node = _test.get_parent()
@@ -874,8 +881,8 @@ func error_print(context: String, text : String, godot_print : bool):
 			gdn_globals.error_print(str(context,": ", text), godot_print)
 
 func toggle_info_panel_visibility():
-	_info_panel_visible = !_info_panel_visible
-	_info_panel_visibility_changed = true
+	_world_param_info_visible = !_world_param_info_visible
+	_world_param_info_panel_visibility_changed = true
 
 func toggle_track_mouse():
 	var gdn_viewer = GDN_viewer()
@@ -916,7 +923,7 @@ func create_info_panel():
 	_info_panel.name = "InfoPanel"
 	log_debug(str("_info_panel:", _info_panel, " ", _info_panel.name))
 	add_child(_info_panel)
-	_info_panel_visibility_changed = true
+	_world_param_info_panel_visibility_changed = true
 	_info_panel.self_modulate = Color(1, 1, 1, 0.5)
 	
 	_info_panel_main_vboxcontainer = VBoxContainer.new()

@@ -41,14 +41,9 @@ layout_mode = 2
 
 [node name="TWViewer" type="Node3D" parent="TheWorld_Main"]
 script = ExtResource("1_mxuin")
-_depth_quad = 1
-_cache_quad = 0
-_info_panel_visible = true
-_camera_param_initial_pos = Vector3(0, 2200, 0)
-_camera_param_initial_yaw_pitch_roll = Vector3(-139, -7, 0)
-_shader_param_ground_uv_scale = 150.0
-_shader_param_depth_blending = true
-_shader_param_tile_reduction = true
+_world_param_depth_quad = 3
+_world_param_cache_quad = 1
+_world_param_info_visible = true
 
 [node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main/TWViewer"]
 
@@ -57,5 +52,3 @@ _shader_param_tile_reduction = true
 [node name="GDN_TW_Viewer" type="GDN_TheWorld_Viewer" parent="TheWorld_Main/TWViewer"]
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/TWViewer"]
-transform = Transform3D(-0.75471, 0.0799535, -0.651169, 0, 0.992546, 0.121869, 0.656059, 0.091976, -0.749084, 0, 2200, 0)
-far = 20000.0
