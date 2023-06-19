@@ -444,7 +444,7 @@ func _process(delta):
 			_world_editor_param_cache_quad_changed = false
 
 		if _world_editor_param_info_panel_visibility_changed:
-			print(str("DEBUG _info_panel=", _info_panel, " visible=", _world_editor_param_info_visible))
+			#print(str("DEBUG _info_panel=", _info_panel, " visible=", _world_editor_param_info_visible))
 			if _info_panel != null:
 				_info_panel.visible = _world_editor_param_info_visible
 				#print(str("_info_panel_visible=", _info_panel.visible))
