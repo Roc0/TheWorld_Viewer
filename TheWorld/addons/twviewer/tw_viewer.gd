@@ -98,7 +98,7 @@ func _set_debug_mode(p_debug_mode : int):
 
 var _world_param_depth_quad_changed := true
 const MAX_DEPTH_QUAD=3
-@export var _world_param_depth_quad := 1:		# 3
+@export var _world_param_depth_quad : int = 3:		# 3
 	set = _set_world_param_depth_quad
 func _set_world_param_depth_quad(depth_quad : int):
 	if depth_quad >= 0 && depth_quad <= MAX_DEPTH_QUAD:
@@ -107,7 +107,7 @@ func _set_world_param_depth_quad(depth_quad : int):
 
 var _world_param_cache_quad_changed := true
 const MAX_CACHE_QUAD=2
-@export var _world_param_cache_quad := 0:		# 1
+@export var _world_param_cache_quad : int = 1:		# 1
 	set = _set_world_param_cache_quad
 func _set_world_param_cache_quad(cache_quad : int):
 	if cache_quad >= 0 && cache_quad <= MAX_CACHE_QUAD:
@@ -115,21 +115,50 @@ func _set_world_param_cache_quad(cache_quad : int):
 		_world_param_cache_quad_changed = true
 
 var _world_param_info_panel_visibility_changed := true
-@export var _world_param_info_visible : bool:
+@export var _world_param_info_visible : bool = false:
 	set = _set_world_param_info_panel_visible
 func _set_world_param_info_panel_visible(info_panel_visible : bool):
 	_world_param_info_visible = info_panel_visible
 	_world_param_info_panel_visibility_changed = true
 
-var _deploy_world_forced_runtime : bool = true
 var _world_param_deploy_world_changed := true
-@export var _world_param_deploy_world : bool = false :
+@export var _world_param_deploy_world : bool = true :
 	set = _set_world_param_deploy_world
 func _set_world_param_deploy_world(deploy_world : bool):
-	if !Engine.is_editor_hint():
-		return
 	_world_param_deploy_world = deploy_world
 	_world_param_deploy_world_changed = true
+
+@export_group("World In Editor", "_world_editor_param")
+
+var _world_editor_param_depth_quad_changed := true
+@export var _world_editor_param_depth_quad : int = 1:		# 3
+	set = _set_world_editor_param_depth_quad
+func _set_world_editor_param_depth_quad(depth_quad : int):
+	if depth_quad >= 0 && depth_quad <= MAX_DEPTH_QUAD:
+		_world_editor_param_depth_quad = depth_quad
+		_world_editor_param_depth_quad_changed = true
+
+var _world_editor_param_cache_quad_changed := true
+@export var _world_editor_param_cache_quad : int = 0:		# 1
+	set = _set_world_editor_param_cache_quad
+func _set_world_editor_param_cache_quad(cache_quad : int):
+	if cache_quad >= 0 && cache_quad <= MAX_CACHE_QUAD:
+		_world_editor_param_cache_quad = cache_quad
+		_world_editor_param_cache_quad_changed = true
+
+var _world_editor_param_info_panel_visibility_changed := true
+@export var _world_editor_param_info_visible : bool = false:
+	set = _set_world_editor_param_info_panel_visible
+func _set_world_editor_param_info_panel_visible(info_panel_visible : bool):
+	_world_editor_param_info_visible = info_panel_visible
+	_world_editor_param_info_panel_visibility_changed = true
+
+var _world_editor_param_deploy_world_changed := true
+@export var _world_editor_param_deploy_world : bool = false :
+	set = _set_world_editor_param_deploy_world
+func _set_world_editor_param_deploy_world(deploy_world : bool):
+	_world_editor_param_deploy_world = deploy_world
+	_world_editor_param_deploy_world_changed = true
 
 @export_group("Camera", "_camera_param")
 
@@ -233,7 +262,7 @@ func custom_ready():
 		get_tree().set_auto_accept_quit(false)
 	
 	if Engine.is_editor_hint():
-		_set_world_param_deploy_world(false)
+		_set_world_editor_param_deploy_world(false)
 		#_depth_quad = 1
 		#_cache_quad = 0
 		##_depth_quad = 0
@@ -246,9 +275,7 @@ func custom_ready():
 		#_shader_param_depth_blending = true
 		#_shader_param_tile_reduction = true
 	else:
-		_deploy_world_forced_runtime = true
-		_world_param_deploy_world_changed = true
-		#_set_world_param_deploy_world(true)
+		_set_world_param_deploy_world(true)
 		#_depth_quad = 3
 		#_cache_quad = 1
 		##_depth_quad = 0
@@ -403,23 +430,44 @@ func _process(delta):
 		set_debug_mode(_debug_mode)
 		_debug_mode_changed = false
 		
-	if _world_param_depth_quad_changed:
-		if gdn_viewer.has_method("set_depth_quad"):
-			gdn_viewer.set_depth_quad(_world_param_depth_quad)
-			log_debug(str("depth quad: ", _world_param_depth_quad))
-		_world_param_depth_quad_changed = false
+	if Engine.is_editor_hint():
+		if _world_editor_param_depth_quad_changed:
+			if gdn_viewer.has_method("set_depth_quad"):
+				gdn_viewer.set_depth_quad(_world_editor_param_depth_quad)
+				log_debug(str("depth quad: ", _world_editor_param_depth_quad))
+			_world_editor_param_depth_quad_changed = false
 
-	if _world_param_cache_quad_changed:
-		if gdn_viewer.has_method("set_cache_quad"):
-			gdn_viewer.set_cache_quad(_world_param_cache_quad)
-			log_debug(str("cache quad: ", _world_param_cache_quad))
-		_world_param_cache_quad_changed = false
+		if _world_editor_param_cache_quad_changed:
+			if gdn_viewer.has_method("set_cache_quad"):
+				gdn_viewer.set_cache_quad(_world_editor_param_cache_quad)
+				log_debug(str("cache quad: ", _world_editor_param_cache_quad))
+			_world_editor_param_cache_quad_changed = false
 
-	if _world_param_info_panel_visibility_changed:
-		if _info_panel != null:
-			_info_panel.visible = _world_param_info_visible
-			#print(str("_info_panel_visible=", _info_panel.visible))
-		_world_param_info_panel_visibility_changed = false
+		if _world_editor_param_info_panel_visibility_changed:
+			print(str("DEBUG _info_panel=", _info_panel, " visible=", _world_editor_param_info_visible))
+			if _info_panel != null:
+				_info_panel.visible = _world_editor_param_info_visible
+				#print(str("_info_panel_visible=", _info_panel.visible))
+			_world_editor_param_info_panel_visibility_changed = false
+	else:
+		if _world_param_depth_quad_changed:
+			if gdn_viewer.has_method("set_depth_quad"):
+				gdn_viewer.set_depth_quad(_world_param_depth_quad)
+				log_debug(str("depth quad: ", _world_param_depth_quad))
+			_world_param_depth_quad_changed = false
+
+		if _world_param_cache_quad_changed:
+			if gdn_viewer.has_method("set_cache_quad"):
+				gdn_viewer.set_cache_quad(_world_param_cache_quad)
+				log_debug(str("cache quad: ", _world_param_cache_quad))
+			_world_param_cache_quad_changed = false
+
+		if _world_param_info_panel_visibility_changed:
+			if _info_panel != null:
+				_info_panel.visible = _world_param_info_visible
+				#print(str("_info_panel_visible=", _info_panel.visible))
+			_world_param_info_panel_visibility_changed = false
+		
 
 	if gdn_viewer.has_method("set_shader_parameter"):
 		
@@ -455,19 +503,31 @@ func _process(delta):
 		gdn_viewer.toggle_edit_mode()
 		_edit_panel_visibility_changed = false
 
-	if _world_param_deploy_world_changed:
-		if _world_param_deploy_world || (_deploy_world_forced_runtime && !Engine.is_editor_hint()):
-			if _client_status == tw_constants.clientstatus_session_initialized:
-				init_world()
-				_world_param_deploy_world_changed = false
-			elif _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
-				_world_param_deploy_world_changed = false
-		else:
-			if Engine.is_editor_hint():
+	if Engine.is_editor_hint():
+		if _world_editor_param_deploy_world_changed:
+			if _world_editor_param_deploy_world:
+				if _client_status == tw_constants.clientstatus_session_initialized:
+					init_world()
+					_world_editor_param_deploy_world_changed = false
+				elif _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
+					_world_editor_param_deploy_world_changed = false
+			else:
+				if _client_status >= tw_constants.clientstatus_world_deployed:
+					deinit_world()
+					_world_editor_param_deploy_world_changed = false
+	else:
+		if _world_param_deploy_world_changed:
+			if _world_param_deploy_world:
+				if _client_status == tw_constants.clientstatus_session_initialized:
+					init_world()
+					_world_param_deploy_world_changed = false
+				elif _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
+					_world_param_deploy_world_changed = false
+			else:
 				if _client_status >= tw_constants.clientstatus_world_deployed:
 					deinit_world()
 					_world_param_deploy_world_changed = false
-	
+		
 	if _camera_param_initial_pos_changed:
 		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
 			var camera : Camera3D = null
@@ -884,7 +944,7 @@ func log_error(text : String) -> void:
 	error_print(ctx, _text, false)
 	
 func error_print(context: String, text : String, godot_print : bool):
-	#if Engine.editor_hint:
+	#if Engine.is_editor_hint:
 	#	return
 	var gdn_globals = GDN_globals()
 	if gdn_globals != null:
@@ -892,8 +952,12 @@ func error_print(context: String, text : String, godot_print : bool):
 			gdn_globals.error_print(str(context,": ", text), godot_print)
 
 func toggle_info_panel_visibility():
-	_world_param_info_visible = !_world_param_info_visible
-	_world_param_info_panel_visibility_changed = true
+	if Engine.is_editor_hint:
+		_world_editor_param_info_visible = !_world_editor_param_info_visible
+		_world_editor_param_info_panel_visibility_changed = true
+	else:
+		_world_param_info_visible = !_world_param_info_visible
+		_world_param_info_panel_visibility_changed = true
 
 func toggle_track_mouse():
 	var gdn_viewer = GDN_viewer()
@@ -928,6 +992,9 @@ func create_info_panel():
 	var hseparator : HSeparator
 	var vseparator : VSeparator
 
+	if _info_panel != null:
+		return
+	
 	_info_panel = PanelContainer.new()
 	#_info_panel = Control.new()
 	#_info_panel = Panel.new()
@@ -968,6 +1035,8 @@ func create_info_panel():
 	set_size_info_panel()
 	
 	#apply_dpi_scale(_info_panel, 0.5)
+	
+	_info_panel_added_to_editor_overlay = false
 	
 func remove_info_panel():
 	if _info_panel != null:
