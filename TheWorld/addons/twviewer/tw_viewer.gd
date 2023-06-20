@@ -82,9 +82,6 @@ var _info_panel_track_mouse_state := ""
 var _info_panel_info_camera := ""
 var _info_panel_camera_projection := ""
 
-#var _test : Label = null
-#var _test_added_to_editor_overlay : bool = false
-
 var _initial_level : int = 0
 
 var _debug_mode_changed := true
@@ -258,8 +255,9 @@ func custom_ready():
 	_logger.debug("custom_ready")
 	
 	_exit_status = EXIT_STATUS_RUNNING
-	if !Engine.is_editor_hint():
-		get_tree().set_auto_accept_quit(false)
+	
+	#if !Engine.is_editor_hint():
+	#	get_tree().set_auto_accept_quit(false)
 	
 	if Engine.is_editor_hint():
 		_set_world_editor_param_deploy_world(false)
@@ -303,17 +301,6 @@ func custom_ready():
 	
 	create_info_panel()
 	
-	#_test = Label.new()
-	#add_child(_test)
-	#_test.text = "AAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAA\nAAAAAAAAAAAAAAAAAAAAA"
-	#var dpi_scale : float = 0.1
-	#if _test.rect_min_size != Vector2(0, 0):
-	#	_test.rect_min_size *= dpi_scale
-	#_test.margin_bottom *= dpi_scale
-	#_test.margin_left *= dpi_scale
-	#_test.margin_top *= dpi_scale
-	#_test.margin_right *= dpi_scale
-
 	log_debug("custom_ready done")
 
 func _enter_tree():
@@ -550,13 +537,6 @@ func _process(delta):
 		_camera_param_initial_yaw_pitch_roll_changed = false
 		
 	if Engine.is_editor_hint():
-		#if _editor_3d_overlay != null && _test != null && !_test_added_to_editor_overlay:
-		#	var parent : Node = _test.get_parent()
-		#	if parent != null:
-		#		parent.remove_child(_test)
-		#	_editor_3d_overlay.add_child(_test)
-		#	log_debug(str("_editor_3d_overlay=", _editor_3d_overlay))
-		#	_test_added_to_editor_overlay = true
 
 		if _editor_3d_overlay != null && !_info_panel_added_to_editor_overlay && _info_panel != null:
 			var parent : Node = _info_panel.get_parent()
@@ -576,7 +556,7 @@ func _process(delta):
 				log_debug(str("edit_mode_ui_control added"))
 				_edit_mode_ui_control_added_to_editor_overlay = true
 	
-	#print(gdn_viewer.has_method("get_camera_3d"))
+	#print(gdn_viewer.has_method("get_camera"))
 	if _info_panel != null && _info_panel.visible && gdn_viewer.has_method("get_camera"):
 		_info_panel_status = "Status: " + tw_constants.status_to_string(_client_status) + "\n"
 		var camera : Camera3D = null
@@ -696,25 +676,25 @@ func _notification(_what):
 	elif (_what == NOTIFICATION_PREDELETE):
 		print("_notification: NOTIFICATION_PREDELETE - Destroy tw_viewer")
 	elif (_what == NOTIFICATION_WM_CLOSE_REQUEST):
-		log_debug("Quit request")
-		if Engine.is_editor_hint():
-			_is_ready = false	
-			pre_deinit()
-			var can_deinit : bool = false
-			while(can_deinit == false):
-				can_deinit = can_deinit()
-			deinit()
-			if _info_panel != null:
-				_info_panel.queue_free()
-				_info_panel = null
-			_exit_status = EXIT_STATUS_QUITTING
-		else:
-			_exit_status = EXIT_STATUS_PREDEINIT_REQUIRED
+		log_debug("_notification: NOTIFICATION_WM_CLOSE_REQUEST ")
+		if Engine.is_editor_hint() || get_tree().is_auto_accept_quit():
+			activate_shutdown()
 
-		#if _test != null:
-		#	_test.queue_free()
-		#	_test = null
-		
+func activate_shutdown():
+	log_debug("Quit request")
+	if Engine.is_editor_hint():
+		_is_ready = false	
+		pre_deinit()
+		var can_deinit : bool = false
+		while(can_deinit == false):
+			can_deinit = can_deinit()
+		deinit()
+		if _info_panel != null:
+			_info_panel.queue_free()
+			_info_panel = null
+		_exit_status = EXIT_STATUS_QUITTING
+	else:
+		_exit_status = EXIT_STATUS_PREDEINIT_REQUIRED
 
 func resizing():
 	log_debug(str("Resizing: ", get_viewport().size))
@@ -1165,7 +1145,6 @@ func _apply_changes():
 
 func force_app_to_quit() -> void:
 	get_viewport().set_input_as_handled()
-	#exit_world()
 	get_tree().quit()
 
 func restore_init():
@@ -1178,7 +1157,6 @@ func restore_init():
 	_init_done = gdn_main.initialized()
 	var gdn_globals = GDN_globals()
 	var client_status : int = get_clientstatus()
-	#if client_status >= tw_constants.clientstatus_world_deploy_in_progress:
 	var gdn_viewer = GDN_viewer()
 	_exit_status = EXIT_STATUS_RUNNING
 	_tree_entered = true
