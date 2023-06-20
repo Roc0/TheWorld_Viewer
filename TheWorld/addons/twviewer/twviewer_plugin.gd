@@ -219,7 +219,7 @@ func _notification(_what):
 	#log_debug(str("_notification: ", self.name, " ", self.get_path(), " ", _what))
 	
 	if (_what == NOTIFICATION_WM_CLOSE_REQUEST):
-		_logger.debug("_notification: WM_CLOSE requested")
+		_logger.debug("_notification: NOTIFICATION_WM_CLOSE_REQUEST ")
 		_close_requested = true
 
 func _apply_changes():

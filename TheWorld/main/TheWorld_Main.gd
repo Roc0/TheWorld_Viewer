@@ -93,7 +93,10 @@ var _ball_pos_info_line_index : int = 0
 var prev_hit : Vector3 = Vector3(0, 0, 0)
 		
 func _ready():
+	get_tree().set_auto_accept_quit(false)
+
 	init()
+
 	$TestBallRigidBody.visible = false
 	var e := get_tree().get_root().connect("size_changed", Callable(self, "resizing"))
 	log_debug(str("connect size_changed result=", e))
@@ -105,6 +108,8 @@ func resizing():
 	log_debug(str("Resizing: ", get_viewport().size))
 
 func TWViewer() -> Node3D:
+	if $TWViewer == null:
+		return null
 	return $TWViewer.get_self()
 
 func init():
@@ -182,7 +187,13 @@ func _input(event):
 
 func _notification(_what):
 	if (_what == NOTIFICATION_WM_CLOSE_REQUEST):
-		log_debug("Quit request")
+		log_debug("_notification: NOTIFICATION_WM_CLOSE_REQUEST ")
+		var v = TWViewer()
+		if v != null:
+			v.activate_shutdown()
+		else:
+			force_app_to_quit()
+		
 	#elif (_what == Spatial.NOTIFICATION_TRANSFORM_CHANGED):
 		#var viewer : Spatial = TWViewer().GDN_viewer()
 		#viewer.global_transform = global_transform
