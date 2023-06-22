@@ -706,7 +706,8 @@ func init_gdn_viewer() -> bool:
 	if _init_done:
 		return false
 	else:
-		GDN_main().init(self)
+		#GDN_main().init(self, Engine)
+		GDN_main().init(self, Engine.is_editor_hint())
 		set_debug_mode(_debug_mode)
 
 		GDN_globals().connect_to_server()
