@@ -12,6 +12,8 @@ const clientstatus_world_deploy_in_progress := 4
 const clientstatus_str_world_deploy_in_progress := "world_deploy_in_progress"
 const clientstatus_world_deployed := 5
 const clientstatus_str_world_deployed := "world_deployed"
+const clientstatus_world_undeploy_in_progress := 100
+const clientstatus_str_world_undeploy_in_progress := "world_undeploy_in_progress"
 
 const tw_viewer_node_name := "TWViewer"
 const tw_gdn_main_node_name := "GDN_TW_Main"
