@@ -11,9 +11,10 @@ var _editor_camera : Camera3D = null
 var _editor_3d_overlay : Control = null
 
 const EXIT_STATUS_RUNNING = 0
-const EXIT_STATUS_PREDEINIT_REQUIRED = 1
-const EXIT_STATUS_QUIT_REQUIRED = 2
-const EXIT_STATUS_QUITTING = 3
+const EXIT_STATUS_UNDEPLOYWORLD_REQUIRED = 1
+const EXIT_STATUS_PREDEINIT_REQUIRED = 2
+const EXIT_STATUS_QUIT_REQUIRED = 3
+const EXIT_STATUS_QUITTING = 4
 var _exit_status : int = EXIT_STATUS_RUNNING
 
 var _gdn_globals : Node = null
@@ -371,6 +372,14 @@ func deinit_world() -> void:
 func _process(delta):
 	#log_debug("_process")
 	
+	if _exit_status == EXIT_STATUS_UNDEPLOYWORLD_REQUIRED:
+		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
+			if _client_status < tw_constants.clientstatus_world_undeploy_in_progress:
+				deinit_world()
+			#else:
+		else:
+			_exit_status = EXIT_STATUS_PREDEINIT_REQUIRED
+			
 	if _exit_status == EXIT_STATUS_PREDEINIT_REQUIRED:
 		pre_deinit()
 		_exit_status = EXIT_STATUS_QUIT_REQUIRED
@@ -499,7 +508,7 @@ func _process(delta):
 				elif _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
 					_world_editor_param_deploy_world_changed = false
 			else:
-				if _client_status >= tw_constants.clientstatus_world_deployed:
+				if _client_status >= tw_constants.clientstatus_world_deployed && _client_status < tw_constants.clientstatus_world_undeploy_in_progress:
 					deinit_world()
 					_world_editor_param_deploy_world_changed = false
 	else:
@@ -511,7 +520,7 @@ func _process(delta):
 				elif _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
 					_world_param_deploy_world_changed = false
 			else:
-				if _client_status >= tw_constants.clientstatus_world_deployed:
+				if _client_status >= tw_constants.clientstatus_world_deployed && _client_status < tw_constants.clientstatus_world_undeploy_in_progress:
 					deinit_world()
 					_world_param_deploy_world_changed = false
 		
@@ -694,7 +703,8 @@ func activate_shutdown():
 			_info_panel = null
 		_exit_status = EXIT_STATUS_QUITTING
 	else:
-		_exit_status = EXIT_STATUS_PREDEINIT_REQUIRED
+		#_exit_status = EXIT_STATUS_PREDEINIT_REQUIRED
+		_exit_status = EXIT_STATUS_UNDEPLOYWORLD_REQUIRED
 
 func resizing():
 	log_debug(str("Resizing: ", get_viewport().size))
