@@ -5,10 +5,12 @@ TEST
 * Testare in RUN (modificata l'uscita con l'undeployworld)
 
 BUGS
-* crash in uscita
+* se si riattiva thread di allineamento cache-db: crash
+* crash in uscita (forse risolto con 4.1?)
 
 * se si esce senza salvare la scena dopo il popup che chiede se salvare o meno viene ricreato tw_viewer: risolto con un workaround
 
 TODO
+* passare a versione 4.1
 * quando viene aggiornato un elemento della cache invocare quadTree->setStatus(QuadrantStatus::refreshTerrainDataNeeded); che fa sì che il quadrante sia scaricazto di nuovo
 * edit terreno in EDITOR
