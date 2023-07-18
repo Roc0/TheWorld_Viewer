@@ -5,7 +5,6 @@ TEST
 * Testare in RUN (modificata l'uscita con l'undeployworld)
 
 BUGS
-* se si riattiva thread di allineamento cache-db: crash
 * crash in uscita (forse risolto con 4.1?)
 
 * se si esce senza salvare la scena dopo il popup che chiede se salvare o meno viene ricreato tw_viewer: risolto con un workaround
