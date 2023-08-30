@@ -10,6 +10,6 @@ BUGS
 * se si esce senza salvare la scena dopo il popup che chiede se salvare o meno viene ricreato tw_viewer: risolto con un workaround
 
 TODO
-* passare a versione 4.1
 * quando viene aggiornato un elemento della cache invocare quadTree->setStatus(QuadrantStatus::refreshTerrainDataNeeded); che fa sì che il quadrante sia scaricazto di nuovo
+* passare a versione 4.1
 * edit terreno in EDITOR
