@@ -14,7 +14,7 @@ var initialViewerPos := Vector3(0, 0, 0)
 #var initialViewerPos := Vector3(2000, 0, 9000)
 #var initialViewerPos := Vector3(2000, 0, 15000)
 #var initialViewerPos := Vector3(1196000, 0, 5464000)
-#var initialViewerPos := Vector3(1196000, 0, 5467000)
+#var initialViewerPos := Vector3(1196000, 0, 5467000
 
 #var initialCameraAltitudeForced = 0
 var initialCameraAltitudeForced = 2000
