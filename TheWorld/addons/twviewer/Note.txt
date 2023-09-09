@@ -1,0 +1,3 @@
+quando il plugin viene abilitato		==>	twviewer_plugin.gd: _enter_tree
+quando il plugin viene disabilitato		==>	twviewer_plugin.gd: _make_visible false
+											twviewer_plugin.gd: _exit_tree
