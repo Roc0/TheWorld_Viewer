@@ -1,7 +1,10 @@
 @tool
 extends Node3D
 
+var quitting : bool = false
+
 var _gdn_main_instance : Node = null
+var _gdn_main_instance_errmsg : bool = true
 
 const tw_constants = preload("./tw_const.gd")
 const HT_Logger = preload("./util/logger.gd")
@@ -20,7 +23,7 @@ var _exit_status : int = EXIT_STATUS_RUNNING
 var _gdn_globals : Node = null
 var _gdn_viewer : Node3D = null
 var _logger = HT_Logger.get_for(self)
-var _tree_entered := false
+var _plugin_tree_entered := false
 var _init_done : bool = false
 var _is_ready : bool = false
 var _transform_changed : bool = false
@@ -250,11 +253,15 @@ func _ready():
 	if !Engine.is_editor_hint():
 		custom_ready()
 	_is_ready = true
-	log_debug("_ready done")
+	#log_debug("_ready done")
 	
 func custom_ready():
 	_logger.debug("custom_ready")
 	
+	# debugric
+	#if Engine.is_editor_hint():
+	#	return
+
 	_exit_status = EXIT_STATUS_RUNNING
 	
 	#if !Engine.is_editor_hint():
@@ -279,7 +286,6 @@ func custom_ready():
 		#_cache_quad = 1
 		##_depth_quad = 0
 		##_cache_quad = 0
-	
 	
 	# everything done here has to be undone in _exit_tree
 	
@@ -306,11 +312,15 @@ func custom_ready():
 
 func _enter_tree():
 	_logger.debug("_enter_tree")
-	_tree_entered = true
+	_plugin_tree_entered = true
 
 func _exit_tree():
+	if not quitting:
+		_logger.debug("_exit_tree")
+	
 	if _init_done:
-		log_debug("_exit_tree")
+		if not quitting:
+			log_debug("_exit_tree")
 		
 		deinit()
 
@@ -329,10 +339,9 @@ func _exit_tree():
 		
 		_is_ready = false
 	
-	#print("_exit_tree")
-	queue_free()
+	#queue_free()
 	
-	_tree_entered = false
+	_plugin_tree_entered = false
 
 func _input(event):
 	if Engine.is_editor_hint():
@@ -372,6 +381,10 @@ func deinit_world() -> void:
 func _process(delta):
 	#log_debug("_process")
 	
+	# debugric
+	#if Engine.is_editor_hint():
+	#	return
+
 	if _exit_status == EXIT_STATUS_UNDEPLOYWORLD_REQUIRED:
 		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
 			if _client_status < tw_constants.clientstatus_world_undeploy_in_progress:
@@ -570,7 +583,9 @@ func _process(delta):
 		_info_panel_status = "Status: " + tw_constants.status_to_string(_client_status) + "\n"
 		var camera : Camera3D = null
 		camera = gdn_viewer.get_camera()
-		var e : Vector3 = camera.global_transform.basis.get_euler()
+		var e : Vector3 
+		if camera != null:
+			e = camera.global_transform.basis.get_euler()
 		var update_quads1_duration : int = gdn_viewer.get_update_quads1_duration()
 		var update_quads2_duration : int = gdn_viewer.get_update_quads2_duration()
 		var update_quads3_duration : int = gdn_viewer.get_update_quads3_duration()
@@ -683,8 +698,10 @@ func _notification(_what):
 		log_debug("_notification: visibility changed")
 		_visibility_changed = true
 	elif (_what == NOTIFICATION_PREDELETE):
-		print("_notification: NOTIFICATION_PREDELETE - Destroy tw_viewer")
+		if not quitting:
+			log_debug("_notification: NOTIFICATION_PREDELETE - Destroy tw_viewer")
 	elif (_what == NOTIFICATION_WM_CLOSE_REQUEST):
+		quitting = true
 		log_debug("_notification: NOTIFICATION_WM_CLOSE_REQUEST ")
 		if Engine.is_editor_hint() || get_tree().is_auto_accept_quit():
 			activate_shutdown()
@@ -755,11 +772,15 @@ func init_gdn_viewer() -> bool:
 
 func pre_deinit():
 	log_debug("pre_deinit")
+	if GDN_main() == null:
+		return
 	GDN_main().pre_deinit()
 	log_debug("Pre deinit completed...")
 
 func can_deinit() -> bool:
 	log_debug("can_deinit")
+	if GDN_main() == null:
+		return true
 	return GDN_main().can_deinit()
 
 func deinit():
@@ -793,7 +814,7 @@ func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> 
 func find_node_by_name(node_name : String) -> Node:
 		if Engine.is_editor_hint():
 			var scene : SceneTree = null
-			#if _tree_entered:
+			#if _plugin_tree_entered:
 			scene = get_tree()
 			if scene == null:
 				return null
@@ -801,7 +822,7 @@ func find_node_by_name(node_name : String) -> Node:
 			return node
 		else:
 			var scene : SceneTree = null
-			if _tree_entered:
+			if _plugin_tree_entered:
 				scene = get_tree()
 			if scene == null:
 				return null
@@ -811,6 +832,10 @@ func find_node_by_name(node_name : String) -> Node:
 func GDN_main():
 	if _gdn_main_instance == null:
 		_gdn_main_instance = find_node_by_name(tw_constants.tw_gdn_main_node_name)
+	if _gdn_main_instance == null && _gdn_main_instance_errmsg:
+		_gdn_main_instance_errmsg = false
+		log_debug(str("something is wrong, _gdn_main_instance ", _gdn_main_instance))
+		_gdn_main_instance_errmsg = true
 	return _gdn_main_instance
 
 func GDN_globals():
@@ -1170,7 +1195,7 @@ func restore_init():
 	var client_status : int = get_clientstatus()
 	var gdn_viewer = GDN_viewer()
 	_exit_status = EXIT_STATUS_RUNNING
-	_tree_entered = true
+	_plugin_tree_entered = true
 	_is_ready = true
 	var info_panel = find_node_by_name("InfoPanel")
 	if info_panel != null:
@@ -1201,7 +1226,7 @@ func print_variables_to_restore():
 	_logger.debug(str("_editor_camera=", _editor_camera))
 	_logger.debug(str("_editor_3d_overlay=", _editor_3d_overlay))
 	_logger.debug(str("_exit_status=", _exit_status))
-	_logger.debug(str("_tree_entered=", _tree_entered))
+	_logger.debug(str("_plugin_tree_entered=", _plugin_tree_entered))
 	_logger.debug(str("_is_ready=", _is_ready))
 	_logger.debug(str("_info_panel=", _info_panel))
 	_logger.debug(str("_info_panel_main_vboxcontainer=", _info_panel_main_vboxcontainer))

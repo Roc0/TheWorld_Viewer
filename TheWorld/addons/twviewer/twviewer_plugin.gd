@@ -1,6 +1,8 @@
 @tool
 extends EditorPlugin
 
+var quitting : bool = false
+
 const TWViewer = preload("./tw_viewer.gd")
 
 const tw_editor_util = preload("./tools/util/editor_util.gd")
@@ -43,7 +45,8 @@ func _enter_tree():
 	#add_autoload_singleton(AUTOLOAD_NAME, AUTOLOAD_SCRIPT)
 	
 func _exit_tree():
-	_logger.debug("_exit_tree")
+	if not quitting:
+		_logger.debug("_exit_tree")
 	
 	remove_custom_type("TWViewer")
 	
@@ -51,6 +54,9 @@ func _exit_tree():
 
 func _process(delta: float):
 	#_logger.debug(str("_process "))
+	
+	# debugric
+	#return
 	
 	if !_viewer_init_done && !_close_requested:
 		#_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done))
@@ -108,6 +114,7 @@ func _handles(object):
 	return b
 
 func _make_visible(visible: bool):
+	_logger.debug(str("_make_visible ", visible))
 	#_panel.set_visible(visible)
 	#_toolbar.set_visible(visible)
 	#_brush_decal.update_visibility()
@@ -122,7 +129,7 @@ func _make_visible(visible: bool):
 		_edit(null)
 
 func _edit(object):
-	_logger.debug(str("edit ", object))
+	_logger.debug(str("_edit ", object))
 	
 	#if !_viewer_init_done:
 	#	update_overlays()
@@ -149,7 +156,7 @@ func _edit(object):
 	#	_viewer_connected = true
 	
 func _forward_3d_draw_over_viewport(overlay : Control):
-	#print("_forward_3d_draw_over_viewport")
+	print("_forward_3d_draw_over_viewport")
 	
 	if _viewer != null:
 		_viewer.set_editor_3d_overlay(overlay)
@@ -157,7 +164,7 @@ func _forward_3d_draw_over_viewport(overlay : Control):
 		#print("_viewer.set_editor_3d_overlay")
 	
 func _forward_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:
-	#print(str("_forward_3d_gui_input: keycode="))
+	print(str("_forward_3d_gui_input: keycode="))
 
 	var ret : int = EditorPlugin.AFTER_GUI_INPUT_PASS
 	
@@ -219,6 +226,7 @@ func _notification(_what):
 	#log_debug(str("_notification: ", self.name, " ", self.get_path(), " ", _what))
 	
 	if (_what == NOTIFICATION_WM_CLOSE_REQUEST):
+		quitting = true
 		_logger.debug("_notification: NOTIFICATION_WM_CLOSE_REQUEST ")
 		_close_requested = true
 
