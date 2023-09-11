@@ -43,7 +43,6 @@ layout_mode = 2
 script = ExtResource("3_yxvy6")
 _world_param_info_visible = true
 _world_editor_param_info_visible = true
-_world_editor_param_deploy_world = true
 
 [node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main/TWViewer"]
 
