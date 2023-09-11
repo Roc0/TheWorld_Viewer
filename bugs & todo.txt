@@ -1,15 +1,8 @@
 TEST
-* terminare caricamento DB da cache
-* verificare caso di caricamento cache da DB quando la cache non ha il quadrante
-* verificare caso di caricamento cache da DB quando la il thread di riallineamento modifica un elemento della cache (vedi TODO)
-* Testare in RUN (modificata l'uscita con l'undeployworld)
+
 
 BUGS
-* crash in uscita (forse risolto con 4.1?)
-
 * se si esce senza salvare la scena dopo il popup che chiede se salvare o meno viene ricreato tw_viewer: risolto con un workaround
 
 TODO
-* quando viene aggiornato un elemento della cache invocare quadTree->setStatus(QuadrantStatus::refreshTerrainDataNeeded); che fa sì che il quadrante sia scaricazto di nuovo
-* passare a versione 4.1
 * edit terreno in EDITOR
