@@ -482,30 +482,37 @@ func _process(delta):
 		
 		if _shader_param_ground_uv_scale_changed:
 			gdn_viewer.set_shader_parameter("ground_uv_scale", _shader_param_ground_uv_scale)
+			log_debug(str("set_shader_parameter ground_uv_scale=", _shader_param_ground_uv_scale))
 			_shader_param_ground_uv_scale_changed = false
 
 		if _shader_param_depth_blending_changed:
 			gdn_viewer.set_shader_parameter("depth_blending", _shader_param_depth_blending)
+			log_debug(str("set_shader_parameter depth_blending=", _shader_param_depth_blending))
 			_shader_param_depth_blending_changed = false
 
 		if _shader_param_triplanar_changed:
 			gdn_viewer.set_shader_parameter("triplanar", _shader_param_triplanar)
+			log_debug(str("set_shader_parameter triplanar=", _shader_param_triplanar))
 			_shader_param_triplanar_changed = false
 
 		if _shader_param_tile_reduction_changed:
 			gdn_viewer.set_shader_parameter("tile_reduction", _shader_param_tile_reduction)
+			log_debug(str("set_shader_parameter tile_reduction=", _shader_param_tile_reduction))
 			_shader_param_tile_reduction_changed = false
 
 		if _shader_param_globalmap_blend_start_changed:
 			gdn_viewer.set_shader_parameter("globalmap_blend_start", _shader_param_globalmap_blend_start)
+			log_debug(str("set_shader_parameter globalmap_blend_start=", _shader_param_globalmap_blend_start))
 			_shader_param_globalmap_blend_start_changed = false
 
 		if _shader_param_globalmap_blend_distance_changed:
 			gdn_viewer.set_shader_parameter("globalmap_blend_distance", _shader_param_globalmap_blend_distance)
+			log_debug(str("set_shader_parameter globalmap_blend_distance=", _shader_param_globalmap_blend_distance))
 			_shader_param_globalmap_blend_distance_changed = false
 
 		if _shader_param_colormap_opacity_changed:
 			gdn_viewer.set_shader_parameter("colormap_opacity", _shader_param_colormap_opacity)
+			log_debug(str("set_shader_parameter colormap_opacity=", _shader_param_colormap_opacity))
 			_shader_param_colormap_opacity_changed = false
 
 	if _edit_panel_visibility_changed:
@@ -752,23 +759,33 @@ func init_gdn_viewer() -> bool:
 			gdn_viewer.global_transform = global_transform
 			gdn_viewer.visible = is_visible_in_tree()
 			log_debug("global_transform changed")
-			gdn_viewer.set_shader_parameter("ground_uv_scale", _shader_param_ground_uv_scale)
-			log_debug(str("set_shader_parameter ground_uv_scale=", _shader_param_ground_uv_scale))
-			gdn_viewer.set_shader_parameter("depth_blending", _shader_param_depth_blending)
-			log_debug(str("set_shader_parameter depth_blending=", _shader_param_depth_blending))
-			gdn_viewer.set_shader_parameter("triplanar", _shader_param_triplanar)
-			log_debug(str("set_shader_parameter triplanar=", _shader_param_triplanar))
-			gdn_viewer.set_shader_parameter("tile_reduction", _shader_param_tile_reduction)
-			log_debug(str("set_shader_parameter tile_reduction=", _shader_param_tile_reduction))
-			gdn_viewer.set_shader_parameter("globalmap_blend_start", _shader_param_globalmap_blend_start)
-			log_debug(str("set_shader_parameter globalmap_blend_start=", _shader_param_globalmap_blend_start))
-			gdn_viewer.set_shader_parameter("globalmap_blend_distance", _shader_param_globalmap_blend_distance)
-			log_debug(str("set_shader_parameter globalmap_blend_distance=", _shader_param_globalmap_blend_distance))
-			gdn_viewer.set_shader_parameter("colormap_opacity", _shader_param_colormap_opacity)
-			log_debug(str("set_shader_parameter colormap_opacity=", _shader_param_colormap_opacity))
+			set_shader_parameters()
+			#gdn_viewer.set_shader_parameter("ground_uv_scale", _shader_param_ground_uv_scale)
+			#log_debug(str("set_shader_parameter ground_uv_scale=", _shader_param_ground_uv_scale))
+			#gdn_viewer.set_shader_parameter("depth_blending", _shader_param_depth_blending)
+			#log_debug(str("set_shader_parameter depth_blending=", _shader_param_depth_blending))
+			#gdn_viewer.set_shader_parameter("triplanar", _shader_param_triplanar)
+			#log_debug(str("set_shader_parameter triplanar=", _shader_param_triplanar))
+			#gdn_viewer.set_shader_parameter("tile_reduction", _shader_param_tile_reduction)
+			#log_debug(str("set_shader_parameter tile_reduction=", _shader_param_tile_reduction))
+			#gdn_viewer.set_shader_parameter("globalmap_blend_start", _shader_param_globalmap_blend_start)
+			#log_debug(str("set_shader_parameter globalmap_blend_start=", _shader_param_globalmap_blend_start))
+			#gdn_viewer.set_shader_parameter("globalmap_blend_distance", _shader_param_globalmap_blend_distance)
+			#log_debug(str("set_shader_parameter globalmap_blend_distance=", _shader_param_globalmap_blend_distance))
+			#gdn_viewer.set_shader_parameter("colormap_opacity", _shader_param_colormap_opacity)
+			#log_debug(str("set_shader_parameter colormap_opacity=", _shader_param_colormap_opacity))
 			
 		_init_done = true
 		return true
+
+func set_shader_parameters() -> void:
+	_shader_param_ground_uv_scale_changed = true
+	_shader_param_depth_blending_changed = true
+	_shader_param_triplanar_changed = true
+	_shader_param_tile_reduction_changed = true
+	_shader_param_globalmap_blend_start_changed = true
+	_shader_param_globalmap_blend_distance_changed = true
+	_shader_param_colormap_opacity_changed = true
 
 func pre_deinit():
 	log_debug("pre_deinit")
@@ -810,6 +827,8 @@ func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> 
 	var new_client_status_str : String = tw_constants.status_to_string(new_client_status)
 	_client_status = new_client_status
 	log_debug(str("_on_tw_status_changed ", old_client_status_str, "(", old_client_status, ") ==> ", new_client_status_str, "(", new_client_status, ")"))
+	if (_client_status == tw_constants.clientstatus_session_initialized):
+		set_shader_parameters()
 
 func find_node_by_name(node_name : String) -> Node:
 		if Engine.is_editor_hint():
