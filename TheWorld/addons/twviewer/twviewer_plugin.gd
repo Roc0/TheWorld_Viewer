@@ -111,6 +111,7 @@ func _handles(object):
 	var b : bool = _get_custom_object(object) != null
 	#if b:
 	#	_logger.debug(str("handles ", object))
+	#print (str("_handles ", object, " ret=", b))
 	return b
 
 func _make_visible(visible: bool):
@@ -164,7 +165,7 @@ func _forward_3d_draw_over_viewport(overlay : Control):
 		#print("_viewer.set_editor_3d_overlay")
 	
 func _forward_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:
-	#print(str("_forward_3d_gui_input: keycode="))
+	#print(str("_forward_3d_gui_input"))
 
 	var ret : int = EditorPlugin.AFTER_GUI_INPUT_PASS
 	
