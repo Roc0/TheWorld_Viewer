@@ -298,6 +298,8 @@ func custom_ready():
 		gdn_main.name = tw_constants.tw_gdn_main_node_name
 		add_child(gdn_main)
 
+	create_info_panel()
+	
 	init_gdn_viewer()
 	if !get_tree().get_root().is_connected("size_changed", Callable(self, "resizing")):
 		var e := get_tree().get_root().connect("size_changed", Callable(self, "resizing"))
@@ -305,8 +307,6 @@ func custom_ready():
 	set_notify_transform(true)
 	
 	_client_status = get_clientstatus()
-	
-	create_info_panel()
 	
 	log_debug("custom_ready done")
 
@@ -587,7 +587,9 @@ func _process(delta):
 	
 	#print(gdn_viewer.has_method("get_camera"))
 	if _info_panel != null && _info_panel.visible && gdn_viewer.has_method("get_camera"):
-		_info_panel_status = "Status: " + tw_constants.status_to_string(_client_status) + "\n"
+		var tot_element_to_initialize : int = GDN_globals().get_tot_element_to_initialize()
+		var num_element_initialized : int = GDN_globals().get_num_element_initialized()
+		_info_panel_status = "Status: " + tw_constants.status_to_string(_client_status) + " (" + str(num_element_initialized) + "/"+ str(tot_element_to_initialize) + ")" + "\n"
 		var camera : Camera3D = null
 		camera = gdn_viewer.get_camera()
 		var e : Vector3 
@@ -604,7 +606,7 @@ func _process(delta):
 			_last_check_delta_pos = Time.get_ticks_msec()
 		if !Engine.is_editor_hint():
 			_info_panel_draw_mode = "Draw mode: " +  gdn_viewer.get_debug_draw_mode() + "\n"
-			_info_panel_num_locks = "Locks: " +  str(gdn_viewer.get_num_process_not_owns_lock()) + "\n"
+			_info_panel_num_locks = "Locks: " + str(gdn_viewer.get_num_process_not_owns_lock()) + "\n"
 			if camera != null && camera.has_method("get_yaw"):
 				_info_panel_camera_degree_from_north = "  Deg. north: " + str(camera.get_angle_from_north_degree()) + "\n"
 				_info_panel_camera_yaw = "  Yaw :" + str(camera.get_yaw(false)) + "\n"

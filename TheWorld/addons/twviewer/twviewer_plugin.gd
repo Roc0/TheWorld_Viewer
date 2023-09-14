@@ -64,6 +64,7 @@ func _process(delta: float):
 		if _viewer != null && _viewer.has_method("is_ready") && _viewer.is_ready():
 			_viewer.custom_ready()
 			_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done, " initializing ..."))
+			_edit(_viewer)
 			
 			var editor_interface := get_editor_interface()
 			_logger.debug (str("EditorInterface ", editor_interface))
