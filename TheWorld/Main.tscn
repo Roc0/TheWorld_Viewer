@@ -43,6 +43,7 @@ layout_mode = 2
 script = ExtResource("3_yxvy6")
 _world_param_info_visible = true
 _world_editor_param_info_visible = true
+_world_editor_param_deploy_world = true
 _shader_param_ground_uv_scale = 165.88
 
 [node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main/TWViewer"]

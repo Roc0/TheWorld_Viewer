@@ -79,11 +79,12 @@ func _process(delta: float):
 			editor_interface.edit_node(_viewer)
 			
 			#var m = editor_interface.get_editor_main_screen()
-			#var editor_3d = null
 			#if m != null:
-			#	print(str("m.get_child_count(false)", m.get_child_count(true)))
+			#	print(str("editor_main_screen get_child_count(true)", m.get_child_count(true)))
 			#	var ctrls : Array = m.get_children(true)
 			#	recurse_in_children(ctrls, 0)
+
+			#var editor_3d = null
 			#if editor_3d != null:
 			#	_viewer.set_editor_3d_overlay(editor_3d)
 			
@@ -101,12 +102,12 @@ func _process(delta: float):
 
 func recurse_in_children(children : Array, num : int):
 	if !children.is_empty():
-		var header : String = ""
+		var indentation : String = ""
 		for i in num:
-			header = header + "  "
+			indentation = indentation + "  "
 		for c in children:
-			print(str(header, c.name, " ", c.get_class(), " ", c.get_child_count(true)))
-			recurse_in_children(c.get_children(), num + 1)
+			print(str(indentation, c.name, " ", c.get_class(), " ", c.get_child_count(true)))
+			recurse_in_children(c.get_children(true), num + 1)
 
 func _handles(object):
 	var b : bool = _get_custom_object(object) != null
