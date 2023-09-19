@@ -657,13 +657,17 @@ func _process(delta):
 			_info_panel_camera_projection = "Unknown"
 		#_info_panel_info_camera = "  info: " + viewer.get_info_camera() + "\n"
 			
+		var mouse_pos : Vector2 = Vector2(0, 0)
+		#mouse_pos = get_viewport().get_mouse_position()
+		if (_editor_3d_overlay != null):
+			mouse_pos = _editor_3d_overlay.get_local_mouse_position()
 		_info_panel_general_label.text = "FPS: " + str(Engine.get_frames_per_second()) + "\n" \
 			+ _info_panel_status \
 			+ _info_panel_render_process_durations_mcs \
 			+ _info_panel_draw_mode \
 			+ _info_panel_num_locks \
 			+ _info_panel_grid_origin \
-			+ "Pos in viewport: " + str(get_viewport().get_mouse_position())
+			+ "Pos in viewport: " + str(mouse_pos)
 		
 		_info_panel_camera_label.text = "Camera3D: " + _info_panel_camera_projection + "\n" \
 		+ _info_panel_camera_degree_from_north \
@@ -812,6 +816,7 @@ func deinit():
 
 func set_editor_3d_overlay(overlay : Control):
 	_editor_3d_overlay = overlay
+	GDN_viewer().set_editor_3d_overlay(overlay)
 
 func set_editor_interface(editor_interface : EditorInterface):
 	_editor_interface = editor_interface

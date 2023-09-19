@@ -159,14 +159,22 @@ vec3 get_normal(vec2 uv){
 	return normalize(n);
 }
 
+bool is_to_highlight(vec2 uv){
+	float distance_from_border = 0.01;
+	if (uv.x > distance_from_border && uv.x < (1.0 - distance_from_border) && uv.y > distance_from_border && uv.y < (1.0 - distance_from_border)) {
+		return false;
+	} else {
+		return true;
+	}
+	//return false;
+}
+
 void vertex() {
-	vec4 vertex_world_pos = MODEL_MATRIX * vec4(VERTEX, 1);		// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need to trasform in world coord
-	vec2 quadrant_coords = (u_terrain_inverse_transform * vertex_world_pos).xz;		// to calculate cell coords in the heigthmap/normalmap we need to trasfom global coords of the vertex (vertex_world_pos) in local coords to che quadrant: we do this by using affine inverse matrix of the global trasform of the quadtree
-	//vec2 quadrant_coords_tex = quadrant_coords;
-	quadrant_coords /= vec2(u_grid_step_in_wu);		// WARNING: we also need to consider the step (dividing by it) to get correct value from the textures: in the textures heigths/normlas are adjacent in global/local coords are separated by the step
-	quadrant_coords += vec2(0.5);		// Must add a half-offset so that we sample the center of pixels, otherwise bilinear filtering of the textures will give us mixed results (#183)
-	//quadrant_coords_tex += vec2(0.5);
-	UV = quadrant_coords / vec2(textureSize(u_terrain_heightmap, 0));	// Normalized UV to be in the range 0/1
+	vec4 vertex_world_pos = MODEL_MATRIX * vec4(VERTEX, 1);		// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need to trasform in world coord to abstract from chunk
+	vec4 vertex_local_to_quadrant_pos = u_terrain_inverse_transform * vertex_world_pos;	// to calculate coords of the vertex local to the quadrant we use affine inverse matrix of the global trasform of the quadtree
+	vec2 vertex_cell_coords_in_textures = vertex_local_to_quadrant_pos.xz / vec2(u_grid_step_in_wu);	// to calculate coords of the vertex in the heigthmap/normalmap so to get correct value from the textures we need to consider the step (dividing by it): in the textures heigths/normlas are adjacent in global/local coords are separated by the step
+	vertex_cell_coords_in_textures += vec2(0.5);		// Moreover must add a half-offset so that we sample the center of pixels, otherwise bilinear filtering of the textures will give us mixed results (#183)
+	UV = vertex_cell_coords_in_textures / vec2(textureSize(u_terrain_heightmap, 0));	// Normalized UV to be in the range 0/1
 
 	//float h = texture(u_terrain_heightmap, uv).r * u_terrain_height;
 	float h = get_height(UV);		// Height displacement from heigthmap
@@ -177,7 +185,7 @@ void vertex() {
 	//u_ground_uv_scale_per_texture.y = textureSize(u_terrain_heightmap, 0) / textureSize(u_ground_albedo_bump_1, 0)
 	//u_ground_uv_scale_per_texture.z = textureSize(u_terrain_heightmap, 0) / textureSize(u_ground_albedo_bump_2, 0)
 	//u_ground_uv_scale_per_texture.w = textureSize(u_terrain_heightmap, 0) / textureSize(u_ground_albedo_bump_3, 0)
-	vec3 base_ground_uv = vec3(quadrant_coords.x, h * MODEL_MATRIX[1][1], quadrant_coords.y);
+	vec3 base_ground_uv = vec3(vertex_cell_coords_in_textures.x, h * MODEL_MATRIX[1][1], vertex_cell_coords_in_textures.y);
 	v_ground_uv0 = base_ground_uv.xz / u_ground_uv_scale_per_texture.x;		// 2-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor
 	v_ground_uv1 = base_ground_uv.xz / u_ground_uv_scale_per_texture.y;		// these coordinates are used to fetch u_ground_albedo_bump_0 and u_ground_normal_roughness_0 
 	v_ground_uv2 = base_ground_uv.xz / u_ground_uv_scale_per_texture.z;
@@ -218,7 +226,7 @@ void fragment() {
 	vec3 global_albedo = texture(u_terrain_globalmap, UV).rgb;
 	ALBEDO = global_albedo;
 
-	if (u_editmode_selected > 0.0) {
+	if (u_editmode_selected > 0.0 && is_to_highlight(UV)) {
 
 		ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 
