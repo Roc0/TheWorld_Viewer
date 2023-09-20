@@ -103,6 +103,10 @@ func _ready():
 	#get_tree().get_root().set_transparent_background(true)
 	#set_notify_transform(true)
 	#TWViewer().global_transform = global_transform
+	
+	var mode = Window.MODE_MAXIMIZED if (true) else Window.MODE_WINDOWED
+	get_window().mode = mode
+
 
 func resizing():
 	log_debug(str("Resizing: ", get_viewport().size))
@@ -360,7 +364,8 @@ func _process(_delta):
 		
 func enter_world():
 	log_debug("Entering world...")
-	get_window().mode = Window.MODE_MAXIMIZED if (true) else Window.MODE_WINDOWED
+	#var mode = Window.MODE_MAXIMIZED if (true) else Window.MODE_WINDOWED
+	#get_window().mode = mode
 	set_debug_window(false)
 	$DebugStats.add_property(self, "_client_status", "")
 	$DebugStats.add_property(self, "fps", "")
