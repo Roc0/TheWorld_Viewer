@@ -303,7 +303,7 @@ func custom_ready():
 	init_gdn_viewer()
 	if !get_tree().get_root().is_connected("size_changed", Callable(self, "resizing")):
 		var e := get_tree().get_root().connect("size_changed", Callable(self, "resizing"))
-		log_debug(str("connect size_changed result=", e))
+		log_debug(str("connected size_changed signal (result=", e, ")"))
 	set_notify_transform(true)
 	
 	_client_status = get_clientstatus()
@@ -737,7 +737,12 @@ func activate_shutdown():
 		_exit_status = EXIT_STATUS_UNDEPLOYWORLD_REQUIRED
 
 func resizing():
-	log_debug(str("Resizing: ", get_viewport().size))
+	if (_gdn_viewer != null && _gdn_viewer.has_method("viewport_size_changed")):
+		_gdn_viewer.viewport_size_changed()
+	#var size = get_viewport().size
+	#if (_gdn_viewer != null && _gdn_viewer.has_method("get_viewport_size")):
+	#	size = _gdn_viewer.get_viewport_size()
+	#log_debug(str("Resizing: ",size ))
 	set_size_info_panel()
 
 func init_gdn_viewer() -> bool:
@@ -815,7 +820,11 @@ func deinit():
 		_init_done = false
 
 func set_editor_3d_overlay(overlay : Control):
+	#log_debug("set_editor_3d_overlay")
 	_editor_3d_overlay = overlay
+	if !_editor_3d_overlay.is_connected("resized", Callable(self, "resizing")):
+		var e := _editor_3d_overlay.connect("resized", Callable(self, "resizing"))
+		log_debug(str("connected _editor_3d_overlay resized signal (result=", e, ")"))
 	GDN_viewer().set_editor_3d_overlay(overlay)
 
 func set_editor_interface(editor_interface : EditorInterface):
