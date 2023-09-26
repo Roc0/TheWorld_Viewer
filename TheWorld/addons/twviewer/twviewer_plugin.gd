@@ -64,7 +64,6 @@ func _process(delta: float):
 		if _viewer != null && _viewer.has_method("is_ready") && _viewer.is_ready():
 			_viewer.custom_ready()
 			_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done, " initializing ..."))
-			_edit(_viewer)
 			
 			var editor_interface := get_editor_interface()
 			_logger.debug (str("EditorInterface ", editor_interface))
@@ -88,6 +87,8 @@ func _process(delta: float):
 			#if editor_3d != null:
 			#	_viewer.set_editor_3d_overlay(editor_3d)
 			
+			_edit(_viewer)
+
 			#_viewer_connected = true
 			_viewer_init_done = true
 			_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done))
