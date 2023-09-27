@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cgjmhicxkjd7e"
-path="res://.godot/imported/grass_normal_roughness.ground.png-e2b1453bf84b8fab3ce9c958c691bfc4.ctex"
+uid="uid://bcimaaenhvotv"
+path="res://.godot/imported/Rock028_1K_albedo_bump.ground.png-73b1a9177dc7f6a128f991330cfbb7d3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/textures/ground/grass_normal_roughness.ground.png"
-dest_files=["res://.godot/imported/grass_normal_roughness.ground.png-e2b1453bf84b8fab3ce9c958c691bfc4.ctex"]
+source_file="res://assets/textures/ground/Rock028_1K_albedo_bump.ground.png"
+dest_files=["res://.godot/imported/Rock028_1K_albedo_bump.ground.png-73b1a9177dc7f6a128f991330cfbb7d3.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://6427x710a2d8"
-path="res://.godot/imported/grass_albedo.png-f62ca0c44dc627cdbb98a726f0c0f4f4.ctex"
+uid="uid://bx651t7msdj7g"
+path="res://.godot/imported/Snow005_1K_normal_roughness.ground.png-a362836003849a9d9b77b03be4c6cc88.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/textures/ground/grass_albedo.png"
-dest_files=["res://.godot/imported/grass_albedo.png-f62ca0c44dc627cdbb98a726f0c0f4f4.ctex"]
+source_file="res://assets/textures/ground/Snow005_1K_normal_roughness.ground.png"
+dest_files=["res://.godot/imported/Snow005_1K_normal_roughness.ground.png-a362836003849a9d9b77b03be4c6cc88.ctex"]
 
 [params]
 

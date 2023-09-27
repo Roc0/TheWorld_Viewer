@@ -2,21 +2,20 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ckpuibo6n3xwe"
-path.s3tc="res://.godot/imported/Ground003_2K_albedo_bump.ground.png-664686f827e73896cfb5c8a3398eb0fd.s3tc.ctex"
+uid="uid://t7m5adqlqke3"
+path="res://.godot/imported/Ground003_2K_albedo_bump.ground.png-664686f827e73896cfb5c8a3398eb0fd.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
 source_file="res://assets/textures/ground/Ground003_2K_albedo_bump.ground.png"
-dest_files=["res://.godot/imported/Ground003_2K_albedo_bump.ground.png-664686f827e73896cfb5c8a3398eb0fd.s3tc.ctex"]
+dest_files=["res://.godot/imported/Ground003_2K_albedo_bump.ground.png-664686f827e73896cfb5c8a3398eb0fd.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=0
 compress/high_quality=false
 compress/lossy_quality=0.7
 compress/hdr_compression=1

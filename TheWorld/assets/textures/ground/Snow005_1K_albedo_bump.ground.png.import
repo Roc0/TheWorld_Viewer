@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bvcwxx5fftqis"
-path="res://.godot/imported/leaves_albedo.png-08382be138a78ef9a8296ac3e016ca6b.ctex"
+uid="uid://cipksfsw03xvc"
+path="res://.godot/imported/Snow005_1K_albedo_bump.ground.png-79f59c6281b55c0f1544b8012b695c11.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/textures/ground/leaves_albedo.png"
-dest_files=["res://.godot/imported/leaves_albedo.png-08382be138a78ef9a8296ac3e016ca6b.ctex"]
+source_file="res://assets/textures/ground/Snow005_1K_albedo_bump.ground.png"
+dest_files=["res://.godot/imported/Snow005_1K_albedo_bump.ground.png-79f59c6281b55c0f1544b8012b695c11.ctex"]
 
 [params]
 

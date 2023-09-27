@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ehr7ropey8kp"
-path="res://.godot/imported/sand_albedo.png-5765857b27488b55308d69007bb2ea83.ctex"
+uid="uid://cwuyx6r0f7aec"
+path="res://.godot/imported/Rock028_1K_normal_roughness.ground.png-5006ed9edc42bcaff8fdaaca52b3282a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/textures/ground/sand_albedo.png"
-dest_files=["res://.godot/imported/sand_albedo.png-5765857b27488b55308d69007bb2ea83.ctex"]
+source_file="res://assets/textures/ground/Rock028_1K_normal_roughness.ground.png"
+dest_files=["res://.godot/imported/Rock028_1K_normal_roughness.ground.png-5006ed9edc42bcaff8fdaaca52b3282a.ctex"]
 
 [params]
 
