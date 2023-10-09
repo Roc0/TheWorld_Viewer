@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://c4ukh1kw4impi"]
+[gd_scene load_steps=10 format=3 uid="uid://c4ukh1kw4impi"]
 
 [ext_resource type="Script" path="res://main/TheWorld_Main.gd" id="1_760ml"]
 [ext_resource type="Script" path="res://utils/DebugStats.gd" id="3_og4hm"]
@@ -14,6 +14,18 @@ albedo_color = Color(0.803922, 0.117647, 0.117647, 1)
 material = SubResource("StandardMaterial3D_0u8xk")
 radius = 5.0
 height = 10.0
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jhq8q"]
+
+[sub_resource type="Sky" id="Sky_i3qaf"]
+sky_material = SubResource("ProceduralSkyMaterial_jhq8q")
+
+[sub_resource type="Environment" id="Environment_0jlkq"]
+background_mode = 2
+sky = SubResource("Sky_i3qaf")
+fog_light_color = Color(0.517647, 0.552941, 0.607843, 1)
+fog_density = 0.0
+volumetric_fog_density = 0.0147
 
 [node name="RootNode" type="Node"]
 
@@ -54,3 +66,6 @@ _shader_param_ground_uv_scale = 165.88
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/TWViewer"]
 transform = Transform3D(-0.75471, 0.0799535, -0.651169, 0, 0.992546, 0.121869, 0.656059, 0.091976, -0.749084, 0, 2200, 0)
 far = 20000.0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="TheWorld_Main"]
+environment = SubResource("Environment_0jlkq")
