@@ -47,6 +47,9 @@ var _info_panel_external_labels = []
 
 var _info_panel : Control = null
 var _info_panel_main_vboxcontainer : VBoxContainer = null
+var _info_panel_scroll_container : ScrollContainer = null
+var _info_panel_max_width : int = 0
+var _mouse_inside_info_panel : bool = false
 
 var _info_panel_general_label : Label = null
 var _info_panel_camera_label : Label = null
@@ -344,6 +347,14 @@ func _exit_tree():
 	_plugin_tree_entered = false
 
 func _input(event):
+	#if event is InputEventMouseButton:
+	#	if (event.pressed 
+	#		&& (event.button_index == MOUSE_BUTTON_WHEEL_DOWN || event.button_index == MOUSE_BUTTON_WHEEL_UP)):
+	#			if (_mouse_inside_info_panel):
+	#				get_tree().get_root().set_input_as_handled()
+	#			else:
+	#				get_tree().get_root().set_input_as_handled()
+				
 	if Engine.is_editor_hint():
 		return
 		
@@ -701,6 +712,23 @@ func _process(delta):
 		+ _info_panel_chunk_hit_size \
 		+ _info_panel_chunk_hit_dist_from_camera
 	
+	var wr = weakref(_info_panel_main_vboxcontainer);
+	if (wr.get_ref()):
+		var viewportSize : Vector2 = _gdn_viewer.get_viewport_size()
+		var contentSize : Vector2 = _info_panel_main_vboxcontainer.get_rect().size
+		var size : Vector2 = viewportSize
+		if (contentSize != Vector2(0, 0)):
+			if (viewportSize.y > contentSize.y):
+				size.y = contentSize.y
+			if (viewportSize.x > contentSize.x):
+				size.x = contentSize.x
+			if size.x > _info_panel_max_width:
+				_info_panel_max_width = size.x
+			else:
+				size.x = _info_panel_max_width
+			#size.x = 0	# ??
+		_info_panel_scroll_container.custom_minimum_size = size
+		
 func _notification(_what):
 	#log_debug(str("_notification: ", self.name, " ", self.get_path(), " ", _what))
 	
@@ -1047,6 +1075,8 @@ func create_info_panel():
 		return
 	
 	_info_panel = PanelContainer.new()
+	_info_panel.connect("mouse_entered", Callable(self, "info_panel_mouse_entered"))
+	_info_panel.connect("mouse_exited", Callable(self, "info_panel_mouse_exited"))
 	#_info_panel = Control.new()
 	#_info_panel = Panel.new()
 	_info_panel.name = "InfoPanel"
@@ -1055,17 +1085,24 @@ func create_info_panel():
 	_world_param_info_panel_visibility_changed = true
 	_info_panel.self_modulate = Color(1, 1, 1, 0.5)
 	
+	_info_panel_scroll_container = ScrollContainer.new()
+	
 	_info_panel_main_vboxcontainer = VBoxContainer.new()
 	_info_panel_main_vboxcontainer.name = "Info"
 
 	if Engine.is_editor_hint():
 		var panel = TabContainer.new()
 		_info_panel.add_child(panel)
-		panel.name = "Info"
 		panel.self_modulate = Color(1, 1, 1, 0.5)
-		panel.add_child(_info_panel_main_vboxcontainer)
+		#panel.name = "Info"
+		#panel.add_child(_info_panel_main_vboxcontainer)
+		panel.add_child(_info_panel_scroll_container)
+		_info_panel_scroll_container.name = "Info"
 	else:
-		_info_panel.add_child(_info_panel_main_vboxcontainer)
+		#_info_panel.add_child(_info_panel_main_vboxcontainer)
+		_info_panel.add_child(_info_panel_scroll_container)
+	
+	_info_panel_scroll_container.add_child(_info_panel_main_vboxcontainer)
 		
 	#_info_panel_main_vboxcontainer.self_modulate = Color(1, 1, 1, 0.5)
 	#var i : int = _info_panel_main_vboxcontainer.get_constant("hseparation=")
@@ -1083,6 +1120,9 @@ func create_info_panel():
 	add_info_panel_separator()
 	_info_panel_mouse_tracking_label = add_info_panel_empty_line()
 	
+	label = add_info_panel_empty_line()
+	label.text = " "
+
 	set_size_info_panel()
 	
 	#apply_dpi_scale(_info_panel, 0.5)
@@ -1099,6 +1139,11 @@ func remove_info_panel():
 		_info_panel.queue_free()
 		_info_panel = null
 
+func info_panel_mouse_entered() -> void:
+	_mouse_inside_info_panel = true
+
+func info_panel_mouse_exited() -> void:
+	_mouse_inside_info_panel = false
 
 func get_info_panel() -> Control:
 	return _info_panel
