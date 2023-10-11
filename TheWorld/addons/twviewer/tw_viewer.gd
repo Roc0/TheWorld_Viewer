@@ -348,12 +348,15 @@ func _exit_tree():
 
 func _input(event):
 	#if event is InputEventMouseButton:
-	#	if (event.pressed 
-	#		&& (event.button_index == MOUSE_BUTTON_WHEEL_DOWN || event.button_index == MOUSE_BUTTON_WHEEL_UP)):
+	#	var gdn_viewer = GDN_viewer()
+	#	if gdn_viewer != null:
+	#		if (event.pressed && (event.button_index == MOUSE_BUTTON_WHEEL_DOWN || event.button_index == MOUSE_BUTTON_WHEEL_UP)):
 	#			if (_mouse_inside_info_panel):
-	#				get_tree().get_root().set_input_as_handled()
-	#			else:
-	#				get_tree().get_root().set_input_as_handled()
+	#				if Engine.is_editor_hint():
+	#					if (_editor_3d_overlay != null):
+	#						_editor_3d_overlay.accept_event()
+	#				else:
+	#					get_viewport().set_input_as_handled()
 				
 	if Engine.is_editor_hint():
 		return
