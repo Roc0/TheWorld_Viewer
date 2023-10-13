@@ -10,18 +10,11 @@ var _logger = HT_Logger.get_for(self)
 
 var initialCameraDistanceFromTerrain : float = 300
 
-var initialViewerPos := Vector3(0, 0, 0)
-#var initialViewerPos := Vector3(2000, 0, 9000)
-#var initialViewerPos := Vector3(2000, 0, 15000)
-#var initialViewerPos := Vector3(1196000, 0, 5464000)
-#var initialViewerPos := Vector3(1196000, 0, 5467000
+var initialBallPos := Vector3(0, 0, 0)
 
+#var initialViewerPos := Vector3(0, 2200, 0)
 #var initialCameraAltitudeForced = 0
-var initialCameraAltitudeForced = 2000
-#var initialCameraAltitudeForced = 7000
-#var initialCameraAltitudeForced = 2900
-#var initialCameraAltitudeForced = 1485
-#var initialCameraAltitudeForced = 9417
+#var initialYawPitchRoll := Vector3(-139, -7, 0)
 
 const initialLevel := 0
 #var init_world_thread : Thread
@@ -275,7 +268,7 @@ func _process(_delta):
 	
 	#if scene_initialized && !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 	if !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
-		$TestBallRigidBody.global_transform.origin = Vector3(initialViewerPos.x + 1, initialViewerPos.y + 1500, initialViewerPos.z + 1)
+		$TestBallRigidBody.global_transform.origin = Vector3(initialBallPos.x + 1, initialBallPos.y + 1500, initialBallPos.z + 1)
 		#if (initialCameraAltitudeForced != 0):
 		#	$TestBallRigidBody.global_transform.origin.y = initialCameraAltitudeForced
 		$TestBallRigidBody.visible = true

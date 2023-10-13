@@ -43,6 +43,8 @@ var _edit_panel_visibility_changed = false
 var _info_panel_added_to_editor_overlay : bool = false
 var _edit_mode_ui_control_added_to_editor_overlay : bool = false
 
+var _info_panel_closing_labels = []
+var _info_panel_num_closing_labels : int = 2
 var _info_panel_external_labels = []
 
 var _info_panel : Control = null
@@ -1123,9 +1125,16 @@ func create_info_panel():
 	add_info_panel_separator()
 	_info_panel_mouse_tracking_label = add_info_panel_empty_line()
 	
-	label = add_info_panel_empty_line()
-	label.text = " "
-
+	for idx in _info_panel_num_closing_labels:
+		_info_panel_closing_labels.append(add_info_panel_empty_line())
+		_info_panel_closing_labels[idx].text = ""
+	#label = add_info_panel_empty_line()
+	#label.text = " "
+	#label = add_info_panel_empty_line()
+	#label.text = " "
+	#label = add_info_panel_empty_line()
+	#label.text = " "
+	
 	set_size_info_panel()
 	
 	#apply_dpi_scale(_info_panel, 0.5)
@@ -1185,8 +1194,15 @@ func add_info_panel_line(text : String, indent : int) -> Label:
 	return label
 
 func add_info_panel_external_line(text : String, indent : int) -> int:
+	for idx in _info_panel_closing_labels.size():
+		var parent : Node = _info_panel_closing_labels[idx].get_parent()
+		if parent != null:
+			parent.remove_child(_info_panel_closing_labels[idx])
+	_info_panel_closing_labels.clear()
+
 	if _info_panel_external_labels.size() == 0:
 		add_info_panel_separator()
+
 	var _text : String = ""
 	for i in indent:
 		_text += "  "
@@ -1200,6 +1216,11 @@ func add_info_panel_external_line(text : String, indent : int) -> int:
 	label = Label.new()
 	hboxcontainer.add_child(label)
 	_info_panel_external_labels.append(label)
+
+	for idx in _info_panel_num_closing_labels:
+		_info_panel_closing_labels.append(add_info_panel_empty_line())
+		_info_panel_closing_labels[idx].text = ""
+
 	return label_index
 	
 func set_info_panel_external_value(text : String, index : int):
