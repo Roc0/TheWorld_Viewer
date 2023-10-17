@@ -61,9 +61,11 @@ func _process(delta: float):
 	if !_viewer_init_done && !_close_requested:
 		#_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done))
 		_viewer = find_node_by_name(tw_constants.tw_viewer_node_name)
+		#_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done, ", TWViewer=", _viewer, ", _viewer.has_method(is_ready)=", _viewer.has_method("is_ready"), ", _viewer.is_ready()=", _viewer.is_ready()))
 		if _viewer != null && _viewer.has_method("is_ready") && _viewer.is_ready():
-			_viewer.custom_ready()
 			_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done, " initializing ..."))
+			_viewer.custom_ready()
+			_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done, " custom_ready done"))
 			
 			var editor_interface := get_editor_interface()
 			_logger.debug (str("EditorInterface ", editor_interface))
@@ -119,45 +121,15 @@ func _handles(object):
 
 func _make_visible(visible: bool):
 	_logger.debug(str("_make_visible ", visible))
-	#_panel.set_visible(visible)
-	#_toolbar.set_visible(visible)
-	#_brush_decal.update_visibility()
 
-	# TODO Workaround https://github.com/godotengine/godot/issues/6459
-	# When the user selects another node,
-	# I want the plugin to release its references to the terrain.
-	# This is important because if we don't do that, some modified resources will still be
-	# loaded in memory, so if the user closes the scene and reopens it later, the changes will
-	# still be partially present, and this is not expected.
 	if not visible:
 		_edit(null)
-
+	else:
+		if _viewer != null:
+			_edit(_viewer)
+	
 func _edit(object):
 	_logger.debug(str("_edit ", object))
-	
-	#if !_viewer_init_done:
-	#	update_overlays()
-	#	print("update_overlays")
-
-	#var custom_object = _get_custom_object(object)
-	
-	#if _viewer != null && _viewer_connected:
-	#	_viewer.disconnect("tree_exited", self, "_viewer_exited_scene")
-	#	_logger.debug ("TWViever disconnected")
-	#	_viewer_connected = false
-
-	#if custom_object == null:
-	#	return
-		
-	#if custom_object != null && custom_object is TWViewer:
-	#	_viewer = custom_object
-	#	#if _viewer_id == 0:
-	#	#	_viewer_id = _viewer.get_instance_id()
-	
-	#if _viewer != null && !_viewer_connected:
-	#	_viewer.connect("tree_exited", self, "_viewer_exited_scene")
-	#	_logger.debug ("TWViever connected")
-	#	_viewer_connected = true
 	
 func _forward_3d_draw_over_viewport(overlay : Control):
 	#print("_forward_3d_draw_over_viewport")
@@ -236,9 +208,12 @@ func _notification(_what):
 
 func _apply_changes():
 	_logger.debug("_apply_changes")
-	_viewer_init_done = false
-	if _viewer != null:
-		_viewer._apply_changes()
+	var viewer : Node = find_node_by_name(tw_constants.tw_viewer_node_name)
+	if viewer != null:
+		_viewer_init_done = false
+		_logger.debug(str("_apply_changes _viewer_init_done=", _viewer_init_done, ", _viewer=", _viewer))
+		if _viewer != null:
+			_viewer._apply_changes()
 	
 func _viewer_exited_scene():
 	_logger.debug("tw_viewer exited the scene")

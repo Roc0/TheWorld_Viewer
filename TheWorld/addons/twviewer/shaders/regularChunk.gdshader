@@ -1,5 +1,7 @@
 shader_type spatial;
 
+#include "res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc"
+
 // This is the reference shader of the plugin, and has the most features.
 // it should be preferred for high-end graphics cards.
 // For less features but lower-end targets, see the lite version.
@@ -50,20 +52,6 @@ varying vec2 v_ground_uv1;
 varying vec2 v_ground_uv2;
 varying vec3 v_ground_uv3;
 varying float v_distance_to_camera;
-
-
-vec3 unpack_normal(vec4 rgba) {
-	vec3 n = rgba.xzy * 2.0 - vec3(1.0);
-	// Had to negate Z because it comes from Y in the normal map,
-	// and OpenGL-style normal maps are Y-up.
-	n.z *= -1.0;
-	return n;
-}
-
-vec4 pack_normal(vec3 n, float a) {
-	n.z *= -1.0;
-	return vec4((n.xzy + vec3(1.0)) * 0.5, a);
-}
 
 // Blends weights according to the bump of detail textures,
 // so for example it allows to have sand fill the gaps between pebbles
@@ -149,16 +137,6 @@ vec4 texture_antitile(sampler2D albedo_tex, sampler2D normal_tex, vec2 uv, out v
 	return depth_blend2(col0, col0.a, col1, col1.a, t);
 }
 
-float get_height(vec2 uv){
-	return texture(u_terrain_heightmap, uv).r * u_terrain_height;
-}
-
-vec3 get_normal(vec2 uv){
-	// Need to use u_terrain_normal_basis to handle scaling.
-	vec3 n = u_terrain_normal_basis * unpack_normal(texture(u_terrain_normalmap, uv));
-	return normalize(n);
-}
-
 bool is_to_highlight(vec2 uv){
 	float distance_from_border = 0.01;
 	if (uv.x > distance_from_border && uv.x < (1.0 - distance_from_border) && uv.y > distance_from_border && uv.y < (1.0 - distance_from_border)) {
@@ -177,7 +155,7 @@ void vertex() {
 	UV = vertex_cell_coords_in_textures / vec2(textureSize(u_terrain_heightmap, 0));	// Normalized UV to be in the range 0/1
 
 	//float h = texture(u_terrain_heightmap, uv).r * u_terrain_height;
-	float h = get_height(UV);		// Height displacement from heigthmap
+	float h = get_height(u_terrain_heightmap, u_terrain_height, UV);		// Height displacement from heigthmap
 	VERTEX.y = h;
 	vertex_world_pos.y = h;
 
@@ -205,7 +183,7 @@ void vertex() {
 	v_splat = texture(u_terrain_splatmap, UV);
 
 	//NORMAL = u_terrain_normal_basis * unpack_normal(texture(u_terrain_normalmap, uv));
-	NORMAL = get_normal(UV);
+	NORMAL = get_normal(u_terrain_normalmap, u_terrain_normal_basis, UV);
 	
 	v_distance_to_camera = distance(vertex_world_pos.xyz, INV_VIEW_MATRIX[3].xyz);
 }
@@ -218,7 +196,7 @@ void fragment() {
 
 	//vec3 terrain_normal_world = u_terrain_normal_basis * unpack_normal(texture(u_terrain_normalmap, UV));
 	//terrain_normal_world = normalize(terrain_normal_world);
-	vec3 terrain_normal_world = get_normal(UV);
+	vec3 terrain_normal_world = get_normal(u_terrain_normalmap, u_terrain_normal_basis, UV);
 	vec3 normal = terrain_normal_world;
 
 	float globalmap_factor = clamp((v_distance_to_camera - u_globalmap_blend_start) * u_globalmap_blend_distance, 0.0, 1.0);

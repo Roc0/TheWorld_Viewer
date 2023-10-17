@@ -1,55 +1,15 @@
-[gd_scene load_steps=10 format=3 uid="uid://c4ukh1kw4impi"]
+[gd_scene load_steps=6 format=3 uid="uid://c4ukh1kw4impi"]
 
 [ext_resource type="Script" path="res://main/TheWorld_Main.gd" id="1_760ml"]
-[ext_resource type="Script" path="res://utils/DebugStats.gd" id="3_og4hm"]
 [ext_resource type="Script" path="res://addons/twviewer/tw_viewer.gd" id="3_yxvy6"]
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_5i8f1"]
-radius = 5.0
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0u8xk"]
-albedo_color = Color(0.803922, 0.117647, 0.117647, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_crtqm"]
-material = SubResource("StandardMaterial3D_0u8xk")
-radius = 5.0
-height = 10.0
-
-[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_jhq8q"]
-
-[sub_resource type="Sky" id="Sky_i3qaf"]
-sky_material = SubResource("ProceduralSkyMaterial_jhq8q")
-
-[sub_resource type="Environment" id="Environment_0jlkq"]
-background_mode = 2
-sky = SubResource("Sky_i3qaf")
-fog_light_color = Color(0.517647, 0.552941, 0.607843, 1)
-fog_density = 0.0
-volumetric_fog_density = 0.0147
+[ext_resource type="PackedScene" uid="uid://djjd1xm5iotj1" path="res://components/UI.tscn" id="4_cjpoh"]
+[ext_resource type="PackedScene" uid="uid://cdlipa2pmvrju" path="res://components/world_environment.tscn" id="4_gxev0"]
+[ext_resource type="PackedScene" uid="uid://bi138l8muok7h" path="res://components/test.tscn" id="5_kid0l"]
 
 [node name="RootNode" type="Node"]
 
 [node name="TheWorld_Main" type="Node3D" parent="."]
 script = ExtResource("1_760ml")
-
-[node name="TestBallRigidBody" type="RigidBody3D" parent="TheWorld_Main"]
-
-[node name="TestBallCollisionShape" type="CollisionShape3D" parent="TheWorld_Main/TestBallRigidBody"]
-shape = SubResource("SphereShape3D_5i8f1")
-
-[node name="TestBallMesh" type="MeshInstance3D" parent="TheWorld_Main/TestBallRigidBody"]
-mesh = SubResource("SphereMesh_crtqm")
-
-[node name="Sun" type="DirectionalLight3D" parent="TheWorld_Main"]
-light_color = Color(0.784314, 0.784314, 0.784314, 1)
-
-[node name="DebugStats" type="MarginContainer" parent="TheWorld_Main"]
-offset_right = 40.0
-offset_bottom = 40.0
-script = ExtResource("3_og4hm")
-
-[node name="Column" type="VBoxContainer" parent="TheWorld_Main/DebugStats"]
-layout_mode = 2
 
 [node name="TWViewer" type="Node3D" parent="TheWorld_Main"]
 script = ExtResource("3_yxvy6")
@@ -59,15 +19,18 @@ _camera_param_initial_pos = Vector3(872, 1463, -3742)
 _camera_param_initial_yaw_pitch_roll = Vector3(-0.238, -0.098, 0)
 _shader_param_ground_uv_scale = 165.88
 
-[node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main/TWViewer"]
-
 [node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main/TWViewer"]
 
 [node name="GDN_TW_Viewer" type="GDN_TheWorld_Viewer" parent="TheWorld_Main/TWViewer"]
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/TWViewer"]
-transform = Transform3D(-0.75471, 0.0799535, -0.651169, 0, 0.992546, 0.121869, 0.656059, 0.091976, -0.749084, 0, 2200, 0)
+transform = Transform3D(0.999991, 7.10488e-06, -0.00415387, 0, 0.999999, 0.00171042, 0.00415387, -0.00171041, 0.99999, 872, 1463, -3742)
 far = 20000.0
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="TheWorld_Main"]
-environment = SubResource("Environment_0jlkq")
+[node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main/TWViewer"]
+
+[node name="World" parent="TheWorld_Main" instance=ExtResource("4_gxev0")]
+
+[node name="UI" parent="TheWorld_Main" instance=ExtResource("4_cjpoh")]
+
+[node name="Test" parent="TheWorld_Main" instance=ExtResource("5_kid0l")]

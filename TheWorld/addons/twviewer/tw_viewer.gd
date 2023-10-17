@@ -321,12 +321,13 @@ func _enter_tree():
 
 func _exit_tree():
 	if not quitting:
-		_logger.debug("_exit_tree")
+		_logger.debug(str("_exit_tree _init_done=", _init_done, ", quitting=", quitting))
 	
 	if _init_done:
-		if not quitting:
-			log_debug("_exit_tree")
-		
+		pre_deinit()
+		var can_deinit : bool = false
+		while(can_deinit == false):
+			can_deinit = can_deinit()
 		deinit()
 
 		if _info_panel != null:
@@ -340,9 +341,9 @@ func _exit_tree():
 			#	parent.remove_child(gdn_main)
 			gdn_main.queue_free()
 		
-		_gdn_main_instance = null
+		#_gdn_main_instance = null
 		
-		_is_ready = false
+		#_is_ready = false
 	
 	#queue_free()
 	
@@ -839,18 +840,21 @@ func pre_deinit():
 	log_debug("Pre deinit completed...")
 
 func can_deinit() -> bool:
-	log_debug("can_deinit")
+	#log_debug("can_deinit")
 	if GDN_main() == null:
 		return true
-	return GDN_main().can_deinit()
+	var can : bool = GDN_main().can_deinit()
+	#log_debug(str("can_deinit=", can))
+	return can
 
 func deinit():
-	log_debug("deinit")
+	log_debug(str("deinit _init_done=", _init_done))
 	if _init_done:
 		GDN_globals().disconnect("tw_status_changed", Callable(self, "_on_tw_status_changed"))
 		GDN_globals().disconnect_from_server()
 		GDN_main().deinit()
 		_init_done = false
+		log_debug("Deinit completed...")
 
 func set_editor_3d_overlay(overlay : Control):
 	#log_debug("set_editor_3d_overlay")
@@ -902,7 +906,7 @@ func GDN_main():
 		_gdn_main_instance = find_node_by_name(tw_constants.tw_gdn_main_node_name)
 	if _gdn_main_instance == null && _gdn_main_instance_errmsg:
 		_gdn_main_instance_errmsg = false
-		log_debug(str("something is wrong, _gdn_main_instance ", _gdn_main_instance))
+		log_debug(str("_gdn_main_instance ", _gdn_main_instance, ", probably it is not still ready"))
 		_gdn_main_instance_errmsg = true
 	return _gdn_main_instance
 
@@ -1076,6 +1080,8 @@ func create_info_panel():
 	var hseparator : HSeparator
 	var vseparator : VSeparator
 
+	clear_info_panel_closing_labels()
+	
 	if _info_panel != null:
 		return
 	
@@ -1193,13 +1199,17 @@ func add_info_panel_line(text : String, indent : int) -> Label:
 	hboxcontainer.add_child(label)
 	return label
 
-func add_info_panel_external_line(text : String, indent : int) -> int:
+func clear_info_panel_closing_labels() -> void:
 	for idx in _info_panel_closing_labels.size():
-		var parent : Node = _info_panel_closing_labels[idx].get_parent()
-		if parent != null:
-			parent.remove_child(_info_panel_closing_labels[idx])
+		if (is_instance_valid(_info_panel_closing_labels[idx])):
+			var parent : Node = _info_panel_closing_labels[idx].get_parent()
+			if parent != null:
+				parent.remove_child(_info_panel_closing_labels[idx])
 	_info_panel_closing_labels.clear()
 
+func add_info_panel_external_line(text : String, indent : int) -> int:
+	clear_info_panel_closing_labels()
+	
 	if _info_panel_external_labels.size() == 0:
 		add_info_panel_separator()
 

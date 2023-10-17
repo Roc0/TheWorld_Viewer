@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://djjd1xm5iotj1"]
+
+[ext_resource type="Script" path="res://utils/DebugStats.gd" id="1_ujynt"]
+
+[node name="UI" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="DebugStats" type="MarginContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_ujynt")
+
+[node name="Column" type="VBoxContainer" parent="DebugStats"]
+layout_mode = 2
