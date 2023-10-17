@@ -4,6 +4,8 @@ shader_type spatial;
 
 // Development shader used to debug or help authoring.
 
+#include "res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc"
+
 uniform sampler2D u_terrain_heightmap;
 uniform sampler2D u_terrain_normalmap;
 uniform sampler2D u_terrain_colormap;						// TODORIC
@@ -18,31 +20,32 @@ uniform float u_terrain_height = 1.0;
 //varying float v_hole;
 //varying vec3 v_color;
 
-vec3 unpack_normal(vec4 rgba) {
-	//return rgba.xzy * 2.0 - vec3(1.0);
-	// If we consider texture space starts from top-left corner and Y goes down,
-	// then Y+ in pixel space corresponds to Z+ in terrain space,
-	// while X+ also corresponds to X+ in terrain space.
-	vec3 n = rgba.xzy * 2.0 - vec3(1.0);
-	// Had to negate Z because it comes from Y in the normal map,
-	// and OpenGL-style normal maps are Y-up.
-	n.z *= -1.0;
-	return n;
-}
+//vec3 unpack_normal(vec4 rgba) {
+//	//return rgba.xzy * 2.0 - vec3(1.0);
+//	// If we consider texture space starts from top-left corner and Y goes down,
+//	// then Y+ in pixel space corresponds to Z+ in terrain space,
+//	// while X+ also corresponds to X+ in terrain space.
+//	vec3 n = rgba.xzy * 2.0 - vec3(1.0);
+//	// Had to negate Z because it comes from Y in the normal map,
+//	// and OpenGL-style normal maps are Y-up.
+//	n.z *= -1.0;
+//	return n;
+//}
 
-vec4 pack_normal(vec3 n, float a) {
-	n.z *= -1.0;
-	return vec4((n.xzy + vec3(1.0)) * 0.5, a);
-}
+//vec4 pack_normal(vec3 n, float a) {
+//	n.z *= -1.0;
+//	return vec4((n.xzy + vec3(1.0)) * 0.5, a);
+//}
 
-float get_height(vec2 uv){
-	return texture(u_terrain_heightmap, uv).r * u_terrain_height;
-}
+//float get_height(sampler2D tex, vec2 uv){
+//	return texture(tex, uv).r * u_terrain_height;
+//}
 
-vec3 get_normal(vec2 uv){
-	vec3 n = u_terrain_normal_basis * unpack_normal(texture(u_terrain_normalmap, uv));
-	return normalize(n);
-}
+//vec3 get_normal(sampler2D tex, mat3 terrain_normal_basis, vec2 uv){
+//	// Need to use terrain_normal_basis to handle scaling.
+//	vec3 n = terrain_normal_basis * unpack_normal(texture(tex, uv));
+//	return normalize(n);
+//}
 
 void vertex() {
 	vec4 wpos = MODEL_MATRIX * vec4(VERTEX, 1);
@@ -56,7 +59,7 @@ void vertex() {
 
 	// Height displacement
 	//float h = texture(u_terrain_heightmap, UV).r;
-	float h = get_height(UV);
+	float h = get_height(u_terrain_heightmap, u_terrain_height, UV);
 	VERTEX.y = h;
 	//wpos.y = h;
 
@@ -71,7 +74,7 @@ void vertex() {
 	// Need to use u_terrain_normal_basis to handle scaling.
 	// For some reason I also had to invert Z when sampling terrain normals... not sure why
 	//NORMAL = u_terrain_normal_basis * unpack_normal(texture(u_terrain_normalmap, UV));
-	NORMAL = get_normal(UV);
+	NORMAL = get_normal(u_terrain_normalmap, u_terrain_normal_basis, UV);
 	
 	//VERTEX *= u_vertex_scale;
 	
@@ -90,7 +93,7 @@ void fragment() {
 	//vec3 terrain_normal_world = u_terrain_normal_basis * unpack_normal(texture(u_terrain_normalmap, UV));
 	//terrain_normal_world = normalize(terrain_normal_world);
 	//vec3 normal = terrain_normal_world;
-	vec3 normal = get_normal(UV);
+	vec3 normal = get_normal(u_terrain_normalmap, u_terrain_normal_basis, UV);
 	
 	vec4 value = texture(u_map, UV);
 	// TODO Blend toward checker pattern to show the alpha channel
