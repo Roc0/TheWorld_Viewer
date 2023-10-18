@@ -16,6 +16,7 @@ var initialBallPos := Vector3(0, 0, 0)
 #var initialCameraAltitudeForced = 0
 #var initialYawPitchRoll := Vector3(-139, -7, 0)
 
+var _window_mode = Window.MODE_MAXIMIZED if (true) else Window.MODE_WINDOWED
 const initialLevel := 0
 #var init_world_thread : Thread
 var world_initialized : bool = false
@@ -97,8 +98,7 @@ func _ready():
 	#set_notify_transform(true)
 	#TWViewer().global_transform = global_transform
 	
-	var mode = Window.MODE_MAXIMIZED if (true) else Window.MODE_WINDOWED
-	get_window().mode = mode
+	get_window().mode = _window_mode
 
 
 func resizing():
@@ -217,6 +217,7 @@ func _process(_delta):
 	#client_status = Globals.Constants.status_to_string(clientstatus)
 	
 	if not world_initialized && get_clientstatus() >= tw_const.clientstatus_session_initialized:
+		get_window().mode = _window_mode
 		enter_world()
 		world_initialized = true
 
