@@ -17,7 +17,8 @@ _world_param_info_visible = true
 _world_editor_param_info_visible = true
 _camera_param_initial_pos = Vector3(872, 1463, -3742)
 _camera_param_initial_yaw_pitch_roll = Vector3(-0.238, -0.098, 0)
-_shader_param_ground_uv_scale = 165.88
+_shader_param_ground_uv_scale = 178.0
+_shader_param_triplanar = true
 
 [node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main/TWViewer"]
 
