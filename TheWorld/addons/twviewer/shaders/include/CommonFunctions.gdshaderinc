@@ -24,3 +24,13 @@ vec3 get_normal(sampler2D tex, mat3 terrain_normal_basis, vec2 uv){
 	vec3 n = terrain_normal_basis * unpack_normal(texture(tex, uv));
 	return normalize(n);
 }
+
+bool is_on_the_border(vec2 uv, float distance_from_border){
+	//float distance_from_border = 0.01;
+	if (uv.x > distance_from_border && uv.x < (1.0 - distance_from_border) && uv.y > distance_from_border && uv.y < (1.0 - distance_from_border)) {
+		return false;
+	} else {
+		return true;
+	}
+	//return false;
+}

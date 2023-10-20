@@ -14,7 +14,7 @@ uniform mat4 u_terrain_inverse_transform;
 uniform mat3 u_terrain_normal_basis;
 uniform float u_grid_step_in_wu;
 uniform float u_editmode_selected = 0.0;
-uniform float u_terrain_height = 1.0;
+uniform float u_terrain_height = 1.0;	// NOTSET
 //uniform float u_vertex_scale = 1.0;
 
 //varying float v_hole;
@@ -98,7 +98,7 @@ void fragment() {
 	vec4 value = texture(u_map, UV);
 	// TODO Blend toward checker pattern to show the alpha channel
 	
-	if (u_editmode_selected > 0.0) {
+	if (u_editmode_selected > 0.0 && is_on_the_border(UV, 0.01)) {
 		ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 	} else {
 		ALBEDO = value.rgb;

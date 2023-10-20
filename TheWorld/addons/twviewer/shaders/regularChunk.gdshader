@@ -137,16 +137,6 @@ vec4 texture_antitile(sampler2D albedo_tex, sampler2D normal_tex, vec2 uv, out v
 	return depth_blend2(col0, col0.a, col1, col1.a, t);
 }
 
-bool is_to_highlight(vec2 uv){
-	float distance_from_border = 0.01;
-	if (uv.x > distance_from_border && uv.x < (1.0 - distance_from_border) && uv.y > distance_from_border && uv.y < (1.0 - distance_from_border)) {
-		return false;
-	} else {
-		return true;
-	}
-	//return false;
-}
-
 void vertex() {
 	vec4 vertex_world_pos = MODEL_MATRIX * vec4(VERTEX, 1);		// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need to trasform in world coord to abstract from chunk
 	vec4 vertex_local_to_quadrant_pos = u_terrain_inverse_transform * vertex_world_pos;	// to calculate coords of the vertex local to the quadrant we use affine inverse matrix of the global trasform of the quadtree
@@ -204,7 +194,7 @@ void fragment() {
 	vec3 global_albedo = texture(u_terrain_globalmap, UV).rgb;
 	ALBEDO = global_albedo;
 
-	if (u_editmode_selected > 0.0 && is_to_highlight(UV)) {
+	if (u_editmode_selected > 0.0 && is_on_the_border(UV, 0.005)) {
 
 		ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 
