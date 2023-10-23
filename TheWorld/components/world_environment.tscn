@@ -27,6 +27,7 @@ volumetric_fog_density = 0.0147
 environment = SubResource("Environment_0jlkq")
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2000, 0)
 light_color = Color(0.784314, 0.784314, 0.784314, 1)
 shadow_enabled = true
 directional_shadow_max_distance = 256.0

@@ -13,9 +13,10 @@ uniform sampler2D u_terrain_splatmap;
 uniform sampler2D u_terrain_globalmap : source_color;
 uniform mat4 u_terrain_inverse_transform;
 uniform mat3 u_terrain_normal_basis;
-uniform float u_grid_step_in_wu = 2.0;
+uniform float u_grid_step = 2.0;	// Heightmap grid step it is indipendent from lod
 uniform float u_editmode_selected = 0.0;
 uniform float u_terrain_height = 1.0;	// NOTSET
+uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
 
 // the reason bump is preferred with albedo is, roughness looks better with normal maps.
 // If we want no normal mapping, roughness would only give flat mirror surfaces,
@@ -140,7 +141,7 @@ vec4 texture_antitile(sampler2D albedo_tex, sampler2D normal_tex, vec2 uv, out v
 void vertex() {
 	vec4 vertex_world_pos = MODEL_MATRIX * vec4(VERTEX, 1);		// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need to trasform in world coord to abstract from chunk
 	vec4 vertex_local_to_quadrant_pos = u_terrain_inverse_transform * vertex_world_pos;	// to calculate coords of the vertex local to the quadrant we use affine inverse matrix of the global trasform of the quadtree
-	vec2 vertex_cell_coords_in_textures = vertex_local_to_quadrant_pos.xz / vec2(u_grid_step_in_wu);	// to calculate coords of the vertex in the heigthmap/normalmap so to get correct value from the textures we need to consider the step (dividing by it): in the textures heigths/normlas are adjacent in global/local coords are separated by the step
+	vec2 vertex_cell_coords_in_textures = vertex_local_to_quadrant_pos.xz / vec2(u_grid_step);	// to calculate coords of the vertex in the heigthmap/normalmap so to get correct value from the textures we need to consider the step (dividing by it): in the textures heigths/normlas are adjacent in global/local coords are separated by the step
 	vertex_cell_coords_in_textures += vec2(0.5);		// Moreover must add a half-offset so that we sample the center of pixels, otherwise bilinear filtering of the textures will give us mixed results (#183)
 	UV = vertex_cell_coords_in_textures / vec2(textureSize(u_terrain_heightmap, 0));	// Normalized UV to be in the range 0/1
 
@@ -194,7 +195,7 @@ void fragment() {
 	vec3 global_albedo = texture(u_terrain_globalmap, UV).rgb;
 	ALBEDO = global_albedo;
 
-	if (u_editmode_selected > 0.0 && is_on_the_border(UV, 0.005)) {
+	if (u_editmode_selected > 0.0 && is_on_the_border(UV, u_quad_border_line_thickness)) {
 
 		ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 
