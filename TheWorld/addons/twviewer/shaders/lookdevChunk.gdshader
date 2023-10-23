@@ -12,9 +12,10 @@ uniform sampler2D u_terrain_colormap;						// TODORIC
 uniform sampler2D u_map; // This map will control color of fragments
 uniform mat4 u_terrain_inverse_transform;
 uniform mat3 u_terrain_normal_basis;
-uniform float u_grid_step_in_wu;
+uniform float u_grid_step;		// Heightmap grid step it is indipendent from lod
 uniform float u_editmode_selected = 0.0;
 uniform float u_terrain_height = 1.0;	// NOTSET
+uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
 //uniform float u_vertex_scale = 1.0;
 
 //varying float v_hole;
@@ -50,7 +51,7 @@ uniform float u_terrain_height = 1.0;	// NOTSET
 void vertex() {
 	vec4 wpos = MODEL_MATRIX * vec4(VERTEX, 1);
 	vec2 cell_coords = (u_terrain_inverse_transform * wpos).xz;
-	cell_coords /= vec2(u_grid_step_in_wu);		// WARNING
+	cell_coords /= vec2(u_grid_step);		// WARNING
 	// Must add a half-offset so that we sample the center of pixels,
 	// otherwise bilinear filtering of the textures will give us mixed results (#183)
 	cell_coords += vec2(0.5);
@@ -98,7 +99,7 @@ void fragment() {
 	vec4 value = texture(u_map, UV);
 	// TODO Blend toward checker pattern to show the alpha channel
 	
-	if (u_editmode_selected > 0.0 && is_on_the_border(UV, 0.01)) {
+	if (u_editmode_selected > 0.0 && is_on_the_border(UV, u_quad_border_line_thickness)) {
 		ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 	} else {
 		ALBEDO = value.rgb;
