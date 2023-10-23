@@ -650,7 +650,7 @@ func _process(delta):
 		_info_panel_num_chunk_splits = "  Splits: " + str(gdn_viewer.get_num_splits()) + "\n"
 		_info_panel_num_chunk_joins = "  Joins: " + str(gdn_viewer.get_num_joins())
 		_info_panel_hit_pos = "  Hit pos: " + str(gdn_viewer.get_mouse_hit()) + "\n"
-		_info_panel_hit_distance_from_camera = "  Hit pos dist: " + str(gdn_viewer.get_mouse_hit_distance_from_camera()) + "\n"
+		_info_panel_hit_distance_from_camera = "  Hit pos dist from camera: " + str(gdn_viewer.get_mouse_hit_distance_from_camera()) + "\n"
 		_info_panel_delta_pos = "  Delta pos: " + str(_delta_pos) + "\n"
 		_info_panel_quad_hit_name = "  Quad name: " + gdn_viewer.get_mouse_quadrant_hit_name() + " " + gdn_viewer.get_mouse_quadrant_hit_tag() + "\n"
 		_info_panel_quad_hit_pos = "  Quad pos: " + str(gdn_viewer.get_mouse_quadrant_hit_pos()) + "\n"
@@ -675,7 +675,7 @@ func _process(delta):
 		#_info_panel_info_camera = "  info: " + viewer.get_info_camera() + "\n"
 			
 		var mouse_pos : Vector2 = Vector2(0, 0)
-		#mouse_pos = get_viewport().get_mouse_position()
+		mouse_pos = get_viewport().get_mouse_position()
 		if (_editor_3d_overlay != null):
 			mouse_pos = _editor_3d_overlay.get_local_mouse_position()
 		_info_panel_general_label.text = "FPS: " + str(Engine.get_frames_per_second()) + "\n" \
