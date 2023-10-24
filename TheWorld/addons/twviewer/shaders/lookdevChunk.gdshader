@@ -14,6 +14,7 @@ uniform mat4 u_terrain_inverse_transform;
 uniform mat3 u_terrain_normal_basis;
 uniform float u_grid_step;		// Heightmap grid step it is indipendent from lod
 uniform float u_editmode_selected = 0.0;
+uniform vec2 u_mouse_hit = vec2(-1);
 uniform float u_terrain_height = 1.0;	// NOTSET
 uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
 //uniform float u_vertex_scale = 1.0;
