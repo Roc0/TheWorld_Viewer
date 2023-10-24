@@ -616,7 +616,7 @@ func _process(delta):
 		var update_quads2_duration : int = gdn_viewer.get_update_quads2_duration()
 		var update_quads3_duration : int = gdn_viewer.get_update_quads3_duration()
 		_hit_pos = gdn_viewer.get_mouse_hit()
-		if Time.get_ticks_msec() - _last_check_delta_pos > 500:
+		if Time.get_ticks_msec() - _last_check_delta_pos > 100:
 			if _hit_pos != _prev_hit_pos:
 				_delta_pos = _hit_pos - _prev_hit_pos
 				_prev_hit_pos = _hit_pos

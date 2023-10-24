@@ -14,6 +14,7 @@ uniform mat4 u_terrain_inverse_transform;
 uniform mat3 u_terrain_normal_basis;
 uniform float u_grid_step;			// Heightmap grid step it is indipendent from lod
 uniform float u_editmode_selected = 0.0;
+uniform vec2 u_mouse_hit = vec2(-1);
 uniform float u_num_vertices_per_chunk;		// it is the number of squares of a chunk we get the real number of vertices adding 1
 uniform float u_lod_grid_step;		// real distance from each point of the chunk at the current lod
 uniform float u_lod_chunk_size;				// chunk size at the current lod
