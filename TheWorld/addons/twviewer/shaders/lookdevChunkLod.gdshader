@@ -15,6 +15,7 @@ uniform mat3 u_terrain_normal_basis;
 uniform float u_grid_step;			// Heightmap grid step it is indipendent from lod
 uniform float u_editmode_selected = 0.0;
 uniform vec2 u_mouse_hit = vec2(-1);
+uniform float u_mouse_hit_radius = 0.01;
 uniform float u_num_vertices_per_chunk;		// it is the number of squares of a chunk we get the real number of vertices adding 1
 uniform float u_lod_grid_step;		// real distance from each point of the chunk at the current lod
 uniform float u_lod_chunk_size;				// chunk size at the current lod
@@ -55,29 +56,33 @@ void fragment() {
 	if (u_editmode_selected > 0.0 && is_on_the_border(UV, u_quad_border_line_thickness)) {
 		ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 	} else {
-		if (is_on_the_border(UV, u_chunk_border_line_thickness) || is_on_the_border(UV2, u_chunk_border_line_thickness)) {
-			ALBEDO = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
+		if (u_mouse_hit != vec2(-1) && distance(u_mouse_hit, UV) < u_mouse_hit_radius) {
+			ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 		} else {
-			if (u_lod == 0.0) {
-				ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+			if (is_on_the_border(UV, u_chunk_border_line_thickness) || is_on_the_border(UV2, u_chunk_border_line_thickness)) {
+				ALBEDO = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
 			} else {
-				if (u_lod == 1.0) {
-					ALBEDO = vec3(0.498, 1.0, 0.831);		// GDN_TheWorld_Globals::g_color_aquamarine_green
+				if (u_lod == 0.0) {
+					ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 				} else {
-					if (u_lod == 2.0) {
-						ALBEDO = vec3(0.0, 1.0, 0.0);		// GDN_TheWorld_Globals::g_color_green
+					if (u_lod == 1.0) {
+						ALBEDO = vec3(0.498, 1.0, 0.831);		// GDN_TheWorld_Globals::g_color_aquamarine_green
 					} else {
-						if (u_lod == 3.0) {
-							ALBEDO = vec3(0.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_cyan
+						if (u_lod == 2.0) {
+							ALBEDO = vec3(0.0, 1.0, 0.0);		// GDN_TheWorld_Globals::g_color_green
 						} else {
-							if (u_lod == 4.0) {
-								//ALBEDO = vec3(1.0, 0.753, 0.796);		// GDN_TheWorld_Globals::g_color_pink
-								ALBEDO = vec3(0.870, 0.192, 0.388);		// GDN_TheWorld_Globals::g_color_pink_cerise
+							if (u_lod == 3.0) {
+								ALBEDO = vec3(0.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_cyan
 							} else {
-								if (u_lod == 5.0) {
-									ALBEDO = vec3(0.0, 0.0, 1.0);		// GDN_TheWorld_Globals::g_color_blue
-								} else {	// u_lod == 6.0 and greater
-									ALBEDO = vec3(1.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_red
+								if (u_lod == 4.0) {
+									//ALBEDO = vec3(1.0, 0.753, 0.796);		// GDN_TheWorld_Globals::g_color_pink
+									ALBEDO = vec3(0.870, 0.192, 0.388);		// GDN_TheWorld_Globals::g_color_pink_cerise
+								} else {
+									if (u_lod == 5.0) {
+										ALBEDO = vec3(0.0, 0.0, 1.0);		// GDN_TheWorld_Globals::g_color_blue
+									} else {	// u_lod == 6.0 and greater
+										ALBEDO = vec3(1.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_red
+									}
 								}
 							}
 						}
