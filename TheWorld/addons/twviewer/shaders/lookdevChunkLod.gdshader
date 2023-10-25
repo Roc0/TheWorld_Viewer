@@ -80,8 +80,16 @@ void fragment() {
 								} else {
 									if (u_lod == 5.0) {
 										ALBEDO = vec3(0.0, 0.0, 1.0);		// GDN_TheWorld_Globals::g_color_blue
-									} else {	// u_lod == 6.0 and greater
-										ALBEDO = vec3(1.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_red
+									} else {
+										if (u_lod == 6.0) {
+											ALBEDO = vec3(0.623, 0.168, 0.408);		// GDN_TheWorld_Globals::g_color_pink_amaranth
+										} else {
+											if (u_lod == 7.0) {
+												ALBEDO = vec3(0.561, 0.737, 0.561);		// GDN_TheWorld_Globals::g_color_darksea_green
+											} else {	// u_lod == 8.0 and greater
+												ALBEDO = vec3(1.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_red
+											}
+										}
 									}
 								}
 							}
