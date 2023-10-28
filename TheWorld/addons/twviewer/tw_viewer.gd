@@ -640,7 +640,7 @@ func _process(delta):
 		#+ " RQ " + String(viewer.get_refresh_quads_duration()) \
 		#+ " T " + String(viewer.get_mouse_track_hit_duration()) + "\n"
 		if camera != null:
-			_info_panel_camera_rot = "  Rot: " + str(camera.global_transform.basis.get_euler()) + "\n"
+			_info_panel_camera_rot = "  Y/P/R: " + str(camera.global_transform.basis.get_euler()) + "\n"
 			_info_panel_camera_pos = "  Pos: " + str(camera.global_transform.origin)
 		_info_label_num_quadrants = "  Total: " + str(gdn_viewer.get_num_initialized_quadrant(), ":", gdn_viewer.get_num_quadrant()) + "\n"
 		_info_label_num_visible_quadrants = "  Visible: " + str(gdn_viewer.get_num_initialized_visible_quadrant(), ":", gdn_viewer.get_num_visible_quadrant()) + "\n"
