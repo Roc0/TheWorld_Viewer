@@ -15,6 +15,9 @@ var initialBallPos := Vector3(0, 0, 0)
 #var initialViewerPos := Vector3(0, 2200, 0)
 #var initialCameraAltitudeForced = 0
 #var initialYawPitchRoll := Vector3(-139, -7, 0)
+#var initialViewerPos := Vector3(872, 1463, -3742)
+#var initialCameraAltitudeForced = 0
+#var initialYawPitchRoll := Vector3(-0.238, -0.098, 0)
 
 var _window_mode = Window.MODE_MAXIMIZED if (true) else Window.MODE_WINDOWED
 const initialLevel := 0

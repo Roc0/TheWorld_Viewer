@@ -203,11 +203,11 @@ void fragment() {
 
 	} else {
 
-		if (u_mouse_hit != vec2(-1) && distance(u_mouse_hit, UV) < u_mouse_hit_radius) {
+		//if (u_mouse_hit != vec2(-1) && distance(u_mouse_hit, UV) < u_mouse_hit_radius) {
 
-			ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+		//	ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 
-		} else {
+		//} else {
 
 			//ALBEDO = vec3(1.0, 1.0, 1.0);		// white
 
@@ -323,8 +323,15 @@ void fragment() {
 			//	}
 
 			//ALBEDO = vec3(1.0, 1.0, 1.0);		// white
-		}
+		//}
 	}
 
 	NORMAL = (VIEW_MATRIX * (vec4(normal, 0.0))).xyz;
+
+	if (u_mouse_hit != vec2(-1) && distance(u_mouse_hit, UV) < u_mouse_hit_radius) {
+
+		vec3 mouse_hit_albedo = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+		ALBEDO = mix(ALBEDO, mouse_hit_albedo, 0.3);
+		ALPHA = 1.0;
+	}
 }
