@@ -1,6 +1,8 @@
 @tool
 extends Node3D
 
+var debug_sprite : Sprite2D = null
+
 var quitting : bool = false
 
 var _gdn_main_instance : Node = null
@@ -792,7 +794,7 @@ func init_gdn_viewer() -> bool:
 		GDN_globals().connect_to_server()
 		log_debug(str("server connected"))
 
-		var result = GDN_globals().connect("tw_status_changed", Callable(self, "_on_tw_status_changed")) == 0
+		var result = GDN_globals().connect("tw_status_changed", Callable(self, "_on_tw_status_changed"))
 		log_debug(str("signal tw_status_changed connected (result=", result, ")"))
 
 		printTerrainDimensions()
@@ -805,20 +807,9 @@ func init_gdn_viewer() -> bool:
 			gdn_viewer.visible = is_visible_in_tree()
 			log_debug("global_transform changed")
 			set_shader_parameters()
-			#gdn_viewer.set_shader_parameter("ground_uv_scale", _shader_param_ground_uv_scale)
-			#log_debug(str("set_shader_parameter ground_uv_scale=", _shader_param_ground_uv_scale))
-			#gdn_viewer.set_shader_parameter("depth_blending", _shader_param_depth_blending)
-			#log_debug(str("set_shader_parameter depth_blending=", _shader_param_depth_blending))
-			#gdn_viewer.set_shader_parameter("triplanar", _shader_param_triplanar)
-			#log_debug(str("set_shader_parameter triplanar=", _shader_param_triplanar))
-			#gdn_viewer.set_shader_parameter("tile_reduction", _shader_param_tile_reduction)
-			#log_debug(str("set_shader_parameter tile_reduction=", _shader_param_tile_reduction))
-			#gdn_viewer.set_shader_parameter("globalmap_blend_start", _shader_param_globalmap_blend_start)
-			#log_debug(str("set_shader_parameter globalmap_blend_start=", _shader_param_globalmap_blend_start))
-			#gdn_viewer.set_shader_parameter("globalmap_blend_distance", _shader_param_globalmap_blend_distance)
-			#log_debug(str("set_shader_parameter globalmap_blend_distance=", _shader_param_globalmap_blend_distance))
-			#gdn_viewer.set_shader_parameter("colormap_opacity", _shader_param_colormap_opacity)
-			#log_debug(str("set_shader_parameter colormap_opacity=", _shader_param_colormap_opacity))
+			if (!gdn_viewer.is_connected("tw_quadrant_selected_for_edit", Callable(self, "_on_tw_quadrant_selected_for_edit"))):
+				result = gdn_viewer.connect("tw_quadrant_selected_for_edit", Callable(self, "_on_tw_quadrant_selected_for_edit"))
+				log_debug(str("signal tw_quadrant_selected_for_edit connected (result=", result, ")"))
 			
 		_init_done = true
 		return true
@@ -850,7 +841,12 @@ func can_deinit() -> bool:
 func deinit():
 	log_debug(str("deinit _init_done=", _init_done))
 	if _init_done:
+		var gdn_viewer = GDN_viewer()
+		if gdn_viewer != null:
+			gdn_viewer.disconnect("tw_quadrant_selected_for_edit", Callable(self, "_on_tw_quadrant_selected_for_edit"))
+			log_debug(str("signal tw_quadrant_selected_for_edit disconnected"))
 		GDN_globals().disconnect("tw_status_changed", Callable(self, "_on_tw_status_changed"))
+		log_debug(str("signal tw_status_changed disconnected"))
 		GDN_globals().disconnect_from_server()
 		GDN_main().deinit()
 		_init_done = false
@@ -882,6 +878,33 @@ func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> 
 	log_debug(str("_on_tw_status_changed ", old_client_status_str, "(", old_client_status, ") ==> ", new_client_status_str, "(", new_client_status, ")"))
 	if (_client_status == tw_constants.clientstatus_session_initialized):
 		set_shader_parameters()
+
+func _on_tw_quadrant_selected_for_edit(selected : bool) -> void:
+	return
+	if (!selected):
+		if debug_sprite != null:
+			debug_sprite.queue_free()
+			debug_sprite = null
+			return
+	
+	if (debug_sprite == null):
+		debug_sprite = Sprite2D.new()
+		add_child(debug_sprite)
+	
+	var subviewport = SubViewport.new()
+	add_child(subviewport)
+	
+	var shaderMaterial = ShaderMaterial.new()
+	#shaderMaterial.shader = load("res://addons/twviewer/tools/shaders/height2normal.gdshader")
+	shaderMaterial.shader = load("res://addons/twviewer/tools/shaders/universe.gdshader")
+
+	var colorRect = ColorRect.new()
+	subviewport.add_child(colorRect)
+	colorRect.set_size(subviewport.size)
+	colorRect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	colorRect.material = shaderMaterial
+	
+	debug_sprite.texture = subviewport.get_texture()
 
 func find_node_by_name(node_name : String) -> Node:
 		if Engine.is_editor_hint():

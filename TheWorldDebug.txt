@@ -1,0 +1,743 @@
+pos 0,0
+h=789.360168
+nx=0.686870277	ny=0.719475925	nz=-0.102779143		==> normal
+nx=0.843435168	ny=0.448610425	nz=0.859737992		==> packed
+nx=215	ny=114	nz=219		==> rgb (packed * 255 ovvero in normalmap prima di /255 e unpack)
+
+normX=0.686	normY=0.719	normZ=-0.102	packedNormX=0.843 packedNormY=0.448 packedNormZ=0.859
+r=215		g=114		b=219
+
+https://docs.godotengine.org/en/stable/tutorials/shaders/using_viewport_as_texture.html
+https://github.com/godotengine/godot/issues/60476
+
+DBSQLLite.cpp	writeQuadrantToDB
+	rgbNormal.r=109 rgbNormal.g=14 rgbNormal.b=184
+	normalX=-0.14509803921568631 normalY=0.44313725490196076 normalZ=-0.89019607843137250
+			-0.145098045				 0.443137258				 -0.890196085
+			-0.145098045				 0.443137258				 -0.890196085
+			-0.145098031				 0.443137288				 -0.890196085
+			-0.145098031				 0.443137288				 -0.890196085
+
+
+quad1	x=-12288	z=-4096	)y=23,05 ...)
+
+
+colori terreno 4 x (4 MB albedo + 4 MB rough) = 32 MB per quadrante
+heigths = 8 MB
+normals = 12 MB
+splat = 16 MB
+color = 
+global = 
+
+totale = 68 MB per quadrante
+
+
+Da correggere:
+	EDIT:
+		non si apre il popup nel pannello di edit
+		le collisioni funzionano male
+	se si modifica tw_viever crash in uscita (rigira l'_init e vengono riassegnate le preperty salvate e poi?)
+
+ClassDB::add_property_group
+
+15 Febbraio
+
+6827B065166
+
+169 544 010
+428 301 588
+
+http://zarb.org/~gc/html/libpng.html
+
+089228786500
+IT66S0892270502000000838474
+
+num vertices=1.050.625	buffer size=16.810.053
+
+Camera ==> x=1.195.476,00	y=300,00	z=5.467.999,00	==>	x=1.195.480		z=5.468.000
+
+Quad ==> Camera
+	m_lowerXGridVertex=1.192.960,00	to 1.198.080,00
+	m_lowerZGridVertex=5.463.040,00 to 5.468.160.00
+	m_sizeInWU=5.120,00
+	
+	collider body transform
+	origin.x=1.195.520	(m_lowerXGridVertex += m_sizeInWU * 0,5)
+	origin.z=5.466.317	(m_lowerZGridVertex += m_sizeInWU * 0.64)
+
+Quad ==> Camera X+1
+	m_lowerXGridVertex=1.198.080,00 to 1.203.200,00
+	m_lowerZGridVertex=5.463.040,00	to 5.468.160,00
+	
+	collider body transform
+	origin.x=1.200.640,00	(m_lowerXGridVertex += m_sizeInWU * 0,5)	2.560,00
+	origin.z=5.466.317,00	(m_lowerZGridVertex += m_sizeInWU * 0.64)	3.276,80
+
+Quad ==> Camera X-1 Z-1
+	m_lowerXGridVertex=1.187.840,00 to 1.192.960,00
+	m_lowerZGridVertex=5.457.920,00	to 5.463.040,00
+	
+	collider body transform
+	origin.x=1.190.400,00	(m_lowerXGridVertex += m_sizeInWU * 0,5)	2.560,00
+	origin.z=5.461.197,00	(m_lowerZGridVertex += m_sizeInWU * 0.64)	3.276,80
+
+
+5 1 5
+9417 ==> -4025		rapp 2,33	13.442
+9007 ==> -4005		rapp 2,24	13.012	-410	+20
+5992 ==> -2520		rapp 2.37	8.512	-3015	+1485 
+2997 ==> -1295		rapp 2.31
+
+
+Client Cache OK - Server cache OK (169 thread server e 12 thread client - 2049 punti):
+
+	- Server risponde solo header senza info vertici 																==> avg 7 ms
+	- Client legge buffer da FS e popola array vertici (readVerticesFromMeshCache) 									==> avg 900/1000
+	- Client legge immagini da FS																					==> avg 37
+	- Client crea texture dalle immagini																			==> avg 19
+	
+Client cache KO - Server cache OK (169 thread server e 12 thread client - 2049 punti):
+
+	- Server legge cache da FS e risponde buffer con info vertici 													==> avg 25921 (1856)
+	- Client legge cache da buffer popolando array vertici e persiste il buffer su FS (refreshVerticesFromBuffer)	==> avg 3803 (1600)
+	- Client crea immagine da array di vertici																		==> avg 195
+	- Client crea texture dalle immagini																			==> avg 28
+
+
+*** 1025 ***
+2023-01-21 17:29:13.815 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 433 ms
+2023-01-21 17:29:23.983 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--3 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:29:24.399 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 449 ms
+2023-01-21 17:29:35.478 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--4 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:29:35.850 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 399 ms
+2023-01-21 17:29:40.847 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--5 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:29:41.217 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 398 ms
+2023-01-21 17:29:42.928 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--6 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:29:43.317 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 416 ms
+2023-01-21 17:29:45.074 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--7 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:29:45.468 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 433 ms
+2023-01-21 17:29:47.275 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--8 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:29:47.618 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 366 ms
+2023-01-21 17:29:49.303 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--9 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:29:49.768 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 499 ms
+2023-01-21 17:29:54.806 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--10 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:29:55.268 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 498 ms
+2023-01-21 17:29:57.015 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--11 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:29:57.418 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 431 ms
+2023-01-21 17:29:59.184 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--12 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:29:59.552 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 399 ms
+2023-01-21 17:30:01.383 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--13 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:30:01.785 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 432 ms
+2023-01-21 17:30:03.530 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--14 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:30:03.885 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 382 ms
+2023-01-21 17:30:05.696 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--15 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:30:06.202 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 549 ms
+2023-01-21 17:30:08.010 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--16 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:30:08.430 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 459 ms
+2023-01-21 17:30:10.141 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--17 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:30:10.509 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 405 ms
+2023-01-21 17:30:12.310 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--18 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:30:12.673 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 403 ms
+2023-01-21 17:30:14.345 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--19 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:30:14.737 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 432 ms
+2023-01-21 17:30:16.483 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--20 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:30:18.056 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 1602 ms
+2023-01-21 17:30:19.670 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--21 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:30:21.302 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 1665 ms
+2023-01-21 17:30:22.768 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--22 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:30:24.509 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 1772 ms
+2023-01-21 17:30:26.092 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--23 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:30:27.546 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 1489 ms
+2023-01-21 17:30:29.135 DEBUG [28332] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--24 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 2048.000000
+2023-01-21 17:30:30.529 DEBUG [28332] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2748] Initilization of last stream of quadrant in 1425 ms
+
+*** 2049 ***
+2023-01-22 15:13:11.201 DEBUG [30576] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--5 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 4096.000000
+2023-01-22 15:13:14.211 DEBUG [30576] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2753] Initilization of last stream of quadrant in 3063 ms
+2023-01-22 15:13:20.020 DEBUG [30576] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--6 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 4096.000000
+2023-01-22 15:13:23.678 DEBUG [30576] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2753] Initilization of last stream of quadrant in 3713 ms
+2023-01-22 15:13:47.490 DEBUG [30576] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--5 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 4096.000000
+2023-01-22 15:13:48.335 DEBUG [30576] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2753] Initilization of last stream of quadrant in 953 ms
+2023-01-22 15:13:53.247 DEBUG [30576] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--4 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 4096.000000
+2023-01-22 15:13:54.432 DEBUG [30576] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2753] Initilization of last stream of quadrant in 1283 ms
+2023-01-22 15:13:59.561 DEBUG [30576] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--5 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 4096.000000
+2023-01-22 15:14:00.561 DEBUG [30576] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2753] Initilization of last stream of quadrant in 1095 ms
+2023-01-22 15:14:07.575 DEBUG [30576] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Camera vertical on chunk (0:0) of Quadrant--1--6 - Chunk pos (Global) = 0.000000:0.000000 - MinH = 0.000000 - MaxH = 0.000000 - Chunk Size in WUs = 4096.000000
+2023-01-22 15:14:08.510 DEBUG [30576] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@2753] Initilization of last stream of quadrant in 1027 ms
+
+-10		1 10010 0100000000
+
+-2		1 10000 0000000000
+2		0 10000 0000000000
+
+Num vertices:	4.198.401	2049 x 2049
+Heightmap 16	8.396.802
+Heightmap 32	16.793.604
+Normalmap		12.595.203
+Buffersize		37.785.670	1 + 8 + 36 + 8 + 4 + 4 + 8.396.802 + 16.793.604 + 12.595.203
+
+heigths	73,1400909	
+		74,3664703
+		75,2902985
+		75,9079132
+		76,2168427
+		
+normals	{r=0,269169986 g=0.265459329 b=0.876441479 ...}		44 43 DF
+		{r=0.317759216 g=0.252752572 b=0.894533932 ...}		51 40 E4
+		{r=0.373576641 g=0.242288619 b=0.909392238 ...}		5F 3D E7
+		{r=0.435247809 g=0.235282362 b=0.919203699 ...}		6E 3B EA
+		{r=0.500204682 g=0.232685179 b=0.922543168 ...}		7F 3B EB
+		
+
+
+* togliere heigthmap di half e di float lasciare solo PoolRealArray per shader e per collider
+* conzionare numeri quad visibili in base alll'altezza lasciando invariato il numero totale
+
+2023-02-08 17:05:32.451 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - == PROFILE DATA ==========================================
+2023-02-08 17:05:32.457 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - EditGenerate 1 godot::GDN_TheWorld_Edit::editModeGenerate_***ALL*** num=1 Elapsed=130840 MinElapsed=130840 MaxElapsed=130840 AvgElapsed=130840
+2023-02-08 17:05:32.464 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - EditGenerate 1.1 godot::GDN_TheWorld_Edit::editModeGenerate_***Generate Heights*** num=1 Elapsed=130806 MinElapsed=130806 MaxElapsed=130806 AvgElapsed=130806
+2023-02-08 17:05:32.472 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - EditGenerate 1.1.1 godot::GDN_TheWorld_Edit::editModeGenerate_***GetNoise*** num=4198401 Elapsed=4498 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-08 17:05:32.479 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - EditGenerate 1.1.2 godot::GDN_TheWorld_Edit::editModeGenerate_***half_from_float*** num=4198401 Elapsed=4382 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-08 17:05:32.489 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - WorldDeploy 3 godot::ShaderTerrainData::resetMaterialParams_***itQuadTree->second->resetMaterialParams*** num=2 Elapsed=283 MinElapsed=115 MaxElapsed=167 AvgElapsed=141
+2023-02-08 17:05:32.496 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - WorldDeploy 3.1 godot::ShaderTerrainData::resetMaterialParams_***Create Image from heights buffer*** num=1 Elapsed=48 MinElapsed=48 MaxElapsed=48 AvgElapsed=48
+2023-02-08 17:05:32.504 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - WorldDeploy 3.2 godot::ShaderTerrainData::resetMaterialParams_***Create Texture from heights image*** num=1 Elapsed=2 MinElapsed=2 MaxElapsed=2 AvgElapsed=2
+2023-02-08 17:05:32.510 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - WorldDeploy 3.5 godot::ShaderTerrainData::resetMaterialParams_***Create color image*** num=2 Elapsed=189 MinElapsed=93 MaxElapsed=96 AvgElapsed=94
+2023-02-08 17:05:32.518 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - WorldDeploy 3.6 godot::ShaderTerrainData::resetMaterialParams_***Create Texture from color image*** num=2 Elapsed=42 MinElapsed=19 MaxElapsed=22 AvgElapsed=21
+2023-02-08 17:05:32.525 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - WorldDeploy 4 godot::QuadTree::updateMaterialParams_***itQuadTree->second->updateMaterialParams*** num=2 Elapsed=108 MinElapsed=51 MaxElapsed=57 AvgElapsed=54
+2023-02-08 17:05:32.531 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - WorldDeploy 4.1 godot::QuadTree::updateMaterialParams_***set data for collider*** num=2 Elapsed=104 MinElapsed=51 MaxElapsed=53 AvgElapsed=52
+2023-02-08 17:05:32.537 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1 godot::GDN_TheWorld_Viewer::_process_***ALL*** num=8490 Elapsed=17398 MinElapsed=0 MaxElapsed=220 AvgElapsed=2
+2023-02-08 17:05:32.543 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.1 godot::GDN_TheWorld_Viewer::_process_impl_***Lock owned*** num=8383 Elapsed=17014 MinElapsed=1 MaxElapsed=220 AvgElapsed=2
+2023-02-08 17:05:32.550 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.10 godot::GDN_TheWorld_Viewer::_process_impl_***Other stuff*** num=8382 Elapsed=8 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-08 17:05:32.557 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.11 godot::GDN_TheWorld_Viewer::_process_impl_***Material params stuff*** num=8382 Elapsed=1261 MinElapsed=0 MaxElapsed=218 AvgElapsed=0
+2023-02-08 17:05:32.564 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.12 godot::GDN_TheWorld_Viewer::_process_impl_***Dump stuff*** num=8382 Elapsed=7 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-08 17:05:32.572 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.13 godot::GDN_TheWorld_Viewer::_process_impl_***Refresh statistics*** num=8382 Elapsed=291 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-08 17:05:32.579 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.2 godot::GDN_TheWorld_Viewer::_process_impl_***Adjust Quadtrees*** num=8383 Elapsed=3595 MinElapsed=0 MaxElapsed=1 AvgElapsed=0
+2023-02-08 17:05:32.587 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.3 godot::GDN_TheWorld_Viewer::_process_impl_***Init new quadrants*** num=8382 Elapsed=3438 MinElapsed=0 MaxElapsed=1 AvgElapsed=0
+2023-02-08 17:05:32.594 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.4 godot::GDN_TheWorld_Viewer::_process_impl_***Track mouse*** num=8383 Elapsed=125 MinElapsed=0 MaxElapsed=4 AvgElapsed=0
+2023-02-08 17:05:32.600 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.5 godot::GDN_TheWorld_Viewer::_process_impl_***Update Quads Stage 1*** num=8383 Elapsed=3862 MinElapsed=0 MaxElapsed=1 AvgElapsed=0
+2023-02-08 17:05:32.607 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.6 godot::GDN_TheWorld_Viewer::_process_impl_***Update Quads Stage 2*** num=8383 Elapsed=679 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-08 17:05:32.613 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.9 godot::GDN_TheWorld_Viewer::_process_impl_***Update Chunks*** num=8383 Elapsed=1571 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-08 17:05:32.619 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - streamer 1 godot::GDN_TheWorld_Viewer::streamer_***Dump stuff*** num=1 Elapsed=247 MinElapsed=247 MaxElapsed=247 AvgElapsed=247
+2023-02-08 17:05:32.622 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - == PROFILE DATA ==========================================
+
+
+2023-02-08 17:09:30.731 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - == PROFILE DATA ==========================================
+2023-02-08 17:09:30.737 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - EditGenMesh 1 godot::GDN_TheWorld_Edit::editModeGenNormals_***ALL*** num=1 Elapsed=219030 MinElapsed=219030 MaxElapsed=219030 AvgElapsed=219030
+2023-02-08 17:09:30.743 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - EditGenMesh 1.1 godot::GDN_TheWorld_Edit::editModeGenNormals_***Single QuadTree*** num=1 Elapsed=219025 MinElapsed=219025 MaxElapsed=219025 AvgElapsed=219025
+2023-02-08 17:09:30.749 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - MeshCacheBuffer generateNormals1 1 TheWorld_Utils::MeshCacheBuffer::generateNormals_***ALL*** num=1 Elapsed=219016 MinElapsed=219016 MaxElapsed=219016 AvgElapsed=219016
+2023-02-08 17:09:30.757 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - MeshCacheBuffer generateNormals1 1.2 TheWorld_Utils::MeshCacheBuffer::generateNormals_***generation*** num=1 Elapsed=219016 MinElapsed=219016 MaxElapsed=219016 AvgElapsed=219016
+2023-02-08 17:09:30.765 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - MeshCacheBuffer generateNormals1 1.2.1 TheWorld_Utils::MeshCacheBuffer::generateNormals_***calc vector*** num=4198401 Elapsed=10391 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-08 17:09:30.771 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - MeshCacheBuffer generateNormals1 1.2.2 TheWorld_Utils::MeshCacheBuffer::generateNormals_***normalize*** num=4198401 Elapsed=9458 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-08 17:09:30.777 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - MeshCacheBuffer generateNormals1 1.2.3 TheWorld_Utils::MeshCacheBuffer::generateNormals_***RGB*** num=4198401 Elapsed=9313 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-08 17:09:30.784 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - WorldDeploy 3 godot::ShaderTerrainData::resetMaterialParams_***itQuadTree->second->resetMaterialParams*** num=1 Elapsed=76 MinElapsed=76 MaxElapsed=76 AvgElapsed=76
+2023-02-08 17:09:30.790 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - WorldDeploy 3.3 godot::ShaderTerrainData::resetMaterialParams_***Create Image from normal buffer*** num=1 Elapsed=71 MinElapsed=71 MaxElapsed=71 AvgElapsed=71
+2023-02-08 17:09:30.796 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - WorldDeploy 3.4 godot::ShaderTerrainData::resetMaterialParams_***Create Texture from normal image*** num=1 Elapsed=4 MinElapsed=4 MaxElapsed=4 AvgElapsed=4
+2023-02-08 17:09:30.802 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - WorldDeploy 4 godot::QuadTree::updateMaterialParams_***itQuadTree->second->updateMaterialParams*** num=1 Elapsed=46 MinElapsed=46 MaxElapsed=46 AvgElapsed=46
+2023-02-08 17:09:30.807 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - WorldDeploy 4.1 godot::QuadTree::updateMaterialParams_***set data for collider*** num=1 Elapsed=45 MinElapsed=45 MaxElapsed=45 AvgElapsed=45
+2023-02-08 17:09:30.812 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1 godot::GDN_TheWorld_Viewer::_process_***ALL*** num=14285 Elapsed=28384 MinElapsed=0 MaxElapsed=125 AvgElapsed=1
+2023-02-08 17:09:30.818 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.1 godot::GDN_TheWorld_Viewer::_process_impl_***Lock owned*** num=14098 Elapsed=27731 MinElapsed=1 MaxElapsed=125 AvgElapsed=1
+2023-02-08 17:09:30.823 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.10 godot::GDN_TheWorld_Viewer::_process_impl_***Other stuff*** num=14098 Elapsed=13 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-08 17:09:30.829 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.11 godot::GDN_TheWorld_Viewer::_process_impl_***Material params stuff*** num=14098 Elapsed=1597 MinElapsed=0 MaxElapsed=123 AvgElapsed=0
+2023-02-08 17:09:30.834 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.12 godot::GDN_TheWorld_Viewer::_process_impl_***Dump stuff*** num=14098 Elapsed=12 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-08 17:09:30.840 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.13 godot::GDN_TheWorld_Viewer::_process_impl_***Refresh statistics*** num=14097 Elapsed=505 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-08 17:09:30.845 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.2 godot::GDN_TheWorld_Viewer::_process_impl_***Adjust Quadtrees*** num=14098 Elapsed=5873 MinElapsed=0 MaxElapsed=1 AvgElapsed=0
+2023-02-08 17:09:30.851 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.3 godot::GDN_TheWorld_Viewer::_process_impl_***Init new quadrants*** num=14097 Elapsed=5839 MinElapsed=0 MaxElapsed=1 AvgElapsed=0
+2023-02-08 17:09:30.856 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.4 godot::GDN_TheWorld_Viewer::_process_impl_***Track mouse*** num=14097 Elapsed=119 MinElapsed=0 MaxElapsed=4 AvgElapsed=0
+2023-02-08 17:09:30.862 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.5 godot::GDN_TheWorld_Viewer::_process_impl_***Update Quads Stage 1*** num=14097 Elapsed=6463 MinElapsed=0 MaxElapsed=2 AvgElapsed=0
+2023-02-08 17:09:30.868 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.6 godot::GDN_TheWorld_Viewer::_process_impl_***Update Quads Stage 2*** num=14097 Elapsed=1145 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-08 17:09:30.873 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - _process 1.9 godot::GDN_TheWorld_Viewer::_process_impl_***Update Chunks*** num=14097 Elapsed=2615 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-08 17:09:30.878 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - streamer 1 godot::GDN_TheWorld_Viewer::streamer_***Dump stuff*** num=1 Elapsed=183 MinElapsed=183 MaxElapsed=183 AvgElapsed=183
+2023-02-08 17:09:30.880 DEBUG [24764] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - == PROFILE DATA ==========================================
+
+
+2023-02-11 10:49:12.955 DEBUG [14232] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@3137] Initialization of last stream of quadrant in 31597 ms
+2023-02-11 10:49:15.534 DEBUG [25964] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - MeshCacheBuffer setBufferFromCacheData 1 TheWorld_Utils::MeshCacheBuffer::setBufferFromCacheData_***ALL*** num=169 Elapsed=12436 MinElapsed=21 MaxElapsed=296 AvgElapsed=73
+2023-02-11 10:49:15.543 DEBUG [25964] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - MeshCacheBuffer setBufferFromCacheData 1.1 TheWorld_Utils::MeshCacheBuffer::setBufferFromCacheData_***gen flat heigths*** num=169 Elapsed=4357 MinElapsed=8 MaxElapsed=80 AvgElapsed=25
+2023-02-11 10:49:15.552 DEBUG [25964] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - MeshCacheBuffer setBufferFromCacheData 1.2 TheWorld_Utils::MeshCacheBuffer::setBufferFromCacheData_***copy meshId/edit values*** num=169 Elapsed=41 MinElapsed=0 MaxElapsed=28 AvgElapsed=0
+2023-02-11 10:49:15.561 DEBUG [25964] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - MeshCacheBuffer setBufferFromCacheData 1.3 TheWorld_Utils::MeshCacheBuffer::setBufferFromCacheData_***copy heigths*** num=169 Elapsed=1263 MinElapsed=3 MaxElapsed=23 AvgElapsed=7
+
+2023-02-11 10:50:24.308 DEBUG [14232] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@3137] Initialization of last stream of quadrant in 2725 ms
+2023-02-11 10:50:32.203 DEBUG [25964] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - MeshCacheBuffer setBufferFromCacheData 1 TheWorld_Utils::MeshCacheBuffer::setBufferFromCacheData_***ALL*** num=13 Elapsed=496 MinElapsed=20 MaxElapsed=81 AvgElapsed=38
+2023-02-11 10:50:32.211 DEBUG [25964] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - MeshCacheBuffer setBufferFromCacheData 1.1 TheWorld_Utils::MeshCacheBuffer::setBufferFromCacheData_***gen flat heigths*** num=13 Elapsed=173 MinElapsed=7 MaxElapsed=25 AvgElapsed=13
+2023-02-11 10:50:32.218 DEBUG [25964] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - MeshCacheBuffer setBufferFromCacheData 1.2 TheWorld_Utils::MeshCacheBuffer::setBufferFromCacheData_***copy meshId/edit values*** num=13 Elapsed=0 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-11 10:50:32.225 DEBUG [25964] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - MeshCacheBuffer setBufferFromCacheData 1.3 TheWorld_Utils::MeshCacheBuffer::setBufferFromCacheData_***copy heigths*** num=13 Elapsed=71 MinElapsed=3 MaxElapsed=9 AvgElapsed=5
+
+2023-02-11 10:52:55.733 DEBUG [28124] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@3137] Initialization of last stream of quadrant in 27935 ms
+2023-02-11 10:52:57.622 DEBUG [30940] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - MeshCacheBuffer setBufferFromCacheData 1 TheWorld_Utils::MeshCacheBuffer::setBufferFromCacheData_***ALL*** num=169 Elapsed=12168 MinElapsed=23 MaxElapsed=261 AvgElapsed=72
+2023-02-11 10:52:57.630 DEBUG [30940] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - MeshCacheBuffer setBufferFromCacheData 1.1 TheWorld_Utils::MeshCacheBuffer::setBufferFromCacheData_***gen flat heigths*** num=169 Elapsed=4948 MinElapsed=12 MaxElapsed=68 AvgElapsed=29
+2023-02-11 10:52:57.638 DEBUG [30940] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - MeshCacheBuffer setBufferFromCacheData 1.2 TheWorld_Utils::MeshCacheBuffer::setBufferFromCacheData_***copy meshId/edit values*** num=169 Elapsed=31 MinElapsed=0 MaxElapsed=23 AvgElapsed=0
+2023-02-11 10:52:57.645 DEBUG [30940] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - MeshCacheBuffer setBufferFromCacheData 1.3 TheWorld_Utils::MeshCacheBuffer::setBufferFromCacheData_***copy heigths*** num=169 Elapsed=1184 MinElapsed=2 MaxElapsed=19 AvgElapsed=7
+
+2023-02-11 10:53:25.284 DEBUG [28124] [godot::GDN_TheWorld_Viewer::streamingQuadrantStuff@3137] Initialization of last stream of quadrant in 2628 ms
+2023-02-11 10:53:29.827 DEBUG [30940] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - MeshCacheBuffer setBufferFromCacheData 1 TheWorld_Utils::MeshCacheBuffer::setBufferFromCacheData_***ALL*** num=26 Elapsed=1099 MinElapsed=24 MaxElapsed=76 AvgElapsed=42
+2023-02-11 10:53:29.834 DEBUG [30940] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - MeshCacheBuffer setBufferFromCacheData 1.1 TheWorld_Utils::MeshCacheBuffer::setBufferFromCacheData_***gen flat heigths*** num=26 Elapsed=509 MinElapsed=11 MaxElapsed=50 AvgElapsed=19
+2023-02-11 10:53:29.841 DEBUG [30940] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - MeshCacheBuffer setBufferFromCacheData 1.2 TheWorld_Utils::MeshCacheBuffer::setBufferFromCacheData_***copy meshId/edit values*** num=26 Elapsed=0 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-11 10:53:29.849 DEBUG [30940] [godot::GDN_TheWorld_Globals::debugPrint@271] DEBUG - MeshCacheBuffer setBufferFromCacheData 1.3 TheWorld_Utils::MeshCacheBuffer::setBufferFromCacheData_***copy heigths*** num=26 Elapsed=131 MinElapsed=2 MaxElapsed=11 AvgElapsed=5
+
+
+Quando viene distrutto un chunk annullare in GDN_TheWorld_Viewer Chunk* m_mouseHitChunk; (setMouseHitChunk) e Chunk* m_cameraChunk; (setCameraChunk) se puntano a lui
+
+
+2023-02-23 12:37:47.162 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - *************
+2023-02-23 12:37:47.165 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - STARTING DUMP
+2023-02-23 12:37:47.167 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - FPS: 60.000000
+2023-02-23 12:37:47.171 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - Quadrant busy memory : 1511444640
+2023-02-23 12:37:47.176 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - === NODES ===========================================
+2023-02-23 12:37:47.177 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 
+2023-02-23 12:37:47.179 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - @@2 = res://native/GDN_TheWorld_Viewer.gdns
+2023-02-23 12:37:47.179 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 
+2023-02-23 12:37:47.180 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - root
+2023-02-23 12:37:47.185 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 	Globals
+2023-02-23 12:37:47.186 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 	DrawLine
+2023-02-23 12:37:47.187 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 	Main
+2023-02-23 12:37:47.188 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 		TheWorld_Main
+2023-02-23 12:37:47.189 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 			DebugStats
+2023-02-23 12:37:47.190 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Column
+2023-02-23 12:37:47.191 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@6
+2023-02-23 12:37:47.192 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@7
+2023-02-23 12:37:47.193 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@8
+2023-02-23 12:37:47.194 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@9
+2023-02-23 12:37:47.195 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@10
+2023-02-23 12:37:47.196 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@11
+2023-02-23 12:37:47.197 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@12
+2023-02-23 12:37:47.198 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@13
+2023-02-23 12:37:47.199 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@14
+2023-02-23 12:37:47.200 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@15
+2023-02-23 12:37:47.201 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@16
+2023-02-23 12:37:47.203 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@17
+2023-02-23 12:37:47.204 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@18
+2023-02-23 12:37:47.205 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@19
+2023-02-23 12:37:47.206 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@20
+2023-02-23 12:37:47.207 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@21
+2023-02-23 12:37:47.208 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@22
+2023-02-23 12:37:47.209 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@23
+2023-02-23 12:37:47.210 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@24
+2023-02-23 12:37:47.211 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@25
+2023-02-23 12:37:47.212 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@26
+2023-02-23 12:37:47.213 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@27
+2023-02-23 12:37:47.214 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@28
+2023-02-23 12:37:47.215 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					@@29
+2023-02-23 12:37:47.216 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 			Sun
+2023-02-23 12:37:47.217 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 			CubeMeshTest
+2023-02-23 12:37:47.218 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 			NoiseMeshTest
+2023-02-23 12:37:47.220 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 			OmniLightTest
+2023-02-23 12:37:47.221 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 			PlaneMeshTest
+2023-02-23 12:37:47.223 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 			BallRigidBody
+2023-02-23 12:37:47.224 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				SphereMeshTest
+2023-02-23 12:37:47.225 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				CollisionShape
+2023-02-23 12:37:47.227 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 			GDN_TheWorld_Viewer
+2023-02-23 12:37:47.228 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-0-0
+2023-02-23 12:37:47.229 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--1--1
+2023-02-23 12:37:47.230 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-0--1
+2023-02-23 12:37:47.232 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-1--1
+2023-02-23 12:37:47.233 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--1-0
+2023-02-23 12:37:47.234 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-1-0
+2023-02-23 12:37:47.235 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--1-1
+2023-02-23 12:37:47.237 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-0-1
+2023-02-23 12:37:47.238 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-1-1
+2023-02-23 12:37:47.239 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--2--2
+2023-02-23 12:37:47.241 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--1--2
+2023-02-23 12:37:47.242 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-0--2
+2023-02-23 12:37:47.243 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-1--2
+2023-02-23 12:37:47.244 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-2--2
+2023-02-23 12:37:47.246 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--2--1
+2023-02-23 12:37:47.247 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-2--1
+2023-02-23 12:37:47.249 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--2-0
+2023-02-23 12:37:47.250 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-2-0
+2023-02-23 12:37:47.251 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--2-1
+2023-02-23 12:37:47.253 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-2-1
+2023-02-23 12:37:47.254 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--2-2
+2023-02-23 12:37:47.255 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--1-2
+2023-02-23 12:37:47.257 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-0-2
+2023-02-23 12:37:47.258 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-1-2
+2023-02-23 12:37:47.259 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-2-2
+2023-02-23 12:37:47.260 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--3--3
+2023-02-23 12:37:47.261 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--2--3
+2023-02-23 12:37:47.262 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--1--3
+2023-02-23 12:37:47.263 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-0--3
+2023-02-23 12:37:47.265 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-1--3
+2023-02-23 12:37:47.266 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-2--3
+2023-02-23 12:37:47.267 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-3--3
+2023-02-23 12:37:47.269 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--3--2
+2023-02-23 12:37:47.270 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-3--2
+2023-02-23 12:37:47.271 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--3--1
+2023-02-23 12:37:47.272 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-3--1
+2023-02-23 12:37:47.273 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--3-0
+2023-02-23 12:37:47.275 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-3-0
+2023-02-23 12:37:47.276 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--3-1
+2023-02-23 12:37:47.277 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-3-1
+2023-02-23 12:37:47.278 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--3-2
+2023-02-23 12:37:47.279 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-3-2
+2023-02-23 12:37:47.281 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--3-3
+2023-02-23 12:37:47.282 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--2-3
+2023-02-23 12:37:47.283 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--1-3
+2023-02-23 12:37:47.284 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-0-3
+2023-02-23 12:37:47.285 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-1-3
+2023-02-23 12:37:47.286 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-2-3
+2023-02-23 12:37:47.287 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-3-3
+2023-02-23 12:37:47.289 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--4--4
+2023-02-23 12:37:47.290 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--3--4
+2023-02-23 12:37:47.291 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--2--4
+2023-02-23 12:37:47.292 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--1--4
+2023-02-23 12:37:47.293 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-0--4
+2023-02-23 12:37:47.295 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-1--4
+2023-02-23 12:37:47.296 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-2--4
+2023-02-23 12:37:47.297 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-3--4
+2023-02-23 12:37:47.298 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-4--4
+2023-02-23 12:37:47.300 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--4--3
+2023-02-23 12:37:47.301 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-4--3
+2023-02-23 12:37:47.302 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--4--2
+2023-02-23 12:37:47.303 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				EditModeUI
+2023-02-23 12:37:47.304 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 					EditBox
+2023-02-23 12:37:47.305 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 						EditModeTab
+2023-02-23 12:37:47.306 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 							Terrain
+2023-02-23 12:37:47.307 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 								@@31
+2023-02-23 12:37:47.308 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 								@@32
+2023-02-23 12:37:47.309 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 									@@33
+2023-02-23 12:37:47.310 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@34
+2023-02-23 12:37:47.311 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@35
+2023-02-23 12:37:47.312 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@36
+2023-02-23 12:37:47.313 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@37
+2023-02-23 12:37:47.314 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@38
+2023-02-23 12:37:47.315 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@39
+2023-02-23 12:37:47.316 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 								@@40
+2023-02-23 12:37:47.317 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 									@@41
+2023-02-23 12:37:47.318 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@44
+2023-02-23 12:37:47.319 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 											@@43
+2023-02-23 12:37:47.320 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 												@@42
+2023-02-23 12:37:47.321 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 								@@45
+2023-02-23 12:37:47.322 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 									@@46
+2023-02-23 12:37:47.323 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@47
+2023-02-23 12:37:47.324 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@51
+2023-02-23 12:37:47.325 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 											@@48
+2023-02-23 12:37:47.326 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 											@@50
+2023-02-23 12:37:47.327 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 												@@49
+2023-02-23 12:37:47.328 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@52
+2023-02-23 12:37:47.329 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@56
+2023-02-23 12:37:47.330 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 											@@53
+2023-02-23 12:37:47.331 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 											@@55
+2023-02-23 12:37:47.333 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 												@@54
+2023-02-23 12:37:47.334 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 								@@57
+2023-02-23 12:37:47.335 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 									@@58
+2023-02-23 12:37:47.336 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@59
+2023-02-23 12:37:47.337 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@63
+2023-02-23 12:37:47.338 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 											@@60
+2023-02-23 12:37:47.340 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 											@@62
+2023-02-23 12:37:47.341 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 												@@61
+2023-02-23 12:37:47.343 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@64
+2023-02-23 12:37:47.344 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@68
+2023-02-23 12:37:47.345 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 											@@65
+2023-02-23 12:37:47.346 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 											@@67
+2023-02-23 12:37:47.347 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 												@@66
+2023-02-23 12:37:47.348 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 								@@69
+2023-02-23 12:37:47.349 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 									@@70
+2023-02-23 12:37:47.350 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@71
+2023-02-23 12:37:47.352 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@75
+2023-02-23 12:37:47.353 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 											@@72
+2023-02-23 12:37:47.354 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 											@@74
+2023-02-23 12:37:47.355 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 												@@73
+2023-02-23 12:37:47.357 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@76
+2023-02-23 12:37:47.358 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@80
+2023-02-23 12:37:47.359 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 											@@77
+2023-02-23 12:37:47.360 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 											@@79
+2023-02-23 12:37:47.361 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 												@@78
+2023-02-23 12:37:47.362 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 								@@81
+2023-02-23 12:37:47.363 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 									@@82
+2023-02-23 12:37:47.364 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@83
+2023-02-23 12:37:47.365 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@87
+2023-02-23 12:37:47.366 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 											@@84
+2023-02-23 12:37:47.367 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 											@@86
+2023-02-23 12:37:47.369 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 												@@85
+2023-02-23 12:37:47.370 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 								@@88
+2023-02-23 12:37:47.371 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 									@@89
+2023-02-23 12:37:47.372 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@90
+2023-02-23 12:37:47.373 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@94
+2023-02-23 12:37:47.375 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 											@@91
+2023-02-23 12:37:47.376 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 											@@93
+2023-02-23 12:37:47.377 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 												@@92
+2023-02-23 12:37:47.378 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 								@@95
+2023-02-23 12:37:47.379 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 								@@96
+2023-02-23 12:37:47.380 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 									@@97
+2023-02-23 12:37:47.381 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@98
+2023-02-23 12:37:47.382 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@99
+2023-02-23 12:37:47.383 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@100
+2023-02-23 12:37:47.384 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@101
+2023-02-23 12:37:47.385 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 								@@102
+2023-02-23 12:37:47.386 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 									@@103
+2023-02-23 12:37:47.387 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@104
+2023-02-23 12:37:47.389 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@105
+2023-02-23 12:37:47.390 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@106
+2023-02-23 12:37:47.391 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@107
+2023-02-23 12:37:47.392 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 								@@108
+2023-02-23 12:37:47.393 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 								@@109
+2023-02-23 12:37:47.394 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 									@@110
+2023-02-23 12:37:47.395 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@111
+2023-02-23 12:37:47.396 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@112
+2023-02-23 12:37:47.397 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 								@@113
+2023-02-23 12:37:47.398 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 									@@114
+2023-02-23 12:37:47.399 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@115
+2023-02-23 12:37:47.400 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@116
+2023-02-23 12:37:47.401 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 								@@117
+2023-02-23 12:37:47.402 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 									@@118
+2023-02-23 12:37:47.403 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@119
+2023-02-23 12:37:47.405 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@120
+2023-02-23 12:37:47.406 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 								@@121
+2023-02-23 12:37:47.407 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 									@@122
+2023-02-23 12:37:47.409 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@123
+2023-02-23 12:37:47.410 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@124
+2023-02-23 12:37:47.411 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 								@@125
+2023-02-23 12:37:47.412 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 									@@126
+2023-02-23 12:37:47.415 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@127
+2023-02-23 12:37:47.416 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@128
+2023-02-23 12:37:47.418 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 								@@129
+2023-02-23 12:37:47.419 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 								@@130
+2023-02-23 12:37:47.421 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 									@@131
+2023-02-23 12:37:47.422 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@132
+2023-02-23 12:37:47.424 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@133
+2023-02-23 12:37:47.425 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@134
+2023-02-23 12:37:47.426 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@135
+2023-02-23 12:37:47.427 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 										@@136
+2023-02-23 12:37:47.429 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 								@@137
+2023-02-23 12:37:47.431 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-4--2
+2023-02-23 12:37:47.432 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--4--1
+2023-02-23 12:37:47.435 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-4--1
+2023-02-23 12:37:47.436 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--4-0
+2023-02-23 12:37:47.437 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-4-0
+2023-02-23 12:37:47.439 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--4-1
+2023-02-23 12:37:47.440 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-4-1
+2023-02-23 12:37:47.442 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--4-2
+2023-02-23 12:37:47.443 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-4-2
+2023-02-23 12:37:47.444 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--4-3
+2023-02-23 12:37:47.446 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-4-3
+2023-02-23 12:37:47.447 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--4-4
+2023-02-23 12:37:47.448 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--3-4
+2023-02-23 12:37:47.449 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--2-4
+2023-02-23 12:37:47.450 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--1-4
+2023-02-23 12:37:47.451 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-0-4
+2023-02-23 12:37:47.452 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-1-4
+2023-02-23 12:37:47.454 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-2-4
+2023-02-23 12:37:47.455 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-3-4
+2023-02-23 12:37:47.456 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-4-4
+2023-02-23 12:37:47.457 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--5--5
+2023-02-23 12:37:47.458 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--4--5
+2023-02-23 12:37:47.460 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--3--5
+2023-02-23 12:37:47.461 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--2--5
+2023-02-23 12:37:47.462 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--1--5
+2023-02-23 12:37:47.463 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-0--5
+2023-02-23 12:37:47.464 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-1--5
+2023-02-23 12:37:47.465 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-2--5
+2023-02-23 12:37:47.466 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-3--5
+2023-02-23 12:37:47.468 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-4--5
+2023-02-23 12:37:47.469 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-5--5
+2023-02-23 12:37:47.470 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--5--4
+2023-02-23 12:37:47.471 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-5--4
+2023-02-23 12:37:47.472 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--5--3
+2023-02-23 12:37:47.473 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-5--3
+2023-02-23 12:37:47.474 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--5--2
+2023-02-23 12:37:47.475 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-5--2
+2023-02-23 12:37:47.476 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--5--1
+2023-02-23 12:37:47.477 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-5--1
+2023-02-23 12:37:47.478 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--5-0
+2023-02-23 12:37:47.479 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-5-0
+2023-02-23 12:37:47.480 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--5-1
+2023-02-23 12:37:47.481 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-5-1
+2023-02-23 12:37:47.482 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--5-2
+2023-02-23 12:37:47.483 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-5-2
+2023-02-23 12:37:47.484 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--5-3
+2023-02-23 12:37:47.485 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-5-3
+2023-02-23 12:37:47.486 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--5-4
+2023-02-23 12:37:47.487 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-5-4
+2023-02-23 12:37:47.488 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--5-5
+2023-02-23 12:37:47.490 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--4-5
+2023-02-23 12:37:47.491 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--3-5
+2023-02-23 12:37:47.492 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--2-5
+2023-02-23 12:37:47.493 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--1-5
+2023-02-23 12:37:47.494 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-0-5
+2023-02-23 12:37:47.495 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-1-5
+2023-02-23 12:37:47.496 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-2-5
+2023-02-23 12:37:47.497 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-3-5
+2023-02-23 12:37:47.497 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-4-5
+2023-02-23 12:37:47.498 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-5-5
+2023-02-23 12:37:47.499 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--6--6
+2023-02-23 12:37:47.500 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--5--6
+2023-02-23 12:37:47.501 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--4--6
+2023-02-23 12:37:47.502 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--3--6
+2023-02-23 12:37:47.503 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--2--6
+2023-02-23 12:37:47.504 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--1--6
+2023-02-23 12:37:47.506 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-0--6
+2023-02-23 12:37:47.507 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-1--6
+2023-02-23 12:37:47.508 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-2--6
+2023-02-23 12:37:47.509 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-3--6
+2023-02-23 12:37:47.510 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-4--6
+2023-02-23 12:37:47.510 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-5--6
+2023-02-23 12:37:47.511 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-6--6
+2023-02-23 12:37:47.512 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--6--5
+2023-02-23 12:37:47.514 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-6--5
+2023-02-23 12:37:47.515 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--6--4
+2023-02-23 12:37:47.516 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-6--4
+2023-02-23 12:37:47.517 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--6--3
+2023-02-23 12:37:47.518 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-6--3
+2023-02-23 12:37:47.519 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--6--2
+2023-02-23 12:37:47.520 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-6--2
+2023-02-23 12:37:47.521 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--6--1
+2023-02-23 12:37:47.521 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-6--1
+2023-02-23 12:37:47.522 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--6-0
+2023-02-23 12:37:47.523 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-6-0
+2023-02-23 12:37:47.524 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--6-1
+2023-02-23 12:37:47.525 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-6-1
+2023-02-23 12:37:47.526 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--6-2
+2023-02-23 12:37:47.527 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-6-2
+2023-02-23 12:37:47.528 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--6-3
+2023-02-23 12:37:47.529 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-6-3
+2023-02-23 12:37:47.530 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--6-4
+2023-02-23 12:37:47.531 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-6-4
+2023-02-23 12:37:47.532 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--6-5
+2023-02-23 12:37:47.533 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-6-5
+2023-02-23 12:37:47.534 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--6-6
+2023-02-23 12:37:47.535 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--5-6
+2023-02-23 12:37:47.536 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--4-6
+2023-02-23 12:37:47.537 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--3-6
+2023-02-23 12:37:47.538 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--2-6
+2023-02-23 12:37:47.539 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant--1-6
+2023-02-23 12:37:47.540 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-0-6
+2023-02-23 12:37:47.541 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-1-6
+2023-02-23 12:37:47.542 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-2-6
+2023-02-23 12:37:47.543 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-3-6
+2023-02-23 12:37:47.544 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-4-6
+2023-02-23 12:37:47.545 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-5-6
+2023-02-23 12:37:47.546 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 				Quadrant-6-6
+2023-02-23 12:37:47.547 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 			WorldCamera
+2023-02-23 12:37:47.548 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 		@@2
+2023-02-23 12:37:47.549 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - 		GDN_TheWorld_Globals
+2023-02-23 12:37:47.551 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - === NODES ===========================================
+2023-02-23 12:37:47.554 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - == PROFILE DATA ==========================================
+2023-02-23 12:37:47.559 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - EditGenMesh 1 godot::GDN_TheWorld_Edit::editModeGenNormals_***ALL*** num=2 Elapsed=33892 MinElapsed=16888 MaxElapsed=17003 AvgElapsed=16946
+2023-02-23 12:37:47.565 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - EditGenMesh 1.1 godot::GDN_TheWorld_Edit::editModeGenNormals_***Single QuadTree*** num=2 Elapsed=33890 MinElapsed=16888 MaxElapsed=17002 AvgElapsed=16945
+2023-02-23 12:37:47.569 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - EditGenerate 1 godot::GDN_TheWorld_Edit::editModeGenerate_***ALL*** num=11 Elapsed=20273 MinElapsed=1757 MaxElapsed=2416 AvgElapsed=1843
+2023-02-23 12:37:47.576 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - EditGenerate 1.1 godot::GDN_TheWorld_Edit::editModeGenerate_***Generate Heights*** num=11 Elapsed=11341 MinElapsed=957 MaxElapsed=1602 AvgElapsed=1031
+2023-02-23 12:37:47.581 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - EditGenerate 1.2 godot::GDN_TheWorld_Edit::editModeGenerate_***Move Heights*** num=11 Elapsed=8694 MinElapsed=779 MaxElapsed=817 AvgElapsed=790
+2023-02-23 12:37:47.587 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - MeshCacheBuffer generateHeights 1 TheWorld_Utils::MeshCacheBuffer::generateHeights_***ALL*** num=11 Elapsed=11341 MinElapsed=957 MaxElapsed=1602 AvgElapsed=1031
+2023-02-23 12:37:47.593 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - MeshCacheBuffer generateNormals1 1 TheWorld_Utils::MeshCacheBuffer::generateNormals_***ALL*** num=2 Elapsed=33873 MinElapsed=16879 MaxElapsed=16993 AvgElapsed=16936
+2023-02-23 12:37:47.599 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - MeshCacheBuffer generateNormals2 1 TheWorld_Utils::MeshCacheBuffer::generateNormals_***serialize normals*** num=2 Elapsed=33878 MinElapsed=16882 MaxElapsed=16996 AvgElapsed=16939
+2023-02-23 12:37:47.605 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - MeshCacheBuffer readBufferFromCache 1 TheWorld_Utils::MeshCacheBuffer::readBufferFromCache_***ALL*** num=211 Elapsed=19 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-23 12:37:47.611 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - MeshCacheBuffer refreshMapsFromBuffer 1 TheWorld_Utils::MeshCacheBuffer::refreshMapsFromBuffer_***ALL*** num=406 Elapsed=2238 MinElapsed=0 MaxElapsed=38 AvgElapsed=5
+2023-02-23 12:37:47.617 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - MeshCacheBuffer refreshMapsFromCache 1 TheWorld_Utils::MeshCacheBuffer::refreshMapsFromCache_***ALL*** num=211 Elapsed=9472 MinElapsed=28 MaxElapsed=109 AvgElapsed=44
+2023-02-23 12:37:47.624 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - MeshCacheBuffer refreshMapsFromCache 1.1  TheWorld_Utils::MeshCacheBuffer::refreshMapsFromCache_***readBufferFromCache*** num=211 Elapsed=33 MinElapsed=0 MaxElapsed=7 AvgElapsed=0
+2023-02-23 12:37:47.630 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - MeshCacheBuffer refreshMapsFromCache 1.2 TheWorld_Utils::MeshCacheBuffer::refreshMapsFromCache_***setEmptyBuffer*** num=211 Elapsed=6411 MinElapsed=19 MaxElapsed=66 AvgElapsed=30
+2023-02-23 12:37:47.637 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - MeshCacheBuffer refreshMapsFromCache 1.3 TheWorld_Utils::MeshCacheBuffer::refreshMapsFromCache_***readMapsFromMeshCache*** num=211 Elapsed=2296 MinElapsed=5 MaxElapsed=39 AvgElapsed=10
+2023-02-23 12:37:47.643 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - MeshCacheBuffer setBufferFromCacheData 1 TheWorld_Utils::MeshCacheBuffer::setBufferFromCacheData_***ALL*** num=211 Elapsed=6373 MinElapsed=19 MaxElapsed=66 AvgElapsed=30
+2023-02-23 12:37:47.650 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - MeshCacheBuffer setBufferFromCacheData 1.1 TheWorld_Utils::MeshCacheBuffer::setBufferFromCacheData_***gen flat heights*** num=211 Elapsed=3227 MinElapsed=10 MaxElapsed=36 AvgElapsed=15
+2023-02-23 12:37:47.657 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - MeshCacheBuffer setBufferFromCacheData 1.2 TheWorld_Utils::MeshCacheBuffer::setBufferFromCacheData_***copy meshId/edit values*** num=211 Elapsed=3 MinElapsed=0 MaxElapsed=3 AvgElapsed=0
+2023-02-23 12:37:47.664 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - MeshCacheBuffer setBufferFromCacheData 1.3 TheWorld_Utils::MeshCacheBuffer::setBufferFromCacheData_***copy heights*** num=211 Elapsed=797 MinElapsed=2 MaxElapsed=13 AvgElapsed=3
+2023-02-23 12:37:47.670 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - MeshCacheBuffer setBufferFromHeights 1 TheWorld_Utils::MeshCacheBuffer::setBufferFromHeights_***ALL*** num=195 Elapsed=5 MinElapsed=0 MaxElapsed=5 AvgElapsed=0
+2023-02-23 12:37:47.677 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - ServerThreadInit TheWorld_ClientServer::ServerInterface::serverThreadInit_***m_threadContextPool->getCurrentContext()*** num=30 Elapsed=0 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-23 12:37:47.683 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - ServerThreadInit TheWorld_ClientServer::ServerThreadContext::getMapManager_***Create m_mapManager*** num=25 Elapsed=74 MinElapsed=0 MaxElapsed=23 AvgElapsed=2
+2023-02-23 12:37:47.688 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - WorldDeploy 1 godot::GDN_TheWorld_Viewer::replyFromServer_***MapManager::getQuadrantVertices*** num=195 Elapsed=492 MinElapsed=1 MaxElapsed=36 AvgElapsed=2
+2023-02-23 12:37:47.695 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - WorldDeploy 1a TheWorld_ClientServer::ServerInterface::onExecMethodAsync_***MapManager::getQuadrantVertices*** num=195 Elapsed=161 MinElapsed=0 MaxElapsed=33 AvgElapsed=0
+2023-02-23 12:37:47.700 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - WorldDeploy 1b TheWorld_MapManager::MapManager::getQuadrantVertices_***getQuadrantVertices*** num=195 Elapsed=73 MinElapsed=0 MaxElapsed=9 AvgElapsed=0
+2023-02-23 12:37:47.706 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - WorldDeploy 1b.1 TheWorld_MapManager::MapManager::getQuadrantVertices_***Get MeshId from cache*** num=195 Elapsed=35 MinElapsed=0 MaxElapsed=6 AvgElapsed=0
+2023-02-23 12:37:47.712 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - WorldDeploy 1b.2 TheWorld_MapManager::MapManager::getQuadrantVertices_***Set header in buffer (use client cache)*** num=195 Elapsed=15 MinElapsed=0 MaxElapsed=5 AvgElapsed=0
+2023-02-23 12:37:47.718 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - WorldDeploy 2 godot::GDN_TheWorld_Viewer::replyFromServer_***MapManager::getQuadrantVertices*** num=195 Elapsed=56954 MinElapsed=176 MaxElapsed=631 AvgElapsed=292
+2023-02-23 12:37:47.724 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - WorldDeploy 2.1 godot::GDN_TheWorld_Viewer::replyFromServer_***Elab. quadrant*** num=195 Elapsed=51756 MinElapsed=158 MaxElapsed=621 AvgElapsed=265
+2023-02-23 12:37:47.730 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - WorldDeploy 2.1.1 godot::GDN_TheWorld_Viewer::replyFromServer_***quadTree->getQuadrant()->refreshGridVertices*** num=195 Elapsed=13580 MinElapsed=50 MaxElapsed=131 AvgElapsed=69
+2023-02-23 12:37:47.736 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - WorldDeploy 2.1.1.1 godot::Quadrant::refreshGridVerticesFromServer_***m_cache.refreshMapsFromBuffer*** num=195 Elapsed=8 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-23 12:37:47.743 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - WorldDeploy 2.1.1.2 godot::Quadrant::refreshGridVerticesFromServer_***m_cache.readMapsFromMeshCache*** num=195 Elapsed=8961 MinElapsed=30 MaxElapsed=109 AvgElapsed=45
+2023-02-23 12:37:47.748 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - WorldDeploy 2.1.2 godot::GDN_TheWorld_Viewer::replyFromServer_***setCamera*** num=1 Elapsed=0 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-23 12:37:47.754 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - WorldDeploy 3 godot::ShaderTerrainData::resetMaterialParams_***itQuadTree->second->resetMaterialParams*** num=276 Elapsed=40400 MinElapsed=0 MaxElapsed=556 AvgElapsed=146
+2023-02-23 12:37:47.760 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - WorldDeploy 3.1 godot::ShaderTerrainData::resetMaterialParams_***Create Image from heights buffer*** num=206 Elapsed=8299 MinElapsed=33 MaxElapsed=65 AvgElapsed=40
+2023-02-23 12:37:47.766 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - WorldDeploy 3.2 godot::ShaderTerrainData::resetMaterialParams_***Create Texture from heights image*** num=206 Elapsed=4825 MinElapsed=0 MaxElapsed=226 AvgElapsed=23
+2023-02-23 12:37:47.772 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - WorldDeploy 3.3 godot::ShaderTerrainData::resetMaterialParams_***Create Image from normal buffer*** num=2 Elapsed=105 MinElapsed=52 MaxElapsed=53 AvgElapsed=52
+2023-02-23 12:37:47.778 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - WorldDeploy 3.3 godot::ShaderTerrainData::resetMaterialParams_***Create empty Image for normals*** num=11 Elapsed=575 MinElapsed=50 MaxElapsed=55 AvgElapsed=52
+2023-02-23 12:37:47.784 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - WorldDeploy 3.4 godot::ShaderTerrainData::resetMaterialParams_***Create Texture from normal image*** num=13 Elapsed=0 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-23 12:37:47.789 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - WorldDeploy 3.5 godot::ShaderTerrainData::resetMaterialParams_***Create color image*** num=212 Elapsed=16986 MinElapsed=67 MaxElapsed=127 AvgElapsed=80
+2023-02-23 12:37:47.796 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - WorldDeploy 3.6 godot::ShaderTerrainData::resetMaterialParams_***Create Texture from color image*** num=212 Elapsed=7127 MinElapsed=0 MaxElapsed=255 AvgElapsed=33
+2023-02-23 12:37:47.800 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - _process 1 godot::GDN_TheWorld_Viewer::_process_***ALL*** num=46703 Elapsed=111247 MinElapsed=0 MaxElapsed=132 AvgElapsed=2
+2023-02-23 12:37:47.806 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - _process 1.1 godot::GDN_TheWorld_Viewer::_process_impl_***Lock owned*** num=45817 Elapsed=109348 MinElapsed=1 MaxElapsed=132 AvgElapsed=2
+2023-02-23 12:37:47.811 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - _process 1.10 godot::GDN_TheWorld_Viewer::_process_impl_***Other stuff*** num=45817 Elapsed=10 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-23 12:37:47.817 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - _process 1.11 godot::GDN_TheWorld_Viewer::_process_impl_***Material params stuff*** num=45818 Elapsed=9461 MinElapsed=0 MaxElapsed=129 AvgElapsed=0
+2023-02-23 12:37:47.822 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - _process 1.12 godot::GDN_TheWorld_Viewer::_process_impl_***Dump stuff*** num=45818 Elapsed=7 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-23 12:37:47.828 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - _process 1.13 godot::GDN_TheWorld_Viewer::_process_impl_***Refresh statistics*** num=45818 Elapsed=1814 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-23 12:37:47.833 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - _process 1.2 godot::GDN_TheWorld_Viewer::_process_impl_***Adjust Quadtrees*** num=45819 Elapsed=14241 MinElapsed=0 MaxElapsed=8 AvgElapsed=0
+2023-02-23 12:37:47.838 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - _process 1.2.1 godot::GDN_TheWorld_Viewer::_process_impl_***Adjust Quadtrees: recalc quadrants*** num=3 Elapsed=0 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-23 12:37:47.844 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - _process 1.3 godot::GDN_TheWorld_Viewer::_process_impl_***Init new quadrants*** num=45819 Elapsed=21689 MinElapsed=0 MaxElapsed=20 AvgElapsed=0
+2023-02-23 12:37:47.849 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - _process 1.4 godot::GDN_TheWorld_Viewer::_process_impl_***Track mouse*** num=45820 Elapsed=663 MinElapsed=0 MaxElapsed=0 AvgElapsed=0
+2023-02-23 12:37:47.855 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - _process 1.5 godot::GDN_TheWorld_Viewer::_process_impl_***Update Quads Stage 1*** num=45820 Elapsed=23061 MinElapsed=0 MaxElapsed=18 AvgElapsed=0
+2023-02-23 12:37:47.861 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - _process 1.6 godot::GDN_TheWorld_Viewer::_process_impl_***Update Quads Stage 2*** num=45822 Elapsed=21902 MinElapsed=0 MaxElapsed=10 AvgElapsed=0
+2023-02-23 12:37:47.867 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - _process 1.7 godot::GDN_TheWorld_Viewer::_process_impl_***Update Quads Stage 3*** num=2 Elapsed=8 MinElapsed=4 MaxElapsed=4 AvgElapsed=4
+2023-02-23 12:37:47.872 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - _process 1.9 godot::GDN_TheWorld_Viewer::_process_impl_***Update Chunks*** num=45821 Elapsed=6733 MinElapsed=0 MaxElapsed=13 AvgElapsed=0
+2023-02-23 12:37:47.879 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - recalcQuadrantsInView 1 godot::GDN_TheWorld_Viewer::recalcQuadrantsInView_***Adjust Quadtrees: recalc quadrants*** num=3 Elapsed=86 MinElapsed=3 MaxElapsed=77 AvgElapsed=28
+2023-02-23 12:37:47.881 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - == PROFILE DATA ==========================================
+2023-02-23 12:37:47.882 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - DUMP COMPLETE
+2023-02-23 12:37:47.883 DEBUG [8268] [godot::GDN_TheWorld_Globals::debugPrint@272] DEBUG - *************
+
+
+
+
+
+
+Take all the compass targets within X range, get the texture for the marker type, get the angle from the player to the target, create a viewport that renders to a texture, place each texture onto the viewport at a X position related to their angle, on the main screen draw the texture to a bar, move that left or right based on the players current angle, make sure the texture is set to repeat on the X axis.
+
+https://stackoverflow.com/questions/46943868/gyroscope-with-compass-help-needed
+
+https://godotengine.org/qa/134005/how-could-implemented-top-screen-heading-compass-for-3d-game
+
+Position and size a Control node near the top of the screen.
+
+In the inspector dock, under Rect, check the checkbox that says "Clip Content".
+
+Now the Control node's children will be partially invisible if they are partially outside the Control node's bounding rectangle.
+
+There will be a problem if the player turns more than 360 degrees. I hope someone can provide a clever way to deal with this issue. I thought about it and my line of thinking goes something like this:
+
+Make three TextureRects, each with the compass texture, and each as children of the Control node. Position them side by side so they seem like one long compass texture that repeats. Everytime the player rotates to the left or right, move all three TextureRects to the left or right. If the player rotates far enough to the left then the middle TextureRect won't be in view anymore, only the leftmost TextureRect will be. If that happens, then reposition the rightmost TextureRect to be on the far left. And vice-versa if the player rotates far enough to the right.
+
+Please leave a comment indicating what, if anything, requires further clarification.
+
+
+https://forum.unity.com/threads/calculate-vertex-normals-in-shader-from-heightmap.169871/
+
+
+
+Slot0	Ground003_2K-JPG
+Slot1	Ground049C_1K-JPG
+Slot2	PantedPlaster017_1k
+Slot3	Rock028_1K-JPG
+
+Normal flip_Y
+Resolution	1024
+create image in godot con USeMipMaps
+creare ImageTexture con ImageTexture.FLAG_FILTER | ImageTexture.FLAG_MIPMAPS | ImageTexture.FLAG_REPEAT
+
+=================================================================================================================
+
+diff = 2430,870
+h = 205,630
+
+normal		packed_normal	RGB
+-0,142		0,428			r	109
+0,445		0,722			g 	14
+-0.884		0,057			b 	184
+
+RGB			packed_normal	normal		normalized
+r	109		0,427			-0,145		-0,144	
+g	184		0,721			0,443		0,440
+b	14		0,054			-0,890		-0,885
+
+
+var root = e.get_parent()
+   var all_nodes = []
+   var c = root.get_children()
+   while !c.empty():
+       var child_list = []                        
+       for i in c:
+           child_list += i.get_children()
+       all_nodes += child_list
+       c = child_list
+   for node in all_nodes:
+       if node.get_class() == "Camera":
+           print(node.transform)
+           print(node.get_path())
+           for i in range(deep):
+               node = node.get_parent()
+               print(node.get_class() + str(node.get_index()))
+   print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
