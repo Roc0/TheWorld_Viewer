@@ -182,10 +182,10 @@ void vertex() {
 }
 
 void fragment() {
-	if (v_hole < 0.5) {
-		// TODO Add option to use vertex discarding instead, using NaNs
-		discard;
-	}
+	//if (v_hole < 0.5) {
+	//	// TODO Add option to use vertex discarding instead, using NaNs
+	//	discard;
+	//}
 
 	//vec3 terrain_normal_world = u_terrain_normal_basis * unpack_normal(texture(u_terrain_normalmap, UV));
 	//terrain_normal_world = normalize(terrain_normal_world);
@@ -332,6 +332,7 @@ void fragment() {
 
 		vec3 mouse_hit_albedo = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 		ALBEDO = mix(ALBEDO, mouse_hit_albedo, 0.3);
-		ALPHA = 1.0;
 	}
+
+	ALPHA = 1.0;
 }
