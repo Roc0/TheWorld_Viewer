@@ -93,9 +93,6 @@ void fragment() {
 	//	discard;
 	//}
 
-	//vec3 terrain_normal_world = u_terrain_normal_basis * unpack_normal(texture(u_terrain_normalmap, UV));
-	//terrain_normal_world = normalize(terrain_normal_world);
-	//vec3 normal = terrain_normal_world;
 	vec3 normal = get_normal(u_terrain_normalmap, u_terrain_normal_basis, UV);
 	
 	vec4 value = texture(u_map, UV);
