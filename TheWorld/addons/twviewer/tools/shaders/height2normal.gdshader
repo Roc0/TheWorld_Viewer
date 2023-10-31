@@ -1,8 +1,10 @@
 shader_type canvas_item;
+render_mode blend_disabled;
 
-//#include "res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc"
+#include "res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc"
 
 uniform float u_grid_step = 2.0;			// Heightmap grid step it is indipendent from lod
+uniform float u_terrain_height = 1.0;	// NOTSET
 
 // 	n.z *= -1.0; ???
 //vec4 pack_normal_local(vec3 n) {
@@ -21,12 +23,14 @@ void fragment() {
 	//float right_h = get_height_local(TEXTURE, uv + vec2(ps.x, 0));
 	//float fore_h = get_height_local(TEXTURE, uv + vec2(0, ps.y));
 	//vec3 n = normalize(vec3(h - right_h, u_grid_step, h - fore_h));
-	COLOR = vec4(1.0, 0.27, 0.16, 1.0);
+	//COLOR = vec4(1.0, 0.27, 0.16, 1.0);
 	//COLOR = texture(TEXTURE, UV);
 	//COLOR = pack_normal_local(n);
 
-
-
+	// DEBUG: pong pixel height as color
+	float h = get_height(TEXTURE, u_terrain_height, UV);
+	COLOR = encode_height_to_viewport(h);
+	// DEBUG: pong pixel height as color
 
 	//float left = get_height_local(TEXTURE, uv + vec2(-ps.x, 0));
 	//float right = get_height_local(TEXTURE, uv + vec2(ps.x, 0));

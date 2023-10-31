@@ -34,3 +34,27 @@ bool is_on_the_border(vec2 uv, float line_thickness){
 		return true;
 	}
 }
+
+vec4 encode_height_to_viewport(float h) {
+	//return vec4(encode_height_to_rgb8_unorm(h), 1.0);
+
+	// Encode regular floats into an assumed RGBA8 output color.
+	// This is used because Godot 4.0 doesn't support RF viewports,
+	// and the irony is, even if float viewports get supported, it's likely it will end up RGBAF,
+	// which is wasting bandwidth because we are only interested in R...
+	uint u = floatBitsToUint(h);
+	return vec4(
+		float((u >> 0u) & 255u),
+		float((u >> 8u) & 255u),
+		float((u >> 16u) & 255u),
+		float((u >> 24u) & 255u)
+	) / vec4(255.0);
+}
+
+float decode_height_from_viewport(vec4 c) {
+	uint u = uint(c.r * 255.0) 
+		| (uint(c.g * 255.0) << 8u) 
+		| (uint(c.b * 255.0) << 16u) 
+		| (uint(c.a * 255.0) << 24u);
+	return uintBitsToFloat(u);
+}
