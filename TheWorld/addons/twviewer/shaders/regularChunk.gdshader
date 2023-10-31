@@ -185,6 +185,16 @@ void fragment() {
 	//	discard;
 	//}
 
+	if (u_editmode_selected > 0.0 && is_on_the_border(UV, u_quad_border_line_thickness)) {
+		ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+	} else {
+		if (u_mouse_hit != vec2(-1) && distance(u_mouse_hit, UV) < u_mouse_hit_radius) {
+			ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+		} else {
+			ALBEDO = vec3(1.0, 1.0, 1.0);
+		}
+	}
+
 	//vec3 terrain_normal_world = u_terrain_normal_basis * unpack_normal(texture(u_terrain_normalmap, UV));
 	//terrain_normal_world = normalize(terrain_normal_world);
 	vec3 terrain_normal_world = get_normal(u_terrain_normalmap, u_terrain_normal_basis, UV);
@@ -317,7 +327,6 @@ void fragment() {
 	}
 
 	NORMAL = (VIEW_MATRIX * (vec4(normal, 0.0))).xyz;
-	ALPHA = 1.0;
 	//ROUGHNESS = 0.5;
 
 	if (u_mouse_hit != vec2(-1) && distance(u_mouse_hit, UV) < u_mouse_hit_radius) {
