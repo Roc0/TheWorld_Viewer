@@ -26,6 +26,10 @@ vec3 get_normal(sampler2D tex, mat3 terrain_normal_basis, vec2 uv){
 	return normalize(n);
 }
 
+vec3 get_normal_1(sampler2D tex, vec2 uv){
+	return unpack_normal(texture(tex, uv));
+}
+
 bool is_on_the_border(vec2 uv, float line_thickness){
 	//float line_thickness = 0.01;
 	if (uv.x > line_thickness && uv.x < (1.0 - line_thickness) && uv.y > line_thickness && uv.y < (1.0 - line_thickness)) {
@@ -33,6 +37,10 @@ bool is_on_the_border(vec2 uv, float line_thickness){
 	} else {
 		return true;
 	}
+}
+
+float lerp_f(float a, float b, float t) {
+	return a + (t * (b - a));
 }
 
 vec4 encode_height_to_viewport(float h) {
