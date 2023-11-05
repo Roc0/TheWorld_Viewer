@@ -188,7 +188,7 @@ void fragment() {
 	if (u_editmode_selected > 0.0 && is_on_the_border(UV, u_quad_border_line_thickness)) {
 		ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 	} else {
-		if (u_mouse_hit != vec2(-1) && distance(u_mouse_hit, UV) < u_mouse_hit_radius) {
+		if (u_mouse_hit != vec2(-1) && u_mouse_hit_radius != 0.0 && distance(u_mouse_hit, UV) < u_mouse_hit_radius) {
 			ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 		} else {
 			ALBEDO = vec3(1.0, 1.0, 1.0);
@@ -329,7 +329,7 @@ void fragment() {
 	NORMAL = (VIEW_MATRIX * (vec4(normal, 0.0))).xyz;
 	//ROUGHNESS = 0.5;
 
-	if (u_mouse_hit != vec2(-1) && distance(u_mouse_hit, UV) < u_mouse_hit_radius) {
+	if (u_mouse_hit != vec2(-1) && u_mouse_hit_radius != 0.0 && distance(u_mouse_hit, UV) < u_mouse_hit_radius) {
 
 		vec3 mouse_hit_albedo = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 		ALBEDO = mix(ALBEDO, mouse_hit_albedo, 0.3);
