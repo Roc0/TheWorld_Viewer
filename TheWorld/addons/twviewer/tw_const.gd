@@ -22,6 +22,11 @@ const tw_gdn_viewer_node_name := "GDN_TW_Viewer"
 const tw_gdn_camera_node_name := "GDN_TW_Camera"
 const tw_gdn_edit_mode_ui_node_name := "GDN_TW_EditModeUI"
 
+const config_file := "user://TheWorldConfig.cfg"
+const param_group_camera := "Camera"
+const param_key_camera_pos := "initial_position"
+const param_key_camera_ypr := "initial_ypr"
+
 static func status_to_string(status : int) -> String:
 	if status == clientstatus_error:
 		return clientstatus_str_error

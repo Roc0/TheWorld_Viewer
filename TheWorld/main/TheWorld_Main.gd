@@ -114,6 +114,16 @@ func TWViewer() -> Node3D:
 
 func init():
 	log_debug("init")
+	var config = ConfigFile.new()
+	var err = config.load(tw_const.config_file)
+	if (err == OK):
+		var last_camera_position = config.get_value(tw_const.param_group_camera, tw_const.param_key_camera_pos)
+		var last_camera_ypr = config.get_value(tw_const.param_group_camera, tw_const.param_key_camera_ypr)
+		#last_camera_ypr.x = rad_to_deg(last_camera_ypr.x)
+		#last_camera_ypr.y = rad_to_deg(last_camera_ypr.y)
+		#last_camera_ypr.z = rad_to_deg(last_camera_ypr.z)
+		TWViewer()._set_camera_param_initial_pos(last_camera_position)
+		TWViewer()._set_camera_param_initial_yaw_pitch_roll(last_camera_ypr)
 	var result = TWViewer().GDN_globals().connect("tw_status_changed", Callable(self, "_on_tw_status_changed")) == 0
 	log_debug(str("signal tw_status_changed connected (result=", result, ")"))
 	_clientstatus = get_clientstatus()
@@ -125,6 +135,20 @@ func deinit():
 	TWViewer().GDN_globals().disconnect("tw_status_changed", Callable(self, "_on_tw_status_changed"))
 
 func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> void:
+	if new_client_status == tw_const.clientstatus_world_undeploy_in_progress:
+		var camera : Camera3D = null
+		camera = TWViewer().get_camera()
+		if camera != null && camera.has_method("get_yaw") && camera.has_method("get_pitch") && camera.has_method("get_roll"):
+			var config = ConfigFile.new()
+			var err = config.load(tw_const.config_file)
+			var camera_ypr : Vector3
+			camera_ypr.x = camera.get_yaw(false)
+			camera_ypr.y = camera.get_pitch(false)
+			camera_ypr.z = camera.get_roll(false)
+			config.set_value(tw_const.param_group_camera, tw_const.param_key_camera_pos, camera.global_transform.origin)
+			config.set_value(tw_const.param_group_camera, tw_const.param_key_camera_ypr, camera_ypr)
+			config.save(tw_const.config_file)
+			
 	_clientstatus = new_client_status
 	_client_status = Globals.Constants.status_to_string(new_client_status)
 	var old_client_status_str : String = Globals.Constants.status_to_string(old_client_status)

@@ -317,6 +317,13 @@ func custom_ready():
 	
 	log_debug("custom_ready done")
 
+func get_camera() -> Camera3D:
+	var gdn_viewver = GDN_viewer()
+	if (gdn_viewver != null):
+		return gdn_viewver.get_camera()
+	else:
+		return null
+
 func _enter_tree():
 	_logger.debug("_enter_tree")
 	_plugin_tree_entered = true
@@ -389,6 +396,7 @@ func _input(event):
 func init_world() -> void:
 	log_debug("Initializing world...")
 	GDN_viewer().deploy_world(_camera_param_initial_pos.x, _camera_param_initial_pos.y, _camera_param_initial_pos.z, _camera_param_initial_alt_forced, _camera_param_initial_yaw_pitch_roll.x, _camera_param_initial_yaw_pitch_roll.y, _camera_param_initial_yaw_pitch_roll.z, _initial_level, -1 , -1)
+	#_camera_param_initial_yaw_pitch_roll_changed = true
 	log_debug("World initialization completed...")
 
 func deinit_world() -> void:
@@ -582,7 +590,7 @@ func _process(delta):
 					camera.set_pitch(_camera_param_initial_yaw_pitch_roll.y, false)
 				if camera.has_method("set_roll"):
 					camera.set_roll(_camera_param_initial_yaw_pitch_roll.z, false)
-		_camera_param_initial_yaw_pitch_roll_changed = false
+			_camera_param_initial_yaw_pitch_roll_changed = false
 		
 	if Engine.is_editor_hint():
 
@@ -642,7 +650,7 @@ func _process(delta):
 		#+ " RQ " + String(viewer.get_refresh_quads_duration()) \
 		#+ " T " + String(viewer.get_mouse_track_hit_duration()) + "\n"
 		if camera != null:
-			_info_panel_camera_rot = "  Y/P/R: " + str(camera.global_transform.basis.get_euler()) + "\n"
+			_info_panel_camera_rot = "  Rot: " + str(camera.global_transform.basis.get_euler()) + "\n"
 			_info_panel_camera_pos = "  Pos: " + str(camera.global_transform.origin)
 		_info_label_num_quadrants = "  Total: " + str(gdn_viewer.get_num_initialized_quadrant(), ":", gdn_viewer.get_num_quadrant()) + "\n"
 		_info_label_num_visible_quadrants = "  Visible: " + str(gdn_viewer.get_num_initialized_visible_quadrant(), ":", gdn_viewer.get_num_visible_quadrant()) + "\n"
