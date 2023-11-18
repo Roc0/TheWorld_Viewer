@@ -200,7 +200,7 @@ func _get_camera_param_initial_yaw_pitch_roll():
 @export_group("Shader Params", "_shader_param")
 
 var _shader_param_ground_uv_scale_changed := true
-@export_range(1.0, 200.0, 0.01, "or_greater", "or_less") var _shader_param_ground_uv_scale : float = 150.0:
+@export_range(1.0, 500.0, 0.01, "or_greater", "or_less") var _shader_param_ground_uv_scale : float = 150.0:
 	set = _set_shader_param_ground_uv_scale
 func _set_shader_param_ground_uv_scale(ground_uv_scale : float):
 	_shader_param_ground_uv_scale = ground_uv_scale
@@ -228,14 +228,14 @@ func _set_shader_param_tile_reduction(tile_reduction : bool):
 	_shader_param_tile_reduction_changed = true
 
 var _shader_param_globalmap_blend_start_changed := true
-@export var _shader_param_globalmap_blend_start : float = 0.0:
+@export_range(0.0, 10000.0, 10.0, "or_greater", "or_less") var _shader_param_globalmap_blend_start : float = 0.0:
 	set = _set_shader_param_globalmap_blend_start
 func _set_shader_param_globalmap_blend_start(globalmap_blend_start : float):
 	_shader_param_globalmap_blend_start = globalmap_blend_start
 	_shader_param_globalmap_blend_start_changed = true
 
 var _shader_param_globalmap_blend_distance_changed := true
-@export var _shader_param_globalmap_blend_distance : float = 0.0:
+@export_range(0.001, 1.0, 0.001, "or_greater", "or_less") var _shader_param_globalmap_blend_distance : float = 0.0:
 	set = _set_shader_param_globalmap_blend_distance
 func _set_shader_param_globalmap_blend_distance(globalmap_blend_distance : float):
 	_shader_param_globalmap_blend_distance = globalmap_blend_distance
