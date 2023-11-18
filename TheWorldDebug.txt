@@ -1,3 +1,4 @@
+https://www.pluralsight.com/blog/film-games/bump-normal-and-displacement-maps
 pos 0,0
 h=789.360168
 nx=0.686870277	ny=0.719475925	nz=-0.102779143		==> normal

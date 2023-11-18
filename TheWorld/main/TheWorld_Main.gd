@@ -140,7 +140,9 @@ func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> 
 		camera = TWViewer().get_camera()
 		if camera != null && camera.has_method("get_yaw") && camera.has_method("get_pitch") && camera.has_method("get_roll"):
 			var config = ConfigFile.new()
+			@warning_ignore("unused_variable")
 			var err = config.load(tw_const.config_file)
+			@warning_ignore("unassigned_variable")
 			var camera_ypr : Vector3
 			camera_ypr.x = camera.get_yaw(false)
 			camera_ypr.y = camera.get_pitch(false)

@@ -39,9 +39,9 @@ uniform sampler2D u_ground_normal_roughness_3;
 uniform vec4 u_ground_uv_scale_per_texture = vec4(5.0, 5.0, 5.0, 5.0);
 uniform bool u_depth_blending = true;	// NOTSET
 uniform bool u_triplanar = false;		// NOTSET
-uniform vec4 u_tile_reduction_per_texture = vec4(0.0, 0.0, 0.0, 0.0);	// Each component corresponds to a ground texture. Set greater than zero to enable.
-uniform float u_globalmap_blend_start = 0;		// 2000 ==> optimization: at 2000 WU from camera will be used global map instead of u_ground_albedo_bump_0/3 and u_ground_normal_roughness_0/3
-uniform float u_globalmap_blend_distance = 0;	// 1 ==> 0 to disable use of global map
+uniform vec4 u_tile_reduction_per_texture = vec4(0.0, 0.0, 0.0, 0.0);	// NOTSET	// Each component corresponds to a ground texture. Set greater than zero to enable.
+uniform float u_globalmap_blend_start = 0;	// NOTSET
+uniform float u_globalmap_blend_distance = 0;	// NOTSET
 uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);	// NOTSET
 
 varying float v_hole;
@@ -143,65 +143,23 @@ vec4 texture_antitile(sampler2D albedo_tex, sampler2D normal_tex, vec2 uv, out v
 void vertex() {
 	vec4 vertex_world_pos = MODEL_MATRIX * vec4(VERTEX, 1);		// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need to trasform in world coord to abstract from chunk
 	vec4 vertex_local_to_quadrant_pos = u_terrain_inverse_transform * vertex_world_pos;	// to calculate coords of the vertex local to the quadrant we use affine inverse matrix of the global trasform of the quadtree
-	vec2 vertex_cell_coords_in_textures = vertex_local_to_quadrant_pos.xz / vec2(u_grid_step);	// to get correct value from the textures (in the range 0 / max size in local coord) we need to consider the step (dividing by it): in the textures heigths/normals are adjacent but in global/local coords are separated by the step
+	vec2 vertex_cell_coords_in_textures = vertex_local_to_quadrant_pos.xz / vec2(u_grid_step);	// to calculate coords of the vertex in the heigthmap/normalmap so to get correct value from the textures we need to consider the step (dividing by it): in the textures heigths/normlas are adjacent in global/local coords are separated by the step
 	vertex_cell_coords_in_textures += vec2(0.5);		// Moreover must add a half-offset so that we sample the center of pixels, otherwise bilinear filtering of the textures will give us mixed results (#183)
 	UV = vertex_cell_coords_in_textures / vec2(textureSize(u_terrain_heightmap, 0));	// Normalized UV to be in the range 0/1
 
 	float h = get_height(u_terrain_heightmap, u_terrain_height, UV);		// Height displacement from heigthmap
 	VERTEX.y = h;
 	vertex_world_pos.y = h;
-	
-	v_distance_to_camera = distance(vertex_world_pos.xyz, INV_VIEW_MATRIX[3].xyz);
 
-	vec4 ground_uv_scale_per_texture = u_ground_uv_scale_per_texture;
-
-	// //float scale_factor = 10.0;
-	// float min_scale = 20.0;
-	// float max_scale = 200.0;
-	// float treshold = 50.0;
-	// if (ground_uv_scale_per_texture.x == 0.0) {
-		// ground_uv_scale_per_texture.x = 1.0;
-		// if (v_distance_to_camera < treshold) {
-			// ground_uv_scale_per_texture.x = min_scale;
-		// } else {
-			// ground_uv_scale_per_texture.x = max_scale;
-		// }
-		// //ground_uv_scale_per_texture.x = clamp(v_distance_to_camera / scale_factor, 1, 200);
-	// }
-	// if (ground_uv_scale_per_texture.y == 0.0) {
-		// ground_uv_scale_per_texture.y = 1.0;
-		// if (v_distance_to_camera < treshold) {
-			// ground_uv_scale_per_texture.y = min_scale;
-		// } else {
-			// ground_uv_scale_per_texture.y = max_scale;
-		// }
-		// //ground_uv_scale_per_texture.y = clamp(v_distance_to_camera / scale_factor, 1, 200);
-	// }
-	// if (ground_uv_scale_per_texture.z == 0.0) {
-		// ground_uv_scale_per_texture.z = 1.0;
-		// if (v_distance_to_camera < treshold) {
-			// ground_uv_scale_per_texture.z = min_scale;
-		// } else {
-			// ground_uv_scale_per_texture.z = max_scale;
-		// }
-		// //ground_uv_scale_per_texture.z = clamp(v_distance_to_camera / scale_factor, 1, 200);
-	// }
-	// if (ground_uv_scale_per_texture.w == 0.0) {
-		// ground_uv_scale_per_texture.w = 1.0;
-		// if (v_distance_to_camera < treshold) {
-			// ground_uv_scale_per_texture.w = min_scale;
-		// } else {
-			// ground_uv_scale_per_texture.w = max_scale;
-		// }
-		// //ground_uv_scale_per_texture.w = clamp(v_distance_to_camera / scale_factor, 1, 200);
-	// }
-
+	//u_ground_uv_scale_per_texture.x = textureSize(u_terrain_heightmap, 0) / textureSize(u_ground_albedo_bump_0, 0)
+	//u_ground_uv_scale_per_texture.y = textureSize(u_terrain_heightmap, 0) / textureSize(u_ground_albedo_bump_1, 0)
+	//u_ground_uv_scale_per_texture.z = textureSize(u_terrain_heightmap, 0) / textureSize(u_ground_albedo_bump_2, 0)
+	//u_ground_uv_scale_per_texture.w = textureSize(u_terrain_heightmap, 0) / textureSize(u_ground_albedo_bump_3, 0)
 	vec3 base_ground_uv = vec3(vertex_cell_coords_in_textures.x, h * MODEL_MATRIX[1][1], vertex_cell_coords_in_textures.y);
-	//vec3 base_ground_uv = vec3(UV.x, h * MODEL_MATRIX[1][1], UV.y);
-	v_ground_uv0 = base_ground_uv.xz / ground_uv_scale_per_texture.x;		// 2-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor
-	v_ground_uv1 = base_ground_uv.xz / ground_uv_scale_per_texture.y;		// these coordinates are used to fetch u_ground_albedo_bump_0 and u_ground_normal_roughness_0 
-	v_ground_uv2 = base_ground_uv.xz / ground_uv_scale_per_texture.z;
-	v_ground_uv3 = base_ground_uv / ground_uv_scale_per_texture.w;		// 3-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor (y coord is height in world coord)
+	v_ground_uv0 = base_ground_uv.xz / u_ground_uv_scale_per_texture.x;		// 2-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor
+	v_ground_uv1 = base_ground_uv.xz / u_ground_uv_scale_per_texture.y;		// these coordinates are used to fetch u_ground_albedo_bump_0 and u_ground_normal_roughness_0 
+	v_ground_uv2 = base_ground_uv.xz / u_ground_uv_scale_per_texture.z;
+	v_ground_uv3 = base_ground_uv / u_ground_uv_scale_per_texture.w;		// 3-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor (y coord is height in world coord)
 																			// y dimension is needed for triplanar computation available only on fourth channel map
 
 	// Putting this in vertex saves 2 fetches from the fragment shader,
@@ -217,6 +175,8 @@ void vertex() {
 	v_splat = texture(u_terrain_splatmap, UV);
 
 	NORMAL = get_normal(u_terrain_normalmap, u_terrain_normal_basis, UV);
+	
+	v_distance_to_camera = distance(vertex_world_pos.xyz, INV_VIEW_MATRIX[3].xyz);
 }
 
 void fragment() {
@@ -254,7 +214,7 @@ void fragment() {
 		// Doing this branch allows to spare a bunch of texture fetches for distant pixels.
 		// Eventually, there could be a split between near and far shaders in the future,
 		// if relevant on high-end GPUs
-		//globalmap_factor = 1.0;	// we force to use Gloabl Map
+		//globalmap_factor = 1.0;
 		if (globalmap_factor < 1.0) {
 			vec4 ab0, ab1, ab2, ab3;
 			vec4 nr0, nr1, nr2, nr3;
@@ -305,14 +265,10 @@ void fragment() {
 
 			vec4 rough = vec4(nr0.a, nr1.a, nr2.a, nr3.a);
 
-			//vec3 normal0 = unpack_normal(nr0);
-			//vec3 normal1 = unpack_normal(nr1);
-			//vec3 normal2 = unpack_normal(nr2);
-			//vec3 normal3 = unpack_normal(nr3);
-			vec3 normal0 = nr0.rgb;
-			vec3 normal1 = nr1.rgb;
-			vec3 normal2 = nr2.rgb;
-			vec3 normal3 = nr3.rgb;
+			vec3 normal0 = unpack_normal(nr0);
+			vec3 normal1 = unpack_normal(nr1);
+			vec3 normal2 = unpack_normal(nr2);
+			vec3 normal3 = unpack_normal(nr3);
 
 			vec4 w;
 			// TODO An #ifdef macro would be nice! Or copy/paste everything in a different shader...
