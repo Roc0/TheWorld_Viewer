@@ -1,4 +1,5 @@
 shader_type spatial;
+//render_mode unshaded, shadows_disabled;
 
 #include "res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc"
 
@@ -148,6 +149,12 @@ void vertex() {
 	vertex_cell_coords_in_textures += vec2(0.5);		// Moreover must add a half-offset so that we sample the center of pixels, otherwise bilinear filtering of the textures will give us mixed results (#183)
 	UV = vertex_cell_coords_in_textures / vec2(textureSize(u_terrain_heightmap, 0));	// Normalized UV to be in the range 0/1
 
+	//if (textureSize(u_terrain_heightmap, 0).x == 2049) {				// DEBUG: check UV
+	//	UV = vec2(512.0) / vec2(textureSize(u_terrain_heightmap, 0));	// DEBUG: check UV	sopra
+	//} else {															// DEBUG: check UV
+	//	UV = vec2(1.0, 1.0);											// DEBUG: check UV	sotto
+	//}																	// DEBUG: check UV
+	
 	float h = get_height(u_terrain_heightmap, u_terrain_height, UV);		// Height displacement from heigthmap
 	if (u_force_height_0) {
 		VERTEX.y = 0.0;
@@ -372,12 +379,12 @@ void fragment() {
 		//	else {
 		//		ALBEDO = vec3(1.0, 0.0, 0.0);
 		//	}
-
-		//ALBEDO = vec3(1.0, 1.0, 1.0);		// white
 	}
 
+	//ALBEDO = vec3(UV.x, UV.y, 1.0);	// DEBUG: check UV
+	//ALBEDO = v_splat.rgb;				// DEBUG
+
 	NORMAL = (VIEW_MATRIX * (vec4(normal, 0.0))).xyz;
-	//ROUGHNESS = 0.5;
 
 	if (u_mouse_hit != vec2(-1) && u_mouse_hit_radius != 0.0 && distance(u_mouse_hit, UV) < u_mouse_hit_radius) {
 
