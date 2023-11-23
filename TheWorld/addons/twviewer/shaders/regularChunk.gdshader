@@ -19,6 +19,7 @@ uniform vec2 u_mouse_hit = vec2(-1);
 uniform float u_mouse_hit_radius = 0.001;
 uniform float u_terrain_height = 1.0;	// NOTSET
 uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
+uniform bool u_force_height_0 = false;
 
 // the reason bump is preferred with albedo is, roughness looks better with normal maps.
 // If we want no normal mapping, roughness would only give flat mirror surfaces,
@@ -41,7 +42,7 @@ uniform bool u_depth_blending = true;	// NOTSET
 uniform bool u_triplanar = false;		// NOTSET
 uniform vec4 u_tile_reduction_per_texture = vec4(0.0, 0.0, 0.0, 0.0);	// Each component corresponds to a ground texture. Set greater than zero to enable.
 uniform float u_globalmap_blend_start = 0;		// 2000 ==> optimization: at 2000 WU from camera will be used global map instead of u_ground_albedo_bump_0/3 and u_ground_normal_roughness_0/3
-uniform float u_globalmap_blend_distance = 0;	// 1 ==> 0 to disable use of global map
+uniform float u_globalmap_blend_distance = 0;	// 1	==> 0 = disable use of global map
 uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);	// NOTSET
 
 varying float v_hole;
@@ -148,8 +149,13 @@ void vertex() {
 	UV = vertex_cell_coords_in_textures / vec2(textureSize(u_terrain_heightmap, 0));	// Normalized UV to be in the range 0/1
 
 	float h = get_height(u_terrain_heightmap, u_terrain_height, UV);		// Height displacement from heigthmap
-	VERTEX.y = h;
-	vertex_world_pos.y = h;
+	if (u_force_height_0) {
+		VERTEX.y = 0.0;
+		vertex_world_pos.y = 0.0;
+	} else {
+		VERTEX.y = h;
+		vertex_world_pos.y = h;
+	}
 	
 	v_distance_to_camera = distance(vertex_world_pos.xyz, INV_VIEW_MATRIX[3].xyz);
 

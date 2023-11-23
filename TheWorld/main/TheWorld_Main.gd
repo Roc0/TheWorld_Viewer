@@ -103,7 +103,6 @@ func _ready():
 	
 	get_window().mode = _window_mode
 
-
 func resizing():
 	log_debug(str("Resizing: ", get_viewport().size))
 
@@ -302,6 +301,7 @@ func _process(_delta):
 		#if (initialCameraAltitudeForced != 0):
 		#	$Test/TestBallRigidBody.global_transform.origin.y = initialCameraAltitudeForced
 		$Test/TestBallRigidBody.visible = true
+		#test_subvieport(gdn_viewer)
 		post_world_deploy_initialized = true
 	
 	#if scene_initialized && post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
@@ -559,3 +559,50 @@ func log_error(text : String) -> void:
 
 func error_print(context : String, text : String, godot_print : bool):
 	TWViewer().error_print(context, text, godot_print)
+
+func test_subvieport(node : Node) -> void:
+	var _viewport : SubViewport = null
+	var _viewport_size := 512
+	var _plane : MeshInstance3D = null
+	var _camera : Camera3D = null
+
+	_viewport = SubViewport.new()
+	add_child(_viewport)
+	_viewport.render_target_clear_mode = SubViewport.CLEAR_MODE_ALWAYS
+	_viewport.world_3d = World3D.new()
+	_viewport.own_world_3d = true
+	#_viewport.name = "CodeViewport"
+	_viewport.size = Vector2(_viewport_size + 1, _viewport_size + 1)
+	_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	_viewport.debug_draw = Viewport.DEBUG_DRAW_UNSHADED
+	
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color(0.0, 1.0, 0.0)
+	
+	var mesh := PlaneMesh.new()
+	mesh.size = Vector2(_viewport_size, _viewport_size)
+	mesh.subdivide_depth = 3
+	mesh.subdivide_width = 3
+	
+	_plane = MeshInstance3D.new()
+	#_plane.name = "CodePlane"
+	_plane.material_override = mat
+	_plane.mesh = mesh
+	_viewport.add_child(_plane)
+	
+	_camera = Camera3D.new()
+	#_camera.name = "Codecamera"
+	_camera.projection = Camera3D.PROJECTION_ORTHOGONAL
+	_camera.size = _viewport.size.x
+	_camera.near = 0.1
+	_camera.far = 10.0
+	_camera.current = true
+	_camera.rotation = Vector3(deg_to_rad(-90), 0, 0)
+	_viewport.add_child(_camera)
+	
+	_camera.position = Vector3(0.0, 2.0, 0.0)
+	
+	var _sprite := Sprite2D.new()
+	node.add_child(_sprite)
+	_sprite.position = Vector2(256 + 512, 256)
+	_sprite.texture = _viewport.get_texture()
