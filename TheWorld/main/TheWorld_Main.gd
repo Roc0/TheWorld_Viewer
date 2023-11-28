@@ -11,7 +11,7 @@ var _logger = HT_Logger.get_for(self)
 var initialCameraDistanceFromTerrain : float = 300
 
 var initialBallPos := Vector3(0, 0, 0)
-
+var initial_camera_position := Vector3(0, 0, 0)
 #var initialViewerPos := Vector3(0, 2200, 0)
 #var initialCameraAltitudeForced = 0
 #var initialYawPitchRoll := Vector3(-139, -7, 0)
@@ -116,13 +116,15 @@ func init():
 	var config = ConfigFile.new()
 	var err = config.load(tw_const.config_file)
 	if (err == OK):
-		var last_camera_position = config.get_value(tw_const.param_group_camera, tw_const.param_key_camera_pos)
-		var last_camera_ypr = config.get_value(tw_const.param_group_camera, tw_const.param_key_camera_ypr)
-		#last_camera_ypr.x = rad_to_deg(last_camera_ypr.x)
-		#last_camera_ypr.y = rad_to_deg(last_camera_ypr.y)
-		#last_camera_ypr.z = rad_to_deg(last_camera_ypr.z)
-		TWViewer()._set_camera_param_initial_pos(last_camera_position)
-		TWViewer()._set_camera_param_initial_yaw_pitch_roll(last_camera_ypr)
+		initial_camera_position = config.get_value(tw_const.param_group_camera, tw_const.param_key_camera_pos)
+		var initial_camera_ypr = config.get_value(tw_const.param_group_camera, tw_const.param_key_camera_ypr)
+		#initial_camera_ypr.x = rad_to_deg(initial_camera_ypr.x)
+		#initial_camera_ypr.y = rad_to_deg(initial_camera_ypr.y)
+		#initial_camera_ypr.z = rad_to_deg(initial_camera_ypr.z)
+		TWViewer()._set_camera_param_initial_pos(initial_camera_position)
+		TWViewer()._set_camera_param_initial_yaw_pitch_roll(initial_camera_ypr)
+		initialBallPos.x = initial_camera_position.x
+		initialBallPos.z = initial_camera_position.z
 	var result = TWViewer().GDN_globals().connect("tw_status_changed", Callable(self, "_on_tw_status_changed")) == 0
 	log_debug(str("signal tw_status_changed connected (result=", result, ")"))
 	_clientstatus = get_clientstatus()
