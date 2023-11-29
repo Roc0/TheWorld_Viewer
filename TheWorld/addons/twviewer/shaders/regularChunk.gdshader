@@ -21,6 +21,7 @@ uniform float u_mouse_hit_radius = 0.001;
 uniform float u_terrain_height = 1.0;	// NOTSET
 uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
 uniform bool u_force_height_0 = false;
+uniform bool u_use_globalmap = false;
 
 // the reason bump is preferred with albedo is, roughness looks better with normal maps.
 // If we want no normal mapping, roughness would only give flat mirror surfaces,
@@ -227,7 +228,10 @@ void vertex() {
 	v_tint1 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.y);	// on the corresponding bump_map (1-4). More precisely u_colormap_opacity_per_texture.(x-w) must be in the interval 0-1, if 0 the function returns 
 	v_tint2 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.z);	// vec3(1.0) if 1 (default value) the function returns tint.rgb
 	v_tint3 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.w);
-	v_splat = texture(u_terrain_splatmap, UV);
+	
+	if (!u_use_globalmap) {
+		v_splat = texture(u_terrain_splatmap, UV);
+	}
 
 	NORMAL = get_normal(u_terrain_normalmap, u_terrain_normal_basis, UV);
 }
@@ -253,8 +257,14 @@ void fragment() {
 	vec3 terrain_normal_world = get_normal(u_terrain_normalmap, u_terrain_normal_basis, UV);
 	vec3 normal = terrain_normal_world;
 
-	float globalmap_factor = clamp((v_distance_to_camera - u_globalmap_blend_start) * u_globalmap_blend_distance, 0.0, 1.0);
-	globalmap_factor *= globalmap_factor; // slower start, faster transition but far away
+	float globalmap_factor;
+	if (u_use_globalmap) {
+		globalmap_factor = 1.0;	// we force to use Gloabl Map
+	} else {
+		globalmap_factor = clamp((v_distance_to_camera - u_globalmap_blend_start) * u_globalmap_blend_distance, 0.0, 1.0);
+		globalmap_factor *= globalmap_factor; // slower start, faster transition but far away
+	}
+	
 	vec3 global_albedo = texture(u_terrain_globalmap, UV).rgb;
 	ALBEDO = global_albedo;
 
@@ -267,7 +277,6 @@ void fragment() {
 		// Doing this branch allows to spare a bunch of texture fetches for distant pixels.
 		// Eventually, there could be a split between near and far shaders in the future,
 		// if relevant on high-end GPUs
-		//globalmap_factor = 1.0;	// we force to use Gloabl Map
 		if (globalmap_factor < 1.0) {
 			vec4 ab0, ab1, ab2, ab3;
 			vec4 nr0, nr1, nr2, nr3;
