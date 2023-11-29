@@ -8,6 +8,8 @@ var tw_const = preload("res://addons/twviewer/tw_const.gd")
 const HT_Logger = preload("res://addons/twviewer/util/logger.gd")
 var _logger = HT_Logger.get_for(self)
 
+var config_file_name : String = ""
+
 var initialCameraDistanceFromTerrain : float = 300
 
 var initialBallPos := Vector3(0, 0, 0)
@@ -113,8 +115,10 @@ func TWViewer() -> Node3D:
 
 func init():
 	log_debug("init")
+	#config_file_name = tw_const.config_file
+	config_file_name = TWViewer().GDN_globals().get_config_filename(0)
 	var config = ConfigFile.new()
-	var err = config.load(tw_const.config_file)
+	var err = config.load(config_file_name)
 	if (err == OK):
 		initial_camera_position = config.get_value(tw_const.param_group_camera, tw_const.param_key_camera_pos)
 		var initial_camera_ypr = config.get_value(tw_const.param_group_camera, tw_const.param_key_camera_ypr)
@@ -142,7 +146,7 @@ func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> 
 		if camera != null && camera.has_method("get_yaw") && camera.has_method("get_pitch") && camera.has_method("get_roll"):
 			var config = ConfigFile.new()
 			@warning_ignore("unused_variable")
-			var err = config.load(tw_const.config_file)
+			var err = config.load(config_file_name)
 			@warning_ignore("unassigned_variable")
 			var camera_ypr : Vector3
 			camera_ypr.x = camera.get_yaw(false)
@@ -150,7 +154,7 @@ func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> 
 			camera_ypr.z = camera.get_roll(false)
 			config.set_value(tw_const.param_group_camera, tw_const.param_key_camera_pos, camera.global_transform.origin)
 			config.set_value(tw_const.param_group_camera, tw_const.param_key_camera_ypr, camera_ypr)
-			config.save(tw_const.config_file)
+			config.save(config_file_name)
 			
 	_clientstatus = new_client_status
 	_client_status = Globals.Constants.status_to_string(new_client_status)
