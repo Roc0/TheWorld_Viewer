@@ -265,12 +265,12 @@ script = ExtResource("1_760ml")
 
 [node name="TWViewer" type="Node3D" parent="TheWorld_Main"]
 script = ExtResource("3_yxvy6")
+_world_param_depth_quad = 5
 _world_param_info_visible = true
 _world_editor_param_info_visible = true
 _camera_param_initial_pos = Vector3(872, 1463, -3742)
 _camera_param_initial_yaw_pitch_roll = Vector3(-0.238, -0.098, 0)
 _shader_param_ground_uv_scale = 200.0
-_shader_param_triplanar = true
 _shader_param_globalmap_blend_start = 3000.0
 
 [node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main/TWViewer"]

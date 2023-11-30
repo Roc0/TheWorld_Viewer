@@ -105,7 +105,7 @@ func _set_debug_mode(p_debug_mode : int):
 @export_group("World", "_world_param")
 
 var _world_param_depth_quad_changed := true
-const MAX_DEPTH_QUAD=3
+const MAX_DEPTH_QUAD=6
 @export var _world_param_depth_quad : int = 3:		# 3
 	set = _set_world_param_depth_quad
 func _set_world_param_depth_quad(depth_quad : int):
@@ -114,7 +114,7 @@ func _set_world_param_depth_quad(depth_quad : int):
 		_world_param_depth_quad_changed = true
 
 var _world_param_cache_quad_changed := true
-const MAX_CACHE_QUAD=2
+const MAX_CACHE_QUAD=4
 @export var _world_param_cache_quad : int = 1:		# 1
 	set = _set_world_param_cache_quad
 func _set_world_param_cache_quad(cache_quad : int):
