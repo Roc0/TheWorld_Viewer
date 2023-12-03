@@ -10,6 +10,7 @@ compatibility_minimum = 4.1
 #windows.debug.x86_32 = "res://bin/libgdexample.windows.template_debug.x86_32.dll"
 #windows.release.x86_32 = "res://bin/libgdexample.windows.template_release.x86_32.dll"
 windows.debug.x86_64 = "res://addons/twviewer/native/TheWorld_GDN_Viewer_d.dll"
+#windows.debug.x86_64 = "res://addons/twviewer/native/TheWorld_GDN_Viewer.dll"
 windows.release.x86_64 = "res://addons/twviewer/native/TheWorld_GDN_Viewer.dll"
 #linux.debug.x86_64 = "res://bin/libgdexample.linux.template_debug.x86_64.so"
 #linux.release.x86_64 = "res://bin/libgdexample.linux.template_release.x86_64.so"
