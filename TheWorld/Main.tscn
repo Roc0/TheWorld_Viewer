@@ -265,7 +265,8 @@ script = ExtResource("1_760ml")
 
 [node name="TWViewer" type="Node3D" parent="TheWorld_Main"]
 script = ExtResource("3_yxvy6")
-_world_param_depth_quad = 5
+_world_param_depth_quad = 6
+_world_param_cache_quad = 2
 _world_param_info_visible = true
 _world_editor_param_info_visible = true
 _camera_param_initial_pos = Vector3(872, 1463, -3742)
@@ -274,6 +275,9 @@ _shader_param_ground_uv_scale = 200.0
 _shader_param_globalmap_blend_start = 3000.0
 
 [node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main/TWViewer"]
+perfparam_refresh_quadrants_factor = 1.0
+perfparam_threshold_texture_optimization_increment_factor = 3.0
+perfparam_texture_optimization_resolution_increment = 2
 
 [node name="GDN_TW_Viewer" type="GDN_TheWorld_Viewer" parent="TheWorld_Main/TWViewer"]
 metadata/debug_wirecube_mesh_lod_5 = SubResource("ArrayMesh_kfft6")

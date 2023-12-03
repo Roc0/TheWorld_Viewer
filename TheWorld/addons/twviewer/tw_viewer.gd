@@ -462,10 +462,6 @@ func _process(delta):
 		log_debug(str("_process: visibility changed: ", is_visible_in_tree()))
 		_visibility_changed = false
 
-	if _debug_mode_changed:
-		set_debug_mode(_debug_mode)
-		_debug_mode_changed = false
-		
 	if Engine.is_editor_hint():
 		if _world_editor_param_depth_quad_changed:
 			if gdn_viewer.has_method("set_depth_quad"):
@@ -571,6 +567,10 @@ func _process(delta):
 					deinit_world()
 					_world_param_deploy_world_changed = false
 		
+	if _debug_mode_changed:
+		set_debug_mode(_debug_mode)
+		_debug_mode_changed = false
+		
 	if _camera_param_initial_pos_changed:
 		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
 			var camera : Camera3D = null
@@ -652,7 +652,8 @@ func _process(delta):
 		if camera != null:
 			_info_panel_camera_rot = "  Rot: " + str(camera.global_transform.basis.get_euler()) + "\n"
 			_info_panel_camera_pos = "  Pos: " + str(camera.global_transform.origin)
-		_info_label_num_quadrants = "  Total: " + str(gdn_viewer.get_num_initialized_quadrant(), ":", gdn_viewer.get_num_quadrant()) + "\n"
+		var notInitializedQuadrants : int = gdn_viewer.get_num_quadrant() - gdn_viewer.get_num_initialized_quadrant()
+		_info_label_num_quadrants = "  Total: " + str(gdn_viewer.get_num_initialized_quadrant(), ":", gdn_viewer.get_num_quadrant()) + " " + str(notInitializedQuadrants) + "\n"
 		_info_label_num_visible_quadrants = "  Visible: " + str(gdn_viewer.get_num_initialized_visible_quadrant(), ":", gdn_viewer.get_num_visible_quadrant()) + "\n"
 		_info_label_num_empty_quadrants = "  Empty: " + str(gdn_viewer.get_num_empty_quadrant()) + "\n"
 		_info_label_num_flushed_quadrants = "  Flushed: " + str(gdn_viewer.get_num_flushed_quadrant())
