@@ -1,3 +1,6 @@
+select * from params;
+update params set ParamValue = 'TestMap02' where ParamName = 'MapName';
+
 4.7 GB	contro	6.1 GB (solo heights)
 
 https://www.pluralsight.com/blog/film-games/bump-normal-and-displacement-maps
