@@ -22,7 +22,7 @@ uniform float u_terrain_height = 1.0;	// NOTSET
 uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
 uniform bool u_force_height_0 = false;
 uniform bool u_use_globalmap = false;
-uniform uint u_optimization_level = 0;	// actually useless, 0 = no optimization abd so on
+uniform uint u_optimization_level = 0;
 
 // the reason bump is preferred with albedo is, roughness looks better with normal maps.
 // If we want no normal mapping, roughness would only give flat mirror surfaces,

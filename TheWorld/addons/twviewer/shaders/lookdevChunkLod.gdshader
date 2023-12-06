@@ -22,11 +22,12 @@ uniform float u_lod_chunk_size;				// chunk size at the current lod
 uniform float u_terrain_height = 1.0;	// NOTSET
 uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
 uniform float u_chunk_border_line_thickness = 0.002;	// NOTSET
+uniform uint u_optimization_level = 0;
 
 void vertex() {
 	vec4 vertex_world_pos = MODEL_MATRIX * vec4(VERTEX, 1);
 	vec2 cell_coords = (u_terrain_inverse_transform * vertex_world_pos).xz;
-	cell_coords /= vec2(u_grid_step);		// WARNING
+	cell_coords /= vec2(u_grid_step * pow(2.0, float(u_optimization_level)));		// WARNING
 	// Must add a half-offset so that we sample the center of pixels,
 	// otherwise bilinear filtering of the textures will give us mixed results (#183)
 	cell_coords += vec2(0.5);

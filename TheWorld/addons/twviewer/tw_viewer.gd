@@ -1012,7 +1012,7 @@ func printTerrainDimensions() -> void:
 		var chunks := get_chunks_per_bitmap_side(lod)
 		var grid_step : float = GDN_globals().get_grid_step_in_wu(lod)
 		var verticesPerSide = chunks * num_vertices_per_chunk_side
-		var s = str("lod (",lod,") - Num chunks per bitmap side = ",chunks," - Grid step in WUs = ",grid_step," - Num vertices per side = ",verticesPerSide," + 1 - Size of the side in WUs = ",verticesPerSide * grid_step)
+		var s = str("lod (",lod,") - Num chunks per quadrant side = ",chunks," - Grid step in WUs = ",grid_step," - Num vertices per side = ",verticesPerSide," + 1 - Size of the side in WUs = ",verticesPerSide * grid_step)
 		log_debug(s)
 
 func get_chunks_per_bitmap_side(lod : int) -> int:
