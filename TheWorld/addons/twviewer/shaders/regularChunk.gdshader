@@ -170,6 +170,7 @@ void vertex() {
 	}
 	
 	v_distance_to_camera = distance(vertex_world_pos.xyz, INV_VIEW_MATRIX[3].xyz);
+	//v_distance_to_camera = 1000.0;
 
 	vec4 ground_uv_scale_per_texture = u_ground_uv_scale_per_texture;
 
