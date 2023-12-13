@@ -4,6 +4,7 @@ extends Node3D
 var debug_sprite : Sprite2D = null
 
 var quitting : bool = false
+var deinit_in_progress : bool = false
 
 var _gdn_main_instance : Node = null
 var _gdn_main_instance_errmsg : bool = true
@@ -400,9 +401,9 @@ func init_world() -> void:
 	log_debug("World initialization completed...")
 
 func deinit_world() -> void:
-	log_debug("De-initializing world...")
+	log_debug("Sending undeploy world request...")
 	GDN_viewer().undeploy_world()
-	log_debug("World de-initialization completed...")
+	#log_debug("World de-initialization completed...")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -415,7 +416,9 @@ func _process(delta):
 	if _exit_status == EXIT_STATUS_UNDEPLOYWORLD_REQUIRED:
 		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
 			if _client_status < tw_constants.clientstatus_world_undeploy_in_progress:
-				deinit_world()
+				if (!deinit_in_progress):
+					deinit_world()
+					#deinit_in_progress = true
 			#else:
 		else:
 			_exit_status = EXIT_STATUS_PREDEINIT_REQUIRED
@@ -781,6 +784,7 @@ func activate_shutdown():
 	else:
 		#_exit_status = EXIT_STATUS_PREDEINIT_REQUIRED
 		_exit_status = EXIT_STATUS_UNDEPLOYWORLD_REQUIRED
+		deinit_in_progress = false
 
 func resizing():
 	if (_gdn_viewer != null && _gdn_viewer.has_method("viewport_size_changed")):
