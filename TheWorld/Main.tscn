@@ -270,6 +270,7 @@ _world_param_info_visible = true
 _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 1
 _world_editor_param_info_visible = true
+_world_editor_param_deploy_world = true
 _camera_param_initial_pos = Vector3(0, 1500, 0)
 _camera_param_initial_yaw_pitch_roll = Vector3(-0.238, -0.098, 0)
 _shader_param_ground_uv_scale = 200.0
@@ -295,8 +296,8 @@ metadata/debug_wiresquare_mesh_lod_1 = SubResource("ArrayMesh_cx5y7")
 metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/TWViewer"]
-transform = Transform3D(0.999991, 7.10488e-06, -0.00415387, 0, 0.999999, 0.00171042, 0.00415387, -0.00171041, 0.99999, 872, 1463, -3742)
-far = 20000.0
+transform = Transform3D(0.999991, 7.10488e-06, -0.00415387, 0, 0.999999, 0.00171042, 0.00415387, -0.00171041, 0.99999, 0, 1500, 0)
+far = 30000.0
 
 [node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main/TWViewer"]
 
