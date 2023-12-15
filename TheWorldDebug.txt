@@ -1,6 +1,10 @@
-Squdrettizzazione
+Squadrettizzazione
 	How do you eliminate the tile-pattern effect for textures on terrain
 	Texture repetition
+	Tiling Textures
+
+https://www.tilingtextures.com
+
 
 select * from params;
 update params set ParamValue = 'TestMap02' where ParamName = 'MapName';

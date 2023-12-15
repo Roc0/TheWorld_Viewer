@@ -15,11 +15,12 @@ albedo_color = Color(1, 0, 0, 1)
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1, 1),
 "attribute_data": PackedByteArray(255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255),
-"format": 4105,
+"format": 34359742473,
 "index_count": 28,
 "index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 4, 0, 5, 0, 5, 0, 6, 0, 6, 0, 7, 0, 7, 0, 4, 0, 0, 0, 4, 0, 1, 0, 5, 0, 2, 0, 6, 0, 3, 0, 7, 0, 0, 0, 2, 0, 1, 0, 3, 0),
 "material": SubResource("StandardMaterial3D_xl13w"),
 "primitive": 1,
+"uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 8,
 "vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63)
 }]
@@ -33,11 +34,12 @@ albedo_color = Color(1, 0, 0, 1)
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1, 1),
 "attribute_data": PackedByteArray(255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255),
-"format": 4105,
+"format": 34359742473,
 "index_count": 28,
 "index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 4, 0, 5, 0, 5, 0, 6, 0, 6, 0, 7, 0, 7, 0, 4, 0, 0, 0, 4, 0, 1, 0, 5, 0, 2, 0, 6, 0, 3, 0, 7, 0, 0, 0, 2, 0, 1, 0, 3, 0),
 "material": SubResource("StandardMaterial3D_brhhl"),
 "primitive": 1,
+"uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 8,
 "vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63)
 }]
@@ -51,11 +53,12 @@ albedo_color = Color(0, 1, 1, 1)
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1, 1),
 "attribute_data": PackedByteArray(0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255),
-"format": 4105,
+"format": 34359742473,
 "index_count": 28,
 "index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 4, 0, 5, 0, 5, 0, 6, 0, 6, 0, 7, 0, 7, 0, 4, 0, 0, 0, 4, 0, 1, 0, 5, 0, 2, 0, 6, 0, 3, 0, 7, 0, 0, 0, 2, 0, 1, 0, 3, 0),
 "material": SubResource("StandardMaterial3D_u8oof"),
 "primitive": 1,
+"uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 8,
 "vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63)
 }]
@@ -69,11 +72,12 @@ albedo_color = Color(1, 0.752941, 0.796078, 1)
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1, 1),
 "attribute_data": PackedByteArray(255, 192, 203, 255, 255, 192, 203, 255, 255, 192, 203, 255, 255, 192, 203, 255, 255, 192, 203, 255, 255, 192, 203, 255, 255, 192, 203, 255, 255, 192, 203, 255),
-"format": 4105,
+"format": 34359742473,
 "index_count": 28,
 "index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 4, 0, 5, 0, 5, 0, 6, 0, 6, 0, 7, 0, 7, 0, 4, 0, 0, 0, 4, 0, 1, 0, 5, 0, 2, 0, 6, 0, 3, 0, 7, 0, 0, 0, 2, 0, 1, 0, 3, 0),
 "material": SubResource("StandardMaterial3D_8rvpv"),
 "primitive": 1,
+"uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 8,
 "vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63)
 }]
@@ -87,11 +91,12 @@ albedo_color = Color(0.984314, 0.807843, 0.694118, 1)
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1, 1),
 "attribute_data": PackedByteArray(251, 206, 177, 255, 251, 206, 177, 255, 251, 206, 177, 255, 251, 206, 177, 255, 251, 206, 177, 255, 251, 206, 177, 255, 251, 206, 177, 255, 251, 206, 177, 255),
-"format": 4105,
+"format": 34359742473,
 "index_count": 28,
 "index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 4, 0, 5, 0, 5, 0, 6, 0, 6, 0, 7, 0, 7, 0, 4, 0, 0, 0, 4, 0, 1, 0, 5, 0, 2, 0, 6, 0, 3, 0, 7, 0, 0, 0, 2, 0, 1, 0, 3, 0),
 "material": SubResource("StandardMaterial3D_0cdsq"),
 "primitive": 1,
+"uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 8,
 "vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63)
 }]
@@ -105,11 +110,12 @@ albedo_color = Color(0.498039, 1, 0.831373, 1)
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1, 1),
 "attribute_data": PackedByteArray(127, 255, 212, 255, 127, 255, 212, 255, 127, 255, 212, 255, 127, 255, 212, 255, 127, 255, 212, 255, 127, 255, 212, 255, 127, 255, 212, 255, 127, 255, 212, 255),
-"format": 4105,
+"format": 34359742473,
 "index_count": 28,
 "index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 4, 0, 5, 0, 5, 0, 6, 0, 6, 0, 7, 0, 7, 0, 4, 0, 0, 0, 4, 0, 1, 0, 5, 0, 2, 0, 6, 0, 3, 0, 7, 0, 0, 0, 2, 0, 1, 0, 3, 0),
 "material": SubResource("StandardMaterial3D_kwt8m"),
 "primitive": 1,
+"uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 8,
 "vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63)
 }]
@@ -123,11 +129,12 @@ albedo_color = Color(0, 1, 0, 1)
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1, 1),
 "attribute_data": PackedByteArray(0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255),
-"format": 4105,
+"format": 34359742473,
 "index_count": 28,
 "index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 4, 0, 5, 0, 5, 0, 6, 0, 6, 0, 7, 0, 7, 0, 4, 0, 0, 0, 4, 0, 1, 0, 5, 0, 2, 0, 6, 0, 3, 0, 7, 0, 0, 0, 2, 0, 1, 0, 3, 0),
 "material": SubResource("StandardMaterial3D_xjvee"),
 "primitive": 1,
+"uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 8,
 "vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63)
 }]
@@ -141,11 +148,12 @@ albedo_color = Color(1, 0, 0, 1)
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1e-05, 1),
 "attribute_data": PackedByteArray(255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255),
-"format": 4105,
+"format": 34359742473,
 "index_count": 12,
 "index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 0, 0, 2, 0, 1, 0, 3, 0),
 "material": SubResource("StandardMaterial3D_n17l1"),
 "primitive": 1,
+"uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
 "vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63)
 }]
@@ -159,11 +167,12 @@ albedo_color = Color(1, 0, 0, 1)
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1e-05, 1),
 "attribute_data": PackedByteArray(255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255),
-"format": 4105,
+"format": 34359742473,
 "index_count": 12,
 "index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 0, 0, 2, 0, 1, 0, 3, 0),
 "material": SubResource("StandardMaterial3D_3io7e"),
 "primitive": 1,
+"uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
 "vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63)
 }]
@@ -177,11 +186,12 @@ albedo_color = Color(0, 1, 1, 1)
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1e-05, 1),
 "attribute_data": PackedByteArray(0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255),
-"format": 4105,
+"format": 34359742473,
 "index_count": 12,
 "index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 0, 0, 2, 0, 1, 0, 3, 0),
 "material": SubResource("StandardMaterial3D_n3f4l"),
 "primitive": 1,
+"uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
 "vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63)
 }]
@@ -195,11 +205,12 @@ albedo_color = Color(1, 0.752941, 0.796078, 1)
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1e-05, 1),
 "attribute_data": PackedByteArray(255, 192, 203, 255, 255, 192, 203, 255, 255, 192, 203, 255, 255, 192, 203, 255),
-"format": 4105,
+"format": 34359742473,
 "index_count": 12,
 "index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 0, 0, 2, 0, 1, 0, 3, 0),
 "material": SubResource("StandardMaterial3D_ctmc1"),
 "primitive": 1,
+"uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
 "vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63)
 }]
@@ -213,11 +224,12 @@ albedo_color = Color(0.984314, 0.807843, 0.694118, 1)
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1e-05, 1),
 "attribute_data": PackedByteArray(251, 206, 177, 255, 251, 206, 177, 255, 251, 206, 177, 255, 251, 206, 177, 255),
-"format": 4105,
+"format": 34359742473,
 "index_count": 12,
 "index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 0, 0, 2, 0, 1, 0, 3, 0),
 "material": SubResource("StandardMaterial3D_canw8"),
 "primitive": 1,
+"uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
 "vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63)
 }]
@@ -231,11 +243,12 @@ albedo_color = Color(0.498039, 1, 0.831373, 1)
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1e-05, 1),
 "attribute_data": PackedByteArray(127, 255, 212, 255, 127, 255, 212, 255, 127, 255, 212, 255, 127, 255, 212, 255),
-"format": 4105,
+"format": 34359742473,
 "index_count": 12,
 "index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 0, 0, 2, 0, 1, 0, 3, 0),
 "material": SubResource("StandardMaterial3D_te650"),
 "primitive": 1,
+"uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
 "vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63)
 }]
@@ -249,11 +262,12 @@ albedo_color = Color(0, 1, 0, 1)
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1e-05, 1),
 "attribute_data": PackedByteArray(0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255),
-"format": 4105,
+"format": 34359742473,
 "index_count": 12,
 "index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 0, 0, 2, 0, 1, 0, 3, 0),
 "material": SubResource("StandardMaterial3D_tv0nj"),
 "primitive": 1,
+"uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
 "vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63)
 }]
@@ -265,12 +279,12 @@ script = ExtResource("1_760ml")
 
 [node name="TWViewer" type="Node3D" parent="TheWorld_Main"]
 script = ExtResource("3_yxvy6")
-_world_param_depth_quad = 2
+_world_param_depth_quad = 6
+_world_param_cache_quad = 2
 _world_param_info_visible = true
 _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 1
 _world_editor_param_info_visible = true
-_world_editor_param_deploy_world = true
 _camera_param_initial_pos = Vector3(0, 1500, 0)
 _camera_param_initial_yaw_pitch_roll = Vector3(-0.238, -0.098, 0)
 _shader_param_ground_uv_scale = 200.0
@@ -306,3 +320,5 @@ far = 30000.0
 [node name="UI" parent="TheWorld_Main" instance=ExtResource("4_cjpoh")]
 
 [node name="Test" parent="TheWorld_Main" instance=ExtResource("5_kid0l")]
+
+[node name="Testing" type="Node3D" parent="TheWorld_Main"]
