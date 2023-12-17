@@ -1,10 +1,11 @@
-[gd_scene load_steps=34 format=3 uid="uid://c4ukh1kw4impi"]
+[gd_scene load_steps=35 format=3 uid="uid://c4ukh1kw4impi"]
 
 [ext_resource type="Script" path="res://main/TheWorld_Main.gd" id="1_760ml"]
 [ext_resource type="Script" path="res://addons/twviewer/tw_viewer.gd" id="3_yxvy6"]
 [ext_resource type="PackedScene" uid="uid://djjd1xm5iotj1" path="res://components/UI.tscn" id="4_cjpoh"]
 [ext_resource type="PackedScene" uid="uid://cdlipa2pmvrju" path="res://components/world_environment.tscn" id="4_gxev0"]
 [ext_resource type="PackedScene" uid="uid://bi138l8muok7h" path="res://components/test.tscn" id="5_kid0l"]
+[ext_resource type="PackedScene" uid="uid://v6sfi8k7dr7o" path="res://player.tscn" id="6_wlxwp"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xl13w"]
 shading_mode = 0
@@ -279,8 +280,7 @@ script = ExtResource("1_760ml")
 
 [node name="TWViewer" type="Node3D" parent="TheWorld_Main"]
 script = ExtResource("3_yxvy6")
-_world_param_depth_quad = 6
-_world_param_cache_quad = 2
+_world_param_depth_quad = 2
 _world_param_info_visible = true
 _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 1
@@ -313,12 +313,10 @@ metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 transform = Transform3D(0.999991, 7.10488e-06, -0.00415387, 0, 0.999999, 0.00171042, 0.00415387, -0.00171041, 0.99999, 0, 1500, 0)
 far = 30000.0
 
-[node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main/TWViewer"]
-
 [node name="World" parent="TheWorld_Main" instance=ExtResource("4_gxev0")]
 
 [node name="UI" parent="TheWorld_Main" instance=ExtResource("4_cjpoh")]
 
 [node name="Test" parent="TheWorld_Main" instance=ExtResource("5_kid0l")]
 
-[node name="Testing" type="Node3D" parent="TheWorld_Main"]
+[node name="Player" parent="TheWorld_Main" instance=ExtResource("6_wlxwp")]

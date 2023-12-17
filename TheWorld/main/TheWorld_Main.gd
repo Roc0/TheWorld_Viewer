@@ -13,6 +13,7 @@ var config_file_name : String = ""
 var initialCameraDistanceFromTerrain : float = 300
 
 var initialBallPos := Vector3(0, 0, 0)
+var initialPlayerPos := Vector3(0, 0, 0)
 var initial_camera_position := Vector3(0, 0, 0)
 #var initialViewerPos := Vector3(0, 2200, 0)
 #var initialCameraAltitudeForced = 0
@@ -88,6 +89,8 @@ var altPressed := false
 var ctrlPressed := false
 var ball_pos := Vector3(0, 0, 0)
 var _ball_pos_info_line_index : int = 0
+var player_pos := Vector3(0, 0, 0)
+var _player_pos_info_line_index : int = 0
 
 var prev_hit : Vector3 = Vector3(0, 0, 0)
 		
@@ -97,6 +100,7 @@ func _ready():
 	init()
 
 	$Test/TestBallRigidBody.visible = false
+	$Player/PlayerRigidBody.visible = false
 	var e := get_tree().get_root().connect("size_changed", Callable(self, "resizing"))
 	log_debug(str("connect size_changed result=", e))
 	#get_tree().get_root().set_transparent_background(true)
@@ -129,11 +133,14 @@ func init():
 		TWViewer()._set_camera_param_initial_yaw_pitch_roll(initial_camera_ypr)
 		initialBallPos.x = initial_camera_position.x
 		initialBallPos.z = initial_camera_position.z
+		initialPlayerPos.x = initial_camera_position.x
+		initialPlayerPos.z = initial_camera_position.z
 	var result = TWViewer().GDN_globals().connect("tw_status_changed", Callable(self, "_on_tw_status_changed")) == 0
 	log_debug(str("signal tw_status_changed connected (result=", result, ")"))
 	_clientstatus = get_clientstatus()
 	_client_status = tw_const.status_to_string(_clientstatus)
 	_ball_pos_info_line_index = TWViewer().add_info_panel_external_line("Ball pos:", 0)
+	_player_pos_info_line_index = TWViewer().add_info_panel_external_line("Player pos:", 0)
 
 func deinit():
 	log_debug("deinit")
@@ -303,17 +310,21 @@ func _process(_delta):
 	
 	#if scene_initialized && !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 	if !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
-		$Test/TestBallRigidBody.global_transform.origin = Vector3(initialBallPos.x + 1, initialBallPos.y + 1500, initialBallPos.z + 1)
+		$Test/TestBallRigidBody.global_transform.origin = Vector3(initialBallPos.x + 1, initialBallPos.y + 600, initialBallPos.z + 1)
 		#if (initialCameraAltitudeForced != 0):
 		#	$Test/TestBallRigidBody.global_transform.origin.y = initialCameraAltitudeForced
 		$Test/TestBallRigidBody.visible = true
 		#test_subvieport(gdn_viewer)
+		$Player/PlayerRigidBody.global_transform.origin = Vector3(initialPlayerPos.x + 10, initialPlayerPos.y + 600, initialPlayerPos.z + 10)
+		$Player/PlayerRigidBody.visible = true
 		post_world_deploy_initialized = true
 	
 	#if scene_initialized && post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 	if post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 		ball_pos = $Test/TestBallRigidBody.global_transform.origin
 		tw_viewer.set_info_panel_external_value(str(ball_pos), _ball_pos_info_line_index)
+		player_pos = $Player/PlayerRigidBody.global_transform.origin
+		tw_viewer.set_info_panel_external_value(str(player_pos), _player_pos_info_line_index)
 	
 	if debug_window_active:
 		fps = Engine.get_frames_per_second()
