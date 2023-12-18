@@ -383,7 +383,7 @@ func _process(_delta):
 			+ " " + str(update_quads3_duration)\
 			+ ") UC " + str(gdn_viewer.get_update_chunks_duration()) \
 			+ " UM " + str(gdn_viewer.get_update_material_params_duration()) \
-			+ " RQ " + str(gdn_viewer.get_refresh_quads_duration()) \
+			###+ " RQ " + str(gdn_viewer.get_refresh_quads_duration()) \
 			+ " T " + str(gdn_viewer.get_mouse_track_hit_duration())
 		num_process_locked = gdn_viewer.get_num_process_not_owns_lock()
 		debug_draw_mode = gdn_viewer.get_debug_draw_mode()

@@ -1,3 +1,11 @@
+Pink Amaranth 6 su 6 esterno del quad verso esterno del quad a pari lod sbaglia perché attiva la modalità con cucitura
+Stesso per 5 (blue) attiva modalità cucitura verso chunk a lod inferiore (red salmon) o verso chunk a stesso lod mentre non dovrebbe farlo
+Stesso per 6 (pink amaranth)
+
+ATTENZIONE:
+	modificato chunk size shift 4 ==> 3
+
+
 Squadrettizzazione
 	How do you eliminate the tile-pattern effect for textures on terrain
 	Texture repetition

@@ -38,6 +38,7 @@ void vertex() {
 	// Height displacement
 	//float h = texture(u_terrain_heightmap, UV).r;
 	float h = get_height(u_terrain_heightmap, u_terrain_height, UV);
+	h = 0.0;
 	VERTEX.y = h;
 	NORMAL = get_normal(u_terrain_normalmap, u_terrain_normal_basis, UV);
 }
@@ -77,7 +78,8 @@ void fragment() {
 							} else {
 								if (u_lod == 4.0) {
 									//ALBEDO = vec3(1.0, 0.753, 0.796);		// GDN_TheWorld_Globals::g_color_pink
-									ALBEDO = vec3(0.870, 0.192, 0.388);		// GDN_TheWorld_Globals::g_color_pink_cerise
+									//ALBEDO = vec3(0.870, 0.192, 0.388);		// GDN_TheWorld_Globals::g_color_pink_cerise
+									ALBEDO = vec3(0.980, 0.592, 0.447);		// GDN_TheWorld_Globals::g_color_red_salmon
 								} else {
 									if (u_lod == 5.0) {
 										ALBEDO = vec3(0.0, 0.0, 1.0);		// GDN_TheWorld_Globals::g_color_blue
@@ -88,7 +90,11 @@ void fragment() {
 											if (u_lod == 7.0) {
 												ALBEDO = vec3(0.561, 0.737, 0.561);		// GDN_TheWorld_Globals::g_color_darksea_green
 											} else {	// u_lod == 8.0 and greater
-												ALBEDO = vec3(1.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_red
+												if (u_lod == 8.0) {
+													ALBEDO = vec3(1.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_red
+												} else {
+													ALBEDO = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
+												}
 											}
 										}
 									}

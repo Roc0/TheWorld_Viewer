@@ -650,7 +650,7 @@ func _process(delta):
 		#+ " " + String(update_quads3_duration)\
 		#+ ") UC " + String(viewer.get_update_chunks_duration()) \
 		#+ " UM " + String(viewer.get_update_material_params_duration()) \
-		#+ " RQ " + String(viewer.get_refresh_quads_duration()) \
+		####+ " RQ " + String(viewer.get_refresh_quads_duration()) \
 		#+ " T " + String(viewer.get_mouse_track_hit_duration()) + "\n"
 		if camera != null:
 			_info_panel_camera_rot = "  Rot: " + str(camera.global_transform.basis.get_euler()) + "\n"
@@ -658,7 +658,7 @@ func _process(delta):
 		var notInitializedQuadrants : int = gdn_viewer.get_num_quadrant() - gdn_viewer.get_num_initialized_quadrant()
 		_info_label_num_quadrants = "  Total: " + str(gdn_viewer.get_num_initialized_quadrant(), ":", gdn_viewer.get_num_quadrant()) + " to init: " + str(notInitializedQuadrants) + "\n"
 		var notInitializedVisibleQuadrants : int = gdn_viewer.get_num_visible_quadrant() - gdn_viewer.get_num_initialized_visible_quadrant()
-		_info_label_num_visible_quadrants = "  Visible: " + str(gdn_viewer.get_num_initialized_visible_quadrant(), ":", gdn_viewer.get_num_visible_quadrant()) + " to init: " + str(notInitializedVisibleQuadrants) + "\n"
+		_info_label_num_visible_quadrants = "  Visible: " + str(gdn_viewer.get_num_initialized_visible_quadrant(), ":", gdn_viewer.get_num_visible_quadrant()) + " to init: " + str(notInitializedVisibleQuadrants) + " shader: " + str(gdn_viewer.get_num_need_shader_reset_quadrant()) + "\n"
 		_info_label_num_empty_quadrants = "  Empty: " + str(gdn_viewer.get_num_empty_quadrant()) + "\n"
 		_info_label_num_flushed_quadrants = "  Flushed: " + str(gdn_viewer.get_num_flushed_quadrant())
 		_info_panel_num_active_chunks = "  Active: " + str(gdn_viewer.get_num_active_chunks()) + "\n"
@@ -1275,15 +1275,10 @@ func set_info_panel_external_value(text : String, index : int):
 		_info_panel_external_labels[index].text = text
 
 func set_size_info_panel():
-	#pass
-	#_info_panel.anchor_left = 0
-	#_info_panel.anchor_right = 0
-	#_info_panel.anchor_top = 0
-	#_info_panel.anchor_left = 0
-	_info_panel.offset_top = 40
-	#_info_panel.margin_left = 0
-	#_info_panel.margin_right = 100
-	#_info_panel.margin_bottom = 100
+	if Engine.is_editor_hint():
+		_info_panel.offset_top = 40
+	else:
+		_info_panel.anchor_left = 0
 	
 func is_ready() -> bool:
 	return _is_ready
