@@ -77,6 +77,7 @@ var _info_label_num_quadrants := ""
 var _info_label_num_visible_quadrants := ""
 var _info_label_num_empty_quadrants := ""
 var _info_label_num_flushed_quadrants := ""
+var _info_label_num_reloading_quadrants := ""
 var _info_label_num_with_collider := ""
 var _info_panel_num_active_chunks := ""
 var _info_panel_num_chunk_splits := ""
@@ -657,11 +658,12 @@ func _process(delta):
 			_info_panel_camera_rot = "  Rot: " + str(camera.global_transform.basis.get_euler()) + "\n"
 			_info_panel_camera_pos = "  Pos: " + str(camera.global_transform.origin)
 		var notInitializedQuadrants : int = gdn_viewer.get_num_quadrant() - gdn_viewer.get_num_initialized_quadrant()
-		_info_label_num_quadrants = "  Total: " + str(gdn_viewer.get_num_initialized_quadrant(), ":", gdn_viewer.get_num_quadrant()) + " to init: " + str(notInitializedQuadrants) + "\n"
+		_info_label_num_quadrants = "  Total: " + str(gdn_viewer.get_num_initialized_quadrant(), ":", gdn_viewer.get_num_quadrant()) + " To Init: " + str(notInitializedQuadrants) + "\n"
 		var notInitializedVisibleQuadrants : int = gdn_viewer.get_num_visible_quadrant() - gdn_viewer.get_num_initialized_visible_quadrant()
-		_info_label_num_visible_quadrants = "  Visible: " + str(gdn_viewer.get_num_initialized_visible_quadrant(), ":", gdn_viewer.get_num_visible_quadrant()) + " to init: " + str(notInitializedVisibleQuadrants) + " shader: " + str(gdn_viewer.get_num_need_shader_reset_quadrant()) + "\n"
+		_info_label_num_visible_quadrants = "  Visible: " + str(gdn_viewer.get_num_initialized_visible_quadrant(), ":", gdn_viewer.get_num_visible_quadrant()) + " To Init: " + str(notInitializedVisibleQuadrants) + " Shader: " + str(gdn_viewer.get_num_need_shader_reset_quadrant()) + "\n"
 		_info_label_num_empty_quadrants = "  Empty: " + str(gdn_viewer.get_num_empty_quadrant())
-		_info_label_num_flushed_quadrants = "  Flushed: " + str(gdn_viewer.get_num_flushed_quadrant()) + "\n"
+		_info_label_num_flushed_quadrants = "  Flushed: " + str(gdn_viewer.get_num_flushed_quadrant())
+		_info_label_num_reloading_quadrants = "  Reloading: " + str(gdn_viewer.get_num_reloading_quadrant()) + "\n"
 		_info_label_num_with_collider = "  With Collider: "+ str(gdn_viewer.get_num_with_collider_quadrant())
 		_info_panel_num_active_chunks = "  Active: " + str(gdn_viewer.get_num_active_chunks()) + "\n"
 		_info_panel_num_chunk_splits = "  Splits: " + str(gdn_viewer.get_num_splits()) + "\n"
@@ -717,6 +719,7 @@ func _process(delta):
 		+ _info_label_num_visible_quadrants \
 		+ _info_label_num_empty_quadrants \
 		+ _info_label_num_flushed_quadrants \
+		+ _info_label_num_reloading_quadrants \
 		+ _info_label_num_with_collider
 		
 		_info_panel_chunks_label.text = "Chunks\n" \
