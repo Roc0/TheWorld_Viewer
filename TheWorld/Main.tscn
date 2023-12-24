@@ -292,7 +292,6 @@ _shader_param_ground_uv_scale = 200.0
 _shader_param_globalmap_blend_start = 3000.0
 
 [node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main/TWViewer"]
-perfparam_collision_data_lowres_quadrants = false
 
 [node name="GDN_TW_Viewer" type="GDN_TheWorld_Viewer" parent="TheWorld_Main/TWViewer"]
 metadata/debug_wirecube_mesh_lod_5 = SubResource("ArrayMesh_kfft6")
