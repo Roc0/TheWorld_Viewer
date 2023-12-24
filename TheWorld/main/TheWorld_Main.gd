@@ -310,12 +310,12 @@ func _process(_delta):
 	
 	#if scene_initialized && !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 	if !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
-		$Test/TestBallRigidBody.global_transform.origin = Vector3(initialBallPos.x + 1, initialBallPos.y + 600, initialBallPos.z + 1)
+		$Test/TestBallRigidBody.global_transform.origin = Vector3(initialBallPos.x + 1, initialBallPos.y + 3000, initialBallPos.z + 1)
 		#if (initialCameraAltitudeForced != 0):
 		#	$Test/TestBallRigidBody.global_transform.origin.y = initialCameraAltitudeForced
 		$Test/TestBallRigidBody.visible = true
 		#test_subvieport(gdn_viewer)
-		$Player/PlayerRigidBody.global_transform.origin = Vector3(initialPlayerPos.x + 10, initialPlayerPos.y + 600, initialPlayerPos.z + 10)
+		$Player/PlayerRigidBody.global_transform.origin = Vector3(initialPlayerPos.x + 10, initialPlayerPos.y + 3000, initialPlayerPos.z + 10)
 		$Player/PlayerRigidBody.visible = true
 		post_world_deploy_initialized = true
 	
