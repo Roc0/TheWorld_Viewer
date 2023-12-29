@@ -697,7 +697,12 @@ func _process(delta):
 		mouse_pos = get_viewport().get_mouse_position()
 		if (_editor_3d_overlay != null):
 			mouse_pos = _editor_3d_overlay.get_local_mouse_position()
-		_info_panel_general_label.text = "FPS: " + str(Engine.get_frames_per_second()) + "\n" \
+		var div : int = 1024 * 1024 * 1024
+		var mem = Performance.get_monitor(Performance.MEMORY_STATIC) / div
+		var gpu_mem = Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED) / div
+		_info_panel_general_label.text = "FPS: " + str(Engine.get_frames_per_second()) \
+		 + " Mem: " + str(snapped(mem, 0.01)) + " GB" \
+		+ " GPU Mem: " + str(snapped(gpu_mem, 0.01)) + " GB" + "\n" \
 			+ _info_panel_status \
 			+ _info_panel_render_process_durations_mcs \
 			+ _info_panel_draw_mode \
