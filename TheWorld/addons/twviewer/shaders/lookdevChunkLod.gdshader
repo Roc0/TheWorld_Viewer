@@ -38,8 +38,8 @@ void vertex() {
 	// Height displacement
 	//float h = texture(u_terrain_heightmap, UV).r;
 	float h = get_height(u_terrain_heightmap, u_terrain_height, UV);
-	h = 0.0;	// DEBUG
-	VERTEX.y = h;
+	//h = 0.0;	// DEBUG
+	//VERTEX.y = h;
 	NORMAL = get_normal(u_terrain_normalmap, u_terrain_normal_basis, UV);
 }
 
