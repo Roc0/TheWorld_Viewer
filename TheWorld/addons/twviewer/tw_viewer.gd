@@ -664,7 +664,7 @@ func _process(delta):
 		_info_label_num_empty_quadrants = "  Empty: " + str(gdn_viewer.get_num_empty_quadrant())
 		_info_label_num_flushed_quadrants = "  Flushed: " + str(gdn_viewer.get_num_flushed_quadrant())
 		_info_label_num_reloading_quadrants = "  Reloading: " + str(gdn_viewer.get_num_reloading_quadrant()) + "\n"
-		_info_label_num_with_collider = "  With Collider: "+ str(gdn_viewer.get_num_with_collider_quadrant())
+		_info_label_num_with_collider = "  Collider: " + str(gdn_viewer.get_num_quadrant_with_collider()) + " (" + str(gdn_viewer.get_num_quadrant_with_hires_collider()) + "/" + str(gdn_viewer.get_num_quadrant_with_lowres_collider()) + ")"
 		_info_panel_num_active_chunks = "  Active: " + str(gdn_viewer.get_num_active_chunks()) + "\n"
 		_info_panel_num_chunk_splits = "  Splits: " + str(gdn_viewer.get_num_splits()) + "\n"
 		_info_panel_num_chunk_joins = "  Joins: " + str(gdn_viewer.get_num_joins())

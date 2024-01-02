@@ -1,4 +1,48 @@
 Start initializing of a stream of quadrant
+2024-01-01 23:16:32.130 INFO  [29932] [godot::GDN_TheWorld_Globals::print@347] INFO - Status changed: worldDeployInProgress(4) ==> worldDeployed(5) (28302 ms)
+2024-01-01 23:16:32.130 DEBUG [29932] [godot::GDN_TheWorld_Viewer::writeStatisticsNewQuadrants@3833] 
+Initialization of last stream of quadrant COMPLETED:
+  num = 289 elapsed = 28155 average = 97
+  visible = 168
+  invisible = 121
+  opt. level change = 294  texture resize = 3466  elapsed = 17517 average = 5
+  load from cache = 0  elapsed = 0 average = 0
+  reset shader params = 284  elapsed = 1599 average = 5
+  update shader params = 284  elapsed = 108 average = 0
+  set hires collisions = 5  elapsed = 64 average = 12
+  set lowres collisions = 278  elapsed = 2398 average = 8
+
+2024-01-01 23:16:32.168 DEBUG [29932] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - tw_viewer.gd: _on_tw_status_changed world_deploy_in_progress(4) ==> world_deployed(5)
+2024-01-01 23:16:32.171 DEBUG [29932] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - TheWorld_Main.gd: _on_tw_status_changed world_deploy_in_progress(4) ==> world_deployed(5)
+2024-01-01 23:16:48.253 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - *************
+2024-01-01 23:16:48.254 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - STARTING DUMP
+2024-01-01 23:16:48.259 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - FPS: 60.000000
+2024-01-01 23:16:48.266 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Threshold value to cache maps and images : 15000.00 m
+2024-01-01 23:16:48.271 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Quadrants : 289, cached map memory : 2.627687 GB, cached image memory : 2.877928 GB (resized cached image memory : 0.907255 GB)
+2024-01-01 23:16:48.273 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG -    Heigthmap16 : 0.328446 GB
+2024-01-01 23:16:48.274 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG -    Heigthmap32 : 0.656891 GB
+2024-01-01 23:16:48.275 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG -    Normalmap : 0.492668 GB
+2024-01-01 23:16:48.277 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG -    Splatmap : 0.656891 GB
+2024-01-01 23:16:48.278 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG -    Globalmap : 0.492668 GB
+2024-01-01 23:16:48.280 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG -    Colormap : 0.000000 GB
+2024-01-01 23:16:48.281 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG -    TerrainEdit : 0.000123 GB
+2024-01-01 23:16:48.283 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG -    Collider Heights : 0.000000 GB
+2024-01-01 23:16:48.284 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Engine monitor : 
+2024-01-01 23:16:48.286 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG -    Static memory in use : 5.062197 GB
+2024-01-01 23:16:48.289 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG -    Render video memory in use : 0.832501 GB, for texture 0.723603 GB, for buffers 0.020512 GB
+2024-01-01 23:16:48.292 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Num quadrants with optimization level 0 : 5 - map size : 2049
+2024-01-01 23:16:48.294 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Num quadrants with optimization level 2 : 80 - map size : 513
+2024-01-01 23:16:48.297 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Num quadrants with optimization level 4 : 168 - map size : 129
+2024-01-01 23:16:48.299 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Num quadrants with optimization level 6 : 36 - map size : 33
+2024-01-01 23:16:48.305 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Num chunks at lod 5 = 8 - Num chunks per quadrant side = 8 - Grid step in WUs = 64.000000 - Num vertices per quadrant side = 64 - Quadrant size in WUs = 4096.000000
+2024-01-01 23:16:48.311 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Num chunks at lod 6 = 14 - Num chunks per quadrant side = 4 - Grid step in WUs = 128.000000 - Num vertices per quadrant side = 32 - Quadrant size in WUs = 4096.000000
+2024-01-01 23:16:48.318 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Num chunks at lod 7 = 16 - Num chunks per quadrant side = 2 - Grid step in WUs = 256.000000 - Num vertices per quadrant side = 16 - Quadrant size in WUs = 4096.000000
+2024-01-01 23:16:48.324 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Num chunks at lod 8 = 164 - Num chunks per quadrant side = 1 - Grid step in WUs = 512.000000 - Num vertices per quadrant side = 8 - Quadrant size in WUs = 4096.000000
+2024-01-01 23:16:48.325 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - DUMP COMPLETE
+2024-01-01 23:16:48.326 DEBUG [23956] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - *************
+
+
+Start initializing of a stream of quadrant
 2024-01-01 21:35:04.134 INFO  [25020] [godot::GDN_TheWorld_Globals::print@347] INFO - Status changed: worldDeployInProgress(4) ==> worldDeployed(5) (26734 ms)
 2024-01-01 21:35:04.138 DEBUG [25020] [godot::GDN_TheWorld_Viewer::writeStatisticsNewQuadrants@3833] 
 Initialization of last stream of quadrant COMPLETED:
@@ -39,36 +83,6 @@ Initialization of last stream of quadrant COMPLETED:
 2024-01-01 21:35:19.885 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Num chunks at lod 8 = 166 - Num chunks per quadrant side = 1 - Grid step in WUs = 512.000000 - Num vertices per quadrant side = 8 - Quadrant size in WUs = 4096.000000
 2024-01-01 21:35:19.886 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - DUMP COMPLETE
 2024-01-01 21:35:19.887 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - *************
-
-
-2024-01-01 21:37:13.421 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - *************
-2024-01-01 21:37:13.422 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - STARTING DUMP
-2024-01-01 21:37:13.423 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - FPS: 59.000000
-2024-01-01 21:37:13.429 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Threshold value to cache maps and images : 15000.00 m
-2024-01-01 21:37:13.434 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Quadrants : 289, cached map memory : 3.581743 GB, cached image memory : 3.156314 GB (resized cahched image memory : 0.904116 GB)
-2024-01-01 21:37:13.435 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG -    Heigthmap16 : 0.375366 GB
-2024-01-01 21:37:13.437 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG -    Heigthmap32 : 0.750733 GB
-2024-01-01 21:37:13.438 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG -    Normalmap : 0.563049 GB
-2024-01-01 21:37:13.439 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG -    Splatmap : 0.750733 GB
-2024-01-01 21:37:13.441 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG -    Globalmap : 0.563049 GB
-2024-01-01 21:37:13.442 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG -    Colormap : 0.000000 GB
-2024-01-01 21:37:13.443 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG -    TerrainEdit : 0.000123 GB
-2024-01-01 21:37:13.445 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG -    Collider Heights : 0.578690 GB
-2024-01-01 21:37:13.446 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Engine monitor : 
-2024-01-01 21:37:13.448 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG -    Static memory in use : 6.586231 GB
-2024-01-01 21:37:13.452 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG -    Render video memory in use : 1.042516 GB, for texture 0.897004 GB, for buffers 0.020505 GB
-2024-01-01 21:37:13.454 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Num quadrants with optimization level 0 : 9 - map size : 2049
-2024-01-01 21:37:13.457 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Num quadrants with optimization level 2 : 82 - map size : 513
-2024-01-01 21:37:13.459 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Num quadrants with optimization level 4 : 167 - map size : 129
-2024-01-01 21:37:13.462 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Num quadrants with optimization level 6 : 31 - map size : 33
-2024-01-01 21:37:13.468 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Num chunks at lod 4 = 0 - Num chunks per quadrant side = 16 - Grid step in WUs = 32.000000 - Num vertices per quadrant side = 128 - Quadrant size in WUs = 4096.000000
-2024-01-01 21:37:13.475 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Num chunks at lod 5 = 0 - Num chunks per quadrant side = 8 - Grid step in WUs = 64.000000 - Num vertices per quadrant side = 64 - Quadrant size in WUs = 4096.000000
-2024-01-01 21:37:13.481 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Num chunks at lod 6 = 4 - Num chunks per quadrant side = 4 - Grid step in WUs = 128.000000 - Num vertices per quadrant side = 32 - Quadrant size in WUs = 4096.000000
-2024-01-01 21:37:13.487 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Num chunks at lod 7 = 11 - Num chunks per quadrant side = 2 - Grid step in WUs = 256.000000 - Num vertices per quadrant side = 16 - Quadrant size in WUs = 4096.000000
-2024-01-01 21:37:13.494 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - Num chunks at lod 8 = 166 - Num chunks per quadrant side = 1 - Grid step in WUs = 512.000000 - Num vertices per quadrant side = 8 - Quadrant size in WUs = 4096.000000
-2024-01-01 21:37:13.495 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - DUMP COMPLETE
-2024-01-01 21:37:13.496 DEBUG [30372] [godot::GDN_TheWorld_Globals::debugPrint@297] DEBUG - *************
-
 
 
 Pink Amaranth 6 su 6 esterno del quad verso esterno del quad a pari lod sbaglia perché attiva la modalità con cucitura
