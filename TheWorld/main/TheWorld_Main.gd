@@ -310,13 +310,15 @@ func _process(_delta):
 	
 	#if scene_initialized && !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 	if !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
-		$Test/TestBallRigidBody.global_transform.origin = Vector3(initialBallPos.x + 1, initialBallPos.y + 3000, initialBallPos.z + 1)
-		#if (initialCameraAltitudeForced != 0):
-		#	$Test/TestBallRigidBody.global_transform.origin.y = initialCameraAltitudeForced
-		$Test/TestBallRigidBody.visible = true
-		#test_subvieport(gdn_viewer)
-		$Player/PlayerRigidBody.global_transform.origin = Vector3(initialPlayerPos.x + 10, initialPlayerPos.y + 3000, initialPlayerPos.z + 10)
-		$Player/PlayerRigidBody.visible = true
+		var space_state = get_world_3d().direct_space_state
+		var query = PhysicsRayQueryParameters3D.create(Vector3(initialPlayerPos.x, 10000, initialPlayerPos.z), Vector3(initialPlayerPos.x, -10000, initialPlayerPos.z))
+		var result = space_state.intersect_ray(query)
+		if result:
+			$Test/TestBallRigidBody.global_transform.origin = Vector3(initialBallPos.x + 10, result.position.y + 50, initialBallPos.z + 10)
+			$Test/TestBallRigidBody.visible = true
+			#test_subvieport(gdn_viewer)
+			$Player/PlayerRigidBody.global_transform.origin = Vector3(initialPlayerPos.x, result.position.y + 50, initialPlayerPos.z)
+			$Player/PlayerRigidBody.visible = true
 		post_world_deploy_initialized = true
 	
 	#if scene_initialized && post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
