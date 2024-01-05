@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://v6sfi8k7dr7o"]
+[gd_scene load_steps=5 format=3 uid="uid://v6sfi8k7dr7o"]
+
+[ext_resource type="Script" path="res://Player.gd" id="1_qy5qg"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_c4bm6"]
-radius = 1.0
-height = 4.0
+radius = 2.0
+height = 6.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mouiu"]
 albedo_color = Color(0, 1, 0, 1)
@@ -14,14 +16,19 @@ material = SubResource("StandardMaterial3D_mouiu")
 radius = 1.0
 height = 4.0
 
-[node name="Player" type="Node3D"]
+[node name="PlayerGroup" type="Node3D"]
 
-[node name="PlayerRigidBody" type="RigidBody3D" parent="."]
+[node name="Player" type="CharacterBody3D" parent="."]
+script = ExtResource("1_qy5qg")
 
-[node name="PlayerCollisionShape" type="CollisionShape3D" parent="PlayerRigidBody"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+[node name="PlayerCollisionShape" type="CollisionShape3D" parent="Player"]
+transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.37114e-08, 0, 0, 0)
 shape = SubResource("CapsuleShape3D_c4bm6")
 
-[node name="PlayerMesh" type="MeshInstance3D" parent="PlayerRigidBody"]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+[node name="PlayerMesh" type="MeshInstance3D" parent="Player"]
+transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("CapsuleMesh_0di5h")
+skeleton = NodePath("")
+
+[node name="RayCast3D" type="RayCast3D" parent="Player"]
+target_position = Vector3(0, -2, 0)

@@ -15,7 +15,7 @@ var initialCameraDistanceFromTerrain : float = 300
 var initialBallPos := Vector3(0, 0, 0)
 var initialPlayerPos := Vector3(0, 0, 0)
 var initial_camera_position := Vector3(0, 0, 0)
-#var initialViewerPos := Vector3(0, 2200, 0)
+#var initialViewerPoFs := Vector3(0, 2200, 0)
 #var initialCameraAltitudeForced = 0
 #var initialYawPitchRoll := Vector3(-139, -7, 0)
 #var initialViewerPos := Vector3(872, 1463, -3742)
@@ -99,8 +99,8 @@ func _ready():
 
 	init()
 
-	$Test/TestBallRigidBody.visible = false
-	$Player/PlayerRigidBody.visible = false
+	$Test/TestBall.visible = false
+	$Player/Player.visible = false
 	var e := get_tree().get_root().connect("size_changed", Callable(self, "resizing"))
 	log_debug(str("connect size_changed result=", e))
 	#get_tree().get_root().set_transparent_background(true)
@@ -314,18 +314,18 @@ func _process(_delta):
 		var query = PhysicsRayQueryParameters3D.create(Vector3(initialPlayerPos.x, 10000, initialPlayerPos.z), Vector3(initialPlayerPos.x, -10000, initialPlayerPos.z))
 		var result = space_state.intersect_ray(query)
 		if result:
-			$Test/TestBallRigidBody.global_transform.origin = Vector3(initialBallPos.x + 10, result.position.y + 50, initialBallPos.z + 10)
-			$Test/TestBallRigidBody.visible = true
+			$Test/TestBall.global_transform.origin = Vector3(initialBallPos.x + 10, result.position.y + 50, initialBallPos.z + 10)
+			$Test/TestBall.visible = true
 			#test_subvieport(gdn_viewer)
-			$Player/PlayerRigidBody.global_transform.origin = Vector3(initialPlayerPos.x, result.position.y + 50, initialPlayerPos.z)
-			$Player/PlayerRigidBody.visible = true
+			$Player/Player.global_transform.origin = Vector3(initialPlayerPos.x, result.position.y + 10, initialPlayerPos.z)
+			$Player/Player.visible = true
 		post_world_deploy_initialized = true
 	
 	#if scene_initialized && post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 	if post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
-		ball_pos = $Test/TestBallRigidBody.global_transform.origin
+		ball_pos = $Test/TestBall.global_transform.origin
 		tw_viewer.set_info_panel_external_value(str(ball_pos), _ball_pos_info_line_index)
-		player_pos = $Player/PlayerRigidBody.global_transform.origin
+		player_pos = $Player/Player.global_transform.origin
 		tw_viewer.set_info_panel_external_value(str(player_pos), _player_pos_info_line_index)
 	
 	if debug_window_active:

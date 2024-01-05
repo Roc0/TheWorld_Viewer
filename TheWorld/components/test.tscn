@@ -18,11 +18,11 @@ roughness = 0.28
 
 [node name="Test" type="Node3D"]
 
-[node name="TestBallRigidBody" type="RigidBody3D" parent="."]
+[node name="TestBall" type="RigidBody3D" parent="."]
 
-[node name="TestBallCollisionShape" type="CollisionShape3D" parent="TestBallRigidBody"]
+[node name="TestBallCollisionShape" type="CollisionShape3D" parent="TestBall"]
 shape = SubResource("SphereShape3D_n5d6c")
 
-[node name="TestBallMesh" type="MeshInstance3D" parent="TestBallRigidBody"]
+[node name="TestBallMesh" type="MeshInstance3D" parent="TestBall"]
 mesh = SubResource("SphereMesh_ere6m")
 surface_material_override/0 = SubResource("StandardMaterial3D_rv5ek")
