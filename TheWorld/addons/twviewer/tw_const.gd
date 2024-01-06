@@ -26,6 +26,9 @@ const config_file := "user://TheWorldConfig.cfg"
 const param_group_camera := "Camera"
 const param_key_camera_pos := "initial_position"
 const param_key_camera_ypr := "initial_ypr"
+const param_group_player := "Player"
+const param_key_player_pos := "initial_position"
+const param_key_player_basis := "initial_basis"
 
 static func status_to_string(status : int) -> String:
 	if status == clientstatus_error:

@@ -12,8 +12,8 @@ var config_file_name : String = ""
 
 var initialCameraDistanceFromTerrain : float = 300
 
-var initialBallPos := Vector3(0, 0, 0)
-var initialPlayerPos := Vector3(0, 0, 0)
+var initial_player_pos : Variant = null
+var initial_player_basis : Variant = null
 var initial_camera_position := Vector3(0, 0, 0)
 #var initialViewerPoFs := Vector3(0, 2200, 0)
 #var initialCameraAltitudeForced = 0
@@ -87,10 +87,12 @@ var time_of_last_ray : int = 0
 const Color_Yellow_Apricot := Color(251.0 / 255.0, 206.0 / 255.0, 177.0 / 255.0)
 var altPressed := false
 var ctrlPressed := false
-var ball_pos := Vector3(0, 0, 0)
+var ball_pos := Vector3.ZERO
 var _ball_pos_info_line_index : int = 0
-var player_pos := Vector3(0, 0, 0)
+var _player_pos := Vector3.ZERO
+var _player_velocity := Vector3.ZERO
 var _player_pos_info_line_index : int = 0
+var _player_velocity_info_line_index : int = 0
 
 var prev_hit : Vector3 = Vector3(0, 0, 0)
 		
@@ -131,16 +133,15 @@ func init():
 		#initial_camera_ypr.z = rad_to_deg(initial_camera_ypr.z)
 		TWViewer()._set_camera_param_initial_pos(initial_camera_position)
 		TWViewer()._set_camera_param_initial_yaw_pitch_roll(initial_camera_ypr)
-		initialBallPos.x = initial_camera_position.x
-		initialBallPos.z = initial_camera_position.z
-		initialPlayerPos.x = initial_camera_position.x
-		initialPlayerPos.z = initial_camera_position.z
+		initial_player_pos = config.get_value(tw_const.param_group_player, tw_const.param_key_player_pos)
+		initial_player_basis = config.get_value(tw_const.param_group_player, tw_const.param_key_player_basis)
 	var result = TWViewer().GDN_globals().connect("tw_status_changed", Callable(self, "_on_tw_status_changed")) == 0
 	log_debug(str("signal tw_status_changed connected (result=", result, ")"))
 	_clientstatus = get_clientstatus()
 	_client_status = tw_const.status_to_string(_clientstatus)
 	_ball_pos_info_line_index = TWViewer().add_info_panel_external_line("Ball pos:", 0)
 	_player_pos_info_line_index = TWViewer().add_info_panel_external_line("Player pos:", 0)
+	_player_velocity_info_line_index = TWViewer().add_info_panel_external_line("Player velocity:", 0)
 
 func deinit():
 	log_debug("deinit")
@@ -161,6 +162,8 @@ func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> 
 			camera_ypr.z = camera.get_roll(false)
 			config.set_value(tw_const.param_group_camera, tw_const.param_key_camera_pos, camera.global_transform.origin)
 			config.set_value(tw_const.param_group_camera, tw_const.param_key_camera_ypr, camera_ypr)
+			config.set_value(tw_const.param_group_player, tw_const.param_key_player_pos, $Player/Player.global_transform.origin)
+			config.set_value(tw_const.param_group_player, tw_const.param_key_player_basis, $Player/Player.global_transform.basis)
 			config.save(config_file_name)
 			
 	_clientstatus = new_client_status
@@ -220,11 +223,19 @@ func _input(event):
 		elif event.is_action_pressed("ui_test"):
 			test_action_enabled = !test_action_enabled
 			process_test_action = true
+		elif event.is_action_pressed("ui_drop_player"):
+			var current_camera := get_viewport().get_camera_3d()
+			var space_state = get_world_3d().direct_space_state
+			var query = PhysicsRayQueryParameters3D.create(Vector3(current_camera.global_transform.origin.x, 10000, current_camera.global_transform.origin.z), Vector3(current_camera.global_transform.origin.x, -10000, current_camera.global_transform.origin.z))
+			var result = space_state.intersect_ray(query)
+			if result:
+				$Player/Player.global_transform.origin = Vector3(current_camera.global_transform.origin.x, result.position.y + 50, current_camera.global_transform.origin.z)
 		#elif event.is_action_pressed("ui_dump"):
 		#	TWViewer().GDN_viewer().dump_required()
 
 func _notification(_what):
 	if (_what == NOTIFICATION_WM_CLOSE_REQUEST):
+		$Player/Player.visible = false
 		log_debug("_notification: NOTIFICATION_WM_CLOSE_REQUEST ")
 		var v = TWViewer()
 		if v != null:
@@ -311,22 +322,29 @@ func _process(_delta):
 	#if scene_initialized && !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 	if !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 		var space_state = get_world_3d().direct_space_state
-		var query = PhysicsRayQueryParameters3D.create(Vector3(initialPlayerPos.x, 10000, initialPlayerPos.z), Vector3(initialPlayerPos.x, -10000, initialPlayerPos.z))
+		var query = PhysicsRayQueryParameters3D.create(Vector3(initial_camera_position.x, 10000, initial_camera_position.z), Vector3(initial_camera_position.x, -10000, initial_camera_position.z))
 		var result = space_state.intersect_ray(query)
 		if result:
-			$Test/TestBall.global_transform.origin = Vector3(initialBallPos.x + 10, result.position.y + 50, initialBallPos.z + 10)
-			$Test/TestBall.visible = true
-			#test_subvieport(gdn_viewer)
-			$Player/Player.global_transform.origin = Vector3(initialPlayerPos.x, result.position.y + 10, initialPlayerPos.z)
-			$Player/Player.visible = true
+			$Test/TestBall.global_transform.origin = Vector3(initial_camera_position.x + 10, result.position.y + 50, initial_camera_position.z + 10)
+			$Player/Player.global_transform.origin = Vector3(initial_camera_position.x, result.position.y + 50, initial_camera_position.z)
+		#if initial_player_pos != null && initial_player_basis != null:
+		#	$Player/Player.global_transform.origin = initial_player_pos
+		#	$Player/Player.global_transform.basis = initial_player_basis
+		#	$Test/TestBall.global_transform.origin = initial_player_pos +  Vector3(10, 50, 10)
+		#test_subvieport(gdn_viewer)
+		#$Test/TestBall.global_transform.origin = Vector3(initial_camera_position.x + 10, 500, initial_camera_position.z + 10)
+		$Test/TestBall.visible = true
+		$Player/Player.visible = true
 		post_world_deploy_initialized = true
 	
 	#if scene_initialized && post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 	if post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 		ball_pos = $Test/TestBall.global_transform.origin
 		tw_viewer.set_info_panel_external_value(str(ball_pos), _ball_pos_info_line_index)
-		player_pos = $Player/Player.global_transform.origin
-		tw_viewer.set_info_panel_external_value(str(player_pos), _player_pos_info_line_index)
+		_player_pos = $Player/Player.global_transform.origin
+		#_player_velocity = $Player/Player.get_player_velocity()
+		tw_viewer.set_info_panel_external_value(str(_player_pos), _player_pos_info_line_index)
+		tw_viewer.set_info_panel_external_value(str(_player_velocity), _player_velocity_info_line_index)
 	
 	if debug_window_active:
 		fps = Engine.get_frames_per_second()
