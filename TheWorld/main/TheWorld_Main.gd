@@ -226,10 +226,14 @@ func _input(event):
 		elif event.is_action_pressed("ui_drop_player"):
 			var current_camera := get_viewport().get_camera_3d()
 			var space_state = get_world_3d().direct_space_state
-			var query = PhysicsRayQueryParameters3D.create(Vector3(current_camera.global_transform.origin.x, 10000, current_camera.global_transform.origin.z), Vector3(current_camera.global_transform.origin.x, -10000, current_camera.global_transform.origin.z))
+			var start : Vector3 = Vector3(current_camera.global_transform.origin.x, 10000, current_camera.global_transform.origin.z)
+			var end : Vector3 = Vector3(current_camera.global_transform.origin.x, -10000, current_camera.global_transform.origin.z)
+			var query = PhysicsRayQueryParameters3D.create(start, end)
+			query.exclude = [$Player/Player]
 			var result = space_state.intersect_ray(query)
 			if result:
-				$Player/Player.global_transform.origin = Vector3(current_camera.global_transform.origin.x, result.position.y + 50, current_camera.global_transform.origin.z)
+				var impact_pos : Vector3 = result.position
+				$Player/Player.global_transform.origin = impact_pos
 		#elif event.is_action_pressed("ui_dump"):
 		#	TWViewer().GDN_viewer().dump_required()
 
@@ -327,11 +331,10 @@ func _process(_delta):
 		if result:
 			$Test/TestBall.global_transform.origin = Vector3(initial_camera_position.x + 10, result.position.y + 50, initial_camera_position.z + 10)
 			$Player/Player.global_transform.origin = Vector3(initial_camera_position.x, result.position.y + 50, initial_camera_position.z)
-		#if initial_player_pos != null && initial_player_basis != null:
-		#	$Player/Player.global_transform.origin = initial_player_pos
-		#	$Player/Player.global_transform.basis = initial_player_basis
-		#	$Test/TestBall.global_transform.origin = initial_player_pos +  Vector3(10, 50, 10)
-		#test_subvieport(gdn_viewer)
+		if initial_player_pos != null && initial_player_basis != null:
+			$Player/Player.global_transform.origin = initial_player_pos
+			$Player/Player.global_transform.basis = initial_player_basis
+			$Test/TestBall.global_transform.origin = initial_player_pos +  Vector3(10, 50, 10)
 		#$Test/TestBall.global_transform.origin = Vector3(initial_camera_position.x + 10, 500, initial_camera_position.z + 10)
 		$Test/TestBall.visible = true
 		$Player/Player.visible = true
@@ -342,7 +345,7 @@ func _process(_delta):
 		ball_pos = $Test/TestBall.global_transform.origin
 		tw_viewer.set_info_panel_external_value(str(ball_pos), _ball_pos_info_line_index)
 		_player_pos = $Player/Player.global_transform.origin
-		#_player_velocity = $Player/Player.get_player_velocity()
+		_player_velocity = $Player/Player.get_player_velocity()
 		tw_viewer.set_info_panel_external_value(str(_player_pos), _player_pos_info_line_index)
 		tw_viewer.set_info_panel_external_value(str(_player_velocity), _player_velocity_info_line_index)
 	
