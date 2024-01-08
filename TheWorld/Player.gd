@@ -2,20 +2,28 @@ extends CharacterBody3D
 var _camera_tracking_player : bool = false
 
 @export var gravity = -9.8
-@export var speed = 4
-@export var rot_speed = 0.85
-@export var jump_speed = 4.5
-@export var player_velocity : Vector3 = Vector3.ZERO:
-	get = get_player_velocity
-func get_player_velocity() -> Vector3:
-	return velocity
+@export var acceleration_speed = 10
+@export var deceleration_speed = 5
+@export var rot_speed = 1.5		#0.85
+@export var jump_speed = 10
+@export var max_velocity = 100
+@export var height_from_floor = 3
+@export var height_from_floor_tolerance = 0.5
+@export var player_dist_from_terrain : float = 0:
+	get = get_player_dist_from_terrain
+func get_player_dist_from_terrain() -> float:
+	return _player_dist_from_terrain
 
-var _velocity = Vector3.ZERO
+var _is_at_correct_heigth_from_floor := false
+var _target_velocity := Vector3.ZERO
+var _player_dist_from_terrain : float = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	#floor_snap_length = 2
-	velocity = Vector3.ZERO
+	floor_snap_length = height_from_floor + height_from_floor_tolerance
+	_target_velocity = Vector3.ZERO
+	var local_target : Vector3 = to_local(global_position + Vector3(0, -(height_from_floor + height_from_floor_tolerance) * 2, 0))
+	$RayCast3D.set_target_position(local_target)
 	
 func _input(event):
 	if event is InputEventKey:
@@ -42,20 +50,44 @@ func get_input(delta):
 		return
 		
 	# Handle jump.
-	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
-		_velocity.y += jump_speed * delta
+	if Input.is_action_just_pressed("ui_accept") and _is_at_correct_heigth_from_floor:
+		_target_velocity.y += jump_speed
 		
-	var vy = _velocity.y
-	#_velocity = Vector3.ZERO
+	var accelerating := false
 	if Input.is_action_pressed("ui_forward"):
-		_velocity += -transform.basis.z * speed
+		_target_velocity += -transform.basis.z * acceleration_speed * delta
+		accelerating = true
+		#print("ui_forward pressed ... velocity = " + str(_target_velocity) + " length = " + str(_target_velocity.length()))
 	if Input.is_action_pressed("ui_backward"):
-		_velocity += transform.basis.z * speed
+		_target_velocity += transform.basis.z * acceleration_speed * delta
+		accelerating = true
+		#print("ui_backward pressed ... velocity = " + str(_target_velocity) + " length = " + str(_target_velocity.length()))
 	if Input.is_action_pressed("ui_right"):
 		rotate_y(-rot_speed * delta)
+		#print("ui_right pressed ... velocity = " + str(_target_velocity) + " length = " + str(_target_velocity.length()))
 	if Input.is_action_pressed("ui_left"):
 		rotate_y(rot_speed * delta)
-	_velocity.y = vy
+		#print("ui_left pressed ... velocity = " + str(_target_velocity) + " length = " + str(_target_velocity.length()))
+		
+	var vy = _target_velocity.y
+	_target_velocity.y = 0
+	
+	var velocity_length = _target_velocity.length()
+	if not accelerating:
+		velocity_length -= deceleration_speed
+	
+	velocity_length = clamp(velocity_length, 0, max_velocity)
+	
+	# velocity on forward/backward direction 
+	var dot = transform.basis.z.dot(_target_velocity)
+	if dot < 0:		# going forward
+		#_target_velocity = -transform.basis.z * velocity_length
+		_target_velocity = _target_velocity.lerp(-transform.basis.z * velocity_length, 0.05)
+	elif dot > 0:	# going backward
+		#_target_velocity = transform.basis.z * velocity_length
+		_target_velocity = _target_velocity.lerp(transform.basis.z * velocity_length, 0.05)
+		
+	_target_velocity.y = vy
 
 func align_with_y(xform, new_y):
 	xform.basis.y = new_y
@@ -64,18 +96,41 @@ func align_with_y(xform, new_y):
 	return xform
 
 func move_player (delta):
-	_velocity = velocity
+	_is_at_correct_heigth_from_floor = false
+	var collidingNormal : Vector3 = Vector3.ZERO
 	
-	# Add the gravity.
-	if not is_on_floor():
-		_velocity.y += gravity * delta
+	var local_target : Vector3 = to_local(global_position + Vector3(0, -(height_from_floor + height_from_floor_tolerance) * 2, 0))
+	$RayCast3D.set_target_position(local_target)
+
+	if $RayCast3D.is_colliding():
+		collidingNormal = $RayCast3D.get_collision_normal()
+		var collision_point : Vector3 = $RayCast3D.get_collision_point()
+		_player_dist_from_terrain = (global_position - collision_point).length()
+		# implement check if the collider is really the terrain
+		if _player_dist_from_terrain < 0:
+			global_position = Vector3(global_position.x, collision_point.y + height_from_floor + height_from_floor_tolerance, global_position.z)
+			_target_velocity.y = 0
+		elif _player_dist_from_terrain < (height_from_floor - height_from_floor_tolerance):
+			var xform = Transform3D(global_transform.basis, Vector3(global_position.x, collision_point.y + height_from_floor, global_position.z))
+			global_transform = global_transform.interpolate_with(xform, 0.2)
+			_target_velocity.y = 0
+		elif _player_dist_from_terrain < (height_from_floor + height_from_floor_tolerance):
+			var xform = Transform3D(global_transform.basis, Vector3(global_position.x, collision_point.y + height_from_floor, global_position.z))
+			global_transform = global_transform.interpolate_with(xform, 0.1)
+			_is_at_correct_heigth_from_floor = true
+			if (_target_velocity.y < 0):
+				_target_velocity.y = 0
+		else:
+			_target_velocity.y += gravity * delta
+	else:
+		_target_velocity.y += gravity * delta
 	
 	get_input(delta)
-	velocity = _velocity
-	var b : bool = move_and_slide()
+	velocity = _target_velocity
+	var _b : bool = move_and_slide()
+	_target_velocity = velocity
+
 	# align with surface
-	if is_on_floor():
-		var n : Vector3 = $RayCast3D.get_collision_normal()
-		if n.length() > 0:
-			var xform = align_with_y(global_transform, n)
-			global_transform = global_transform.interpolate_with(xform, 0.2)
+	if collidingNormal.length() > 0:
+		var xform = align_with_y(global_transform, collidingNormal)
+		global_transform = global_transform.interpolate_with(xform, 0.05)

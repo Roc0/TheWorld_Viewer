@@ -311,9 +311,11 @@ metadata/debug_wiresquare_mesh_lod_1 = SubResource("ArrayMesh_cx5y7")
 metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/TWViewer"]
-camera_tracking_offset = Vector3(-7, 5, 10)
+camera_tracking_offset = Vector3(0, 5, 10)
 transform = Transform3D(0.999991, 7.10488e-06, -0.00415387, 0, 0.999999, 0.00171042, 0.00415387, -0.00171041, 0.99999, 0, 1500, 0)
 far = 30000.0
+
+[node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main/TWViewer"]
 
 [node name="World" parent="TheWorld_Main" instance=ExtResource("4_gxev0")]
 

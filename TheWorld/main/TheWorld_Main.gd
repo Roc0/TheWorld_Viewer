@@ -233,7 +233,7 @@ func _input(event):
 			var result = space_state.intersect_ray(query)
 			if result:
 				var impact_pos : Vector3 = result.position
-				$Player/Player.global_transform.origin = impact_pos
+				$Player/Player.global_transform.origin = impact_pos + Vector3(0, 5, 0)
 		#elif event.is_action_pressed("ui_dump"):
 		#	TWViewer().GDN_viewer().dump_required()
 
@@ -345,9 +345,9 @@ func _process(_delta):
 		ball_pos = $Test/TestBall.global_transform.origin
 		tw_viewer.set_info_panel_external_value(str(ball_pos), _ball_pos_info_line_index)
 		_player_pos = $Player/Player.global_transform.origin
-		_player_velocity = $Player/Player.get_player_velocity()
+		_player_velocity = $Player/Player.velocity
 		tw_viewer.set_info_panel_external_value(str(_player_pos), _player_pos_info_line_index)
-		tw_viewer.set_info_panel_external_value(str(_player_velocity), _player_velocity_info_line_index)
+		tw_viewer.set_info_panel_external_value(str(_player_velocity.length()), _player_velocity_info_line_index)
 	
 	if debug_window_active:
 		fps = Engine.get_frames_per_second()

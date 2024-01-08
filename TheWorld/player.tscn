@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://v6sfi8k7dr7o"]
+[gd_scene load_steps=7 format=3 uid="uid://v6sfi8k7dr7o"]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_qy5qg"]
 
@@ -11,9 +11,17 @@ material = SubResource("StandardMaterial3D_1j663")
 radius = 1.0
 height = 4.0
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_80fbx"]
+albedo_color = Color(1, 0.0941176, 1, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_sefpy"]
+material = SubResource("StandardMaterial3D_80fbx")
+radius = 0.2
+height = 0.4
+
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_3xj2k"]
-radius = 3.0
-height = 6.0
+radius = 1.0
+height = 4.0
 
 [node name="PlayerGroup" type="Node3D"]
 
@@ -21,12 +29,31 @@ height = 6.0
 script = ExtResource("1_qy5qg")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
-transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.37114e-08, 0, 0, 0)
+transform = Transform3D(1.91069e-15, 4.37114e-08, -1, 1, -4.37114e-08, 0, -4.37114e-08, -1, -4.37114e-08, 0, 0, 0)
 mesh = SubResource("CapsuleMesh_8ytoo")
 
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player/MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, -0.8, 0)
+mesh = SubResource("SphereMesh_sefpy")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="Player/MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -0.8, 0)
+visible = false
+mesh = SubResource("SphereMesh_sefpy")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="Player/MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.8, -1)
+mesh = SubResource("SphereMesh_sefpy")
+
+[node name="MeshInstance3D4" type="MeshInstance3D" parent="Player/MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.8, 1)
+mesh = SubResource("SphereMesh_sefpy")
+skeleton = NodePath("../MeshInstance3D3")
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player"]
-transform = Transform3D(1.91069e-15, 4.37114e-08, 1, 1, -4.37114e-08, 0, 4.37114e-08, 1, -4.37114e-08, 0, 0, 0)
+transform = Transform3D(1.91069e-15, 4.37114e-08, -1, 1, -4.37114e-08, 0, -4.37114e-08, -1, -4.37114e-08, 0, 0, 0)
 shape = SubResource("CapsuleShape3D_3xj2k")
 
 [node name="RayCast3D" type="RayCast3D" parent="Player"]
 target_position = Vector3(0, -5, 0)
+collision_mask = 3
