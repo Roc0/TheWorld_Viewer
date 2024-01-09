@@ -102,7 +102,8 @@ func _ready():
 	init()
 
 	$Test/TestBall.visible = false
-	$Player/Player.visible = false
+	#$Player/Player.visible = false
+	$Player/Player.set_player_in_world(false)
 	var e := get_tree().get_root().connect("size_changed", Callable(self, "resizing"))
 	log_debug(str("connect size_changed result=", e))
 	#get_tree().get_root().set_transparent_background(true)
@@ -234,12 +235,14 @@ func _input(event):
 			if result:
 				var impact_pos : Vector3 = result.position
 				$Player/Player.global_transform.origin = impact_pos + Vector3(0, 5, 0)
+				$Player/Player.set_player_in_world(true)
 		#elif event.is_action_pressed("ui_dump"):
 		#	TWViewer().GDN_viewer().dump_required()
 
 func _notification(_what):
 	if (_what == NOTIFICATION_WM_CLOSE_REQUEST):
-		$Player/Player.visible = false
+		#$Player/Player.visible = false
+		$Player/Player.set_player_in_world(false)
 		log_debug("_notification: NOTIFICATION_WM_CLOSE_REQUEST ")
 		var v = TWViewer()
 		if v != null:
@@ -332,12 +335,13 @@ func _process(_delta):
 			$Test/TestBall.global_transform.origin = Vector3(initial_camera_position.x + 10, result.position.y + 50, initial_camera_position.z + 10)
 			$Player/Player.global_transform.origin = Vector3(initial_camera_position.x, result.position.y + 50, initial_camera_position.z)
 		if initial_player_pos != null && initial_player_basis != null:
-			$Player/Player.global_transform.origin = initial_player_pos
+			$Player/Player.global_transform.origin = initial_player_pos #+  Vector3(10, 5000, 10)
 			$Player/Player.global_transform.basis = initial_player_basis
-			$Test/TestBall.global_transform.origin = initial_player_pos +  Vector3(10, 50, 10)
+			$Test/TestBall.global_transform.origin = initial_player_pos + Vector3(10, 50, 10)
 		#$Test/TestBall.global_transform.origin = Vector3(initial_camera_position.x + 10, 500, initial_camera_position.z + 10)
 		$Test/TestBall.visible = true
-		$Player/Player.visible = true
+		#$Player/Player.visible = true
+		$Player/Player.set_player_in_world(true)
 		post_world_deploy_initialized = true
 	
 	#if scene_initialized && post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:

@@ -3,7 +3,7 @@ var _camera_tracking_player : bool = false
 
 @export var gravity = -9.8
 @export var acceleration_speed = 20
-@export var deceleration_speed = 10
+@export var inertia_factor = 10
 @export var rot_speed = 1.5		#0.85
 @export var jump_speed = 10
 @export var max_velocity = 200
@@ -19,11 +19,14 @@ var _target_velocity := Vector3.ZERO
 var _player_dist_from_terrain : float = -1
 var _def_vert_raycast_target_dist = (height_from_floor + height_from_floor_tolerance) * 2
 var _cur_vert_raycast_target_dist = _def_vert_raycast_target_dist
+var _player_in_world : bool = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	floor_snap_length = height_from_floor + height_from_floor_tolerance
 	_target_velocity = Vector3.ZERO
 	$RayCast3DVert.set_target_position(to_local(global_position + Vector3(0, -_cur_vert_raycast_target_dist, 0)))		# Vertical ray
+	visible = _player_in_world
 		
 func _input(event):
 	if event is InputEventKey:
@@ -38,6 +41,7 @@ func _input(event):
 					_camera_tracking_player = true
 
 func _physics_process(_delta):
+	#if _player_in_world:
 	if _camera_tracking_player:
 		move_player(_delta)
 	
@@ -45,6 +49,10 @@ func _physics_process(_delta):
 func _process(_delta):
 	pass
 
+func set_player_in_world(value : bool):
+	_player_in_world = value
+	visible = _player_in_world
+	
 func get_input(delta):
 	if !_camera_tracking_player:
 		return
@@ -53,13 +61,21 @@ func get_input(delta):
 	if Input.is_action_just_pressed("ui_accept") and _is_at_correct_heigth_from_floor:
 		_target_velocity.y += jump_speed
 		
+	var dot = transform.basis.z.dot(_target_velocity)	# velocity on forward/backward direction 
+
 	var accelerating := false
 	if Input.is_action_pressed("ui_forward"):
-		_target_velocity += -transform.basis.z * acceleration_speed * delta
+		var change_dir_increment := 1.0
+		if dot > 0:		# going backward
+			change_dir_increment = 3.0
+		_target_velocity += -transform.basis.z * acceleration_speed * change_dir_increment * delta
 		accelerating = true
 		#print("ui_forward pressed ... velocity = " + str(_target_velocity) + " length = " + str(_target_velocity.length()))
 	if Input.is_action_pressed("ui_backward"):
-		_target_velocity += transform.basis.z * acceleration_speed * delta
+		var change_dir_increment := 1.0
+		if dot < 0:		# going forward
+			change_dir_increment = 3.0
+		_target_velocity += transform.basis.z * acceleration_speed * change_dir_increment * delta
 		accelerating = true
 		#print("ui_backward pressed ... velocity = " + str(_target_velocity) + " length = " + str(_target_velocity.length()))
 	if Input.is_action_pressed("ui_right"):
@@ -74,12 +90,11 @@ func get_input(delta):
 	
 	var velocity_length = _target_velocity.length()
 	if not accelerating:
-		velocity_length -= deceleration_speed
+		velocity_length -= inertia_factor * 100 * delta
 	
 	velocity_length = clamp(velocity_length, 0, max_velocity)
 	
-	# velocity on forward/backward direction 
-	var dot = transform.basis.z.dot(_target_velocity)
+	dot = transform.basis.z.dot(_target_velocity)	# velocity on forward/backward direction 
 	if dot < 0:		# going forward
 		#_target_velocity = -transform.basis.z * velocity_length
 		_target_velocity = _target_velocity.lerp(-transform.basis.z * velocity_length, 0.05)
