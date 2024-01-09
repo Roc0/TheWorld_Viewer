@@ -54,6 +54,6 @@ skeleton = NodePath("../MeshInstance3D3")
 transform = Transform3D(1.91069e-15, 4.37114e-08, -1, 1, -4.37114e-08, 0, -4.37114e-08, -1, -4.37114e-08, 0, 0, 0)
 shape = SubResource("CapsuleShape3D_3xj2k")
 
-[node name="RayCast3D" type="RayCast3D" parent="Player"]
+[node name="RayCast3DVert" type="RayCast3D" parent="Player"]
 target_position = Vector3(0, -5, 0)
 collision_mask = 3

@@ -91,8 +91,8 @@ var ball_pos := Vector3.ZERO
 var _ball_pos_info_line_index : int = 0
 var _player_pos := Vector3.ZERO
 var _player_velocity := Vector3.ZERO
-var _player_pos_info_line_index : int = 0
-var _player_velocity_info_line_index : int = 0
+var _player_info_1_line_index : int = 0
+var _player_info_2_line_index : int = 0
 
 var prev_hit : Vector3 = Vector3(0, 0, 0)
 		
@@ -139,9 +139,9 @@ func init():
 	log_debug(str("signal tw_status_changed connected (result=", result, ")"))
 	_clientstatus = get_clientstatus()
 	_client_status = tw_const.status_to_string(_clientstatus)
-	_ball_pos_info_line_index = TWViewer().add_info_panel_external_line("Ball pos:", 0)
-	_player_pos_info_line_index = TWViewer().add_info_panel_external_line("Player pos:", 0)
-	_player_velocity_info_line_index = TWViewer().add_info_panel_external_line("Player velocity:", 0)
+	_ball_pos_info_line_index = TWViewer().add_info_panel_external_line("", 0)
+	_player_info_1_line_index = TWViewer().add_info_panel_external_line("", 0)
+	_player_info_2_line_index = TWViewer().add_info_panel_external_line("", 0)
 
 func deinit():
 	log_debug("deinit")
@@ -343,11 +343,14 @@ func _process(_delta):
 	#if scene_initialized && post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 	if post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 		ball_pos = $Test/TestBall.global_transform.origin
-		tw_viewer.set_info_panel_external_value(str(ball_pos), _ball_pos_info_line_index)
+		tw_viewer.set_info_panel_external_value("Ball pos: (" + str(snapped(ball_pos.x, 0.01)) + ", " + str(snapped(ball_pos.y, 0.01)) + ", " + str(snapped(ball_pos.z, 0.01)) + ")", _ball_pos_info_line_index)
 		_player_pos = $Player/Player.global_transform.origin
 		_player_velocity = $Player/Player.velocity
-		tw_viewer.set_info_panel_external_value(str(_player_pos), _player_pos_info_line_index)
-		tw_viewer.set_info_panel_external_value(str(_player_velocity.length()), _player_velocity_info_line_index)
+		var player_dist_from_terrain := "-"
+		if ($Player/Player.player_dist_from_terrain >= 0):
+			player_dist_from_terrain = str(snapped($Player/Player.player_dist_from_terrain, 0.01))
+		tw_viewer.set_info_panel_external_value("Player pos: (" + str(snapped(_player_pos.x, 0.01)) + ", " + str(snapped(_player_pos.y, 0.01)) + ", " + str(snapped(_player_pos.z, 0.01)) + ")", _player_info_1_line_index)
+		tw_viewer.set_info_panel_external_value("Speed: " + str(snapped(_player_velocity.length(), 0.01)) + "  H: " + player_dist_from_terrain, _player_info_2_line_index) 
 	
 	if debug_window_active:
 		fps = Engine.get_frames_per_second()

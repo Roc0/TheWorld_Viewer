@@ -640,10 +640,10 @@ func _process(delta):
 			_info_panel_draw_mode = "Draw mode: " +  gdn_viewer.get_debug_draw_mode() + "\n"
 			_info_panel_num_locks = "Locks: " + str(gdn_viewer.get_num_process_not_owns_lock()) + "\n"
 			if camera != null && camera.has_method("get_yaw"):
-				_info_panel_camera_degree_from_north = "  Deg. north: " + str(camera.get_angle_from_north_degree()) + "\n"
-				_info_panel_camera_yaw = "  Yaw :" + str(camera.get_yaw(false)) + "\n"
-				_info_panel_camera_pitch = "  Pitch :" + str(camera.get_pitch(false)) + "\n"
-				_info_panel_camera_roll = "  Roll :" + str(camera.get_roll(false)) + "\n"
+				_info_panel_camera_degree_from_north = "  Deg. north: " + str(snapped(camera.get_angle_from_north_degree(), 0.01)) + "\n"
+				_info_panel_camera_yaw = "  Yaw: " + str(snapped(camera.get_yaw(false), 0.01)) 
+				_info_panel_camera_pitch = "  Pitch: " + str(snapped(camera.get_pitch(false), 0.01))
+				_info_panel_camera_roll = "  Roll: " + str(snapped(camera.get_roll(false), 0.01)) + "\n"
 		_info_panel_grid_origin = "Grid origin: " + str(gdn_viewer.global_transform.origin) + "\n"
 		_info_panel_render_process_durations_mcs = "Render process (mcs): " + str(gdn_viewer.get_process_duration()) + "\n"
 		#+ " UQ " + String (update_quads1_duration + update_quads2_duration + update_quads3_duration) \
@@ -1270,10 +1270,11 @@ func add_info_panel_external_line(text : String, indent : int) -> int:
 	var label_index = _info_panel_external_labels.size()
 	var hboxcontainer := HBoxContainer.new()
 	_info_panel_main_vboxcontainer.add_child(hboxcontainer)
-	var label := Label.new()
-	hboxcontainer.add_child(label)
-	label.text = _text
-	label = Label.new()
+	if _text.length() > 0:
+		var label := Label.new()
+		hboxcontainer.add_child(label)
+		label.text = _text
+	var label = Label.new()
 	hboxcontainer.add_child(label)
 	_info_panel_external_labels.append(label)
 

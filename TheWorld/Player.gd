@@ -2,11 +2,11 @@ extends CharacterBody3D
 var _camera_tracking_player : bool = false
 
 @export var gravity = -9.8
-@export var acceleration_speed = 10
-@export var deceleration_speed = 5
+@export var acceleration_speed = 20
+@export var deceleration_speed = 10
 @export var rot_speed = 1.5		#0.85
 @export var jump_speed = 10
-@export var max_velocity = 100
+@export var max_velocity = 200
 @export var height_from_floor = 3
 @export var height_from_floor_tolerance = 0.5
 @export var player_dist_from_terrain : float = 0:
@@ -16,15 +16,15 @@ func get_player_dist_from_terrain() -> float:
 
 var _is_at_correct_heigth_from_floor := false
 var _target_velocity := Vector3.ZERO
-var _player_dist_from_terrain : float = 0
-
+var _player_dist_from_terrain : float = -1
+var _def_vert_raycast_target_dist = (height_from_floor + height_from_floor_tolerance) * 2
+var _cur_vert_raycast_target_dist = _def_vert_raycast_target_dist
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	floor_snap_length = height_from_floor + height_from_floor_tolerance
 	_target_velocity = Vector3.ZERO
-	var local_target : Vector3 = to_local(global_position + Vector3(0, -(height_from_floor + height_from_floor_tolerance) * 2, 0))
-	$RayCast3D.set_target_position(local_target)
-	
+	$RayCast3DVert.set_target_position(to_local(global_position + Vector3(0, -_cur_vert_raycast_target_dist, 0)))		# Vertical ray
+		
 func _input(event):
 	if event is InputEventKey:
 		if event.is_action_pressed("ui_toggle_track_player") && visible:
@@ -97,25 +97,35 @@ func align_with_y(xform, new_y):
 
 func move_player (delta):
 	_is_at_correct_heigth_from_floor = false
-	var collidingNormal : Vector3 = Vector3.ZERO
+	var collision_normal : Vector3 = Vector3.ZERO
+	var collision_point : Vector3 = Vector3.ZERO
 	
-	var local_target : Vector3 = to_local(global_position + Vector3(0, -(height_from_floor + height_from_floor_tolerance) * 2, 0))
-	$RayCast3D.set_target_position(local_target)
+	$RayCast3DVert.set_target_position(to_local(global_position + Vector3(0, -_cur_vert_raycast_target_dist, 0)))		# Vertical ray
 
-	if $RayCast3D.is_colliding():
-		collidingNormal = $RayCast3D.get_collision_normal()
-		var collision_point : Vector3 = $RayCast3D.get_collision_point()
+	var have_collision_vert : bool = false
+	if $RayCast3DVert.is_colliding():
+		collision_normal = $RayCast3DVert.get_collision_normal()
+		collision_point = $RayCast3DVert.get_collision_point()
 		_player_dist_from_terrain = (global_position - collision_point).length()
-		# implement check if the collider is really the terrain
+		if _cur_vert_raycast_target_dist / 2 > _def_vert_raycast_target_dist:
+			_cur_vert_raycast_target_dist /= 2
+		else:
+			_cur_vert_raycast_target_dist = _def_vert_raycast_target_dist
+		have_collision_vert = true
+	
+	if have_collision_vert:
+		# TODO: implement check if the collider is really the terrain
 		if _player_dist_from_terrain < 0:
 			global_position = Vector3(global_position.x, collision_point.y + height_from_floor + height_from_floor_tolerance, global_position.z)
 			_target_velocity.y = 0
 		elif _player_dist_from_terrain < (height_from_floor - height_from_floor_tolerance):
-			var xform = Transform3D(global_transform.basis, Vector3(global_position.x, collision_point.y + height_from_floor, global_position.z))
+			var xform : Transform3D
+			xform = Transform3D(global_transform.basis, Vector3(global_position.x, collision_point.y + height_from_floor, global_position.z))
 			global_transform = global_transform.interpolate_with(xform, 0.2)
 			_target_velocity.y = 0
 		elif _player_dist_from_terrain < (height_from_floor + height_from_floor_tolerance):
-			var xform = Transform3D(global_transform.basis, Vector3(global_position.x, collision_point.y + height_from_floor, global_position.z))
+			var xform : Transform3D
+			xform = Transform3D(global_transform.basis, Vector3(global_position.x, collision_point.y + height_from_floor, global_position.z))
 			global_transform = global_transform.interpolate_with(xform, 0.1)
 			_is_at_correct_heigth_from_floor = true
 			if (_target_velocity.y < 0):
@@ -124,13 +134,15 @@ func move_player (delta):
 			_target_velocity.y += gravity * delta
 	else:
 		_target_velocity.y += gravity * delta
-	
+		_player_dist_from_terrain = -1
+		_cur_vert_raycast_target_dist *= 2
+		
 	get_input(delta)
 	velocity = _target_velocity
 	var _b : bool = move_and_slide()
 	_target_velocity = velocity
 
 	# align with surface
-	if collidingNormal.length() > 0:
-		var xform = align_with_y(global_transform, collidingNormal)
+	if collision_normal.length() > 0:
+		var xform = align_with_y(global_transform, collision_normal)
 		global_transform = global_transform.interpolate_with(xform, 0.05)
