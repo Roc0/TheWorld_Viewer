@@ -21,11 +21,11 @@ uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
 uniform bool u_force_height_0 = false;
 uniform uint u_optimization_level = 0;
 
+uniform int u_scale_change_num_steps = 1;
 uniform float u_piece_size = 200.0;
 uniform int u_piecing_threshold = 3;
-//varying vec3 v_camera_pos;
+
 varying float v_distance_from_camera;
-//varying float v_distance_from_camera_y;
 
 int greater(int v1, int v2)
 {
@@ -62,9 +62,7 @@ void vertex() {
 
 	NORMAL = get_normal(u_terrain_normalmap, u_terrain_normal_basis, UV);	// Need to use u_terrain_normal_basis to handle scaling.
 	
-	//v_camera_pos = INV_VIEW_MATRIX[3].xyz;
 	v_distance_from_camera = distance(vertex_world_pos.xyz, INV_VIEW_MATRIX[3].xyz);
-	//v_distance_from_camera_y = distance(vertex_world_pos.y, INV_VIEW_MATRIX[3].y);
 }
 
 void fragment() {

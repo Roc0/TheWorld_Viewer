@@ -7,7 +7,7 @@ var _camera_tracking_player : bool = false
 @export var rot_speed = 1.5		#0.85
 @export var jump_speed = 10
 @export var max_velocity = 200		# m/s
-@export var height_from_floor = 3
+@export var height_from_floor = 3.0
 @export var height_from_floor_tolerance = 0.5
 @export var player_dist_from_terrain : float = 0:
 	get = get_player_dist_from_terrain
@@ -15,6 +15,8 @@ func get_player_dist_from_terrain() -> float:
 	return _player_dist_from_terrain
 
 var _is_at_correct_heigth_from_floor := false
+var _moving_forward : bool
+
 var _target_velocity := Vector3.ZERO
 var _player_dist_from_terrain : float = -1
 var _def_vert_raycast_target_dist = (height_from_floor + height_from_floor_tolerance) * 2
@@ -24,6 +26,8 @@ var _player_in_world : bool = false
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	floor_snap_length = height_from_floor + height_from_floor_tolerance
+	#motion_mode = CharacterBody3D.MOTION_MODE_FLOATING
+	motion_mode = CharacterBody3D.MOTION_MODE_GROUNDED
 	_target_velocity = Vector3.ZERO
 	$RayCast3DVert.set_target_position(to_local(global_position + Vector3(0, -_cur_vert_raycast_target_dist, 0)))		# Vertical ray
 	visible = _player_in_world
@@ -52,7 +56,8 @@ func _process(_delta):
 func set_player_in_world(value : bool):
 	_player_in_world = value
 	visible = _player_in_world
-	
+	_is_at_correct_heigth_from_floor = false
+
 func get_input(delta):
 	if !_camera_tracking_player:
 		return
@@ -98,23 +103,26 @@ func get_input(delta):
 	if dot < 0:		# going forward
 		#_target_velocity = -transform.basis.z * velocity_length
 		_target_velocity = _target_velocity.lerp(-transform.basis.z * velocity_length, 0.05)
+		_moving_forward = true
 	elif dot > 0:	# going backward
 		#_target_velocity = transform.basis.z * velocity_length
 		_target_velocity = _target_velocity.lerp(transform.basis.z * velocity_length, 0.05)
+		_moving_forward = false
 		
 	_target_velocity.y = vy
 
-func align_with_y(xform, new_y):
+func align_with_y(xform : Transform3D, new_y : Vector3, rotated_angle : float):
+	if rotated_angle != 0:
+		new_y = new_y.rotated(xform.basis.x, rotated_angle)
 	xform.basis.y = new_y
 	xform.basis.x = -xform.basis.z.cross(new_y)
 	xform.basis = xform.basis.orthonormalized()
 	return xform
 
 func move_player (delta):
-	_is_at_correct_heigth_from_floor = false
 	var collision_normal : Vector3 = Vector3.ZERO
 	var collision_point : Vector3 = Vector3.ZERO
-	
+	var point_to_terrain = false
 	$RayCast3DVert.set_target_position(to_local(global_position + Vector3(0, -_cur_vert_raycast_target_dist, 0)))		# Vertical ray
 
 	var have_collision_vert : bool = false
@@ -133,11 +141,13 @@ func move_player (delta):
 		if _player_dist_from_terrain < 0:
 			global_position = Vector3(global_position.x, collision_point.y + height_from_floor + height_from_floor_tolerance, global_position.z)
 			_target_velocity.y = 0
+			_is_at_correct_heigth_from_floor = false
 		elif _player_dist_from_terrain < (height_from_floor - height_from_floor_tolerance):
 			var xform : Transform3D
 			xform = Transform3D(global_transform.basis, Vector3(global_position.x, collision_point.y + height_from_floor, global_position.z))
 			global_transform = global_transform.interpolate_with(xform, 0.2)
 			_target_velocity.y = 0
+			_is_at_correct_heigth_from_floor = false
 		elif _player_dist_from_terrain < (height_from_floor + height_from_floor_tolerance):
 			var xform : Transform3D
 			xform = Transform3D(global_transform.basis, Vector3(global_position.x, collision_point.y + height_from_floor, global_position.z))
@@ -146,11 +156,18 @@ func move_player (delta):
 			if (_target_velocity.y < 0):
 				_target_velocity.y = 0
 		else:
+			if _is_at_correct_heigth_from_floor:
+				point_to_terrain = true
 			_target_velocity.y += gravity * delta
+			_is_at_correct_heigth_from_floor = false
 	else:
+		if _is_at_correct_heigth_from_floor:
+			point_to_terrain = true
+			print("rotate")
 		_target_velocity.y += gravity * delta
 		_player_dist_from_terrain = -1
 		_cur_vert_raycast_target_dist *= 2
+		_is_at_correct_heigth_from_floor = false
 		
 	get_input(delta)
 	velocity = _target_velocity
@@ -159,5 +176,19 @@ func move_player (delta):
 
 	# align with surface
 	if collision_normal.length() > 0:
-		var xform = align_with_y(global_transform, collision_normal)
-		global_transform = global_transform.interpolate_with(xform, 0.05)
+		var rotated_angle : float = 0
+		var weight : float = 0.05
+		var xform : Transform3D
+		point_to_terrain = false
+		if point_to_terrain:
+			weight = 1
+			if _moving_forward:
+				rotated_angle = -PI / 12
+				print("rotate forward")
+			else:
+				rotated_angle = PI / 12
+				print("rotate backward")
+			xform = align_with_y(global_transform, collision_normal, rotated_angle)
+		else:
+			xform = align_with_y(global_transform, collision_normal, rotated_angle)
+		global_transform = global_transform.interpolate_with(xform, weight)

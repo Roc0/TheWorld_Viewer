@@ -65,7 +65,6 @@ varying vec2 v_ground_uv1;
 varying vec2 v_ground_uv2;
 varying vec3 v_ground_uv3;
 varying float v_distance_from_camera;
-//varying float v_distance_from_camera_y;
 
 varying vec4 v_vertex_world_pos;
 varying vec2 v_vertex_cell_coords_in_textures;
@@ -193,7 +192,6 @@ void vertex() {
 	v_vertex_cell_coords_in_textures = vertex_cell_coords_in_textures;
 	
 	v_distance_from_camera = distance(vertex_world_pos.xyz, INV_VIEW_MATRIX[3].xyz);
-	//v_distance_from_camera_y = distance(vertex_world_pos.y, INV_VIEW_MATRIX[3].y);
 
 	// Putting this in vertex saves 2 fetches from the fragment shader,
 	// which is good for performance at a negligible quality cost,
@@ -221,14 +219,17 @@ void fragment() {
 
 	vec4 ground_uv_scale_per_texture = u_ground_uv_scale_per_texture;
 
-	if (/*v_distance_from_camera_y < 50.0 && */v_distance_from_camera < (u_piece_size * float(u_piecing_threshold)))
+	if (v_distance_from_camera < (u_piece_size * float(u_piecing_threshold)))
 	{
 		vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 		int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / u_piece_size));
-		int camera_piece_y = int(floor(CAMERA_POSITION_WORLD.z / u_piece_size));
+		int camera_piece_y = int(floor(CAMERA_POSITION_WORLD.y / u_piece_size));
+		int camera_piece_z = int(floor(CAMERA_POSITION_WORLD.z / u_piece_size));
 		int frag_piece_x = int(floor(fragment_world_pos.x / u_piece_size));
-		int frag_piece_y = int(floor(fragment_world_pos.z / u_piece_size));
-		int pieces_from_camera_piece = greater(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_y - frag_piece_y)));
+		int frag_piece_y = int(floor(fragment_world_pos.y / u_piece_size));
+		int frag_piece_z = int(floor(fragment_world_pos.z / u_piece_size));
+		int pieces_from_camera_piece = greater(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_z - frag_piece_z)));
+		pieces_from_camera_piece = greater(pieces_from_camera_piece, int(abs(camera_piece_y - frag_piece_y)));
 		if (pieces_from_camera_piece == 0)
 		{
 			ground_uv_scale_per_texture /= (u_scale_per_texture_factor /* / pow(2.0, 0.0)*/);
