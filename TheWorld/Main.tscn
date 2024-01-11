@@ -280,7 +280,8 @@ script = ExtResource("1_760ml")
 
 [node name="TWViewer" type="Node3D" parent="TheWorld_Main"]
 script = ExtResource("3_yxvy6")
-_world_param_depth_quad = 1
+_world_param_depth_quad = 0
+_world_param_cache_quad = 0
 _world_param_info_visible = true
 _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 1

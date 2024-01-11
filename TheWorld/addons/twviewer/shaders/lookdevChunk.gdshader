@@ -1,4 +1,5 @@
 shader_type spatial;
+render_mode unshaded, shadows_disabled;
 //render_mode  skip_vertex_transform;		// Fireflies along seams fix: https://github.com/Zylann/godot_heightmap_plugin/issues/312 (https://github.com/godotengine/godot/issues/35067)
 											// https://github.com/godotengine/godot/issues/35067#issuecomment-1058617216
 
@@ -20,6 +21,24 @@ uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
 uniform bool u_force_height_0 = false;
 uniform uint u_optimization_level = 0;
 
+uniform float u_piece_size = 200.0;
+uniform int u_piecing_threshold = 3;
+//varying vec3 v_camera_pos;
+varying float v_distance_from_camera;
+//varying float v_distance_from_camera_y;
+
+int greater(int v1, int v2)
+{
+	if (v1 > v2)
+	{
+		return v1;
+	}
+	else
+	{
+		return v2;
+	}
+}
+
 void vertex() {
 	vec4 vertex_world_pos = MODEL_MATRIX * vec4(VERTEX, 1);		// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need to trasform in world coord to abstract from chunk
 	vec4 vertex_local_to_quadrant_pos = u_terrain_inverse_transform * vertex_world_pos;	// to calculate coords of the vertex local to the quadrant we use affine inverse matrix of the global trasform of the quadtree
@@ -35,11 +54,17 @@ void vertex() {
 	float h = get_height(u_terrain_heightmap, u_terrain_height, UV);	// Height displacement
 	if (u_force_height_0) {
 		VERTEX.y = 0.0;
+		vertex_world_pos.y = 0.0;
 	} else {
 		VERTEX.y = h;
+		vertex_world_pos.y = h;
 	}
 
 	NORMAL = get_normal(u_terrain_normalmap, u_terrain_normal_basis, UV);	// Need to use u_terrain_normal_basis to handle scaling.
+	
+	//v_camera_pos = INV_VIEW_MATRIX[3].xyz;
+	v_distance_from_camera = distance(vertex_world_pos.xyz, INV_VIEW_MATRIX[3].xyz);
+	//v_distance_from_camera_y = distance(vertex_world_pos.y, INV_VIEW_MATRIX[3].y);
 }
 
 void fragment() {
@@ -56,8 +81,35 @@ void fragment() {
 		}
 	}
 	
+	// DEBUG
+	if (/*v_distance_from_camera_y < 50.0 &&*/ v_distance_from_camera < (u_piece_size * float(u_piecing_threshold)))
+	{
+		vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
+		int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / u_piece_size));
+		int camera_piece_y = int(floor(CAMERA_POSITION_WORLD.z / u_piece_size));
+		int frag_piece_x = int(floor(fragment_world_pos.x / u_piece_size));
+		int frag_piece_y = int(floor(fragment_world_pos.z / u_piece_size));
+		int pieces_from_camera_piece = greater(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_y - frag_piece_y)));
+		if (pieces_from_camera_piece == 0)
+		{
+			ALBEDO = vec3(1.0, 0.0, 0.0);
+		}
+		if (pieces_from_camera_piece == 1)
+		{
+			ALBEDO = vec3(0.0, 1.0, 0.0);
+		}
+		if (pieces_from_camera_piece == 2)
+		{
+			ALBEDO = vec3(0.0, 0.0, 1.0);
+		}
+	}
+	//ALBEDO = vec3(fragment_world_pos.x / 100000.0, fragment_world_pos.y / 1000.0, fragment_world_pos.z / 100000.0);
+	//ALBEDO = CAMERA_POSITION_WORLD / 10000;
+	//ALBEDO = v_camera_pos / 1000;
+	//ALBEDO = vec3(v_distance_from_camera / 1000.0, 0.0, 0.0);
 	//ALBEDO = vec3(UV.x, UV.y, 1.0);	// DEBUG: check uv
 	//ALBEDO = vec3(1.0, 0.0, 0.0); 	// DEBUG: use red for material albedo
+	// DEBUG
 	
 	//ROUGHNESS = 0.5;
 	NORMAL = (VIEW_MATRIX * (vec4(normal, 0.0))).xyz;

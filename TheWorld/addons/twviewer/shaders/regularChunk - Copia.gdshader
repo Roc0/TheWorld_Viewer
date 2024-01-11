@@ -49,6 +49,8 @@ uniform vec4 u_tile_reduction_per_texture = vec4(0.0, 0.0, 0.0, 0.0);	// Each co
 uniform float u_globalmap_blend_start = 0;		// 2000 ==> optimization: at 2000 WU from camera will be used global map instead of u_ground_albedo_bump_0/3 and u_ground_normal_roughness_0/3
 uniform float u_globalmap_blend_distance = 0;	// 1	==> 0 = disable use of global map
 uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);	// NOTSET
+uniform float u_scale_change_threshold = 500.0;
+uniform int u_scale_change_num_steps = 4;
 
 varying float v_hole;
 varying vec3 v_tint0;
@@ -61,6 +63,10 @@ varying vec2 v_ground_uv1;
 varying vec2 v_ground_uv2;
 varying vec3 v_ground_uv3;
 varying float v_distance_from_camera;
+
+varying vec4 v_vertex_world_pos;
+varying vec2 v_vertex_cell_coords_in_textures;
+varying vec4 v_ground_uv_scale_per_texture;
 
 // Blends weights according to the bump of detail textures,
 // so for example it allows to have sand fill the gaps between pebbles
@@ -168,22 +174,11 @@ void vertex() {
 		vertex_world_pos.y = h;
 	}
 	
-	v_distance_from_camera = distance(vertex_world_pos.xyz, INV_VIEW_MATRIX[3].xyz);
-
-	vec4 ground_uv_scale_per_texture = u_ground_uv_scale_per_texture;
-	//float treshold = 100.0;
-	//if (v_distance_from_camera < treshold) {
-	//	ground_uv_scale_per_texture /= u_scale_per_texture_factor;
-	//}
+	v_vertex_world_pos = vertex_world_pos;
+	v_vertex_cell_coords_in_textures = vertex_cell_coords_in_textures;
 	
-	vec3 base_ground_uv = vec3(vertex_cell_coords_in_textures.x, h * MODEL_MATRIX[1][1], vertex_cell_coords_in_textures.y);
-	//vec3 base_ground_uv = vec3(UV.x, h * MODEL_MATRIX[1][1], UV.y);
-	v_ground_uv0 = base_ground_uv.xz / ground_uv_scale_per_texture.x;		// 2-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor
-	v_ground_uv1 = base_ground_uv.xz / ground_uv_scale_per_texture.y;		// these coordinates are used to fetch u_ground_albedo_bump_0 and u_ground_normal_roughness_0 
-	v_ground_uv2 = base_ground_uv.xz / ground_uv_scale_per_texture.z;
-	v_ground_uv3 = base_ground_uv / ground_uv_scale_per_texture.w;		// 3-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor (y coord is height in world coord)
-																			// y dimension is needed for triplanar computation available only on fourth channel map
-
+	v_distance_from_camera = distance(vertex_world_pos.xyz, INV_VIEW_MATRIX[3].xyz);
+	
 	// Putting this in vertex saves 2 fetches from the fragment shader,
 	// which is good for performance at a negligible quality cost,
 	// provided that geometry is a regular grid that decimates with LOD.
@@ -207,6 +202,26 @@ void fragment() {
 	//	// TODO Add option to use vertex discarding instead, using NaNs
 	//	discard;
 	//}
+
+	v_ground_uv_scale_per_texture = u_ground_uv_scale_per_texture;
+	if (v_distance_from_camera < u_scale_change_threshold)
+	{
+		float threshold_step = u_scale_change_threshold / float(u_scale_change_num_steps);
+		for(int i = 0; i < u_scale_change_num_steps; i++)
+		{
+			if (v_distance_from_camera < threshold_step * float(i))
+			{
+				v_ground_uv_scale_per_texture /= (u_scale_per_texture_factor / pow(2.0, float(i)));
+			}
+		} 
+	}
+	
+	vec3 base_ground_uv = vec3(v_vertex_cell_coords_in_textures.x, v_vertex_world_pos.y * MODEL_MATRIX[1][1], v_vertex_cell_coords_in_textures.y);
+	//vec3 base_ground_uv = vec3(UV.x, h * MODEL_MATRIX[1][1], UV.y);
+	v_ground_uv0 = base_ground_uv.xz / v_ground_uv_scale_per_texture.x;		// 2-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor
+	v_ground_uv1 = base_ground_uv.xz / v_ground_uv_scale_per_texture.y;		// these coordinates are used to fetch u_ground_albedo_bump_0 and u_ground_normal_roughness_0 
+	v_ground_uv2 = base_ground_uv.xz / v_ground_uv_scale_per_texture.z;
+	v_ground_uv3 = base_ground_uv / v_ground_uv_scale_per_texture.w;		// 3-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor (y coord is height in world coord)
 
 	if (u_editmode_selected > 0.0 && is_on_the_border(UV, u_quad_border_line_thickness)) {
 		ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot

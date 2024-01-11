@@ -24,8 +24,6 @@ uniform bool u_force_height_0 = false;
 uniform bool u_use_globalmap = false;
 uniform uint u_optimization_level = 0;
 
-uniform float u_scale_per_texture_factor = 10.0;
-
 // the reason bump is preferred with albedo is, roughness looks better with normal maps.
 // If we want no normal mapping, roughness would only give flat mirror surfaces,
 // while bump still allows to do depth-blending for free.
@@ -49,8 +47,12 @@ uniform vec4 u_tile_reduction_per_texture = vec4(0.0, 0.0, 0.0, 0.0);	// Each co
 uniform float u_globalmap_blend_start = 0;		// 2000 ==> optimization: at 2000 WU from camera will be used global map instead of u_ground_albedo_bump_0/3 and u_ground_normal_roughness_0/3
 uniform float u_globalmap_blend_distance = 0;	// 1	==> 0 = disable use of global map
 uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);	// NOTSET
-uniform float u_scale_change_threshold = 500.0;
-uniform int u_scale_change_num_steps = 4;
+
+uniform float u_scale_per_texture_factor = 10.0;
+//uniform float u_scale_change_threshold = 500.0;
+uniform int u_scale_change_num_steps = 1;
+uniform float u_piece_size = 300;
+uniform int u_piecing_threshold = 3;
 
 varying float v_hole;
 varying vec3 v_tint0;
@@ -63,6 +65,7 @@ varying vec2 v_ground_uv1;
 varying vec2 v_ground_uv2;
 varying vec3 v_ground_uv3;
 varying float v_distance_from_camera;
+//varying float v_distance_from_camera_y;
 
 varying vec4 v_vertex_world_pos;
 varying vec2 v_vertex_cell_coords_in_textures;
@@ -152,6 +155,18 @@ vec4 texture_antitile(sampler2D albedo_tex, sampler2D normal_tex, vec2 uv, out v
 	return depth_blend2(col0, col0.a, col1, col1.a, t);
 }
 
+int greater(int v1, int v2)
+{
+	if (v1 > v2)
+	{
+		return v1;
+	}
+	else
+	{
+		return v2;
+	}
+}
+
 void vertex() {
 	vec4 vertex_world_pos = MODEL_MATRIX * vec4(VERTEX, 1);		// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need to trasform in world coord to abstract from chunk
 	vec4 vertex_local_to_quadrant_pos = u_terrain_inverse_transform * vertex_world_pos;	// to calculate coords of the vertex local to the quadrant we use affine inverse matrix of the global trasform of the quadtree
@@ -178,7 +193,8 @@ void vertex() {
 	v_vertex_cell_coords_in_textures = vertex_cell_coords_in_textures;
 	
 	v_distance_from_camera = distance(vertex_world_pos.xyz, INV_VIEW_MATRIX[3].xyz);
-	
+	//v_distance_from_camera_y = distance(vertex_world_pos.y, INV_VIEW_MATRIX[3].y);
+
 	// Putting this in vertex saves 2 fetches from the fragment shader,
 	// which is good for performance at a negligible quality cost,
 	// provided that geometry is a regular grid that decimates with LOD.
@@ -203,25 +219,47 @@ void fragment() {
 	//	discard;
 	//}
 
-	v_ground_uv_scale_per_texture = u_ground_uv_scale_per_texture;
-	if (v_distance_from_camera < u_scale_change_threshold)
+	vec4 ground_uv_scale_per_texture = u_ground_uv_scale_per_texture;
+
+	if (/*v_distance_from_camera_y < 50.0 && */v_distance_from_camera < (u_piece_size * float(u_piecing_threshold)))
 	{
-		float threshold_step = u_scale_change_threshold / float(u_scale_change_num_steps);
-		for(int i = 0; i < u_scale_change_num_steps; i++)
+		vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
+		int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / u_piece_size));
+		int camera_piece_y = int(floor(CAMERA_POSITION_WORLD.z / u_piece_size));
+		int frag_piece_x = int(floor(fragment_world_pos.x / u_piece_size));
+		int frag_piece_y = int(floor(fragment_world_pos.z / u_piece_size));
+		int pieces_from_camera_piece = greater(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_y - frag_piece_y)));
+		if (pieces_from_camera_piece == 0)
 		{
-			if (v_distance_from_camera < threshold_step * float(i))
-			{
-				v_ground_uv_scale_per_texture /= (u_scale_per_texture_factor / pow(2.0, float(i)));
-			}
-		} 
+			ground_uv_scale_per_texture /= (u_scale_per_texture_factor /* / pow(2.0, 0.0)*/);
+		}
+		if (pieces_from_camera_piece == 1)
+		{
+			ground_uv_scale_per_texture /= (u_scale_per_texture_factor / 2.0 /* pow(2.0, 1.0)*/);
+		}
+		if (pieces_from_camera_piece == 2)
+		{
+			ground_uv_scale_per_texture /= (u_scale_per_texture_factor / 4.0 /* pow(2.0, 2.0)*/);
+		}
 	}
+
+	//if (v_distance_from_camera < u_scale_change_threshold)
+	//{
+	//	float threshold_step = u_scale_change_threshold / float(u_scale_change_num_steps);
+	//	for(int i = 0; i < u_scale_change_num_steps; i++)
+	//	{
+	//		if (v_distance_from_camera < threshold_step * float(i + 1))
+	//		{
+	//			ground_uv_scale_per_texture /= (u_scale_per_texture_factor / pow(2.0, float(i)));
+	//		}
+	//	} 
+	//}
 	
 	vec3 base_ground_uv = vec3(v_vertex_cell_coords_in_textures.x, v_vertex_world_pos.y * MODEL_MATRIX[1][1], v_vertex_cell_coords_in_textures.y);
-	//vec3 base_ground_uv = vec3(UV.x, h * MODEL_MATRIX[1][1], UV.y);
-	v_ground_uv0 = base_ground_uv.xz / v_ground_uv_scale_per_texture.x;		// 2-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor
-	v_ground_uv1 = base_ground_uv.xz / v_ground_uv_scale_per_texture.y;		// these coordinates are used to fetch u_ground_albedo_bump_0 and u_ground_normal_roughness_0 
-	v_ground_uv2 = base_ground_uv.xz / v_ground_uv_scale_per_texture.z;
-	v_ground_uv3 = base_ground_uv / v_ground_uv_scale_per_texture.w;		// 3-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor (y coord is height in world coord)
+	v_ground_uv0 = base_ground_uv.xz / ground_uv_scale_per_texture.x;		// 2-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor
+	v_ground_uv1 = base_ground_uv.xz / ground_uv_scale_per_texture.y;		// these coordinates are used to fetch u_ground_albedo_bump_0 and u_ground_normal_roughness_0 
+	v_ground_uv2 = base_ground_uv.xz / ground_uv_scale_per_texture.z;
+	v_ground_uv3 = base_ground_uv / ground_uv_scale_per_texture.w;		// 3-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor (y coord is height in world coord)
 
 	if (u_editmode_selected > 0.0 && is_on_the_border(UV, u_quad_border_line_thickness)) {
 		ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot

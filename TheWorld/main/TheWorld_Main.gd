@@ -224,6 +224,11 @@ func _input(event):
 		elif event.is_action_pressed("ui_test"):
 			test_action_enabled = !test_action_enabled
 			process_test_action = true
+		elif event.is_action_pressed("ui_print_screen"):
+			var img = get_viewport().get_texture().get_image()
+			var size : Vector2i = img.get_size()
+			var save_path = OS.get_user_data_dir() + "\\screen.png"
+			img.save_png(save_path)
 		elif event.is_action_pressed("ui_drop_player"):
 			var current_camera := get_viewport().get_camera_3d()
 			var space_state = get_world_3d().direct_space_state
@@ -350,11 +355,12 @@ func _process(_delta):
 		tw_viewer.set_info_panel_external_value("Ball pos: (" + str(snapped(ball_pos.x, 0.01)) + ", " + str(snapped(ball_pos.y, 0.01)) + ", " + str(snapped(ball_pos.z, 0.01)) + ")", _ball_pos_info_line_index)
 		_player_pos = $Player/Player.global_transform.origin
 		_player_velocity = $Player/Player.velocity
-		var player_dist_from_terrain := "-"
+		var velocity : float = _player_velocity.length()
+		var player_dist_from_terrain := ""
 		if ($Player/Player.player_dist_from_terrain >= 0):
 			player_dist_from_terrain = str(snapped($Player/Player.player_dist_from_terrain, 0.01))
 		tw_viewer.set_info_panel_external_value("Player pos: (" + str(snapped(_player_pos.x, 0.01)) + ", " + str(snapped(_player_pos.y, 0.01)) + ", " + str(snapped(_player_pos.z, 0.01)) + ")", _player_info_1_line_index)
-		tw_viewer.set_info_panel_external_value("Speed: " + str(snapped(_player_velocity.length(), 0.01)) + "  H: " + player_dist_from_terrain, _player_info_2_line_index) 
+		tw_viewer.set_info_panel_external_value("Speed: " + str(snapped(velocity, 0.01)) + " m/s " +  str(int((velocity * 60 * 60)) / 1000) + " km/h  H: " + player_dist_from_terrain, _player_info_2_line_index) 
 	
 	if debug_window_active:
 		fps = Engine.get_frames_per_second()
