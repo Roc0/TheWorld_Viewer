@@ -50,7 +50,7 @@ uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);	// NOTSE
 
 uniform float u_scale_per_texture_factor = 10.0;
 //uniform float u_scale_change_threshold = 500.0;
-uniform int u_scale_change_num_steps = 1;
+//uniform int u_scale_change_num_steps = 1;
 uniform float u_piece_size = 300;
 uniform int u_piecing_threshold = 3;
 
