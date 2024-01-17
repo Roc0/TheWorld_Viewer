@@ -52,23 +52,23 @@ uniform float u_scale_per_texture_factor = 10.0;
 //uniform float u_scale_change_threshold = 500.0;
 //uniform int u_scale_change_num_steps = 1;
 uniform float u_piece_size = 300;
-uniform int u_piecing_threshold = 3;
+uniform int u_piecing_threshold_factor = 3;
 
-varying float v_hole;
+//varying float v_hole;
 varying vec3 v_tint0;
 varying vec3 v_tint1;
 varying vec3 v_tint2;
 varying vec3 v_tint3;
 varying vec4 v_splat;
-varying vec2 v_ground_uv0;
-varying vec2 v_ground_uv1;
-varying vec2 v_ground_uv2;
-varying vec3 v_ground_uv3;
+//varying vec2 v_ground_uv0;
+//varying vec2 v_ground_uv1;
+//varying vec2 v_ground_uv2;
+//varying vec3 v_ground_uv3;
 varying float v_distance_from_camera;
 
 varying vec4 v_vertex_world_pos;
 varying vec2 v_vertex_cell_coords_in_textures;
-varying vec4 v_ground_uv_scale_per_texture;
+//varying vec4 v_ground_uv_scale_per_texture;
 
 // Blends weights according to the bump of detail textures,
 // so for example it allows to have sand fill the gaps between pebbles
@@ -154,18 +154,6 @@ vec4 texture_antitile(sampler2D albedo_tex, sampler2D normal_tex, vec2 uv, out v
 	return depth_blend2(col0, col0.a, col1, col1.a, t);
 }
 
-int greater(int v1, int v2)
-{
-	if (v1 > v2)
-	{
-		return v1;
-	}
-	else
-	{
-		return v2;
-	}
-}
-
 void vertex() {
 	vec4 vertex_world_pos = MODEL_MATRIX * vec4(VERTEX, 1);		// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need to trasform in world coord to abstract from chunk
 	vec4 vertex_local_to_quadrant_pos = u_terrain_inverse_transform * vertex_world_pos;	// to calculate coords of the vertex local to the quadrant we use affine inverse matrix of the global trasform of the quadtree
@@ -198,7 +186,7 @@ void vertex() {
 	// provided that geometry is a regular grid that decimates with LOD.
 	// (downside is LOD will also decimate tint and splat, but it's not bad overall)
 	vec4 tint = texture(u_terrain_colormap, UV);
-	v_hole = tint.a;
+	//v_hole = tint.a;
 	v_tint0 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.x);	// decreasing u_colormap_opacity_per_texture dimensions approximates vector tint (u_terrain_colormap texel) to white: each dimnesion (1-4) acts
 	v_tint1 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.y);	// on the corresponding bump_map (1-4). More precisely u_colormap_opacity_per_texture.(x-w) must be in the interval 0-1, if 0 the function returns 
 	v_tint2 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.z);	// vec3(1.0) if 1 (default value) the function returns tint.rgb
@@ -219,7 +207,7 @@ void fragment() {
 
 	vec4 ground_uv_scale_per_texture = u_ground_uv_scale_per_texture;
 
-	if (v_distance_from_camera < (u_piece_size * float(u_piecing_threshold)))
+	if (v_distance_from_camera < (u_piece_size * float(u_piecing_threshold_factor)))
 	{
 		vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 		int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / u_piece_size));
@@ -228,8 +216,8 @@ void fragment() {
 		int frag_piece_x = int(floor(fragment_world_pos.x / u_piece_size));
 		int frag_piece_y = int(floor(fragment_world_pos.y / u_piece_size));
 		int frag_piece_z = int(floor(fragment_world_pos.z / u_piece_size));
-		int pieces_from_camera_piece = greater(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_z - frag_piece_z)));
-		pieces_from_camera_piece = greater(pieces_from_camera_piece, int(abs(camera_piece_y - frag_piece_y)));
+		int pieces_from_camera_piece = max(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_z - frag_piece_z)));
+		pieces_from_camera_piece = max(pieces_from_camera_piece, int(abs(camera_piece_y - frag_piece_y)));
 		if (pieces_from_camera_piece == 0)
 		{
 			ground_uv_scale_per_texture /= (u_scale_per_texture_factor /* / pow(2.0, 0.0)*/);
@@ -257,10 +245,10 @@ void fragment() {
 	//}
 	
 	vec3 base_ground_uv = vec3(v_vertex_cell_coords_in_textures.x, v_vertex_world_pos.y * MODEL_MATRIX[1][1], v_vertex_cell_coords_in_textures.y);
-	v_ground_uv0 = base_ground_uv.xz / ground_uv_scale_per_texture.x;		// 2-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor
-	v_ground_uv1 = base_ground_uv.xz / ground_uv_scale_per_texture.y;		// these coordinates are used to fetch u_ground_albedo_bump_0 and u_ground_normal_roughness_0 
-	v_ground_uv2 = base_ground_uv.xz / ground_uv_scale_per_texture.z;
-	v_ground_uv3 = base_ground_uv / ground_uv_scale_per_texture.w;		// 3-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor (y coord is height in world coord)
+	vec2 ground_uv0 = base_ground_uv.xz / ground_uv_scale_per_texture.x;		// 2-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor
+	vec2 ground_uv1 = base_ground_uv.xz / ground_uv_scale_per_texture.y;		// these coordinates are used to fetch u_ground_albedo_bump_0 and u_ground_normal_roughness_0 
+	vec2 ground_uv2 = base_ground_uv.xz / ground_uv_scale_per_texture.z;
+	vec3 ground_uv3 = base_ground_uv / ground_uv_scale_per_texture.w;		// 3-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor (y coord is height in world coord)
 
 	if (u_editmode_selected > 0.0 && is_on_the_border(UV, u_quad_border_line_thickness)) {
 		ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
@@ -280,6 +268,7 @@ void fragment() {
 	float globalmap_factor;
 	if (u_use_globalmap) {
 		globalmap_factor = 1.0;	// we force to use Gloabl Map
+		ROUGHNESS = 0.5;
 	} else {
 		globalmap_factor = clamp((v_distance_from_camera - u_globalmap_blend_start) * u_globalmap_blend_distance, 0.0, 1.0);
 		globalmap_factor *= globalmap_factor; // slower start, faster transition but far away
@@ -297,7 +286,8 @@ void fragment() {
 		// Doing this branch allows to spare a bunch of texture fetches for distant pixels.
 		// Eventually, there could be a split between near and far shaders in the future,
 		// if relevant on high-end GPUs
-		if (globalmap_factor < 1.0) {
+		if (globalmap_factor < 1.0)
+		{
 			vec4 ab0, ab1, ab2, ab3;
 			vec4 nr0, nr1, nr2, nr3;
 
@@ -309,35 +299,35 @@ void fragment() {
 
 				vec3 blending = get_triplanar_blend(terrain_normal_world);
 
-				ab3 = texture_triplanar(u_ground_albedo_bump_3, v_ground_uv3, blending);
-				nr3 = texture_triplanar(u_ground_normal_roughness_3, v_ground_uv3, blending);
+				ab3 = texture_triplanar(u_ground_albedo_bump_3, ground_uv3, blending);
+				nr3 = texture_triplanar(u_ground_normal_roughness_3, ground_uv3, blending);
 
 			} else {
 				if (u_tile_reduction_per_texture[3] > 0.0) {
-					ab3 = texture_antitile(u_ground_albedo_bump_3, u_ground_normal_roughness_3, v_ground_uv3.xz, nr3);
+					ab3 = texture_antitile(u_ground_albedo_bump_3, u_ground_normal_roughness_3, ground_uv3.xz, nr3);
 				} else {
-					ab3 = texture(u_ground_albedo_bump_3, v_ground_uv3.xz);
-					nr3 = texture(u_ground_normal_roughness_3, v_ground_uv3.xz);
+					ab3 = texture(u_ground_albedo_bump_3, ground_uv3.xz);
+					nr3 = texture(u_ground_normal_roughness_3, ground_uv3.xz);
 				}
 			}
 
 			if (u_tile_reduction_per_texture[0] > 0.0) {
-				ab0 = texture_antitile(u_ground_albedo_bump_0, u_ground_normal_roughness_0, v_ground_uv0, nr0);
+				ab0 = texture_antitile(u_ground_albedo_bump_0, u_ground_normal_roughness_0, ground_uv0, nr0);
 			} else {
-				ab0 = texture(u_ground_albedo_bump_0, v_ground_uv0);
-				nr0 = texture(u_ground_normal_roughness_0, v_ground_uv0);
+				ab0 = texture(u_ground_albedo_bump_0, ground_uv0);
+				nr0 = texture(u_ground_normal_roughness_0, ground_uv0);
 			}
 			if (u_tile_reduction_per_texture[1] > 0.0) {
-				ab1 = texture_antitile(u_ground_albedo_bump_1, u_ground_normal_roughness_1, v_ground_uv1, nr1);
+				ab1 = texture_antitile(u_ground_albedo_bump_1, u_ground_normal_roughness_1, ground_uv1, nr1);
 			} else {
-				ab1 = texture(u_ground_albedo_bump_1, v_ground_uv1);
-				nr1 = texture(u_ground_normal_roughness_1, v_ground_uv1);
+				ab1 = texture(u_ground_albedo_bump_1, ground_uv1);
+				nr1 = texture(u_ground_normal_roughness_1, ground_uv1);
 			}
 			if (u_tile_reduction_per_texture[2] > 0.0) {
-				ab2 = texture_antitile(u_ground_albedo_bump_2, u_ground_normal_roughness_2, v_ground_uv2, nr2);
+				ab2 = texture_antitile(u_ground_albedo_bump_2, u_ground_normal_roughness_2, ground_uv2, nr2);
 			} else {
-				ab2 = texture(u_ground_albedo_bump_2, v_ground_uv2);
-				nr2 = texture(u_ground_normal_roughness_2, v_ground_uv2);
+				ab2 = texture(u_ground_albedo_bump_2, ground_uv2);
+				nr2 = texture(u_ground_normal_roughness_2, ground_uv2);
 			}
 
 			vec3 col0 = ab0.rgb * v_tint0;	// col(0-3) is the result of the pixel fetched from u_ground_albedo_bump_(0-3) modified by the value fetched from u_terrain_colormap and relative to the vertex corresponding to current pixel
