@@ -4,6 +4,8 @@ extends EditorPlugin
 var quitting : bool = false
 
 const TWViewer = preload("./tw_viewer.gd")
+const TWTestQuadrant = preload("./test/test_quadrant.gd")
+var TWTestQuadrant_array : Array = []
 
 const tw_editor_util = preload("./tools/util/editor_util.gd")
 const tw_constants = preload("./tw_const.gd")
@@ -40,6 +42,8 @@ func _enter_tree():
 	
 	add_custom_type("TWViewer", "Node3D", TWViewer, preload("./Node3D.svg"))
 	
+	add_custom_type("TWTestQuadrant", "MeshInstance3D", TWTestQuadrant, preload("./test/MeshInstance3D.svg"))
+	
 	#set_input_event_forwarding_always_enabled()
 	
 	#add_autoload_singleton(AUTOLOAD_NAME, AUTOLOAD_SCRIPT)
@@ -48,6 +52,8 @@ func _exit_tree():
 	if not quitting:
 		_logger.debug("_exit_tree")
 	
+	remove_custom_type("TWTestQuadrant")
+
 	remove_custom_type("TWViewer")
 	
 	#remove_autoload_singleton(AUTOLOAD_NAME)
@@ -77,7 +83,9 @@ func _process(delta: float):
 			
 			update_overlays()
 			
-			editor_interface.edit_node(_viewer)
+			#await get_tree().process_frame
+			
+			#editor_interface.edit_node(_viewer)
 			
 			#var m = editor_interface.get_editor_main_screen()
 			#if m != null:
@@ -89,12 +97,18 @@ func _process(delta: float):
 			#if editor_3d != null:
 			#	_viewer.set_editor_3d_overlay(editor_3d)
 			
-			_edit(_viewer)
+			#_edit(_viewer)
 
 			#_viewer_connected = true
 			_viewer_init_done = true
 			_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done))
 
+			var nodes : Array = []
+			findAllTestQuadrantNode(get_tree().root, nodes)
+			#_logger.debug(str("nodes: ",nodes.size()))
+			for node in nodes:
+				add_test_quadrant_to_array(node)
+	
 	var clientstatus : int = 0
 	clientstatus = get_clientstatus()
 
@@ -122,15 +136,18 @@ func _handles(object):
 func _make_visible(visible: bool):
 	_logger.debug(str("_make_visible ", visible))
 
-	if not visible:
-		_edit(null)
-	else:
-		if _viewer != null:
-			_edit(_viewer)
+	#if not visible:
+	#	_edit(null)
+	#else:
+	#	if _viewer != null:
+	#		_edit(_viewer)
 	
 func _edit(object):
-	_logger.debug(str("_edit ", object))
+	#_logger.debug(str("_edit ", object))
 	
+	if object is TWTestQuadrant:
+		add_test_quadrant_to_array(object)
+
 func _forward_3d_draw_over_viewport(overlay : Control):
 	#print("_forward_3d_draw_over_viewport")
 	
@@ -214,6 +231,9 @@ func _apply_changes():
 		_logger.debug(str("_apply_changes _viewer_init_done=", _viewer_init_done, ", _viewer=", _viewer))
 		if _viewer != null:
 			_viewer._apply_changes()
+	for node in TWTestQuadrant_array:
+		_logger.debug(str("_apply_changes: node ", node))
+		node._apply_changes()
 	
 func _viewer_exited_scene():
 	_logger.debug("tw_viewer exited the scene")
@@ -224,10 +244,14 @@ func _viewer_exited_scene():
 	_edit(null)
 
 static func _get_custom_object(object):
-	if object != null and object is Node3D:
+	if object != null and (object is Node3D or object is MeshInstance3D):
 		if not object.is_inside_tree():
 			return null
 		if object is TWViewer:
+			#print (str("_get_custom_object: TWViewer detected"))
+			return object
+		elif object is TWTestQuadrant:
+			#print (str("_get_custom_object: TWTestQuadrant detected"))
 			return object
 	return null
 	
@@ -264,3 +288,28 @@ func find_node_by_name(node_name : String) -> Node:
 			return null
 		var node : Node = scene.root.find_child(node_name, true, false)
 		return node
+		
+func findByClass(node: Node, className : String, result : Array) -> void:
+	if node.is_class(className) :
+		result.push_back(node)
+	for child in node.get_children():
+		findByClass(child, className, result)
+
+func findAllTestQuadrantNode(node: Node, result : Array) -> void:
+	if node is TWTestQuadrant:
+		result.push_back(node)
+	for child in node.get_children():
+		findAllTestQuadrantNode(child, result)
+
+func add_test_quadrant_to_array(node : Object) -> void:
+	if not TWTestQuadrant_array.has(node):
+		TWTestQuadrant_array.append(node)
+		node.set_plugin(self)
+		print (str(node, " added to TWTestQuadrant_array(", TWTestQuadrant_array.size(), ")"))
+
+
+func remove_test_quadrant_from_array(node : Object) -> void:
+	if TWTestQuadrant_array.has(node):
+		TWTestQuadrant_array.erase(node)
+		print (str(node, " removed from TWTestQuadrant_array (", TWTestQuadrant_array.size(), ")"))
+	

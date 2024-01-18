@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://c4ukh1kw4impi"]
+[gd_scene load_steps=38 format=3 uid="uid://c4ukh1kw4impi"]
 
 [ext_resource type="Script" path="res://main/TheWorld_Main.gd" id="1_760ml"]
 [ext_resource type="Script" path="res://addons/twviewer/tw_viewer.gd" id="3_yxvy6"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://cdlipa2pmvrju" path="res://components/world_environment.tscn" id="4_gxev0"]
 [ext_resource type="PackedScene" uid="uid://bi138l8muok7h" path="res://components/test.tscn" id="5_kid0l"]
 [ext_resource type="PackedScene" uid="uid://v6sfi8k7dr7o" path="res://player.tscn" id="6_wlxwp"]
+[ext_resource type="Script" path="res://addons/twviewer/test/test_quadrant.gd" id="7_7uq48"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xl13w"]
 shading_mode = 0
@@ -273,6 +274,14 @@ _surfaces = [{
 "vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63)
 }]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l5mjy"]
+albedo_color = Color(1, 0.0431373, 0.00784314, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_812q2"]
+material = SubResource("StandardMaterial3D_l5mjy")
+radius = 100.0
+height = 200.0
+
 [node name="RootNode" type="Node"]
 
 [node name="TheWorld_Main" type="Node3D" parent="."]
@@ -284,7 +293,6 @@ _world_param_depth_quad = 1
 _world_param_info_visible = true
 _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 1
-_world_editor_param_info_visible = true
 _camera_param_initial_pos = Vector3(0, 1500, 0)
 _camera_param_initial_yaw_pitch_roll = Vector3(0, 0, 0)
 _shader_param_ground_uv_scale = 200.0
@@ -311,7 +319,7 @@ metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(0.999991, 7.10488e-06, -0.00415387, 0, 0.999999, 0.00171042, 0.00415387, -0.00171041, 0.99999, 0, 1500, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1500, 0)
 far = 30000.0
 
 [node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main/TWViewer"]
@@ -323,3 +331,33 @@ far = 30000.0
 [node name="Test" parent="TheWorld_Main" instance=ExtResource("5_kid0l")]
 
 [node name="Player" parent="TheWorld_Main" instance=ExtResource("6_wlxwp")]
+
+[node name="Origin" type="MeshInstance3D" parent="."]
+mesh = SubResource("SphereMesh_812q2")
+
+[node name="TWTestQuadrant" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2048, 0, 2048)
+script = ExtResource("7_7uq48")
+_size = 4096
+_points_per_size = 513
+
+[node name="TWTestQuadrant2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6144, 0, 2048)
+script = ExtResource("7_7uq48")
+_pos = Vector2(5000, 0)
+_size = 4096
+_points_per_size = 513
+
+[node name="TWTestQuadrant3" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2048, 0, 6144)
+script = ExtResource("7_7uq48")
+_pos = Vector2(0, 5000)
+_size = 4096
+_points_per_size = 513
+
+[node name="TWTestQuadrant4" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6144, 0, 6144)
+script = ExtResource("7_7uq48")
+_pos = Vector2(5000, 5000)
+_size = 4096
+_points_per_size = 513

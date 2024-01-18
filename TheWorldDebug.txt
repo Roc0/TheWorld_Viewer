@@ -1,3 +1,7 @@
+gu_grid_step
+gu_terrain_inverse_transform
+
+
 Initialization of last stream of quadrant COMPLETED:
   num = 289 elapsed = 27370 average = 94
   visible = 168

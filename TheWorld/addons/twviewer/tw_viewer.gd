@@ -1,10 +1,10 @@
 @tool
 extends Node3D
 
-var debug_sprite : Sprite2D = null
+var _debug_sprite : Sprite2D = null
 
-var quitting : bool = false
-var deinit_in_progress : bool = false
+var _quitting : bool = false
+var _deinit_in_progress : bool = false
 
 var _gdn_main_instance : Node = null
 var _gdn_main_instance_errmsg : bool = true
@@ -29,6 +29,7 @@ var _logger = HT_Logger.get_for(self)
 var _plugin_tree_entered := false
 var _init_done : bool = false
 var _is_ready : bool = false
+var _is_really_ready : bool = false
 var _transform_changed : bool = false
 var _visibility_changed : bool = false
 
@@ -319,6 +320,7 @@ func custom_ready():
 	_client_status = get_clientstatus()
 	
 	log_debug("custom_ready done")
+	_is_really_ready = true
 
 func get_camera() -> Camera3D:
 	var gdn_viewver = GDN_viewer()
@@ -332,8 +334,8 @@ func _enter_tree():
 	_plugin_tree_entered = true
 
 func _exit_tree():
-	if not quitting:
-		_logger.debug(str("_exit_tree _init_done=", _init_done, ", quitting=", quitting))
+	if not _quitting:
+		_logger.debug(str("_exit_tree _init_done=", _init_done, ", quitting=", _quitting))
 	
 	if _init_done:
 		pre_deinit()
@@ -418,9 +420,9 @@ func _process(delta):
 	if _exit_status == EXIT_STATUS_UNDEPLOYWORLD_REQUIRED:
 		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
 			if _client_status < tw_constants.clientstatus_world_undeploy_in_progress:
-				if (!deinit_in_progress):
+				if (!_deinit_in_progress):
 					deinit_world()
-					#deinit_in_progress = true
+					#_deinit_in_progress = true
 			#else:
 		else:
 			_exit_status = EXIT_STATUS_PREDEINIT_REQUIRED
@@ -618,7 +620,7 @@ func _process(delta):
 				_edit_mode_ui_control_added_to_editor_overlay = true
 	
 	#print(gdn_viewer.has_method("get_camera"))
-	if _info_panel != null && _info_panel.visible && gdn_viewer.has_method("get_camera") && not quitting:
+	if _info_panel != null && _info_panel.visible && gdn_viewer.has_method("get_camera") && not _quitting:
 		var tot_element_to_initialize : int = GDN_globals().get_tot_element_to_initialize()
 		var num_element_initialized : int = GDN_globals().get_num_element_initialized()
 		_info_panel_status = "Status: " + tw_constants.status_to_string(_client_status) + " (" + str(num_element_initialized) + "/"+ str(tot_element_to_initialize) + ")" + "\n"
@@ -773,10 +775,10 @@ func _notification(_what):
 		log_debug("_notification: visibility changed")
 		_visibility_changed = true
 	elif (_what == NOTIFICATION_PREDELETE):
-		if not quitting:
+		if not _quitting:
 			log_debug("_notification: NOTIFICATION_PREDELETE - Destroy tw_viewer")
 	elif (_what == NOTIFICATION_WM_CLOSE_REQUEST):
-		quitting = true
+		_quitting = true
 		log_debug("_notification: NOTIFICATION_WM_CLOSE_REQUEST ")
 		if Engine.is_editor_hint() || get_tree().is_auto_accept_quit():
 			activate_shutdown()
@@ -797,7 +799,7 @@ func activate_shutdown():
 	else:
 		#_exit_status = EXIT_STATUS_PREDEINIT_REQUIRED
 		_exit_status = EXIT_STATUS_UNDEPLOYWORLD_REQUIRED
-		deinit_in_progress = false
+		_deinit_in_progress = false
 
 func resizing():
 	if (_gdn_viewer != null && _gdn_viewer.has_method("viewport_size_changed")):
@@ -909,14 +911,14 @@ func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> 
 func _on_tw_quadrant_selected_for_edit(selected : bool) -> void:
 	return
 	if (!selected):
-		if debug_sprite != null:
-			debug_sprite.queue_free()
-			debug_sprite = null
+		if _debug_sprite != null:
+			_debug_sprite.queue_free()
+			_debug_sprite = null
 			return
 	
-	if (debug_sprite == null):
-		debug_sprite = Sprite2D.new()
-		add_child(debug_sprite)
+	if (_debug_sprite == null):
+		_debug_sprite = Sprite2D.new()
+		add_child(_debug_sprite)
 	
 	var subviewport = SubViewport.new()
 	add_child(subviewport)
@@ -931,25 +933,25 @@ func _on_tw_quadrant_selected_for_edit(selected : bool) -> void:
 	colorRect.set_anchors_preset(Control.PRESET_FULL_RECT)
 	colorRect.material = shaderMaterial
 	
-	debug_sprite.texture = subviewport.get_texture()
+	_debug_sprite.texture = subviewport.get_texture()
 
 func find_node_by_name(node_name : String) -> Node:
-		if Engine.is_editor_hint():
-			var scene : SceneTree = null
-			#if _plugin_tree_entered:
+	if Engine.is_editor_hint():
+		var scene : SceneTree = null
+		#if _plugin_tree_entered:
+		scene = get_tree()
+		if scene == null:
+			return null
+		var node : Node = get_tree().get_edited_scene_root().find_child(node_name, true, false)
+		return node
+	else:
+		var scene : SceneTree = null
+		if _plugin_tree_entered:
 			scene = get_tree()
-			if scene == null:
-				return null
-			var node : Node = get_tree().get_edited_scene_root().find_child(node_name, true, false)
-			return node
-		else:
-			var scene : SceneTree = null
-			if _plugin_tree_entered:
-				scene = get_tree()
-			if scene == null:
-				return null
-			var node : Node = get_tree().get_root().find_child(node_name, true, false)
-			return node
+		if scene == null:
+			return null
+		var node : Node = get_tree().get_root().find_child(node_name, true, false)
+		return node
 	
 func GDN_main():
 	if _gdn_main_instance == null:
@@ -1296,6 +1298,9 @@ func set_size_info_panel():
 	
 func is_ready() -> bool:
 	return _is_ready
+
+func is_really_ready() -> bool:
+	return _is_really_ready
 
 func get_or_create_edit_mode_ui_control() -> Control:
 	var control : Control = null
