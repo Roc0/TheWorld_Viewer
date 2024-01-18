@@ -135,6 +135,10 @@ expression = "if (is_editmode_selected || use_globalmap) {
 	vec3 col1 = ab1.rgb * tint1;	// the value fetched from u_terrain_colormap if modified to the white according to the vector u_colormap_opacity_per_texture (default value don't modify the color)
 	vec3 col2 = ab2.rgb * tint2;
 	vec3 col3 = ab3.rgb * tint3;
+	//col0 = ab0.rgb;
+	//col1 = ab1.rgb;
+	//col2 = ab2.rgb;
+	//col3 = ab3.rgb;
 
 	vec4 rough = vec4(nr0.a, nr1.a, nr2.a, nr3.a);
 
@@ -191,13 +195,19 @@ expression = "if (is_editmode_selected || use_globalmap) {
 }"
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_mc40n"]
-size = Vector2(900, 420)
+size = Vector2(900, 540)
 expression = "if (mouse_hit != vec2(-1) && mouse_hit_radius != 0.0 && distance(mouse_hit, UV) < mouse_hit_radius) {
 	vec3 mouse_hit_albedo = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 	albedo_out = mix(albedo_in, mouse_hit_albedo, 0.3);
+	//albedo_out = vec3(1.0, 0.0, 0.0);
+} else {
+	albedo_out = albedo_in;
+	//albedo_out = vec3(1.0, 0.0, 0.0);
 }
+//albedo_out = vec3(1.0, 0.0, 0.0);
 normal_out = (VIEW_MATRIX * (vec4(normal_in, 0.0))).xyz;
-roughness_out = roughness_in;"
+roughness_out = roughness_in;
+"
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_halt2"]
 size = Vector2(1000, 700)
@@ -241,7 +251,9 @@ varying_type = 4
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_yk7c6"]
 size = Vector2(1020, 880)
-expression = "ground_uv_scale_per_texture_calc = ground_uv_scale_per_texture;
+expression = "//ground_uv_scale_per_texture_in = vec4(200.0, 200.0, 200.0, 200.0);
+ground_uv_scale_per_texture_out = ground_uv_scale_per_texture_in;
+//ground_uv_scale_per_texture_out = vec4(20.0, 20.0, 20.0, 20.0);
 if (distance_from_camera < (piece_size * float(piecing_threshold_factor)))
 {
 	vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(vertex, 1.0)).xyz;
@@ -255,17 +267,18 @@ if (distance_from_camera < (piece_size * float(piecing_threshold_factor)))
 	pieces_from_camera_piece = max(pieces_from_camera_piece, int(abs(camera_piece_y - frag_piece_y)));
 	if (pieces_from_camera_piece == 0)
 	{
-		ground_uv_scale_per_texture_calc /= (scale_per_texture_factor /* / pow(2.0, 0.0)*/);
+		ground_uv_scale_per_texture_out /= (scale_per_texture_factor /* / pow(2.0, 0.0)*/);
 	}
-	if (pieces_from_camera_piece == 1)
+	else if (pieces_from_camera_piece == 1)
 	{
-		ground_uv_scale_per_texture_calc /= (scale_per_texture_factor / 2.0 /* pow(2.0, 1.0)*/);
+		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 2.0 /* pow(2.0, 1.0)*/);
 	}
-	if (pieces_from_camera_piece == 2)
+	else if (pieces_from_camera_piece == 2)
 	{
-		ground_uv_scale_per_texture_calc /= (scale_per_texture_factor / 4.0 /* pow(2.0, 2.0)*/);
+		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 4.0 /* pow(2.0, 2.0)*/);
 	}
-}"
+}
+//ground_uv_scale_per_texture_out = vec4(20.0, 20.0, 20.0, 20.0);"
 
 [sub_resource type="VisualShaderNodeVaryingGetter" id="VisualShaderNodeVaryingGetter_hik7b"]
 varying_name = "v_tint2"
@@ -295,15 +308,16 @@ vertex_cell_coords_in_textures += vec2(0.5);
 uv = vertex_cell_coords_in_textures / vec2(textureSize(terrain_heightmap, 0));"
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_64s2i"]
-size = Vector2(920, 460)
+size = Vector2(920, 500)
 expression = "vertex_with_h = vertex;
+vertex_world_pos_with_h = vertex_world_pos;
 float h = get_height(terrain_heightmap, u_terrain_height, uv);		// Height displacement from heigthmap
 if (u_force_height_0) {													// Needed to bake globalmap
 	vertex_with_h.y = 0.0;
-	vertex_world_pos.y = 0.0;
+	vertex_world_pos_with_h.y = 0.0;
 } else {
 	vertex_with_h.y = h;
-	vertex_world_pos.y = h;
+	vertex_world_pos_with_h.y = h;
 }"
 
 [sub_resource type="VisualShaderNodeVaryingSetter" id="VisualShaderNodeVaryingSetter_2eqbt"]
@@ -365,7 +379,7 @@ expression = "vec3 get_normal(sampler2D tex, mat3 terrain_normal_basis, vec2 uv)
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_dks25"]
 size = Vector2(500, 280)
 expression = "if (!use_globalmap) {
-		vec4 splat = texture(terrain_splatmap, uv);
+		splat = texture(terrain_splatmap, uv);
 }"
 
 [sub_resource type="VisualShaderNodeVaryingSetter" id="VisualShaderNodeVaryingSetter_pgyig"]
@@ -375,10 +389,10 @@ varying_type = 5
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_anper"]
 size = Vector2(620, 380)
 expression = "vec4 tint = texture(terrain_colormap, uv);
-vec3 tint0 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.x);	// decreasing u_colormap_opacity_per_texture dimensions approximates vector tint (u_terrain_colormap texel) to white: each dimnesion (1-4) acts
-vec3 tint1 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.y);	// on the corresponding bump_map (1-4). More precisely u_colormap_opacity_per_texture.(x-w) must be in the interval 0-1, if 0 the function returns 
-vec3 tint2 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.z);	// vec3(1.0) if 1 (default value) the function returns tint.rgb
-vec3 tint3 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.w);"
+tint0 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.x);	// decreasing u_colormap_opacity_per_texture dimensions approximates vector tint (u_terrain_colormap texel) to white: each dimnesion (1-4) acts
+tint1 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.y);	// on the corresponding bump_map (1-4). More precisely u_colormap_opacity_per_texture.(x-w) must be in the interval 0-1, if 0 the function returns 
+tint2 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.z);	// vec3(1.0) if 1 (default value) the function returns tint.rgb
+tint3 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.w);"
 
 [sub_resource type="VisualShaderNodeVaryingSetter" id="VisualShaderNodeVaryingSetter_6cx8w"]
 varying_name = "v_tint0"
@@ -409,16 +423,14 @@ parameter_name = "u_terrain_splatmap"
 parameter_name = "u_terrain_colormap"
 
 [sub_resource type="VisualShaderNodeTransformParameter" id="VisualShaderNodeTransformParameter_dicqs"]
-parameter_name = "gu_terrain_inverse_transform"
-qualifier = 1
+parameter_name = "u_terrain_inverse_transform"
 
 [sub_resource type="VisualShaderNodeUIntParameter" id="VisualShaderNodeUIntParameter_hoofg"]
 parameter_name = "u_optimization_level"
 default_value_enabled = true
 
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_5p3ym"]
-parameter_name = "gu_grid_step"
-qualifier = 1
+parameter_name = "u_grid_step"
 default_value_enabled = true
 default_value = 2.0
 
@@ -497,7 +509,6 @@ expression = "vec3 get_triplanar_blend(vec3 world_normal) {
 }"
 
 [sub_resource type="VisualShaderNodeVec4Parameter" id="VisualShaderNodeVec4Parameter_gqsa8"]
-output_port_for_preview = 0
 parameter_name = "u_tile_reduction_per_texture"
 default_value_enabled = true
 
@@ -641,9 +652,9 @@ varying vec3 v_tint1;
 varying vec3 v_tint2;
 varying vec3 v_tint3;
 
-global uniform mat4 gu_terrain_inverse_transform;
+uniform mat4 u_terrain_inverse_transform;
 uniform sampler2D u_terrain_heightmap;
-global uniform float gu_grid_step = 2;
+uniform float u_grid_step = 2;
 uniform uint u_optimization_level = 0;
 uniform sampler2D u_terrain_splatmap;
 uniform sampler2D u_terrain_colormap;
@@ -807,11 +818,11 @@ void vertex() {
 
 
 // TransformParameter:35
-	mat4 n_out35p0 = gu_terrain_inverse_transform;
+	mat4 n_out35p0 = u_terrain_inverse_transform;
 
 
 // FloatParameter:37
-	float n_out37p0 = gu_grid_step;
+	float n_out37p0 = u_grid_step;
 
 
 // UIntParameter:36
@@ -842,13 +853,14 @@ void vertex() {
 	n_out13p1 = vec4(0.0, 0.0, 0.0, 0.0);
 	{
 		n_out13p0 = n_out15p0;
+		n_out13p1 = n_out11p0;
 		float h = get_height(u_terrain_heightmap, u_terrain_height, n_out12p1);		// Height displacement from heigthmap
 		if (u_force_height_0) {													// Needed to bake globalmap
 			n_out13p0.y = 0.0;
-			n_out11p0.y = 0.0;
+			n_out13p1.y = 0.0;
 		} else {
 			n_out13p0.y = h;
-			n_out11p0.y = h;
+			n_out13p1.y = h;
 		}
 	}
 
@@ -896,7 +908,7 @@ void vertex() {
 	n_out23p0 = vec4(0.0, 0.0, 0.0, 0.0);
 	{
 		if (!n_out38p0) {
-				vec4 n_out23p0 = texture(u_terrain_splatmap, n_out12p1);
+				n_out23p0 = texture(u_terrain_splatmap, n_out12p1);
 		}
 	}
 
@@ -916,10 +928,10 @@ void vertex() {
 	n_out25p3 = vec3(0.0, 0.0, 0.0);
 	{
 		vec4 tint = texture(u_terrain_colormap, n_out12p1);
-		vec3 n_out25p0 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.x);	// decreasing u_colormap_opacity_per_texture dimensions approximates vector tint (u_terrain_colormap texel) to white: each dimnesion (1-4) acts
-		vec3 n_out25p1 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.y);	// on the corresponding bump_map (1-4). More precisely u_colormap_opacity_per_texture.(x-w) must be in the interval 0-1, if 0 the function returns 
-		vec3 n_out25p2 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.z);	// vec3(1.0) if 1 (default value) the function returns tint.rgb
-		vec3 n_out25p3 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.w);
+		n_out25p0 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.x);	// decreasing u_colormap_opacity_per_texture dimensions approximates vector tint (u_terrain_colormap texel) to white: each dimnesion (1-4) acts
+		n_out25p1 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.y);	// on the corresponding bump_map (1-4). More precisely u_colormap_opacity_per_texture.(x-w) must be in the interval 0-1, if 0 the function returns 
+		n_out25p2 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.z);	// vec3(1.0) if 1 (default value) the function returns tint.rgb
+		n_out25p3 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.w);
 	}
 
 
@@ -1056,7 +1068,9 @@ void fragment() {
 // Expression:4
 	n_out4p0 = vec4(0.0, 0.0, 0.0, 0.0);
 	{
+		//n_out17p0 = vec4(200.0, 200.0, 200.0, 200.0);
 		n_out4p0 = n_out17p0;
+		//n_out4p0 = vec4(20.0, 20.0, 20.0, 20.0);
 		if (n_out3p0 < (n_out19p0 * float(n_out18p0)))
 		{
 			vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(n_out8p0, 1.0)).xyz;
@@ -1072,15 +1086,16 @@ void fragment() {
 			{
 				n_out4p0 /= (n_out20p0 /* / pow(2.0, 0.0)*/);
 			}
-			if (pieces_from_camera_piece == 1)
+			else if (pieces_from_camera_piece == 1)
 			{
 				n_out4p0 /= (n_out20p0 / 2.0 /* pow(2.0, 1.0)*/);
 			}
-			if (pieces_from_camera_piece == 2)
+			else if (pieces_from_camera_piece == 2)
 			{
 				n_out4p0 /= (n_out20p0 / 4.0 /* pow(2.0, 2.0)*/);
 			}
 		}
+		//n_out4p0 = vec4(20.0, 20.0, 20.0, 20.0);
 	}
 
 
@@ -1189,6 +1204,10 @@ void fragment() {
 			vec3 col1 = ab1.rgb * n_out39p0;	// the value fetched from u_terrain_colormap if modified to the white according to the vector u_colormap_opacity_per_texture (default value don't modify the color)
 			vec3 col2 = ab2.rgb * n_out40p0;
 			vec3 col3 = ab3.rgb * n_out41p0;
+			//col0 = ab0.rgb;
+			//col1 = ab1.rgb;
+			//col2 = ab2.rgb;
+			//col3 = ab3.rgb;
 		
 			vec4 rough = vec4(nr0.a, nr1.a, nr2.a, nr3.a);
 		
@@ -1265,9 +1284,15 @@ void fragment() {
 		if (n_out27p0 != vec2(-1) && n_out28p0 != 0.0 && distance(n_out27p0, UV) < n_out28p0) {
 			vec3 mouse_hit_albedo = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 			n_out31p0 = mix(n_out30p0, mouse_hit_albedo, 0.3);
+			//n_out31p0 = vec3(1.0, 0.0, 0.0);
+		} else {
+			n_out31p0 = n_out30p0;
+			//n_out31p0 = vec3(1.0, 0.0, 0.0);
 		}
+		//n_out31p0 = vec3(1.0, 0.0, 0.0);
 		n_out31p1 = (VIEW_MATRIX * (vec4(n_out30p2, 0.0))).xyz;
 		n_out31p2 = n_out30p1;
+		
 	}
 
 
@@ -1337,17 +1362,18 @@ vertex_cell_coords_in_textures += vec2(0.5);
 uv = vertex_cell_coords_in_textures / vec2(textureSize(terrain_heightmap, 0));"
 nodes/vertex/13/node = SubResource("VisualShaderNodeExpression_64s2i")
 nodes/vertex/13/position = Vector2(1000, -340)
-nodes/vertex/13/size = Vector2(920, 460)
+nodes/vertex/13/size = Vector2(920, 500)
 nodes/vertex/13/input_ports = "0,3,uv;1,5,vertex_world_pos;2,4,vertex;3,8,terrain_heightmap;"
 nodes/vertex/13/output_ports = "0,4,vertex_with_h;1,5,vertex_world_pos_with_h;"
 nodes/vertex/13/expression = "vertex_with_h = vertex;
+vertex_world_pos_with_h = vertex_world_pos;
 float h = get_height(terrain_heightmap, u_terrain_height, uv);		// Height displacement from heigthmap
 if (u_force_height_0) {													// Needed to bake globalmap
 	vertex_with_h.y = 0.0;
-	vertex_world_pos.y = 0.0;
+	vertex_world_pos_with_h.y = 0.0;
 } else {
 	vertex_with_h.y = h;
-	vertex_world_pos.y = h;
+	vertex_world_pos_with_h.y = h;
 }"
 nodes/vertex/14/node = SubResource("VisualShaderNodeVaryingSetter_2eqbt")
 nodes/vertex/14/position = Vector2(3240, -500)
@@ -1365,7 +1391,7 @@ nodes/vertex/17/expression = "float get_height(sampler2D tex, float terrain_heig
 	return texture(tex, uv).r * terrain_height;
 }"
 nodes/vertex/18/node = SubResource("VisualShaderNodeExpression_ytuk2")
-nodes/vertex/18/position = Vector2(2200, -60)
+nodes/vertex/18/position = Vector2(2160, -120)
 nodes/vertex/18/size = Vector2(680, 160)
 nodes/vertex/18/input_ports = "0,5,vertex_world_pos;"
 nodes/vertex/18/output_ports = "0,0,distance_from_camera;"
@@ -1415,7 +1441,7 @@ nodes/vertex/23/size = Vector2(500, 280)
 nodes/vertex/23/input_ports = "0,3,uv;1,8,terrain_splatmap;2,6,use_globalmap;"
 nodes/vertex/23/output_ports = "0,5,splat;"
 nodes/vertex/23/expression = "if (!use_globalmap) {
-		vec4 splat = texture(terrain_splatmap, uv);
+		splat = texture(terrain_splatmap, uv);
 }"
 nodes/vertex/24/node = SubResource("VisualShaderNodeVaryingSetter_pgyig")
 nodes/vertex/24/position = Vector2(3240, -1080)
@@ -1425,10 +1451,10 @@ nodes/vertex/25/size = Vector2(620, 380)
 nodes/vertex/25/input_ports = "0,3,uv;1,8,terrain_colormap;"
 nodes/vertex/25/output_ports = "0,4,tint0;1,4,tint1;2,4,tint2;3,4,tint3;"
 nodes/vertex/25/expression = "vec4 tint = texture(terrain_colormap, uv);
-vec3 tint0 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.x);	// decreasing u_colormap_opacity_per_texture dimensions approximates vector tint (u_terrain_colormap texel) to white: each dimnesion (1-4) acts
-vec3 tint1 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.y);	// on the corresponding bump_map (1-4). More precisely u_colormap_opacity_per_texture.(x-w) must be in the interval 0-1, if 0 the function returns 
-vec3 tint2 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.z);	// vec3(1.0) if 1 (default value) the function returns tint.rgb
-vec3 tint3 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.w);"
+tint0 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.x);	// decreasing u_colormap_opacity_per_texture dimensions approximates vector tint (u_terrain_colormap texel) to white: each dimnesion (1-4) acts
+tint1 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.y);	// on the corresponding bump_map (1-4). More precisely u_colormap_opacity_per_texture.(x-w) must be in the interval 0-1, if 0 the function returns 
+tint2 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.z);	// vec3(1.0) if 1 (default value) the function returns tint.rgb
+tint3 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.w);"
 nodes/vertex/26/node = SubResource("VisualShaderNodeVaryingSetter_6cx8w")
 nodes/vertex/26/position = Vector2(3240, -1440)
 nodes/vertex/27/node = SubResource("VisualShaderNodeVaryingSetter_8jjv6")
@@ -1597,9 +1623,11 @@ nodes/fragment/3/position = Vector2(-2660, -20)
 nodes/fragment/4/node = SubResource("VisualShaderNodeExpression_yk7c6")
 nodes/fragment/4/position = Vector2(-1500, -80)
 nodes/fragment/4/size = Vector2(1020, 880)
-nodes/fragment/4/input_ports = "0,0,distance_from_camera;1,4,vertex;2,5,ground_uv_scale_per_texture;3,2,piecing_threshold_factor;4,0,piece_size;5,0,scale_per_texture_factor;"
-nodes/fragment/4/output_ports = "0,5,ground_uv_scale_per_texture_calc;"
-nodes/fragment/4/expression = "ground_uv_scale_per_texture_calc = ground_uv_scale_per_texture;
+nodes/fragment/4/input_ports = "0,0,distance_from_camera;1,4,vertex;2,5,ground_uv_scale_per_texture_in;3,2,piecing_threshold_factor;4,0,piece_size;5,0,scale_per_texture_factor;"
+nodes/fragment/4/output_ports = "0,5,ground_uv_scale_per_texture_out;"
+nodes/fragment/4/expression = "//ground_uv_scale_per_texture_in = vec4(200.0, 200.0, 200.0, 200.0);
+ground_uv_scale_per_texture_out = ground_uv_scale_per_texture_in;
+//ground_uv_scale_per_texture_out = vec4(20.0, 20.0, 20.0, 20.0);
 if (distance_from_camera < (piece_size * float(piecing_threshold_factor)))
 {
 	vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(vertex, 1.0)).xyz;
@@ -1613,17 +1641,18 @@ if (distance_from_camera < (piece_size * float(piecing_threshold_factor)))
 	pieces_from_camera_piece = max(pieces_from_camera_piece, int(abs(camera_piece_y - frag_piece_y)));
 	if (pieces_from_camera_piece == 0)
 	{
-		ground_uv_scale_per_texture_calc /= (scale_per_texture_factor /* / pow(2.0, 0.0)*/);
+		ground_uv_scale_per_texture_out /= (scale_per_texture_factor /* / pow(2.0, 0.0)*/);
 	}
-	if (pieces_from_camera_piece == 1)
+	else if (pieces_from_camera_piece == 1)
 	{
-		ground_uv_scale_per_texture_calc /= (scale_per_texture_factor / 2.0 /* pow(2.0, 1.0)*/);
+		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 2.0 /* pow(2.0, 1.0)*/);
 	}
-	if (pieces_from_camera_piece == 2)
+	else if (pieces_from_camera_piece == 2)
 	{
-		ground_uv_scale_per_texture_calc /= (scale_per_texture_factor / 4.0 /* pow(2.0, 2.0)*/);
+		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 4.0 /* pow(2.0, 2.0)*/);
 	}
-}"
+}
+//ground_uv_scale_per_texture_out = vec4(20.0, 20.0, 20.0, 20.0);"
 nodes/fragment/8/node = SubResource("VisualShaderNodeInput_sy0wq")
 nodes/fragment/8/position = Vector2(-2620, 800)
 nodes/fragment/10/node = SubResource("VisualShaderNodeExpression_elcve")
@@ -1744,6 +1773,10 @@ nodes/fragment/30/expression = "if (is_editmode_selected || use_globalmap) {
 	vec3 col1 = ab1.rgb * tint1;	// the value fetched from u_terrain_colormap if modified to the white according to the vector u_colormap_opacity_per_texture (default value don't modify the color)
 	vec3 col2 = ab2.rgb * tint2;
 	vec3 col3 = ab3.rgb * tint3;
+	//col0 = ab0.rgb;
+	//col1 = ab1.rgb;
+	//col2 = ab2.rgb;
+	//col3 = ab3.rgb;
 
 	vec4 rough = vec4(nr0.a, nr1.a, nr2.a, nr3.a);
 
@@ -1800,15 +1833,21 @@ nodes/fragment/30/expression = "if (is_editmode_selected || use_globalmap) {
 }"
 nodes/fragment/31/node = SubResource("VisualShaderNodeExpression_mc40n")
 nodes/fragment/31/position = Vector2(2720, 260)
-nodes/fragment/31/size = Vector2(900, 420)
+nodes/fragment/31/size = Vector2(900, 540)
 nodes/fragment/31/input_ports = "0,4,albedo_in;1,3,mouse_hit;2,0,mouse_hit_radius;3,4,normal_in;4,0,roughness_in;"
 nodes/fragment/31/output_ports = "0,4,albedo_out;1,4,normal_out;2,0,roughness_out;"
 nodes/fragment/31/expression = "if (mouse_hit != vec2(-1) && mouse_hit_radius != 0.0 && distance(mouse_hit, UV) < mouse_hit_radius) {
 	vec3 mouse_hit_albedo = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 	albedo_out = mix(albedo_in, mouse_hit_albedo, 0.3);
+	//albedo_out = vec3(1.0, 0.0, 0.0);
+} else {
+	albedo_out = albedo_in;
+	//albedo_out = vec3(1.0, 0.0, 0.0);
 }
+//albedo_out = vec3(1.0, 0.0, 0.0);
 normal_out = (VIEW_MATRIX * (vec4(normal_in, 0.0))).xyz;
-roughness_out = roughness_in;"
+roughness_out = roughness_in;
+"
 nodes/fragment/33/node = SubResource("VisualShaderNodeExpression_halt2")
 nodes/fragment/33/position = Vector2(-140, 1420)
 nodes/fragment/33/size = Vector2(1000, 700)
@@ -1843,4 +1882,4 @@ nodes/fragment/40/node = SubResource("VisualShaderNodeVaryingGetter_hik7b")
 nodes/fragment/40/position = Vector2(-2660, -420)
 nodes/fragment/41/node = SubResource("VisualShaderNodeVaryingGetter_atn2x")
 nodes/fragment/41/position = Vector2(-2660, -340)
-nodes/fragment/connections = PackedInt32Array(3, 0, 4, 0, 8, 0, 4, 1, 4, 0, 10, 2, 12, 0, 10, 1, 11, 0, 10, 0, 13, 0, 14, 0, 16, 0, 14, 1, 17, 0, 4, 2, 18, 0, 4, 3, 19, 0, 4, 4, 20, 0, 4, 5, 26, 0, 25, 0, 31, 0, 0, 0, 13, 0, 25, 1, 21, 0, 25, 2, 29, 0, 33, 3, 13, 0, 33, 4, 24, 0, 33, 2, 23, 0, 33, 1, 3, 0, 33, 0, 25, 0, 33, 5, 25, 1, 33, 6, 27, 0, 31, 1, 28, 0, 31, 2, 31, 1, 0, 8, 31, 2, 0, 3, 10, 0, 30, 7, 10, 1, 30, 8, 10, 2, 30, 9, 10, 3, 30, 10, 33, 0, 30, 0, 30, 0, 31, 0, 14, 0, 30, 4, 30, 2, 31, 3, 33, 1, 30, 1, 30, 1, 31, 4, 33, 2, 30, 2, 34, 0, 30, 3, 25, 0, 30, 5, 25, 1, 30, 6, 35, 0, 30, 11, 36, 0, 30, 17, 37, 0, 30, 16, 41, 0, 30, 15, 40, 0, 30, 14, 39, 0, 30, 13, 38, 0, 30, 12)
+nodes/fragment/connections = PackedInt32Array(3, 0, 4, 0, 8, 0, 4, 1, 4, 0, 10, 2, 12, 0, 10, 1, 11, 0, 10, 0, 13, 0, 14, 0, 16, 0, 14, 1, 17, 0, 4, 2, 18, 0, 4, 3, 19, 0, 4, 4, 20, 0, 4, 5, 26, 0, 25, 0, 31, 0, 0, 0, 13, 0, 25, 1, 21, 0, 25, 2, 29, 0, 33, 3, 13, 0, 33, 4, 24, 0, 33, 2, 23, 0, 33, 1, 3, 0, 33, 0, 25, 0, 33, 5, 25, 1, 33, 6, 27, 0, 31, 1, 28, 0, 31, 2, 31, 1, 0, 8, 31, 2, 0, 3, 10, 0, 30, 7, 10, 1, 30, 8, 10, 2, 30, 9, 10, 3, 30, 10, 33, 0, 30, 0, 14, 0, 30, 4, 30, 2, 31, 3, 33, 1, 30, 1, 30, 1, 31, 4, 33, 2, 30, 2, 34, 0, 30, 3, 25, 0, 30, 5, 25, 1, 30, 6, 35, 0, 30, 11, 36, 0, 30, 17, 37, 0, 30, 16, 41, 0, 30, 15, 40, 0, 30, 14, 39, 0, 30, 13, 38, 0, 30, 12, 30, 0, 31, 0)

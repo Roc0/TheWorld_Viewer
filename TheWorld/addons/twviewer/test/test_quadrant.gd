@@ -42,7 +42,8 @@ func set_plugin(plugin_ : EditorPlugin) -> void:
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	_material = ShaderMaterial.new()
-	var shader : Shader = load("res://addons/twviewer/test/regularChunk.gdshader")
+	#var shader : Shader = load("res://addons/twviewer/test/regularChunk.gdshader")
+	var shader : Shader = load("res://addons/twviewer/test/test_quadrant.tres")
 	_material.shader = shader
 
 
@@ -191,7 +192,7 @@ func render():
 		mat.set_shader_parameter("u_terrain_colormap", tex)
 
 	mat.set_shader_parameter("u_terrain_inverse_transform", inv_gt)
-	RenderingServer.global_shader_parameter_set("gu_terrain_inverse_transform", inv_gt)
+	#RenderingServer.global_shader_parameter_set("gu_terrain_inverse_transform", inv_gt)
 	_logger.debug(str("u_terrain_inverse_transform = ", inv_gt))
 
 	mat.set_shader_parameter("u_terrain_normal_basis", normal_basis)
@@ -199,7 +200,7 @@ func render():
 
 	var step = _viewer.GDN_globals().quadrant_step_in_wus()
 	mat.set_shader_parameter("u_grid_step", step)
-	RenderingServer.global_shader_parameter_set("gu_grid_step", step)
+	#RenderingServer.global_shader_parameter_set("gu_grid_step", step)
 	_logger.debug(str("u_grid_step = ", step))
 
 	# low

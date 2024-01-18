@@ -3,6 +3,12 @@ shader_type spatial;
 
 #include "res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc"
 
+//vec3 model_world_space = MODEL_MATRIX[3].xyz; // Object's world space position. This is the equivalent to global_transform.origin in GDScript.
+//mat3 model_transform_basis = mat3(MODEL_MATRIX); // Object's world space transform basis. This is the equivalent to global_transform.basis in GDScript.
+//vec3 camera_world_space = INV_VIEW_MATRIX[3].xyz; // Camera's world space position. This is the equivalent to camera.global_transform.origin in GDScript.
+//vec3 camera_eye_world_space = VIEW_MATRIX[3].xyz; // Camera eye vector in world space direction of the camera.
+//vec3 camera_to_object_world_space = normalize(MODEL_MATRIX[3].xyz - INV_VIEW_MATRIX[3].xyz); // Camera's direction to the object in world space.
+
 // This is the reference shader of the plugin, and has the most features.
 // it should be preferred for high-end graphics cards.
 // For less features but lower-end targets, see the lite version.
