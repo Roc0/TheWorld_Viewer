@@ -289,12 +289,10 @@ script = ExtResource("1_760ml")
 
 [node name="TWViewer" type="Node3D" parent="TheWorld_Main"]
 script = ExtResource("3_yxvy6")
-_world_param_depth_quad = 6
-_world_param_cache_quad = 2
+_world_param_depth_quad = 1
 _world_param_info_visible = true
 _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 1
-_world_editor_param_info_visible = true
 _camera_param_initial_pos = Vector3(0, 1500, 0)
 _camera_param_initial_yaw_pitch_roll = Vector3(0, 0, 0)
 _shader_param_ground_uv_scale = 200.0
@@ -339,28 +337,29 @@ visible = false
 mesh = SubResource("SphereMesh_812q2")
 
 [node name="TWTestQuadrant" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2048, 0, 2048)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10240, 0, 2048)
 script = ExtResource("7_7uq48")
+_pos = Vector2(-9000, 0)
 _size = 4096
 _points_per_size = 513
 
 [node name="TWTestQuadrant2" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6144, 0, 2048)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10240, 0, 6144)
 script = ExtResource("7_7uq48")
-_pos = Vector2(5000, 0)
+_pos = Vector2(-9000, 5000)
 _size = 4096
 _points_per_size = 513
 
 [node name="TWTestQuadrant3" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2048, 0, 6144)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6144, 0, 2048)
 script = ExtResource("7_7uq48")
-_pos = Vector2(0, 5000)
+_pos = Vector2(-7000, 0)
 _size = 4096
 _points_per_size = 513
 
 [node name="TWTestQuadrant4" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6144, 0, 6144)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6144, 0, 6144)
 script = ExtResource("7_7uq48")
-_pos = Vector2(5000, 5000)
+_pos = Vector2(-7000, 5000)
 _size = 4096
 _points_per_size = 513

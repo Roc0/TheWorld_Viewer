@@ -1145,6 +1145,10 @@ func create_info_panel():
 	_info_panel.name = "InfoPanel"
 	log_debug(str("_info_panel:", _info_panel, " ", _info_panel.name))
 	add_child(_info_panel)
+	if _world_editor_param_info_visible:
+		_info_panel.visible = true
+	else:
+		_info_panel.visible = false
 	_world_param_info_panel_visibility_changed = true
 	_info_panel.self_modulate = Color(1, 1, 1, 0.5)
 	

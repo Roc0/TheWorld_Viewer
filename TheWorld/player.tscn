@@ -1,6 +1,7 @@
-[gd_scene load_steps=7 format=3 uid="uid://v6sfi8k7dr7o"]
+[gd_scene load_steps=8 format=3 uid="uid://v6sfi8k7dr7o"]
 
-[ext_resource type="Script" path="res://Player.gd" id="1_qy5qg"]
+[ext_resource type="Script" path="res://Player/player_group.gd" id="1_8qray"]
+[ext_resource type="Script" path="res://Player/Player.gd" id="1_qy5qg"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1j663"]
 albedo_color = Color(0.16315, 0.962684, 1, 1)
@@ -24,6 +25,7 @@ radius = 1.0
 height = 4.0
 
 [node name="PlayerGroup" type="Node3D"]
+script = ExtResource("1_8qray")
 
 [node name="Player" type="CharacterBody3D" parent="."]
 script = ExtResource("1_qy5qg")
@@ -57,3 +59,17 @@ shape = SubResource("CapsuleShape3D_3xj2k")
 [node name="RayCast3DVert" type="RayCast3D" parent="Player"]
 target_position = Vector3(0, -5, 0)
 collision_mask = 3
+
+[node name="BackMirror" type="Node3D" parent="."]
+
+[node name="CameraContainer" type="SubViewportContainer" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SubViewport" type="SubViewport" parent="CameraContainer"]
+handle_input_locally = false
+render_target_update_mode = 4
+
+[node name="BackCamera" type="Camera3D" parent="CameraContainer/SubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.7456, 0.0351807, 0)
+current = true

@@ -1,6 +1,10 @@
 extends CharacterBody3D
 var _camera_tracking_player : bool = false
 
+var _world_camera : Camera3D = null
+var _back_camera : Camera3D = null
+var _back_camera_container : SubViewportContainer = null
+
 @export var gravity = -9.8
 @export var acceleration_speed = 20
 @export var inertia_factor = 10
@@ -51,9 +55,22 @@ func _physics_process(_delta):
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
-	pass
+	if _back_camera != null and _back_camera_container != null:
+		if _back_camera_container.visible:
+			_back_camera.global_transform = _world_camera.global_transform
+			_back_camera.rotate_y(PI)
 
-func set_player_in_world(value : bool):
+func toggle_back_camera_visibility() -> void:
+	if _back_camera_container != null:
+		_back_camera_container.visible = !_back_camera_container.visible
+
+func set_camera(world_camera : Camera3D, back_camera : Camera3D, back_camera_container : SubViewportContainer) -> void:
+	_world_camera = world_camera
+	_back_camera = back_camera
+	_back_camera_container = back_camera_container 
+	_back_camera_container.visible = false
+
+func set_player_in_world(value : bool) -> void:
 	_player_in_world = value
 	visible = _player_in_world
 	_is_at_correct_heigth_from_floor = false

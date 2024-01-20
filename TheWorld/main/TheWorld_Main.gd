@@ -104,6 +104,7 @@ func _ready():
 	$Test/TestBall.visible = false
 	#$Player/Player.visible = false
 	$Player/Player.set_player_in_world(false)
+	$Player/Player.set_camera(get_viewport().get_camera_3d(), $Player/CameraContainer/SubViewport/BackCamera, $Player/CameraContainer)
 	var e := get_tree().get_root().connect("size_changed", Callable(self, "resizing"))
 	log_debug(str("connect size_changed result=", e))
 	#get_tree().get_root().set_transparent_background(true)
@@ -241,6 +242,8 @@ func _input(event):
 				var impact_pos : Vector3 = result.position
 				$Player/Player.global_transform.origin = impact_pos + Vector3(0, 5, 0)
 				$Player/Player.set_player_in_world(true)
+		elif event.is_action_pressed("ui_toggle_back_mirror"):
+			$Player/Player.toggle_back_camera_visibility()
 		#elif event.is_action_pressed("ui_dump"):
 		#	TWViewer().GDN_viewer().dump_required()
 
