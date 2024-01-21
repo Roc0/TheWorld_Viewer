@@ -227,7 +227,7 @@ func _input(event):
 			process_test_action = true
 		elif event.is_action_pressed("ui_print_screen"):
 			var img = get_viewport().get_texture().get_image()
-			var size : Vector2i = img.get_size()
+			var _size : Vector2i = img.get_size()
 			var save_path = OS.get_user_data_dir() + "\\screen.png"
 			img.save_png(save_path)
 		elif event.is_action_pressed("ui_drop_player"):

@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://c4ukh1kw4impi"]
+[gd_scene load_steps=42 format=3 uid="uid://c4ukh1kw4impi"]
 
 [ext_resource type="Script" path="res://main/TheWorld_Main.gd" id="1_760ml"]
 [ext_resource type="Script" path="res://addons/twviewer/tw_viewer.gd" id="3_yxvy6"]
@@ -7,6 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://bi138l8muok7h" path="res://components/test.tscn" id="5_kid0l"]
 [ext_resource type="PackedScene" uid="uid://v6sfi8k7dr7o" path="res://player.tscn" id="6_wlxwp"]
 [ext_resource type="Script" path="res://addons/twviewer/test/test_quadrant.gd" id="7_7uq48"]
+[ext_resource type="Shader" path="res://utils/GreyScalePostProcess.gdshader" id="8_4i1hi"]
+[ext_resource type="Shader" path="res://utils/GaussianBlurEffectPostProcess.gdshader" id="9_2dtkh"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xl13w"]
 shading_mode = 0
@@ -282,6 +284,13 @@ material = SubResource("StandardMaterial3D_l5mjy")
 radius = 100.0
 height = 200.0
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_epqem"]
+shader = ExtResource("8_4i1hi")
+shader_parameter/greyScale = Vector3(0.5, 0.5, 0.5)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6wri7"]
+shader = ExtResource("9_2dtkh")
+
 [node name="RootNode" type="Node"]
 
 [node name="TheWorld_Main" type="Node3D" parent="."]
@@ -339,27 +348,59 @@ mesh = SubResource("SphereMesh_812q2")
 [node name="TWTestQuadrant" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10240, 0, 2048)
 script = ExtResource("7_7uq48")
-_pos = Vector2(-9000, 0)
-_size = 4096
+_pos = Vector2(-12288, 0)
 _points_per_size = 513
+_size_read_only = 4096.0
+_step_read_only = 2.0
+_num_vertices_read_only = 263169
 
 [node name="TWTestQuadrant2" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10240, 0, 6144)
 script = ExtResource("7_7uq48")
-_pos = Vector2(-9000, 5000)
-_size = 4096
+_pos = Vector2(-12288, 4096)
 _points_per_size = 513
+_size_read_only = 4096.0
+_step_read_only = 2.0
+_num_vertices_read_only = 263169
 
 [node name="TWTestQuadrant3" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6144, 0, 2048)
 script = ExtResource("7_7uq48")
-_pos = Vector2(-7000, 0)
-_size = 4096
+_pos = Vector2(-8192, 0)
 _points_per_size = 513
+_size_read_only = 4096.0
+_step_read_only = 2.0
+_num_vertices_read_only = 263169
 
 [node name="TWTestQuadrant4" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6144, 0, 6144)
 script = ExtResource("7_7uq48")
-_pos = Vector2(-7000, 5000)
-_size = 4096
+_pos = Vector2(-8192, 4096)
 _points_per_size = 513
+_size_read_only = 4096.0
+_step_read_only = 2.0
+_num_vertices_read_only = 263169
+
+[node name="PostProcessGreyScaleEffect" type="CanvasLayer" parent="."]
+visible = false
+follow_viewport_enabled = true
+
+[node name="ColorRect" type="ColorRect" parent="PostProcessGreyScaleEffect"]
+material = SubResource("ShaderMaterial_epqem")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PostProcessGaussianBlurEffect" type="CanvasLayer" parent="."]
+visible = false
+follow_viewport_enabled = true
+
+[node name="ColorRect" type="ColorRect" parent="PostProcessGaussianBlurEffect"]
+material = SubResource("ShaderMaterial_6wri7")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

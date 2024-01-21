@@ -16,24 +16,36 @@ var _tree_entered := false
 var _render_changed := false
 
 var _material : ShaderMaterial = null
-var _quadrant_pos : Vector2 = Vector2.ZERO
+
+var _var_read_only = true
 
 @export var _render := false:
 	set = _set_render
 @export var _pos := Vector2(0.0, 0.0)
-@export var _size : int = 0
 @export var _points_per_size : int = 0
+@export var _size_read_only : float = 0:
+	set = _set_size_read_only
+@export var _step_read_only : float = 0:
+	set = _set_step_read_only
+@export var _num_vertices_read_only : int = 0:
+	set = _set_num_vertices_read_only
 
 func _set_render(b : bool) -> void:
 	if (_render != b):
 		_render = b
 		_render_changed = true
-func _set_size_used(f : float) -> void:
-	pass
-func _set_step_used(f : float) -> void:
-	pass
-func _set_points_per_size(f : int) -> void:
-	pass
+
+func _set_size_read_only(v : float) -> void:
+	if not _var_read_only:
+		_size_read_only = v
+
+func _set_step_read_only(v : float) -> void:
+	if not _var_read_only:
+		_step_read_only = v
+
+func _set_num_vertices_read_only(v : int) -> void:
+	if not _var_read_only:
+		_num_vertices_read_only = v
 
 func set_plugin(plugin_ : EditorPlugin) -> void:
 	plugin = plugin_
@@ -118,12 +130,12 @@ func find_node_by_name(node_name : String) -> Node:
 
 func render():
 	#return
-	var size : int = _size
-	if size == 0:
-		size = _viewer.GDN_globals().quadrant_size_in_wus()
+	var size : float = _viewer.GDN_globals().quadrant_size_in_wus()
+	var step : float = _viewer.GDN_globals().quadrant_step_in_wus()
+	
 	var points_per_size : int = _points_per_size
 	if points_per_size == 0:
-		points_per_size = size / _viewer.GDN_globals().quadrant_step_in_wus()
+		points_per_size = size / step
 	else:
 		points_per_size -= 1
 
@@ -132,27 +144,34 @@ func render():
 		_logger.debug(str("gdn_viewer null"))
 		return
 	var b : bool = gdn_viewer.load_quadrant_data(_pos.x, _pos.y, 0)
-	_quadrant_pos = gdn_viewer.get_quadrant_pos()
+	_pos = gdn_viewer.get_quadrant_pos()
 	
 	_logger.debug(str("size=", size, " points_per_size=", points_per_size))
 	_plane_mesh = PlaneMesh.new()
 	_plane_mesh.size = Vector2(size, size)
 	_plane_mesh.subdivide_depth = points_per_size - 1
 	_plane_mesh.subdivide_width = points_per_size - 1
-	_size = size
 	mesh = _plane_mesh
 	material_override = _material
-	global_transform.origin = Vector3(_quadrant_pos.x + 2048, 0, _quadrant_pos.y + 2048)
+	global_transform.origin = Vector3(_pos.x + size / 2, 0, _pos.y + size / 2)
 	var gt : Transform3D = Transform3D(basis, Vector3(0, 0, 0))	# upper left corner of plane on origin 
 	var inv_gt : Transform3D = gt.affine_inverse()
 	var normal_basis : Basis = gt.basis.inverse().transposed()
 	
 	var array : Array = _plane_mesh.surface_get_arrays(0)
-	_points_per_size = sqrt(array[0].size())
-	_logger.debug(str("size=", size, " points_per_size=", points_per_size, " vertices=", array[0].size()))
+	points_per_size = sqrt(array[0].size())
+	_logger.debug(str("size=", size, " step= ", step, " points_per_size=", points_per_size, " vertices=", array[0].size()))
+	
+	_var_read_only = false
+	_size_read_only = size
+	_step_read_only = step
+	_points_per_size = points_per_size
+	_num_vertices_read_only = array[0].size()
+	_var_read_only = true
+	_logger.debug(str("_size_read_only=", _size_read_only, " _step_read_only= ", _step_read_only, " _points_per_size=", _points_per_size, " _num_vertices_read_only=", _num_vertices_read_only))
 	
 	#_logger.debug(str("array size = ", array.size()))
-	#_logger.debug(str("vertices = ", _points_per_size))
+	#_logger.debug(str("vertices = ", array[0].size()))
 	#_logger.debug(str("AABB = ", get_aabb()))
 	#_logger.debug(str("MeshInstance transform = ", global_transform))
 	#_logger.debug(str("Shader global transform = ", gt))
@@ -198,7 +217,6 @@ func render():
 	mat.set_shader_parameter("u_terrain_normal_basis", normal_basis)
 	_logger.debug(str("u_terrain_normal_basis = ", normal_basis))
 
-	var step = _viewer.GDN_globals().quadrant_step_in_wus()
 	mat.set_shader_parameter("u_grid_step", step)
 	#RenderingServer.global_shader_parameter_set("gu_grid_step", step)
 	_logger.debug(str("u_grid_step = ", step))
