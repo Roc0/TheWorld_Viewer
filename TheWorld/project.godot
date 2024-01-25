@@ -217,3 +217,11 @@ gu_terrain_inverse_transform={
 "type": "transform",
 "value": Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 }
+gu_ground_albedo_bump_array={
+"type": "sampler2DArray",
+"value": ""
+}
+gu_ground_normal_roughness_array={
+"type": "sampler2DArray",
+"value": ""
+}

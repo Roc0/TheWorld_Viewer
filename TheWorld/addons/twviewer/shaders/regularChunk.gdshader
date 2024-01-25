@@ -43,6 +43,10 @@ uniform sampler2D u_ground_normal_roughness_1;
 uniform sampler2D u_ground_normal_roughness_2;
 uniform sampler2D u_ground_normal_roughness_3;
 
+global uniform sampler2DArray gu_ground_albedo_bump_array : source_color;
+global uniform sampler2DArray gu_ground_normal_roughness_array;
+uniform vec4 u_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
+
 // Had to give this uniform a suffix, because it's declared as a simple float
 // in other shaders, and its type cannot be inferred by the plugin.
 // See https://github.com/godotengine/godot/issues/24488
@@ -103,10 +107,26 @@ vec3 get_triplanar_blend(vec3 world_normal) {
 	return blending / vec3(b, b, b);
 }
 
-vec4 texture_triplanar(sampler2D tex, vec3 world_pos, vec3 blend) {
+vec4 texture_triplanar_dismiss(sampler2D tex, vec3 world_pos, vec3 blend) {
 	vec4 xaxis = texture(tex, world_pos.yz);
 	vec4 yaxis = texture(tex, world_pos.xz);
 	vec4 zaxis = texture(tex, world_pos.xy);
+	// blend the results of the 3 planar projections.
+	return xaxis * blend.x + yaxis * blend.y + zaxis * blend.z;
+}
+
+vec4 texture_triplanar_ab_layers(int type, float layer, vec3 world_pos, vec3 blend) {
+	vec4 xaxis = texture_albedo_bump(type, layer, world_pos.yz);
+	vec4 yaxis = texture_albedo_bump(type, layer, world_pos.xz);
+	vec4 zaxis = texture_albedo_bump(type, layer, world_pos.xy);
+	// blend the results of the 3 planar projections.
+	return xaxis * blend.x + yaxis * blend.y + zaxis * blend.z;
+}
+
+vec4 texture_triplanar_nr_layers(int type, float layer, vec3 world_pos, vec3 blend) {
+	vec4 xaxis = texture_normal_roughness(type, layer, world_pos.yz);
+	vec4 yaxis = texture_normal_roughness(type, layer, world_pos.xz);
+	vec4 zaxis = texture_normal_roughness(type, layer, world_pos.xy);
 	// blend the results of the 3 planar projections.
 	return xaxis * blend.x + yaxis * blend.y + zaxis * blend.z;
 }
@@ -125,7 +145,7 @@ vec2 rotate(vec2 v, float cosa, float sina) {
 	return vec2(cosa * v.x - sina * v.y, sina * v.x + cosa * v.y);
 }
 
-vec4 texture_antitile(sampler2D albedo_tex, sampler2D normal_tex, vec2 uv, out vec4 out_normal) {
+vec4 texture_antitile_dismiss(sampler2D albedo_tex, sampler2D normal_tex, vec2 uv, out vec4 out_normal) {
 	float frequency = 2.0;
 	float scale = 1.3;
 	float sharpness = 0.7;
@@ -158,6 +178,75 @@ vec4 texture_antitile(sampler2D albedo_tex, sampler2D normal_tex, vec2 uv, out v
 	// Using depth blend because classic alpha blending smoothes out details.
 	out_normal = depth_blend2(nrm0, col0.a, nrm1, col1.a, t);
 	return depth_blend2(col0, col0.a, col1, col1.a, t);
+}
+
+vec4 texture_antitile_layers(int type, float layer, vec2 uv, out vec4 out_normal) {
+	float frequency = 2.0;
+	float scale = 1.3;
+	float sharpness = 0.7;
+	
+	// Rotate and scale UV
+	float rot = 3.14 * 0.6;
+	float cosa = cos(rot);
+	float sina = sin(rot);
+	vec2 uv2 = rotate(uv, cosa, sina) * scale;
+	
+	vec4 col0 = texture_albedo_bump(type, layer, uv);
+	vec4 col1 = texture_albedo_bump(type, layer, uv2);
+	vec4 nrm0 = texture_normal_roughness(type, layer, uv);
+	vec4 nrm1 = texture_normal_roughness(type, layer, uv2);
+	//col0 = vec4(0.0, 0.5, 0.5, 1.0); // Highlights variations
+
+	// Normals have to be rotated too since we are rotating the texture...
+	// TODO Probably not the most efficient but understandable for now
+	vec3 n = unpack_normal(nrm1);
+	// Had to negate the Y axis for some reason. I never remember the myriad of conventions around
+	n.xz = rotate(n.xz, cosa, -sina);
+	nrm1 = pack_normal(n, nrm1.a);
+	
+	// Periodically alternate between the two versions using a warped checker pattern
+	float t = 1.2 + 
+		  sin(uv2.x * frequency + sin(uv.x) * 2.0) 
+		* cos(uv2.y * frequency + sin(uv.y) * 2.0); // Result in [0..2]
+	t = smoothstep(sharpness, 2.0 - sharpness, t);
+
+	// Using depth blend because classic alpha blending smoothes out details.
+	out_normal = depth_blend2(nrm0, col0.a, nrm1, col1.a, t);
+	return depth_blend2(col0, col0.a, col1, col1.a, t);
+}
+
+vec4 texture_albedo_bump(int type, float layer, vec2 uv)
+{
+	if (layer < 0.0) {
+		if (type == 0) {
+			return texture(u_ground_albedo_bump_0, uv);
+		} else if (type == 1) {
+			return texture(u_ground_albedo_bump_1, uv);
+		} else if (type == 2) {
+			return texture(u_ground_albedo_bump_2, uv);
+		} else {
+			return texture(u_ground_albedo_bump_3, uv);
+		}
+	} else {
+		return texture(gu_ground_albedo_bump_array, vec3(uv, layer));
+	}
+}
+
+vec4 texture_normal_roughness(int type, float layer, vec2 uv)
+{
+	if (layer < 0.0) {
+		if (type == 0) {
+			return texture(u_ground_normal_roughness_0, uv);
+		} else if (type == 1) {
+			return texture(u_ground_normal_roughness_1, uv);
+		} else if (type == 2) {
+			return texture(u_ground_normal_roughness_2, uv);
+		} else {
+			return texture(u_ground_normal_roughness_3, uv);
+		}
+	} else {
+		return texture(gu_ground_normal_roughness_array, vec3(uv, layer));
+	}
 }
 
 void vertex() {
@@ -253,7 +342,7 @@ void fragment() {
 	vec3 base_ground_uv = vec3(v_vertex_cell_coords_in_textures.x, v_vertex_world_pos.y * MODEL_MATRIX[1][1], v_vertex_cell_coords_in_textures.y);
 	vec2 ground_uv0 = base_ground_uv.xz / ground_uv_scale_per_texture.x;		// 2-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor
 	vec2 ground_uv1 = base_ground_uv.xz / ground_uv_scale_per_texture.y;		// these coordinates are used to fetch u_ground_albedo_bump_0 and u_ground_normal_roughness_0 
-	vec2 ground_uv2 = base_ground_uv.xz / ground_uv_scale_per_texture.z;
+	vec2 ground_uv2 = base_ground_uv.xz / ground_uv_scale_per_texture.z;		// dividing by ground_uv_scale_per_texture we use a portion of the texture so the effect is that it is streched on the terrain: it is usefull whne we see the terrain at greta distance
 	vec3 ground_uv3 = base_ground_uv / ground_uv_scale_per_texture.w;		// 3-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor (y coord is height in world coord)
 
 	if (u_editmode_selected > 0.0 && is_on_the_border(UV, u_quad_border_line_thickness)) {
@@ -305,35 +394,49 @@ void fragment() {
 
 				vec3 blending = get_triplanar_blend(terrain_normal_world);
 
-				ab3 = texture_triplanar(u_ground_albedo_bump_3, ground_uv3, blending);
-				nr3 = texture_triplanar(u_ground_normal_roughness_3, ground_uv3, blending);
+				//ab3 = texture_triplanar(u_ground_albedo_bump_3, ground_uv3, blending);
+				//nr3 = texture_triplanar(u_ground_normal_roughness_3, ground_uv3, blending);
+				ab3 = texture_triplanar_ab_layers(3, u_ground_layers.a, ground_uv3, blending);
+				nr3 = texture_triplanar_nr_layers(3, u_ground_layers.a, ground_uv3, blending);
 
 			} else {
 				if (u_tile_reduction_per_texture[3] > 0.0) {
-					ab3 = texture_antitile(u_ground_albedo_bump_3, u_ground_normal_roughness_3, ground_uv3.xz, nr3);
+					//ab3 = texture_antitile(u_ground_albedo_bump_3, u_ground_normal_roughness_3, ground_uv3.xz, nr3);
+					ab3 = texture_antitile_layers(3, u_ground_layers.a, ground_uv3.xz, nr3);
 				} else {
-					ab3 = texture(u_ground_albedo_bump_3, ground_uv3.xz);
-					nr3 = texture(u_ground_normal_roughness_3, ground_uv3.xz);
+					//ab3 = texture(u_ground_albedo_bump_3, ground_uv3.xz);
+					//nr3 = texture(u_ground_normal_roughness_3, ground_uv3.xz);
+					ab3 = texture_albedo_bump(3, u_ground_layers.a, ground_uv3.xz);
+					nr3 = texture_normal_roughness(3, u_ground_layers.a, ground_uv3.xz);
 				}
 			}
 
 			if (u_tile_reduction_per_texture[0] > 0.0) {
-				ab0 = texture_antitile(u_ground_albedo_bump_0, u_ground_normal_roughness_0, ground_uv0, nr0);
+				//ab0 = texture_antitile(u_ground_albedo_bump_0, u_ground_normal_roughness_0, ground_uv0, nr0);
+				ab0 = texture_antitile_layers(0, u_ground_layers.x, ground_uv0, nr0);
 			} else {
-				ab0 = texture(u_ground_albedo_bump_0, ground_uv0);
-				nr0 = texture(u_ground_normal_roughness_0, ground_uv0);
+				//ab0 = texture(u_ground_albedo_bump_0, ground_uv0);
+				//nr0 = texture(u_ground_normal_roughness_0, ground_uv0);
+				ab0 = texture_albedo_bump(0, u_ground_layers.x, ground_uv0);
+				nr0 = texture_normal_roughness(0, u_ground_layers.x, ground_uv0);
 			}
 			if (u_tile_reduction_per_texture[1] > 0.0) {
-				ab1 = texture_antitile(u_ground_albedo_bump_1, u_ground_normal_roughness_1, ground_uv1, nr1);
+				//ab1 = texture_antitile(u_ground_albedo_bump_1, u_ground_normal_roughness_1, ground_uv1, nr1);
+				ab1 = texture_antitile_layers(1, u_ground_layers.y, ground_uv1, nr1);
 			} else {
-				ab1 = texture(u_ground_albedo_bump_1, ground_uv1);
-				nr1 = texture(u_ground_normal_roughness_1, ground_uv1);
+				//ab1 = texture(u_ground_albedo_bump_1, ground_uv1);
+				//nr1 = texture(u_ground_normal_roughness_1, ground_uv1);
+				ab1 = texture_albedo_bump(1, u_ground_layers.y, ground_uv1);
+				nr1 = texture_normal_roughness(1, u_ground_layers.y, ground_uv1);
 			}
 			if (u_tile_reduction_per_texture[2] > 0.0) {
-				ab2 = texture_antitile(u_ground_albedo_bump_2, u_ground_normal_roughness_2, ground_uv2, nr2);
+				//ab2 = texture_antitile(u_ground_albedo_bump_2, u_ground_normal_roughness_2, ground_uv2, nr2);
+				ab2 = texture_antitile_layers(2, u_ground_layers.z, ground_uv2, nr2);
 			} else {
-				ab2 = texture(u_ground_albedo_bump_2, ground_uv2);
-				nr2 = texture(u_ground_normal_roughness_2, ground_uv2);
+				//ab2 = texture(u_ground_albedo_bump_2, ground_uv2);
+				//nr2 = texture(u_ground_normal_roughness_2, ground_uv2);
+				ab2 = texture_albedo_bump(2, u_ground_layers.z, ground_uv2);
+				nr2 = texture_normal_roughness(2, u_ground_layers.z, ground_uv2);
 			}
 
 			vec3 col0 = ab0.rgb * v_tint0;	// col(0-3) is the result of the pixel fetched from u_ground_albedo_bump_(0-3) modified by the value fetched from u_terrain_colormap and relative to the vertex corresponding to current pixel

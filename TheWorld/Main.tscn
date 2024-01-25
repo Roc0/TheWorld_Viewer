@@ -298,13 +298,15 @@ script = ExtResource("1_760ml")
 
 [node name="TWViewer" type="Node3D" parent="TheWorld_Main"]
 script = ExtResource("3_yxvy6")
-_world_param_depth_quad = 1
+_world_param_depth_quad = 6
+_world_param_cache_quad = 2
 _world_param_info_visible = true
 _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 1
 _camera_param_initial_pos = Vector3(0, 1500, 0)
 _camera_param_initial_yaw_pitch_roll = Vector3(0, 0, 0)
 _shader_param_ground_uv_scale = 200.0
+_shader_param_triplanar = true
 _shader_param_globalmap_blend_start = 3000.0
 
 [node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main/TWViewer"]
@@ -350,36 +352,24 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10240, 0, 2048)
 script = ExtResource("7_7uq48")
 _pos = Vector2(-12288, 0)
 _points_per_size = 513
-_size_read_only = 4096.0
-_step_read_only = 2.0
-_num_vertices_read_only = 263169
 
 [node name="TWTestQuadrant2" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10240, 0, 6144)
 script = ExtResource("7_7uq48")
 _pos = Vector2(-12288, 4096)
 _points_per_size = 513
-_size_read_only = 4096.0
-_step_read_only = 2.0
-_num_vertices_read_only = 263169
 
 [node name="TWTestQuadrant3" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6144, 0, 2048)
 script = ExtResource("7_7uq48")
 _pos = Vector2(-8192, 0)
 _points_per_size = 513
-_size_read_only = 4096.0
-_step_read_only = 2.0
-_num_vertices_read_only = 263169
 
 [node name="TWTestQuadrant4" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6144, 0, 6144)
 script = ExtResource("7_7uq48")
 _pos = Vector2(-8192, 4096)
 _points_per_size = 513
-_size_read_only = 4096.0
-_step_read_only = 2.0
-_num_vertices_read_only = 263169
 
 [node name="PostProcessGreyScaleEffect" type="CanvasLayer" parent="."]
 visible = false

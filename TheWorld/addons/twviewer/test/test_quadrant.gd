@@ -222,43 +222,43 @@ func render():
 	_logger.debug(str("u_grid_step = ", step))
 
 	# low
-	tex = gdn_viewer.get_ground_texture_albedo_bump(gdn_viewer.get_ground_texture_name(0))
-	if tex != null:
-		mat.set_shader_parameter("u_ground_albedo_bump_0", tex)
-
-	tex = gdn_viewer.get_ground_texture_normal_roughness(gdn_viewer.get_ground_texture_name(0))
-	if tex != null:
-		mat.set_shader_parameter("u_ground_normal_roughness_0", tex)
+	#tex = gdn_viewer.get_ground_texture_albedo_bump(gdn_viewer.get_ground_texture_name(0))
+	#if tex != null:
+	#	mat.set_shader_parameter("u_ground_albedo_bump_0", tex)
+	#tex = gdn_viewer.get_ground_texture_normal_roughness(gdn_viewer.get_ground_texture_name(0))
+	#if tex != null:
+	#	mat.set_shader_parameter("u_ground_normal_roughness_0", tex)
 
 	# high
-	tex = gdn_viewer.get_ground_texture_albedo_bump(gdn_viewer.get_ground_texture_name(1))
-	if tex != null:
-		mat.set_shader_parameter("u_ground_albedo_bump_1", tex)
-
-	tex = gdn_viewer.get_ground_texture_normal_roughness(gdn_viewer.get_ground_texture_name(1))
-	if tex != null:
-		mat.set_shader_parameter("u_ground_normal_roughness_1", tex)
+	#tex = gdn_viewer.get_ground_texture_albedo_bump(gdn_viewer.get_ground_texture_name(1))
+	#if tex != null:
+	#	mat.set_shader_parameter("u_ground_albedo_bump_1", tex)
+	#tex = gdn_viewer.get_ground_texture_normal_roughness(gdn_viewer.get_ground_texture_name(1))
+	#if tex != null:
+	#	mat.set_shader_parameter("u_ground_normal_roughness_1", tex)
 
 	# dirt
-	tex = gdn_viewer.get_ground_texture_albedo_bump(gdn_viewer.get_ground_texture_name(2))
-	if tex != null:
-		mat.set_shader_parameter("u_ground_albedo_bump_2", tex)
-
-	tex = gdn_viewer.get_ground_texture_normal_roughness(gdn_viewer.get_ground_texture_name(2))
-	if tex != null:
-		mat.set_shader_parameter("u_ground_normal_roughness_2", tex)
+	#tex = gdn_viewer.get_ground_texture_albedo_bump(gdn_viewer.get_ground_texture_name(2))
+	#if tex != null:
+	#	mat.set_shader_parameter("u_ground_albedo_bump_2", tex)
+	#tex = gdn_viewer.get_ground_texture_normal_roughness(gdn_viewer.get_ground_texture_name(2))
+	#if tex != null:
+	#	mat.set_shader_parameter("u_ground_normal_roughness_2", tex)
 
 	# rocks
-	tex = gdn_viewer.get_ground_texture_albedo_bump(gdn_viewer.get_ground_texture_name(3))
-	if tex != null:
-		mat.set_shader_parameter("u_ground_albedo_bump_3", tex)
-
-	tex = gdn_viewer.get_ground_texture_normal_roughness(gdn_viewer.get_ground_texture_name(3))
-	if tex != null:
-		mat.set_shader_parameter("u_ground_normal_roughness_3", tex)
+	#tex = gdn_viewer.get_ground_texture_albedo_bump(gdn_viewer.get_ground_texture_name(3))
+	#if tex != null:
+	#	mat.set_shader_parameter("u_ground_albedo_bump_3", tex)
+	#tex = gdn_viewer.get_ground_texture_normal_roughness(gdn_viewer.get_ground_texture_name(3))
+	#if tex != null:
+	#	mat.set_shader_parameter("u_ground_normal_roughness_3", tex)
+		
+	var v4 : Vector4 = gdn_viewer.get_ground_texture_layers()
+	mat.set_shader_parameter("u_ground_layers", v4)
+	_logger.debug(str("u_ground_layers = ", v4))
 
 	var plane : Plane = gdn_viewer.get_shader_param_ground_uv_scale()
-	var v4 : Vector4 = Vector4(plane.normal.x, plane.normal.y, plane.normal.z, plane.d)
+	v4 = Vector4(plane.normal.x, plane.normal.y, plane.normal.z, plane.d)
 	mat.set_shader_parameter("u_ground_uv_scale_per_texture", v4)
 	_logger.debug(str("u_ground_uv_scale_per_texture = ", v4))
 
