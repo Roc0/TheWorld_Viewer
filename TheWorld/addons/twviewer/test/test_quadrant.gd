@@ -152,9 +152,11 @@ func render():
 	_plane_mesh.subdivide_depth = points_per_size - 1
 	_plane_mesh.subdivide_width = points_per_size - 1
 	mesh = _plane_mesh
-	material_override = _material
-	global_transform.origin = Vector3(_pos.x + size / 2, 0, _pos.y + size / 2)
-	var gt : Transform3D = Transform3D(basis, Vector3(0, 0, 0))	# upper left corner of plane on origin 
+	mesh.material = _material
+	#material_override = _material
+	global_transform.origin = Vector3(_pos.x + floor(size / 2), 0, _pos.y + floor(size / 2))
+	#var gt : Transform3D = Transform3D(basis, Vector3(0, 0, 0))	# upper left corner of plane on origin 
+	var gt : Transform3D = Transform3D(basis, Vector3(_pos.x, 0, _pos.y))	# upper left corner of plane on origin 
 	var inv_gt : Transform3D = gt.affine_inverse()
 	var normal_basis : Basis = gt.basis.inverse().transposed()
 	
@@ -276,6 +278,35 @@ func render():
 	_logger.debug(str("u_tile_reduction_per_texture = ", v4))
 	
 	gdn_viewer.clear_quadrant_data()
+	
+	if name == "TWTestQuadrant1":
+		v4 = Vector4(1, 1, 9, 10)
+		mat.set_shader_parameter("u_south_ground_layers", v4)
+		_logger.debug(str(name + " - u_south_ground_layers = ", v4))
+		v4 = Vector4(1, 8, 9, 10)
+		mat.set_shader_parameter("u_east_ground_layers", v4)
+		_logger.debug(str(name + " - u_east_ground_layers = ", v4))
+	elif name == "TWTestQuadrant2":
+		v4 = Vector4(1, 5, 9, 10)
+		mat.set_shader_parameter("u_north_ground_layers", v4)
+		_logger.debug(str(name + " - u_north_ground_layers = ", v4))
+		v4 = Vector4(1, 1, 9, 10)
+		mat.set_shader_parameter("u_east_ground_layers", v4)
+		_logger.debug(str(name + " - u_east_ground_layers = ", v4))
+	elif name == "TWTestQuadrant3":
+		v4 = Vector4(1, 1, 9, 10)
+		mat.set_shader_parameter("u_south_ground_layers", v4)
+		_logger.debug(str(name + " - u_south_ground_layers = ", v4))
+		v4 = Vector4(1, 5, 9, 10)
+		mat.set_shader_parameter("u_west_ground_layers", v4)
+		_logger.debug(str(name + " - u_west_ground_layers = ", v4))
+	elif name == "TWTestQuadrant4":
+		v4 = Vector4(1, 8, 9, 10)
+		mat.set_shader_parameter("u_north_ground_layers", v4)
+		_logger.debug(str(name + " - u_north_ground_layers = ", v4))
+		v4 = Vector4(1, 1, 9, 10)
+		mat.set_shader_parameter("u_west_ground_layers", v4)
+		_logger.debug(str(name + " - u_west_ground_layers = ", v4))
 
 func clear_rendering():
 	material_override = null
