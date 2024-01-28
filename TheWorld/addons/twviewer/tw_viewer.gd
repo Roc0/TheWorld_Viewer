@@ -252,6 +252,13 @@ func _set_shader_param_colormap_opacity(colormap_opacity : float):
 	_shader_param_colormap_opacity = colormap_opacity
 	_shader_param_colormap_opacity_changed = true
 
+var _shader_param_texture_blending_size_changed := true
+@export_range(0.00, 1.0, 0.01, "or_greater", "or_less")  var _shader_param_texture_blending_size : float = 0.4:
+	set = _set_shader_param_texture_blending_size
+func _set_shader_param_texture_blending_size(texture_blending_size : float):
+	_shader_param_texture_blending_size = texture_blending_size
+	_shader_param_texture_blending_size_changed = true
+	
 @export_group("", "")
 
 func _init():
@@ -416,6 +423,10 @@ func _process(delta):
 	# debugric
 	#if Engine.is_editor_hint():
 	#	return
+	
+	if _shader_param_texture_blending_size_changed:
+		RenderingServer.global_shader_parameter_set("gu_texture_blending_size", _shader_param_texture_blending_size)
+		_shader_param_texture_blending_size_changed = false
 
 	if _exit_status == EXIT_STATUS_UNDEPLOYWORLD_REQUIRED:
 		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:

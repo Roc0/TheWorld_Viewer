@@ -225,3 +225,7 @@ gu_ground_normal_roughness_array={
 "type": "sampler2DArray",
 "value": ""
 }
+gu_texture_blending_size={
+"type": "float",
+"value": 0.4
+}

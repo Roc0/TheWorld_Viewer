@@ -80,6 +80,40 @@ varying vec4 v_vertex_world_pos;
 varying vec2 v_vertex_cell_coords_in_textures;
 //varying vec4 v_ground_uv_scale_per_texture;
 
+vec4 texture_albedo_bump(int type, float layer, vec2 uv)
+{
+	if (layer < 0.0) {
+		if (type == 0) {
+			return texture(u_ground_albedo_bump_0, uv);
+		} else if (type == 1) {
+			return texture(u_ground_albedo_bump_1, uv);
+		} else if (type == 2) {
+			return texture(u_ground_albedo_bump_2, uv);
+		} else {
+			return texture(u_ground_albedo_bump_3, uv);
+		}
+	} else {
+		return texture(gu_ground_albedo_bump_array, vec3(uv, layer));
+	}
+}
+
+vec4 texture_normal_roughness(int type, float layer, vec2 uv)
+{
+	if (layer < 0.0) {
+		if (type == 0) {
+			return texture(u_ground_normal_roughness_0, uv);
+		} else if (type == 1) {
+			return texture(u_ground_normal_roughness_1, uv);
+		} else if (type == 2) {
+			return texture(u_ground_normal_roughness_2, uv);
+		} else {
+			return texture(u_ground_normal_roughness_3, uv);
+		}
+	} else {
+		return texture(gu_ground_normal_roughness_array, vec3(uv, layer));
+	}
+}
+
 // Blends weights according to the bump of detail textures,
 // so for example it allows to have sand fill the gaps between pebbles
 vec4 get_depth_blended_weights(vec4 splat, vec4 bumps) {
@@ -213,40 +247,6 @@ vec4 texture_antitile_layers(int type, float layer, vec2 uv, out vec4 out_normal
 	// Using depth blend because classic alpha blending smoothes out details.
 	out_normal = depth_blend2(nrm0, col0.a, nrm1, col1.a, t);
 	return depth_blend2(col0, col0.a, col1, col1.a, t);
-}
-
-vec4 texture_albedo_bump(int type, float layer, vec2 uv)
-{
-	if (layer < 0.0) {
-		if (type == 0) {
-			return texture(u_ground_albedo_bump_0, uv);
-		} else if (type == 1) {
-			return texture(u_ground_albedo_bump_1, uv);
-		} else if (type == 2) {
-			return texture(u_ground_albedo_bump_2, uv);
-		} else {
-			return texture(u_ground_albedo_bump_3, uv);
-		}
-	} else {
-		return texture(gu_ground_albedo_bump_array, vec3(uv, layer));
-	}
-}
-
-vec4 texture_normal_roughness(int type, float layer, vec2 uv)
-{
-	if (layer < 0.0) {
-		if (type == 0) {
-			return texture(u_ground_normal_roughness_0, uv);
-		} else if (type == 1) {
-			return texture(u_ground_normal_roughness_1, uv);
-		} else if (type == 2) {
-			return texture(u_ground_normal_roughness_2, uv);
-		} else {
-			return texture(u_ground_normal_roughness_3, uv);
-		}
-	} else {
-		return texture(gu_ground_normal_roughness_array, vec3(uv, layer));
-	}
 }
 
 void vertex() {

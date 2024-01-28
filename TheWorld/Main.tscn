@@ -306,8 +306,8 @@ _world_editor_param_cache_quad = 1
 _camera_param_initial_pos = Vector3(0, 1500, 0)
 _camera_param_initial_yaw_pitch_roll = Vector3(0, 0, 0)
 _shader_param_ground_uv_scale = 200.0
-_shader_param_triplanar = true
 _shader_param_globalmap_blend_start = 3000.0
+_shader_param_texture_blending_size = 0.2
 
 [node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main/TWViewer"]
 perfparam_threshold_cache_heights = 15000.0
@@ -347,7 +347,7 @@ far = 30000.0
 visible = false
 mesh = SubResource("SphereMesh_812q2")
 
-[node name="TWTestQuadrant" type="MeshInstance3D" parent="."]
+[node name="TWTestQuadrant1" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10240, 0, 2048)
 script = ExtResource("7_7uq48")
 _pos = Vector2(-12288, 0)
