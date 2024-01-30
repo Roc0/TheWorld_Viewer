@@ -11,8 +11,8 @@ uniform float u_high_elevation_factor = 4.0;
 uniform float u_low_elevation_factor = 2.0;
 uniform float u_min_heigth;
 uniform float u_max_heigth;
-uniform float u_splatmap_mode = 1.0;	// NOTSET
-uniform float u_grid_step = 2.0;		// Heightmap grid step it is indipendent from lod
+//uniform float u_splatmap_mode = 1.0;	// NOTSET
+//uniform float u_grid_step = 2.0;		// Heightmap grid step it is indipendent from lod
 uniform float u_terrain_height = 1.0;	// NOTSET
 
 void fragment() {
@@ -28,7 +28,6 @@ void fragment() {
 	
 	vec4 splat_pixel;
 	
-	//u_splatmap_mode == 1.0;
 	splat_pixel.r = low_elevation_amount;
 	splat_pixel.r = lerp_f(splat_pixel.r, 0.0, high_elevation_amount);
 	splat_pixel.r = lerp_f(splat_pixel.r, 0.0, dirt_amount);

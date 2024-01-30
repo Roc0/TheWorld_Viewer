@@ -944,10 +944,10 @@ varying_type = 3
 
 [sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_8y5d2"]
 size = Vector2(680, 160)
-expression = "float get_height(sampler2D tex, float terrain_height, vec2 uv)
+expression = "/*float get_height(sampler2D tex, float terrain_height, vec2 uv)
 {
 	return texture(tex, uv).r * terrain_height;
-}"
+}*/"
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_ytuk2"]
 size = Vector2(680, 160)
@@ -962,7 +962,7 @@ expression = "vec3 normal = get_normal(terrain_normalmap, u_terrain_normal_basis
 
 [sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_oqaba"]
 size = Vector2(700, 420)
-expression = "vec4 pack_normal(vec3 n, float a) {
+expression = "/*vec4 pack_normal(vec3 n, float a) {
 	//n.z *= -1.0;
 	return vec4((n.xzy + vec3(1.0)) * 0.5, a);
 }
@@ -976,16 +976,16 @@ vec3 unpack_normal(vec4 rgba) {
 	// and OpenGL-style normal maps are Y-up.
 	//n.z *= -1.0;
 	return n;
-}"
+}*/"
 
 [sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_bl3mn"]
 size = Vector2(680, 220)
-expression = "vec3 get_normal(sampler2D tex, mat3 terrain_normal_basis, vec2 uv){
+expression = "/*vec3 get_normal(sampler2D tex, mat3 terrain_normal_basis, vec2 uv){
 	// Need to use terrain_normal_basis to handle scaling.
 	vec3 n = terrain_normal_basis * unpack_normal(texture(tex, uv));
 	//vec3 n = unpack_normal(texture(tex, uv));
 	return normalize(n);
-}"
+}*/"
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_dks25"]
 size = Vector2(500, 280)
@@ -1083,7 +1083,7 @@ default_value_enabled = true
 
 [sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_kpbi3"]
 size = Vector2(1240, 940)
-expression = "bool is_on_the_border(vec2 uv, float distance_from_border) {
+expression = "/*bool is_on_the_border(vec2 uv, float distance_from_border) {
 	if (uv.x > distance_from_border && uv.x < (1.0 - distance_from_border) && uv.y > distance_from_border && uv.y < (1.0 - distance_from_border)) {
 		return false;
 	} else {
@@ -1121,7 +1121,7 @@ bool is_on_right_border(vec2 uv, float distance_from_border) {
 	} else {
 		return false;
 	}
-}"
+}*/"
 
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_oq2vk"]
 parameter_name = "u_editmode_selected"
@@ -1219,8 +1219,10 @@ default_value_enabled = true
 default_value = 0.4
 
 [sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_m8jdv"]
-size = Vector2(660, 580)
-expression = "//vec3 model_world_space = MODEL_MATRIX[3].xyz; // Object's world space position. This is the equivalent to global_transform.origin in GDScript.
+size = Vector2(640, 620)
+expression = "#include \"res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc\"
+
+//vec3 model_world_space = MODEL_MATRIX[3].xyz; // Object's world space position. This is the equivalent to global_transform.origin in GDScript.
 //mat3 model_transform_basis = mat3(MODEL_MATRIX); // Object's world space transform basis. This is the equivalent to global_transform.basis in GDScript.
 //vec3 camera_world_space = INV_VIEW_MATRIX[3].xyz; // Camera's world space position. This is the equivalent to camera.global_transform.origin in GDScript.
 //vec3 camera_eye_world_space = VIEW_MATRIX[3].xyz; // Camera eye vector in world space direction of the camera.
@@ -1291,6 +1293,8 @@ uniform sampler2D tex_frg_62;
 
 
 // GlobalExpression:0
+	#include \"res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc\"
+	
 	//vec3 model_world_space = MODEL_MATRIX[3].xyz; // Object's world space position. This is the equivalent to global_transform.origin in GDScript.
 	//mat3 model_transform_basis = mat3(MODEL_MATRIX); // Object's world space transform basis. This is the equivalent to global_transform.basis in GDScript.
 	//vec3 camera_world_space = INV_VIEW_MATRIX[3].xyz; // Camera's world space position. This is the equivalent to camera.global_transform.origin in GDScript.
@@ -1314,12 +1318,12 @@ uniform sampler2D tex_frg_62;
 	//uniform float u_globalmap_blend_distance = 0;	// 1	==> 0 = disable use of global map
 	uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);	// NOTSET
 // GlobalExpression:1
-	float get_height(sampler2D tex, float terrain_height, vec2 uv)
+	/*float get_height(sampler2D tex, float terrain_height, vec2 uv)
 	{
 		return texture(tex, uv).r * terrain_height;
-	}
+	}*/
 // GlobalExpression:2
-	vec4 pack_normal(vec3 n, float a) {
+	/*vec4 pack_normal(vec3 n, float a) {
 		//n.z *= -1.0;
 		return vec4((n.xzy + vec3(1.0)) * 0.5, a);
 	}
@@ -1333,16 +1337,16 @@ uniform sampler2D tex_frg_62;
 		// and OpenGL-style normal maps are Y-up.
 		//n.z *= -1.0;
 		return n;
-	}
+	}*/
 // GlobalExpression:3
-	vec3 get_normal(sampler2D tex, mat3 terrain_normal_basis, vec2 uv){
+	/*vec3 get_normal(sampler2D tex, mat3 terrain_normal_basis, vec2 uv){
 		// Need to use terrain_normal_basis to handle scaling.
 		vec3 n = terrain_normal_basis * unpack_normal(texture(tex, uv));
 		//vec3 n = unpack_normal(texture(tex, uv));
 		return normalize(n);
-	}
+	}*/
 // GlobalExpression:4
-	bool is_on_the_border(vec2 uv, float distance_from_border) {
+	/*bool is_on_the_border(vec2 uv, float distance_from_border) {
 		if (uv.x > distance_from_border && uv.x < (1.0 - distance_from_border) && uv.y > distance_from_border && uv.y < (1.0 - distance_from_border)) {
 			return false;
 		} else {
@@ -1380,7 +1384,7 @@ uniform sampler2D tex_frg_62;
 		} else {
 			return false;
 		}
-	}
+	}*/
 // GlobalExpression:5
 	vec3 get_triplanar_blend(vec3 world_normal) {
 		vec3 blending = abs(world_normal);
@@ -2328,10 +2332,12 @@ varyings/v_tint3 = "0,4"
 nodes/vertex/0/position = Vector2(3240, -860)
 nodes/vertex/8/node = SubResource("VisualShaderNodeGlobalExpression_m8jdv")
 nodes/vertex/8/position = Vector2(-2680, -1540)
-nodes/vertex/8/size = Vector2(660, 580)
+nodes/vertex/8/size = Vector2(640, 620)
 nodes/vertex/8/input_ports = ""
 nodes/vertex/8/output_ports = ""
-nodes/vertex/8/expression = "//vec3 model_world_space = MODEL_MATRIX[3].xyz; // Object's world space position. This is the equivalent to global_transform.origin in GDScript.
+nodes/vertex/8/expression = "#include \"res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc\"
+
+//vec3 model_world_space = MODEL_MATRIX[3].xyz; // Object's world space position. This is the equivalent to global_transform.origin in GDScript.
 //mat3 model_transform_basis = mat3(MODEL_MATRIX); // Object's world space transform basis. This is the equivalent to global_transform.basis in GDScript.
 //vec3 camera_world_space = INV_VIEW_MATRIX[3].xyz; // Camera's world space position. This is the equivalent to camera.global_transform.origin in GDScript.
 //vec3 camera_eye_world_space = VIEW_MATRIX[3].xyz; // Camera eye vector in world space direction of the camera.
@@ -2399,10 +2405,10 @@ nodes/vertex/17/position = Vector2(-2680, -820)
 nodes/vertex/17/size = Vector2(680, 160)
 nodes/vertex/17/input_ports = ""
 nodes/vertex/17/output_ports = ""
-nodes/vertex/17/expression = "float get_height(sampler2D tex, float terrain_height, vec2 uv)
+nodes/vertex/17/expression = "/*float get_height(sampler2D tex, float terrain_height, vec2 uv)
 {
 	return texture(tex, uv).r * terrain_height;
-}"
+}*/"
 nodes/vertex/18/node = SubResource("VisualShaderNodeExpression_ytuk2")
 nodes/vertex/18/position = Vector2(2160, -120)
 nodes/vertex/18/size = Vector2(680, 160)
@@ -2422,7 +2428,7 @@ nodes/vertex/21/position = Vector2(-2700, -400)
 nodes/vertex/21/size = Vector2(700, 420)
 nodes/vertex/21/input_ports = ""
 nodes/vertex/21/output_ports = ""
-nodes/vertex/21/expression = "vec4 pack_normal(vec3 n, float a) {
+nodes/vertex/21/expression = "/*vec4 pack_normal(vec3 n, float a) {
 	//n.z *= -1.0;
 	return vec4((n.xzy + vec3(1.0)) * 0.5, a);
 }
@@ -2436,18 +2442,18 @@ vec3 unpack_normal(vec4 rgba) {
 	// and OpenGL-style normal maps are Y-up.
 	//n.z *= -1.0;
 	return n;
-}"
+}*/"
 nodes/vertex/22/node = SubResource("VisualShaderNodeGlobalExpression_bl3mn")
 nodes/vertex/22/position = Vector2(-2680, -640)
 nodes/vertex/22/size = Vector2(680, 220)
 nodes/vertex/22/input_ports = ""
 nodes/vertex/22/output_ports = ""
-nodes/vertex/22/expression = "vec3 get_normal(sampler2D tex, mat3 terrain_normal_basis, vec2 uv){
+nodes/vertex/22/expression = "/*vec3 get_normal(sampler2D tex, mat3 terrain_normal_basis, vec2 uv){
 	// Need to use terrain_normal_basis to handle scaling.
 	vec3 n = terrain_normal_basis * unpack_normal(texture(tex, uv));
 	//vec3 n = unpack_normal(texture(tex, uv));
 	return normalize(n);
-}"
+}*/"
 nodes/vertex/23/node = SubResource("VisualShaderNodeExpression_dks25")
 nodes/vertex/23/position = Vector2(1200, -1480)
 nodes/vertex/23/size = Vector2(500, 280)
@@ -2511,7 +2517,7 @@ nodes/vertex/46/position = Vector2(-4000, -40)
 nodes/vertex/46/size = Vector2(1240, 940)
 nodes/vertex/46/input_ports = ""
 nodes/vertex/46/output_ports = ""
-nodes/vertex/46/expression = "bool is_on_the_border(vec2 uv, float distance_from_border) {
+nodes/vertex/46/expression = "/*bool is_on_the_border(vec2 uv, float distance_from_border) {
 	if (uv.x > distance_from_border && uv.x < (1.0 - distance_from_border) && uv.y > distance_from_border && uv.y < (1.0 - distance_from_border)) {
 		return false;
 	} else {
@@ -2549,7 +2555,7 @@ bool is_on_right_border(vec2 uv, float distance_from_border) {
 	} else {
 		return false;
 	}
-}"
+}*/"
 nodes/vertex/47/node = SubResource("VisualShaderNodeFloatParameter_oq2vk")
 nodes/vertex/47/position = Vector2(-940, -40)
 nodes/vertex/48/node = SubResource("VisualShaderNodeVec2Parameter_b2pge")

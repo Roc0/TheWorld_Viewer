@@ -1,4 +1,36 @@
 
+bool is_on_upper_border(vec2 uv, float distance_from_border) {
+	if (uv.y >= 0.0 && uv.y < distance_from_border) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool is_on_lower_border(vec2 uv, float distance_from_border) {
+	if (uv.y > (1.0 - distance_from_border) && uv.y <= 1.0) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool is_on_left_border(vec2 uv, float distance_from_border) {
+	if (uv.x >= 0.0 && uv.x < distance_from_border) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool is_on_right_border(vec2 uv, float distance_from_border) {
+	if (uv.x > (1.0 - distance_from_border) && uv.x <= 1.0) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
 vec3 unpack_normal(vec4 rgba) {
 	// If we consider texture space starts from top-left corner and Y goes down,
 	// then Y+ in pixel space corresponds to Z+ in terrain space,
@@ -30,9 +62,8 @@ vec3 get_normal_1(sampler2D tex, vec2 uv){
 	return unpack_normal(texture(tex, uv));
 }
 
-bool is_on_the_border(vec2 uv, float line_thickness){
-	//float line_thickness = 0.01;
-	if (uv.x > line_thickness && uv.x < (1.0 - line_thickness) && uv.y > line_thickness && uv.y < (1.0 - line_thickness)) {
+bool is_on_the_border(vec2 uv, float distance_from_border){
+	if (uv.x > distance_from_border && uv.x < (1.0 - distance_from_border) && uv.y > distance_from_border && uv.y < (1.0 - distance_from_border)) {
 		return false;
 	} else {
 		return true;

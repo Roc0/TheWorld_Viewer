@@ -227,5 +227,9 @@ gu_ground_normal_roughness_array={
 }
 gu_texture_blending_size={
 "type": "float",
-"value": 0.4
+"value": 0.3
+}
+gu_splatmap_blending_size={
+"type": "float",
+"value": 0.2
 }

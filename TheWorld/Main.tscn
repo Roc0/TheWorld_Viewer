@@ -307,7 +307,6 @@ _camera_param_initial_pos = Vector3(0, 1500, 0)
 _camera_param_initial_yaw_pitch_roll = Vector3(0, 0, 0)
 _shader_param_ground_uv_scale = 200.0
 _shader_param_globalmap_blend_start = 3000.0
-_shader_param_texture_blending_size = 0.2
 
 [node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main/TWViewer"]
 perfparam_threshold_cache_heights = 15000.0
