@@ -79,28 +79,31 @@ void fragment() {
 		}
 	}
 	
+	// DEBUG pieces near cam at higher resolution
+	//if (/*v_distance_from_camera_y < 50.0 &&*/ v_distance_from_camera < (u_piece_size * float(u_piecing_threshold)))
+	//{
+	//	vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	//	int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / u_piece_size));
+	//	int camera_piece_y = int(floor(CAMERA_POSITION_WORLD.z / u_piece_size));
+	//	int frag_piece_x = int(floor(fragment_world_pos.x / u_piece_size));
+	//	int frag_piece_y = int(floor(fragment_world_pos.z / u_piece_size));
+	//	int pieces_from_camera_piece = greater(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_y - frag_piece_y)));
+	//	if (pieces_from_camera_piece == 0)
+	//	{
+	//		ALBEDO = vec3(1.0, 0.0, 0.0);
+	//	}
+	//	if (pieces_from_camera_piece == 1)
+	//	{
+	//		ALBEDO = vec3(0.0, 1.0, 0.0);
+	//	}
+	//	if (pieces_from_camera_piece == 2)
+	//	{
+	//		ALBEDO = vec3(0.0, 0.0, 1.0);
+	//	}
+	//}
+	// DEBUG pieces near cam at higher resolution
+
 	// DEBUG
-	if (/*v_distance_from_camera_y < 50.0 &&*/ v_distance_from_camera < (u_piece_size * float(u_piecing_threshold)))
-	{
-		vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
-		int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / u_piece_size));
-		int camera_piece_y = int(floor(CAMERA_POSITION_WORLD.z / u_piece_size));
-		int frag_piece_x = int(floor(fragment_world_pos.x / u_piece_size));
-		int frag_piece_y = int(floor(fragment_world_pos.z / u_piece_size));
-		int pieces_from_camera_piece = greater(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_y - frag_piece_y)));
-		if (pieces_from_camera_piece == 0)
-		{
-			ALBEDO = vec3(1.0, 0.0, 0.0);
-		}
-		if (pieces_from_camera_piece == 1)
-		{
-			ALBEDO = vec3(0.0, 1.0, 0.0);
-		}
-		if (pieces_from_camera_piece == 2)
-		{
-			ALBEDO = vec3(0.0, 0.0, 1.0);
-		}
-	}
 	//ALBEDO = vec3(fragment_world_pos.x / 100000.0, fragment_world_pos.y / 1000.0, fragment_world_pos.z / 100000.0);
 	//ALBEDO = CAMERA_POSITION_WORLD / 10000;
 	//ALBEDO = v_camera_pos / 1000;
