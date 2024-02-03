@@ -191,18 +191,45 @@ if (!editmode_pixel && !globalmap_pixel) {
 }"
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_mc40n"]
-size = Vector2(900, 580)
-expression = "if (mouse_hit != vec2(-1) && mouse_hit_radius != 0.0 && distance(mouse_hit, uv) < mouse_hit_radius) {
-	vec3 mouse_hit_albedo = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
-	albedo_out = mix(albedo_in, mouse_hit_albedo, 0.3);
-	//albedo_out = vec3(1.0, 0.0, 0.0);
-} else {
-	albedo_out = albedo_in;
+size = Vector2(1000, 1400)
+expression = "albedo_out = albedo_in;
+normal_out = (VIEW_MATRIX * (vec4(normal_in, 0.0))).xyz;
+roughness_out = roughness_in;
+
+bool grid_on = !(mouse_hit == vec2(-1));
+if (grid_on) {
+	float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
+	vec2 uv_begin_texel = uv - vec2(half_texel_size);
+	vec2 distance_from_vertex = 
+		fract(vec2(uv_begin_texel.x / (half_texel_size * 2.0), uv_begin_texel.y / (half_texel_size * 2.0)));
+	float grid_line_thickness = 0.05;
+	if (distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness
+		|| distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness) {
+		if ((distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness)
+			&& (distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness)) {
+			//albedo_out = mix(albedo_out, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
+			albedo_out = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
+		} else {
+			//albedo_out = mix(albedo_out, vec3(1.0, 0.749, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+			albedo_out = vec3(1.0, 0.749, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+		}
+	}
+	vec2 g_uv0 = fract(ground_uv0);
+	if (g_uv0.x < grid_line_thickness || (1.0 - g_uv0.x) < grid_line_thickness
+		|| g_uv0.y < grid_line_thickness || (1.0 - g_uv0.y) < grid_line_thickness) {
+		albedo_out = vec3(0.0, 0.0, 1.0);		// GDN_TheWorld_Globals::g_color_blue;
+	}
+}
+
+if (mouse_hit != vec2(-1)) {
+	if (mouse_hit_radius != 0.0 && distance(mouse_hit, uv) < mouse_hit_radius) {
+		vec3 mouse_hit_albedo = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+		albedo_out = mix(albedo_out, mouse_hit_albedo, 0.3);
+	}
 	//albedo_out = vec3(1.0, 0.0, 0.0);
 }
 //albedo_out = vec3(1.0, 0.0, 0.0);
-normal_out = (VIEW_MATRIX * (vec4(normal_in, 0.0))).xyz;
-roughness_out = roughness_in;"
+"
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_halt2"]
 size = Vector2(1000, 660)
@@ -2485,17 +2512,44 @@ void fragment() {
 	n_out31p1 = 0.0;
 	n_out31p2 = vec3(0.0, 0.0, 0.0);
 	{
-		if (n_out27p0 != vec2(-1) && n_out28p0 != 0.0 && distance(n_out27p0, n_out13p0) < n_out28p0) {
-			vec3 mouse_hit_albedo = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
-			n_out31p0 = mix(n_out56p0, mouse_hit_albedo, 0.3);
-			//n_out31p0 = vec3(1.0, 0.0, 0.0);
-		} else {
-			n_out31p0 = n_out56p0;
+		n_out31p0 = n_out56p0;
+		n_out31p2 = (VIEW_MATRIX * (vec4(n_out56p2, 0.0))).xyz;
+		n_out31p1 = n_out56p1;
+		
+		bool grid_on = !(n_out27p0 == vec2(-1));
+		if (grid_on) {
+			float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
+			vec2 uv_begin_texel = n_out13p0 - vec2(half_texel_size);
+			vec2 distance_from_vertex = 
+				fract(vec2(uv_begin_texel.x / (half_texel_size * 2.0), uv_begin_texel.y / (half_texel_size * 2.0)));
+			float grid_line_thickness = 0.05;
+			if (distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness
+				|| distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness) {
+				if ((distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness)
+					&& (distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness)) {
+					//n_out31p0 = mix(n_out31p0, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
+					n_out31p0 = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
+				} else {
+					//n_out31p0 = mix(n_out31p0, vec3(1.0, 0.749, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+					n_out31p0 = vec3(1.0, 0.749, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+				}
+			}
+			vec2 g_uv0 = fract(n_out10p0);
+			if (g_uv0.x < grid_line_thickness || (1.0 - g_uv0.x) < grid_line_thickness
+				|| g_uv0.y < grid_line_thickness || (1.0 - g_uv0.y) < grid_line_thickness) {
+				n_out31p0 = vec3(0.0, 0.0, 1.0);		// GDN_TheWorld_Globals::g_color_blue;
+			}
+		}
+		
+		if (n_out27p0 != vec2(-1)) {
+			if (n_out28p0 != 0.0 && distance(n_out27p0, n_out13p0) < n_out28p0) {
+				vec3 mouse_hit_albedo = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+				n_out31p0 = mix(n_out31p0, mouse_hit_albedo, 0.3);
+			}
 			//n_out31p0 = vec3(1.0, 0.0, 0.0);
 		}
 		//n_out31p0 = vec3(1.0, 0.0, 0.0);
-		n_out31p2 = (VIEW_MATRIX * (vec4(n_out56p2, 0.0))).xyz;
-		n_out31p1 = n_out56p1;
+		
 	}
 
 
@@ -2507,6 +2561,7 @@ void fragment() {
 
 }
 "
+graph_offset = Vector2(5002.14, -52.3299)
 modes/specular = 1
 varyings/v_vertex_world_pos = "0,5"
 varyings/v_vertex_cell_coords_in_textures = "0,3"
@@ -2818,7 +2873,7 @@ nodes/vertex/63/position = Vector2(-1460, 180)
 nodes/vertex/64/node = SubResource("VisualShaderNodeFloatParameter_hcory")
 nodes/vertex/64/position = Vector2(-680, 180)
 nodes/vertex/connections = PackedInt32Array(12, 1, 0, 4, 11, 0, 12, 0, 12, 1, 13, 0, 13, 0, 0, 0, 11, 0, 13, 1, 13, 1, 14, 0, 15, 0, 13, 2, 12, 0, 16, 0, 15, 0, 11, 0, 13, 1, 18, 0, 18, 0, 19, 0, 12, 1, 20, 0, 20, 0, 0, 1, 23, 0, 24, 0, 12, 1, 23, 0, 25, 0, 26, 0, 25, 1, 27, 0, 25, 2, 28, 0, 25, 3, 29, 0, 12, 1, 25, 0, 35, 0, 12, 1, 30, 0, 12, 2, 37, 0, 12, 3, 36, 0, 12, 4, 34, 0, 25, 1, 31, 0, 20, 1, 32, 0, 23, 1, 38, 0, 23, 2, 30, 0, 13, 3)
-nodes/fragment/0/position = Vector2(7080, -460)
+nodes/fragment/0/position = Vector2(7240, -460)
 nodes/fragment/3/node = SubResource("VisualShaderNodeVaryingGetter_pe6em")
 nodes/fragment/3/position = Vector2(-2720, -820)
 nodes/fragment/4/node = SubResource("VisualShaderNodeExpression_yk7c6")
@@ -3027,21 +3082,48 @@ if (!editmode_pixel && !globalmap_pixel) {
 	}*/
 }"
 nodes/fragment/31/node = SubResource("VisualShaderNodeExpression_mc40n")
-nodes/fragment/31/position = Vector2(6060, -480)
-nodes/fragment/31/size = Vector2(900, 580)
-nodes/fragment/31/input_ports = "0,4,albedo_in;1,3,mouse_hit;2,0,mouse_hit_radius;3,4,normal_in;4,0,roughness_in;5,3,uv;"
+nodes/fragment/31/position = Vector2(6020, -480)
+nodes/fragment/31/size = Vector2(1000, 1400)
+nodes/fragment/31/input_ports = "0,4,albedo_in;1,3,mouse_hit;2,0,mouse_hit_radius;3,4,normal_in;4,0,roughness_in;5,3,uv;6,3,ground_uv0;7,3,ground_uv1;8,3,ground_uv2;9,4,ground_uv3;"
 nodes/fragment/31/output_ports = "0,4,albedo_out;1,0,roughness_out;2,4,normal_out;"
-nodes/fragment/31/expression = "if (mouse_hit != vec2(-1) && mouse_hit_radius != 0.0 && distance(mouse_hit, uv) < mouse_hit_radius) {
-	vec3 mouse_hit_albedo = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
-	albedo_out = mix(albedo_in, mouse_hit_albedo, 0.3);
-	//albedo_out = vec3(1.0, 0.0, 0.0);
-} else {
-	albedo_out = albedo_in;
+nodes/fragment/31/expression = "albedo_out = albedo_in;
+normal_out = (VIEW_MATRIX * (vec4(normal_in, 0.0))).xyz;
+roughness_out = roughness_in;
+
+bool grid_on = !(mouse_hit == vec2(-1));
+if (grid_on) {
+	float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
+	vec2 uv_begin_texel = uv - vec2(half_texel_size);
+	vec2 distance_from_vertex = 
+		fract(vec2(uv_begin_texel.x / (half_texel_size * 2.0), uv_begin_texel.y / (half_texel_size * 2.0)));
+	float grid_line_thickness = 0.05;
+	if (distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness
+		|| distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness) {
+		if ((distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness)
+			&& (distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness)) {
+			//albedo_out = mix(albedo_out, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
+			albedo_out = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
+		} else {
+			//albedo_out = mix(albedo_out, vec3(1.0, 0.749, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+			albedo_out = vec3(1.0, 0.749, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+		}
+	}
+	vec2 g_uv0 = fract(ground_uv0);
+	if (g_uv0.x < grid_line_thickness || (1.0 - g_uv0.x) < grid_line_thickness
+		|| g_uv0.y < grid_line_thickness || (1.0 - g_uv0.y) < grid_line_thickness) {
+		albedo_out = vec3(0.0, 0.0, 1.0);		// GDN_TheWorld_Globals::g_color_blue;
+	}
+}
+
+if (mouse_hit != vec2(-1)) {
+	if (mouse_hit_radius != 0.0 && distance(mouse_hit, uv) < mouse_hit_radius) {
+		vec3 mouse_hit_albedo = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+		albedo_out = mix(albedo_out, mouse_hit_albedo, 0.3);
+	}
 	//albedo_out = vec3(1.0, 0.0, 0.0);
 }
 //albedo_out = vec3(1.0, 0.0, 0.0);
-normal_out = (VIEW_MATRIX * (vec4(normal_in, 0.0))).xyz;
-roughness_out = roughness_in;"
+"
 nodes/fragment/33/node = SubResource("VisualShaderNodeExpression_halt2")
 nodes/fragment/33/position = Vector2(-540, 1440)
 nodes/fragment/33/size = Vector2(1000, 660)
@@ -3396,7 +3478,7 @@ nodes/fragment/54/position = Vector2(-3500, 1580)
 nodes/fragment/55/node = SubResource("VisualShaderNodeParameterRef_0u6ja")
 nodes/fragment/55/position = Vector2(-3500, 1660)
 nodes/fragment/56/node = SubResource("VisualShaderNodeExpression_bq5dl")
-nodes/fragment/56/position = Vector2(5000, -120)
+nodes/fragment/56/position = Vector2(4620, 200)
 nodes/fragment/56/size = Vector2(920, 2440)
 nodes/fragment/56/input_ports = "0,4,albedo_in;1,0,roughness_in;2,0,globalmap_factor;3,4,normal_in;4,6,editmode_pixel;5,6,globalmap_pixel;6,4,tint0;7,4,tint1;8,4,tint2;9,4,tint3;10,5,splat;11,6,depth_blending;12,5,ab0;13,5,ab1;14,5,ab2;15,5,ab3;16,5,nr0;17,5,nr1;18,5,nr2;19,5,nr3;"
 nodes/fragment/56/output_ports = "0,4,albedo_out;1,0,roughness_out;2,4,normal_out;"
@@ -3741,4 +3823,4 @@ nodes/fragment/79/node = SubResource("VisualShaderNodeVectorOp_xgxso")
 nodes/fragment/79/position = Vector2(740, 3700)
 nodes/fragment/80/node = SubResource("VisualShaderNodeParameterRef_xo7o0")
 nodes/fragment/80/position = Vector2(-2980, 860)
-nodes/fragment/connections = PackedInt32Array(3, 0, 4, 0, 8, 0, 4, 1, 4, 0, 10, 2, 12, 0, 10, 1, 11, 0, 10, 0, 13, 0, 14, 0, 16, 0, 14, 1, 17, 0, 4, 2, 18, 0, 4, 3, 19, 0, 4, 4, 20, 0, 4, 5, 26, 0, 25, 0, 13, 0, 25, 1, 21, 0, 25, 2, 29, 0, 33, 3, 13, 0, 33, 4, 24, 0, 33, 2, 23, 0, 33, 1, 3, 0, 33, 0, 25, 0, 33, 5, 25, 1, 33, 6, 27, 0, 31, 1, 28, 0, 31, 2, 33, 0, 30, 0, 33, 1, 30, 1, 56, 0, 31, 0, 56, 1, 31, 4, 56, 2, 31, 3, 25, 0, 56, 4, 25, 1, 56, 5, 36, 0, 56, 11, 38, 0, 56, 6, 39, 0, 56, 7, 40, 0, 56, 8, 41, 0, 56, 9, 33, 2, 56, 2, 10, 0, 30, 6, 10, 1, 30, 7, 10, 2, 30, 8, 10, 3, 30, 9, 14, 0, 30, 3, 34, 0, 30, 2, 25, 1, 30, 5, 35, 0, 30, 10, 31, 1, 0, 3, 31, 2, 0, 8, 58, 3, 59, 3, 58, 0, 60, 0, 58, 1, 60, 1, 58, 2, 60, 2, 60, 0, 61, 0, 61, 1, 59, 0, 61, 2, 59, 1, 61, 3, 59, 2, 57, 0, 61, 1, 13, 0, 31, 5, 63, 4, 58, 0, 25, 0, 30, 4, 13, 0, 66, 0, 31, 0, 0, 0, 62, 0, 69, 0, 71, 0, 70, 1, 70, 1, 72, 0, 70, 2, 72, 1, 70, 3, 72, 2, 65, 0, 63, 15, 30, 0, 56, 0, 30, 1, 56, 1, 30, 2, 56, 3, 30, 3, 56, 12, 30, 4, 56, 13, 30, 5, 56, 14, 30, 6, 56, 15, 30, 7, 56, 16, 30, 8, 56, 17, 30, 9, 56, 18, 30, 10, 56, 19, 13, 0, 73, 2, 25, 1, 73, 1, 25, 0, 73, 0, 73, 0, 30, 11, 73, 1, 30, 12, 73, 2, 30, 13, 73, 3, 30, 14, 75, 0, 76, 0, 74, 0, 76, 3, 75, 0, 76, 4, 75, 0, 76, 5, 76, 0, 69, 1, 69, 0, 73, 5, 37, 0, 73, 3, 78, 0, 77, 0, 62, 0, 79, 0, 79, 0, 77, 1, 73, 4, 56, 10, 73, 0, 10, 3, 73, 1, 10, 4, 73, 2, 10, 5, 73, 3, 10, 6, 80, 0, 10, 7)
+nodes/fragment/connections = PackedInt32Array(3, 0, 4, 0, 8, 0, 4, 1, 4, 0, 10, 2, 12, 0, 10, 1, 11, 0, 10, 0, 13, 0, 14, 0, 16, 0, 14, 1, 17, 0, 4, 2, 18, 0, 4, 3, 19, 0, 4, 4, 20, 0, 4, 5, 26, 0, 25, 0, 13, 0, 25, 1, 21, 0, 25, 2, 29, 0, 33, 3, 13, 0, 33, 4, 24, 0, 33, 2, 23, 0, 33, 1, 3, 0, 33, 0, 25, 0, 33, 5, 25, 1, 33, 6, 27, 0, 31, 1, 28, 0, 31, 2, 33, 0, 30, 0, 33, 1, 30, 1, 56, 0, 31, 0, 56, 1, 31, 4, 56, 2, 31, 3, 25, 0, 56, 4, 25, 1, 56, 5, 36, 0, 56, 11, 38, 0, 56, 6, 39, 0, 56, 7, 40, 0, 56, 8, 41, 0, 56, 9, 33, 2, 56, 2, 10, 0, 30, 6, 10, 1, 30, 7, 10, 2, 30, 8, 10, 3, 30, 9, 14, 0, 30, 3, 34, 0, 30, 2, 25, 1, 30, 5, 35, 0, 30, 10, 31, 1, 0, 3, 31, 2, 0, 8, 58, 3, 59, 3, 58, 0, 60, 0, 58, 1, 60, 1, 58, 2, 60, 2, 60, 0, 61, 0, 61, 1, 59, 0, 61, 2, 59, 1, 61, 3, 59, 2, 57, 0, 61, 1, 13, 0, 31, 5, 63, 4, 58, 0, 25, 0, 30, 4, 13, 0, 66, 0, 31, 0, 0, 0, 62, 0, 69, 0, 71, 0, 70, 1, 70, 1, 72, 0, 70, 2, 72, 1, 70, 3, 72, 2, 65, 0, 63, 15, 30, 0, 56, 0, 30, 1, 56, 1, 30, 2, 56, 3, 30, 3, 56, 12, 30, 4, 56, 13, 30, 5, 56, 14, 30, 6, 56, 15, 30, 7, 56, 16, 30, 8, 56, 17, 30, 9, 56, 18, 30, 10, 56, 19, 13, 0, 73, 2, 25, 1, 73, 1, 25, 0, 73, 0, 73, 0, 30, 11, 73, 1, 30, 12, 73, 2, 30, 13, 73, 3, 30, 14, 75, 0, 76, 0, 74, 0, 76, 3, 75, 0, 76, 4, 75, 0, 76, 5, 76, 0, 69, 1, 69, 0, 73, 5, 37, 0, 73, 3, 78, 0, 77, 0, 62, 0, 79, 0, 79, 0, 77, 1, 73, 4, 56, 10, 73, 0, 10, 3, 73, 1, 10, 4, 73, 2, 10, 5, 73, 3, 10, 6, 80, 0, 10, 7, 10, 0, 31, 6, 10, 1, 31, 7, 10, 2, 31, 8, 10, 3, 31, 9)

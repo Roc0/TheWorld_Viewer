@@ -363,7 +363,8 @@ func _process(_delta):
 		if ($Player/Player.player_dist_from_terrain >= 0):
 			player_dist_from_terrain = str(snapped($Player/Player.player_dist_from_terrain, 0.01))
 		tw_viewer.set_info_panel_external_value("Player pos: (" + str(snapped(_player_pos.x, 0.01)) + ", " + str(snapped(_player_pos.y, 0.01)) + ", " + str(snapped(_player_pos.z, 0.01)) + ")", _player_info_1_line_index)
-		tw_viewer.set_info_panel_external_value("Speed: " + str(snapped(velocity, 0.01)) + " m/s " +  str(int((velocity * 60 * 60)) / 1000) + " km/h  H: " + player_dist_from_terrain, _player_info_2_line_index) 
+		#tw_viewer.set_info_panel_external_value("Speed: " + str(snapped(velocity, 0.01)) + " m/s " +  str(int((velocity * 60 * 60)) / 1000) + " km/h  H: " + player_dist_from_terrain, _player_info_2_line_index) 
+		tw_viewer.set_info_panel_external_value("Speed: " + str(snapped(velocity, 0.01)) + " m/s " +  str(floor((velocity * 60 * 60) / 1000)) + " km/h  H: " + player_dist_from_terrain, _player_info_2_line_index) 
 	
 	if debug_window_active:
 		fps = Engine.get_frames_per_second()
