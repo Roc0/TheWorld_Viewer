@@ -537,6 +537,14 @@ func _process(delta):
 	if gdn_viewer.has_method("set_shader_parameter"):
 		
 		if _shader_param_ground_uv_scale_changed:
+			#var num_vertices_per_quadrant_size = GDN_globals().get_bitmap_resolution() + 1
+			#var num_texture_tiles_min : float = floor(num_vertices_per_quadrant_size / _shader_param_ground_uv_scale)
+			#var num_texture_tiles_max : float = num_texture_tiles_min + 1
+			#var fractional = (num_vertices_per_quadrant_size / _shader_param_ground_uv_scale) - num_texture_tiles_min
+			#if (fractional < 0.5):
+			#	_shader_param_ground_uv_scale = num_vertices_per_quadrant_size / num_texture_tiles_min
+			#else:
+			#	_shader_param_ground_uv_scale = num_vertices_per_quadrant_size / num_texture_tiles_max
 			gdn_viewer.set_shader_parameter("ground_uv_scale", _shader_param_ground_uv_scale)
 			log_debug(str("set_shader_parameter ground_uv_scale=", _shader_param_ground_uv_scale))
 			_shader_param_ground_uv_scale_changed = false
