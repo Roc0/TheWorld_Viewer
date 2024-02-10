@@ -330,8 +330,8 @@ if (!new) {
 }
 /*if (camera_altitude_from_terrain > 0.0) {
 }*/
-if (camera_altitude_from_terrain > 0.0 && camera_altitude_from_terrain < 300.0
-	&& distance_from_camera_on_terrain < (piece_size * (float(piecing_threshold_factor) + 4.0)))
+if (camera_altitude_from_terrain > 0.0 && camera_altitude_from_terrain < 200.0
+	&& distance_from_camera_on_terrain < 2000.0 /*(piece_size * (float(piecing_threshold_factor) + 4.0))*/)
 {
 	vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(vertex, 1.0)).xyz;
 	int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / piece_size));
@@ -349,13 +349,13 @@ if (camera_altitude_from_terrain > 0.0 && camera_altitude_from_terrain < 300.0
 	}
 	else if (pieces_from_camera_piece <= 3)
 	{
-		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 30.0);
+		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 20.0);
 		ground_uv_scale_per_texture_out = vec4(20.0);
 	}
 	else if (pieces_from_camera_piece <= 5)
 	{
 		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 15.0);
-		ground_uv_scale_per_texture_out = vec4(15.0);
+		ground_uv_scale_per_texture_out = vec4(20.0);
 	}
 	else if (pieces_from_camera_piece <= 7)
 	{
@@ -2248,8 +2248,8 @@ void fragment() {
 		}
 		/*if (n_out82p0 > 0.0) {
 		}*/
-		if (n_out82p0 > 0.0 && n_out82p0 < 300.0
-			&& n_out84p0 < (n_out19p0 * (float(n_out18p0) + 4.0)))
+		if (n_out82p0 > 0.0 && n_out82p0 < 200.0
+			&& n_out84p0 < 2000.0 /*(n_out19p0 * (float(n_out18p0) + 4.0))*/)
 		{
 			vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(n_out8p0, 1.0)).xyz;
 			int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / n_out19p0));
@@ -2267,13 +2267,13 @@ void fragment() {
 			}
 			else if (n_out4p2 <= 3)
 			{
-				n_out4p0 /= (n_out20p0 / 30.0);
+				n_out4p0 /= (n_out20p0 / 20.0);
 				n_out4p0 = vec4(20.0);
 			}
 			else if (n_out4p2 <= 5)
 			{
 				n_out4p0 /= (n_out20p0 / 15.0);
-				n_out4p0 = vec4(15.0);
+				n_out4p0 = vec4(20.0);
 			}
 			else if (n_out4p2 <= 7)
 			{
@@ -2763,7 +2763,7 @@ void fragment() {
 
 }
 "
-graph_offset = Vector2(-1639.91, 141.591)
+graph_offset = Vector2(-1571.9, 12.1775)
 modes/specular = 1
 varyings/v_vertex_world_pos = "0,5"
 varyings/v_vertex_cell_coords_in_textures = "0,3"
@@ -3111,8 +3111,8 @@ if (!new) {
 }
 /*if (camera_altitude_from_terrain > 0.0) {
 }*/
-if (camera_altitude_from_terrain > 0.0 && camera_altitude_from_terrain < 300.0
-	&& distance_from_camera_on_terrain < (piece_size * (float(piecing_threshold_factor) + 4.0)))
+if (camera_altitude_from_terrain > 0.0 && camera_altitude_from_terrain < 200.0
+	&& distance_from_camera_on_terrain < 2000.0 /*(piece_size * (float(piecing_threshold_factor) + 4.0))*/)
 {
 	vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(vertex, 1.0)).xyz;
 	int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / piece_size));
@@ -3130,13 +3130,13 @@ if (camera_altitude_from_terrain > 0.0 && camera_altitude_from_terrain < 300.0
 	}
 	else if (pieces_from_camera_piece <= 3)
 	{
-		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 30.0);
+		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 20.0);
 		ground_uv_scale_per_texture_out = vec4(20.0);
 	}
 	else if (pieces_from_camera_piece <= 5)
 	{
 		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 15.0);
-		ground_uv_scale_per_texture_out = vec4(15.0);
+		ground_uv_scale_per_texture_out = vec4(20.0);
 	}
 	else if (pieces_from_camera_piece <= 7)
 	{
