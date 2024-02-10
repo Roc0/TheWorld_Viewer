@@ -52,6 +52,8 @@ func _physics_process(_delta):
 	#if _player_in_world:
 	if _camera_tracking_player:
 		move_player(_delta)
+		RenderingServer.global_shader_parameter_set("gu_player_altitude_from_terrain", _player_dist_from_terrain)
+		RenderingServer.global_shader_parameter_set("gu_player_pos", global_position)
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):

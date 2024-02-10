@@ -21,7 +21,7 @@ uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
 uniform bool u_force_height_0 = false;
 uniform uint u_optimization_level = 0;
 
-uniform int u_scale_change_num_steps = 1;
+//uniform int u_scale_change_num_steps = 1;
 uniform float u_piece_size = 200.0;
 uniform int u_piecing_threshold = 3;
 
@@ -80,27 +80,27 @@ void fragment() {
 	}
 	
 	// DEBUG pieces near cam at higher resolution
-	//if (/*v_distance_from_camera_y < 50.0 &&*/ v_distance_from_camera < (u_piece_size * float(u_piecing_threshold)))
-	//{
-	//	vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
-	//	int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / u_piece_size));
-	//	int camera_piece_y = int(floor(CAMERA_POSITION_WORLD.z / u_piece_size));
-	//	int frag_piece_x = int(floor(fragment_world_pos.x / u_piece_size));
-	//	int frag_piece_y = int(floor(fragment_world_pos.z / u_piece_size));
-	//	int pieces_from_camera_piece = greater(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_y - frag_piece_y)));
-	//	if (pieces_from_camera_piece == 0)
-	//	{
-	//		ALBEDO = vec3(1.0, 0.0, 0.0);
-	//	}
-	//	if (pieces_from_camera_piece == 1)
-	//	{
-	//		ALBEDO = vec3(0.0, 1.0, 0.0);
-	//	}
-	//	if (pieces_from_camera_piece == 2)
-	//	{
-	//		ALBEDO = vec3(0.0, 0.0, 1.0);
-	//	}
-	//}
+	if (/*v_distance_from_camera_y < 50.0 &&*/ v_distance_from_camera < (u_piece_size * float(u_piecing_threshold)))
+	{
+		vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
+		int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / u_piece_size));
+		int camera_piece_y = int(floor(CAMERA_POSITION_WORLD.z / u_piece_size));
+		int frag_piece_x = int(floor(fragment_world_pos.x / u_piece_size));
+		int frag_piece_y = int(floor(fragment_world_pos.z / u_piece_size));
+		int pieces_from_camera_piece = greater(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_y - frag_piece_y)));
+		if (pieces_from_camera_piece == 0)
+		{
+			ALBEDO = vec3(1.0, 0.0, 0.0);
+		}
+		if (pieces_from_camera_piece == 1)
+		{
+			ALBEDO = vec3(0.0, 1.0, 0.0);
+		}
+		if (pieces_from_camera_piece == 2)
+		{
+			ALBEDO = vec3(0.0, 0.0, 1.0);
+		}
+	}
 	// DEBUG pieces near cam at higher resolution
 
 	// DEBUG

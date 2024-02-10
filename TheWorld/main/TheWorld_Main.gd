@@ -91,8 +91,8 @@ var ball_pos := Vector3.ZERO
 var _ball_pos_info_line_index : int = 0
 var _player_pos := Vector3.ZERO
 var _player_velocity := Vector3.ZERO
-var _player_info_1_line_index : int = 0
-var _player_info_2_line_index : int = 0
+var _player_info_line_1_index : int = 0
+var _player_info_line_2_index : int = 0
 
 var prev_hit : Vector3 = Vector3(0, 0, 0)
 		
@@ -142,8 +142,8 @@ func init():
 	_clientstatus = get_clientstatus()
 	_client_status = tw_const.status_to_string(_clientstatus)
 	_ball_pos_info_line_index = TWViewer().add_info_panel_external_line("", 0)
-	_player_info_1_line_index = TWViewer().add_info_panel_external_line("", 0)
-	_player_info_2_line_index = TWViewer().add_info_panel_external_line("", 0)
+	_player_info_line_1_index = TWViewer().add_info_panel_external_line("", 0)
+	_player_info_line_2_index = TWViewer().add_info_panel_external_line("", 0)
 
 func deinit():
 	log_debug("deinit")
@@ -362,9 +362,9 @@ func _process(_delta):
 		var player_dist_from_terrain := ""
 		if ($Player/Player.player_dist_from_terrain >= 0):
 			player_dist_from_terrain = str(snapped($Player/Player.player_dist_from_terrain, 0.01))
-		tw_viewer.set_info_panel_external_value("Player pos: (" + str(snapped(_player_pos.x, 0.01)) + ", " + str(snapped(_player_pos.y, 0.01)) + ", " + str(snapped(_player_pos.z, 0.01)) + ")", _player_info_1_line_index)
+		tw_viewer.set_info_panel_external_value("Player pos: (" + str(snapped(_player_pos.x, 0.01)) + ", " + str(snapped(_player_pos.y, 0.01)) + ", " + str(snapped(_player_pos.z, 0.01)) + ")", _player_info_line_1_index)
 		#tw_viewer.set_info_panel_external_value("Speed: " + str(snapped(velocity, 0.01)) + " m/s " +  str(int((velocity * 60 * 60)) / 1000) + " km/h  H: " + player_dist_from_terrain, _player_info_2_line_index) 
-		tw_viewer.set_info_panel_external_value("Speed: " + str(snapped(velocity, 0.01)) + " m/s " +  str(floor((velocity * 60 * 60) / 1000)) + " km/h  H: " + player_dist_from_terrain, _player_info_2_line_index) 
+		tw_viewer.set_info_panel_external_value("Player speed: " + str(snapped(velocity, 0.01)) + " m/s " +  str(floor((velocity * 60 * 60) / 1000)) + " km/h  alt: " + player_dist_from_terrain, _player_info_line_2_index) 
 	
 	if debug_window_active:
 		fps = Engine.get_frames_per_second()
