@@ -204,7 +204,7 @@ func _get_camera_param_initial_yaw_pitch_roll():
 @export_group("Shader Params", "_shader_param")
 
 var _shader_param_ground_uv_scale_changed := true
-@export_range(1.0, 500.0, 0.01, "or_greater", "or_less") var _shader_param_ground_uv_scale : float = 150.0:
+@export_range(1.0, 10.0, 0.01, "or_greater", "or_less") var _shader_param_ground_uv_scale : float = 150.0:
 	set = _set_shader_param_ground_uv_scale
 func _set_shader_param_ground_uv_scale(ground_uv_scale : float):
 	_shader_param_ground_uv_scale = ground_uv_scale
