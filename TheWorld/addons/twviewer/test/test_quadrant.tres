@@ -1267,7 +1267,7 @@ texture_type = 1
 [sub_resource type="VisualShaderNodeVec4Parameter" id="VisualShaderNodeVec4Parameter_wgd05"]
 parameter_name = "u_ground_uv_scale_per_texture"
 default_value_enabled = true
-default_value = Vector4(20, 20, 20, 20)
+default_value = Vector4(2, 2, 2, 2)
 
 [sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_uo8la"]
 parameter_name = "u_piece_size"
@@ -1481,7 +1481,7 @@ uniform sampler2D u_terrain_heightmap;
 uniform sampler2D u_terrain_normalmap;
 uniform bool u_use_globalmap = false;
 uniform sampler2D u_terrain_globalmap : source_color;
-uniform vec4 u_ground_uv_scale_per_texture = vec4(20.000000, 20.000000, 20.000000, 20.000000);
+uniform vec4 u_ground_uv_scale_per_texture = vec4(2.000000, 2.000000, 2.000000, 2.000000);
 uniform float u_piece_size = 200;
 uniform float u_scale_per_texture_factor = 1;
 uniform uint u_piecing_threshold_factor = 4;
@@ -2769,6 +2769,7 @@ void fragment() {
 
 }
 "
+graph_offset = Vector2(-2181.39, -571.322)
 modes/specular = 1
 varyings/v_vertex_world_pos = "0,5"
 varyings/v_vertex_cell_coords_in_textures = "0,3"
