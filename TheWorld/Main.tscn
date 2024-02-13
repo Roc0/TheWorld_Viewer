@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=3 uid="uid://c4ukh1kw4impi"]
+[gd_scene load_steps=46 format=3 uid="uid://c4ukh1kw4impi"]
 
 [ext_resource type="Script" path="res://main/TheWorld_Main.gd" id="1_760ml"]
 [ext_resource type="Script" path="res://addons/twviewer/tw_viewer.gd" id="3_yxvy6"]
@@ -9,6 +9,10 @@
 [ext_resource type="Script" path="res://addons/twviewer/test/test_quadrant.gd" id="7_7uq48"]
 [ext_resource type="Shader" path="res://utils/GreyScalePostProcess.gdshader" id="8_4i1hi"]
 [ext_resource type="Shader" path="res://utils/GaussianBlurEffectPostProcess.gdshader" id="9_2dtkh"]
+[ext_resource type="PackedScene" uid="uid://caqxfqurbp3ku" path="res://assets/scenes/pine_tree.tscn" id="11_fbf05"]
+[ext_resource type="PackedScene" uid="uid://dvnha0bqryjll" path="res://assets/scenes/maple_tree.tscn" id="11_kq4xa"]
+[ext_resource type="PackedScene" uid="uid://bltmr2xgs8nq1" path="res://assets/scenes/small_rock.tscn" id="12_ffcy8"]
+[ext_resource type="PackedScene" uid="uid://8ay5rlrutcmx" path="res://assets/scenes/large_rock.tscn" id="13_tf3dr"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xl13w"]
 shading_mode = 0
@@ -302,9 +306,10 @@ _world_param_depth_quad = 6
 _world_param_info_visible = true
 _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 1
+_world_editor_param_info_visible = true
 _camera_param_initial_pos = Vector3(0, 1500, 0)
 _camera_param_initial_yaw_pitch_roll = Vector3(0, 0, 0)
-_shader_param_ground_uv_scale = 2.0
+_shader_param_ground_uv_scale = 6.0
 _shader_param_globalmap_blend_start = 3000.0
 _shader_param_texture_blending_size = 0.33
 
@@ -332,8 +337,6 @@ camera_tracking_offset = Vector3(0, 5, 10)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1500, 0)
 far = 30000.0
 
-[node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main/TWViewer"]
-
 [node name="World" parent="TheWorld_Main" instance=ExtResource("4_gxev0")]
 
 [node name="UI" parent="TheWorld_Main" instance=ExtResource("4_cjpoh")]
@@ -348,24 +351,28 @@ mesh = SubResource("SphereMesh_812q2")
 
 [node name="TWTestQuadrant1" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10240, 0, 2048)
+visible = false
 script = ExtResource("7_7uq48")
 _pos = Vector2(-12288, 0)
 _points_per_size = 513
 
 [node name="TWTestQuadrant2" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10240, 0, 6144)
+visible = false
 script = ExtResource("7_7uq48")
 _pos = Vector2(-12288, 4096)
 _points_per_size = 513
 
 [node name="TWTestQuadrant3" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6144, 0, 2048)
+visible = false
 script = ExtResource("7_7uq48")
 _pos = Vector2(-8192, 0)
 _points_per_size = 513
 
 [node name="TWTestQuadrant4" type="MeshInstance3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6144, 0, 6144)
+visible = false
 script = ExtResource("7_7uq48")
 _pos = Vector2(-8192, 4096)
 _points_per_size = 513
@@ -393,3 +400,15 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="maple_tree" parent="." instance=ExtResource("11_kq4xa")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 5536, 1500, 25741)
+
+[node name="pine_tree" parent="." instance=ExtResource("11_fbf05")]
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 5527, 1500, 25741)
+
+[node name="small_rock" parent="." instance=ExtResource("12_ffcy8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5538.51, 1500, 25741)
+
+[node name="large_rock" parent="." instance=ExtResource("13_tf3dr")]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 5549, 1500, 25741)

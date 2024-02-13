@@ -99,6 +99,8 @@ var _info_panel_camera_projection := ""
 
 var _initial_level : int = 0
 
+@export_category("TWViewer")
+
 var _debug_mode_changed := true
 @export_enum("Default:0", "Enabled:1", "Disabled:2") var _debug_mode: int = 0:
 	set = _set_debug_mode

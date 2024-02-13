@@ -1,0 +1,17 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=3 uid="uid://b5x5il8xk3h5p"]
+
+[ext_resource type="Shader" path="res://assets/models/maple_tree/leaves_wind.gdshader" id="1_fuf8c"]
+[ext_resource type="Texture2D" uid="uid://rnfmd3jd4p7m" path="res://assets/models/maple_tree/maple_tree_3.png" id="2_i4j3m"]
+
+[resource]
+resource_name = "Tree_1Mat"
+render_priority = 0
+shader = ExtResource("1_fuf8c")
+shader_parameter/alpha_scissor_threshold = 0.239689
+shader_parameter/transmission = null
+shader_parameter/total_height = 1.0
+shader_parameter/wind_direction = Vector2(1, -0.5)
+shader_parameter/wind_speed = 1.0
+shader_parameter/wind_strength = 2.0
+shader_parameter/noise_scale = 20.0
+shader_parameter/texture_albedo = ExtResource("2_i4j3m")
