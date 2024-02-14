@@ -4,11 +4,12 @@
 [ext_resource type="Texture2D" uid="uid://rnfmd3jd4p7m" path="res://assets/models/maple_tree/maple_tree_3.png" id="2_gpbrp"]
 
 [sub_resource type="Gradient" id="Gradient_pookg"]
-offsets = PackedFloat32Array(0.38342, 0.694301, 1)
-colors = PackedColorArray(0.059375, 0.078125, 0.07, 1, 0.628287, 0.73, 0.1752, 1, 0.897921, 1, 0, 1)
+offsets = PackedFloat32Array(0.0974576, 0.262712, 0.423729, 0.555085, 0.927966, 1)
+colors = PackedColorArray(0.059375, 0.078125, 0.07, 1, 0.00937552, 0.972656, 0.205572, 1, 0.00899621, 0.631231, 0.136068, 1, 0.323013, 0.976563, 0.135108, 1, 0.897921, 1, 0, 1, 0, 0.73, 0.147866, 1)
 
 [sub_resource type="GradientTexture1D" id="GradientTexture1D_i1eyf"]
 gradient = SubResource("Gradient_pookg")
+use_hdr = true
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_t7o5y"]
 seed = 1
@@ -24,8 +25,8 @@ noise = SubResource("FastNoiseLite_t7o5y")
 resource_name = "Tree_1Mat"
 render_priority = 0
 shader = ExtResource("1_n484g")
-shader_parameter/alpha_scissor_threshold = 0.3
-shader_parameter/transmission = Color(0.745098, 0.741176, 0, 1)
+shader_parameter/alpha_scissor_threshold = 0.437
+shader_parameter/transmission = Color(0.0627451, 0.929412, 0.168627, 1)
 shader_parameter/total_height = 4.046
 shader_parameter/wind_direction = Vector2(1, -0.5)
 shader_parameter/wind_speed = 0.5

@@ -1,4 +1,4 @@
-[gd_scene load_steps=46 format=3 uid="uid://c4ukh1kw4impi"]
+[gd_scene load_steps=47 format=3 uid="uid://c4ukh1kw4impi"]
 
 [ext_resource type="Script" path="res://main/TheWorld_Main.gd" id="1_760ml"]
 [ext_resource type="Script" path="res://addons/twviewer/tw_viewer.gd" id="3_yxvy6"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://dvnha0bqryjll" path="res://assets/scenes/maple_tree.tscn" id="11_kq4xa"]
 [ext_resource type="PackedScene" uid="uid://bltmr2xgs8nq1" path="res://assets/scenes/small_rock.tscn" id="12_ffcy8"]
 [ext_resource type="PackedScene" uid="uid://8ay5rlrutcmx" path="res://assets/scenes/large_rock.tscn" id="13_tf3dr"]
+[ext_resource type="PackedScene" uid="uid://dlay76hdi56fd" path="res://assets/scenes/godot_ball.tscn" id="14_4otfj"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xl13w"]
 shading_mode = 0
@@ -297,6 +298,8 @@ shader = ExtResource("9_2dtkh")
 
 [node name="RootNode" type="Node"]
 
+[node name="World" parent="." instance=ExtResource("4_gxev0")]
+
 [node name="TheWorld_Main" type="Node3D" parent="."]
 script = ExtResource("1_760ml")
 
@@ -337,7 +340,7 @@ camera_tracking_offset = Vector3(0, 5, 10)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1500, 0)
 far = 30000.0
 
-[node name="World" parent="TheWorld_Main" instance=ExtResource("4_gxev0")]
+[node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main/TWViewer"]
 
 [node name="UI" parent="TheWorld_Main" instance=ExtResource("4_cjpoh")]
 
@@ -412,3 +415,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5538.51, 1500, 25741)
 
 [node name="large_rock" parent="." instance=ExtResource("13_tf3dr")]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 5549, 1500, 25741)
+
+[node name="godot_ball" parent="." instance=ExtResource("14_4otfj")]
+transform = Transform3D(-0.947768, 0, -0.318959, 0, 1, 0, 0.318959, 0, -0.947768, 5539.51, 1499.75, 25726.7)

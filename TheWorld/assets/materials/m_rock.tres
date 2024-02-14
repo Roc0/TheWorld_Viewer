@@ -5,6 +5,9 @@
 [resource]
 albedo_color = Color(0.439216, 0.407843, 0.388235, 1)
 albedo_texture = ExtResource("1_hx37f")
+metallic = 0.13
 metallic_specular = 0.3
+ao_enabled = true
+ao_texture = ExtResource("1_hx37f")
 uv1_triplanar = true
 uv1_world_triplanar = true

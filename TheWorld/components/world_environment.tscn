@@ -18,7 +18,7 @@ ambient_light_sky_contribution = 0.5
 ambient_light_energy = 0.5
 tonemap_mode = 3
 fog_light_color = Color(0.517647, 0.552941, 0.607843, 1)
-fog_density = 0.0
+fog_density = 0.002
 volumetric_fog_density = 0.0147
 
 [node name="World" type="Node3D"]
@@ -30,4 +30,5 @@ environment = SubResource("Environment_0jlkq")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2000, 0)
 light_color = Color(0.784314, 0.784314, 0.784314, 1)
 shadow_enabled = true
-directional_shadow_max_distance = 256.0
+directional_shadow_fade_start = 0.405
+directional_shadow_max_distance = 11.3

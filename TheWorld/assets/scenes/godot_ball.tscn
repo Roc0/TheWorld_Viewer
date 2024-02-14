@@ -1,0 +1,15 @@
+[gd_scene load_steps=6 format=3 uid="uid://dlay76hdi56fd"]
+
+[ext_resource type="PackedScene" uid="uid://bsw16bcdkx362" path="res://assets/models/godot_ball.glb" id="1_1g156"]
+[ext_resource type="Material" uid="uid://c7a5hcy3dlwa5" path="res://assets/materials/m_rock_3d.tres" id="2_y64op"]
+[ext_resource type="Material" uid="uid://b0qkg55h84i3f" path="res://assets/materials/white.tres" id="3_gcekp"]
+[ext_resource type="Material" uid="uid://bbfkhkmct7wu3" path="res://assets/materials/blue.tres" id="4_clmil"]
+[ext_resource type="Material" uid="uid://d3u3snuqdn404" path="res://assets/materials/gray.tres" id="5_7m3me"]
+
+[node name="godot_ball" instance=ExtResource("1_1g156")]
+
+[node name="OBJ_GodotBall" parent="." index="0"]
+surface_material_override/0 = ExtResource("2_y64op")
+surface_material_override/1 = ExtResource("3_gcekp")
+surface_material_override/2 = ExtResource("4_clmil")
+surface_material_override/3 = ExtResource("5_7m3me")
