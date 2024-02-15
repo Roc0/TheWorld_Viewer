@@ -211,3 +211,6 @@ func move_player (delta):
 		else:
 			xform = align_with_y(global_transform, collision_normal, rotated_angle)
 		global_transform = global_transform.interpolate_with(xform, weight)
+
+func camera_tracking_player() -> bool:
+	return _camera_tracking_player

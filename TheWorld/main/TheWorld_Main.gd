@@ -8,13 +8,17 @@ var tw_const = preload("res://addons/twviewer/tw_const.gd")
 const HT_Logger = preload("res://addons/twviewer/util/logger.gd")
 var _logger = HT_Logger.get_for(self)
 
-var config_file_name : String = ""
+var _config_file_name : String = ""
+var _config := ConfigFile.new()
+
+var _viewpoint_to_save : int = 0
+var _viewpoint_to_load : int = 0
 
 var initialCameraDistanceFromTerrain : float = 300
 
 var initial_player_pos : Variant = null
 var initial_player_basis : Variant = null
-var initial_camera_position := Vector3(0, 0, 0)
+var initial_camera_position : Variant = null
 #var initialViewerPoFs := Vector3(0, 2200, 0)ww
 #var initialCameraAltitudeForced = 0
 #var initialYawPitchRoll := Vector3(-139, -7, 0)
@@ -87,6 +91,7 @@ var time_of_last_ray : int = 0
 const Color_Yellow_Apricot := Color(251.0 / 255.0, 206.0 / 255.0, 177.0 / 255.0)
 var altPressed := false
 var ctrlPressed := false
+var shiftPressed := false
 var ball_pos := Vector3.ZERO
 var _ball_pos_info_line_index : int = 0
 var _player_pos := Vector3.ZERO
@@ -123,20 +128,17 @@ func TWViewer() -> Node3D:
 
 func init():
 	log_debug("init")
-	#config_file_name = tw_const.config_file
-	config_file_name = TWViewer().GDN_globals().get_config_filename(0)
-	var config = ConfigFile.new()
-	var err = config.load(config_file_name)
-	if (err == OK):
-		initial_camera_position = config.get_value(tw_const.param_group_camera, tw_const.param_key_camera_pos)
-		var initial_camera_ypr = config.get_value(tw_const.param_group_camera, tw_const.param_key_camera_ypr)
-		#initial_camera_ypr.x = rad_to_deg(initial_camera_ypr.x)
-		#initial_camera_ypr.y = rad_to_deg(initial_camera_ypr.y)
-		#initial_camera_ypr.z = rad_to_deg(initial_camera_ypr.z)
+	_config_file_name = TWViewer().GDN_globals().get_config_filename(0)
+	#var config = ConfigFile.new()
+	var _err = _config.load(_config_file_name)
+	initial_camera_position = _config.get_value(tw_const.param_group_camera, tw_const.param_key_initial_camera_pos)
+	var initial_camera_ypr : Variant = _config.get_value(tw_const.param_group_camera, tw_const.param_key_initial_camera_ypr)
+	if initial_camera_position != null and initial_camera_ypr != null:
 		TWViewer()._set_camera_param_initial_pos(initial_camera_position)
 		TWViewer()._set_camera_param_initial_yaw_pitch_roll(initial_camera_ypr)
-		initial_player_pos = config.get_value(tw_const.param_group_player, tw_const.param_key_player_pos)
-		initial_player_basis = config.get_value(tw_const.param_group_player, tw_const.param_key_player_basis)
+	initial_player_pos = _config.get_value(tw_const.param_group_player, tw_const.param_key_player_pos)
+	initial_player_basis = _config.get_value(tw_const.param_group_player, tw_const.param_key_player_basis)
+		
 	var result = TWViewer().GDN_globals().connect("tw_status_changed", Callable(self, "_on_tw_status_changed")) == 0
 	log_debug(str("signal tw_status_changed connected (result=", result, ")"))
 	_clientstatus = get_clientstatus()
@@ -151,73 +153,122 @@ func deinit():
 
 func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> void:
 	if new_client_status == tw_const.clientstatus_world_undeploy_in_progress:
-		var camera : Camera3D = null
-		camera = TWViewer().get_camera()
-		if camera != null && camera.has_method("get_yaw") && camera.has_method("get_pitch") && camera.has_method("get_roll"):
-			var config = ConfigFile.new()
-			@warning_ignore("unused_variable")
-			var err = config.load(config_file_name)
-			@warning_ignore("unassigned_variable")
-			var camera_ypr : Vector3
-			camera_ypr.x = camera.get_yaw(false)
-			camera_ypr.y = camera.get_pitch(false)
-			camera_ypr.z = camera.get_roll(false)
-			config.set_value(tw_const.param_group_camera, tw_const.param_key_camera_pos, camera.global_transform.origin)
-			config.set_value(tw_const.param_group_camera, tw_const.param_key_camera_ypr, camera_ypr)
-			config.set_value(tw_const.param_group_player, tw_const.param_key_player_pos, $Player/Player.global_transform.origin)
-			config.set_value(tw_const.param_group_player, tw_const.param_key_player_basis, $Player/Player.global_transform.basis)
-			config.save(config_file_name)
+		save_current_position(0)
 			
 	_clientstatus = new_client_status
 	_client_status = Globals.Constants.status_to_string(new_client_status)
 	var old_client_status_str : String = Globals.Constants.status_to_string(old_client_status)
 	var new_client_status_str : String = Globals.Constants.status_to_string(new_client_status)
 	log_debug(str("_on_tw_status_changed ", old_client_status_str, "(", old_client_status, ") ==> ", new_client_status_str, "(", new_client_status, ")"))
-
+	
 func _input(event):
 	_clientstatus = get_clientstatus()
 	if _clientstatus < Globals.Constants.clientstatus_session_initialized:
 		pass
 		
-	if event is InputEventKey:
-		if event.is_action_pressed("ui_alt"):
-			altPressed = true
-		if event.is_action_released("ui_alt"):
-			altPressed = false
+	if event is InputEventKey && event.is_pressed():
+		#if event.is_action_pressed("ui_alt"):
+		#	altPressed = true
+		#if event.is_action_released("ui_alt"):
+		#	altPressed = false
 
-		if event.is_action_pressed("ui_ctrl"):
-			ctrlPressed = true
-		if event.is_action_released("ui_ctrl"):
-			ctrlPressed = false
+		#if event.is_action_pressed("ui_ctrl"):
+		#	ctrlPressed = true
+		#if event.is_action_released("ui_ctrl"):
+		#	ctrlPressed = false
+
+		if event.keycode == KEY_1:
+			if event.ctrl_pressed:
+				if _viewpoint_to_save == 0:
+					_viewpoint_to_save = 1
+			elif event.alt_pressed:
+				if _viewpoint_to_load == 0:
+					_viewpoint_to_load = 1
+		elif event.keycode == KEY_2:
+			if event.ctrl_pressed:
+				if _viewpoint_to_save == 0:
+					_viewpoint_to_save = 2
+			elif event.alt_pressed:
+				if _viewpoint_to_load == 0:
+					_viewpoint_to_load = 2
+		elif event.keycode == KEY_3:
+			if event.ctrl_pressed:
+				if _viewpoint_to_save == 0:
+					_viewpoint_to_save = 3
+			elif event.alt_pressed:
+				if _viewpoint_to_load == 0:
+					_viewpoint_to_load = 3
+		elif event.keycode == KEY_4:
+			if event.ctrl_pressed:
+				if _viewpoint_to_save == 0:
+					_viewpoint_to_save = 4
+			elif event.alt_pressed:
+				if _viewpoint_to_load == 0:
+					_viewpoint_to_load = 4
+		elif event.keycode == KEY_5:
+			if event.ctrl_pressed:
+				if _viewpoint_to_save == 0:
+					_viewpoint_to_save = 5
+			elif event.alt_pressed:
+				if _viewpoint_to_load == 0:
+					_viewpoint_to_load = 5
+		elif event.keycode == KEY_6:
+			if event.ctrl_pressed:
+				if _viewpoint_to_save == 0:
+					_viewpoint_to_save = 6
+			elif event.alt_pressed:
+				if _viewpoint_to_load == 0:
+					_viewpoint_to_load = 6
+		elif event.keycode == KEY_7:
+			if event.ctrl_pressed:
+				if _viewpoint_to_save == 0:
+					_viewpoint_to_save = 7
+			elif event.alt_pressed:
+				if _viewpoint_to_load == 0:
+					_viewpoint_to_load = 7
+		elif event.keycode == KEY_8:
+			if event.ctrl_pressed:
+				if _viewpoint_to_save == 0:
+					_viewpoint_to_save = 8
+			elif event.alt_pressed:
+				if _viewpoint_to_load == 0:
+					_viewpoint_to_load = 8
+		elif event.keycode == KEY_9:
+			if event.ctrl_pressed:
+				if _viewpoint_to_save == 0:
+					_viewpoint_to_save = 9
+			elif event.alt_pressed:
+				if _viewpoint_to_load == 0:
+					_viewpoint_to_load = 9
 
 		if event.is_action_pressed("ui_toggle_debug_stats"):
 			if debug_window_active:
 				set_debug_window(false)
 			else:
 				set_debug_window(true)
-		elif event.is_action_pressed("ui_up_arrow") && altPressed:
+		elif event.is_action_pressed("ui_up_arrow") && event.alt_pressed:
 			collider_up_pressed = true
-		elif event.is_action_pressed("ui_down_arrow") && altPressed:
+		elif event.is_action_pressed("ui_down_arrow") && event.alt_pressed:
 			collider_down_pressed = true
-		elif event.is_action_pressed("ui_left_arrow") && altPressed:
+		elif event.is_action_pressed("ui_left_arrow") && event.alt_pressed:
 			collider_left_pressed = true
-		elif event.is_action_pressed("ui_right_arrow") && altPressed:
+		elif event.is_action_pressed("ui_right_arrow") && event.alt_pressed:
 			collider_right_pressed = true
-		elif event.is_action_pressed("ui_page_up") && altPressed:
+		elif event.is_action_pressed("ui_page_up") && event.alt_pressed:
 			collider_upaltitude_pressed = true
-		elif event.is_action_pressed("ui_page_down") && altPressed:
+		elif event.is_action_pressed("ui_page_down") && event.alt_pressed:
 			collider_downaltitude_pressed = true
-		elif event.is_action_pressed("ui_up_arrow") && ctrlPressed:
+		elif event.is_action_pressed("ui_up_arrow") && event.alt_pressed:
 			collider_mesh_up_pressed = true
-		elif event.is_action_pressed("ui_down_arrow") && ctrlPressed:
+		elif event.is_action_pressed("ui_down_arrow") && event.alt_pressed:
 			collider_mesh_down_pressed = true
-		elif event.is_action_pressed("ui_left_arrow") && ctrlPressed:
+		elif event.is_action_pressed("ui_left_arrow") && event.alt_pressed:
 			collider_mesh_left_pressed = true
-		elif event.is_action_pressed("ui_right_arrow") && ctrlPressed:
+		elif event.is_action_pressed("ui_right_arrow") && event.alt_pressed:
 			collider_mesh_right_pressed = true
-		elif event.is_action_pressed("ui_page_up") && ctrlPressed:
+		elif event.is_action_pressed("ui_page_up") && event.alt_pressed:
 			collider_mesh_upaltitude_pressed = true
-		elif event.is_action_pressed("ui_page_down") && ctrlPressed:
+		elif event.is_action_pressed("ui_page_down") && event.alt_pressed:
 			collider_mesh_downaltitude_pressed = true
 		elif event.is_action_pressed("ui_cancel"):
 			get_tree().get_root().propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
@@ -246,6 +297,10 @@ func _input(event):
 			$Player/Player.toggle_back_camera_visibility()
 		#elif event.is_action_pressed("ui_dump"):
 		#	TWViewer().GDN_viewer().dump_required()
+
+func _physics_process(_delta):
+	#read_shift_ctrl_alt()
+	pass
 
 func _notification(_what):
 	if (_what == NOTIFICATION_WM_CLOSE_REQUEST):
@@ -336,21 +391,22 @@ func _process(_delta):
 	
 	#if scene_initialized && !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 	if !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
-		var space_state = get_world_3d().direct_space_state
-		var query = PhysicsRayQueryParameters3D.create(Vector3(initial_camera_position.x, 10000, initial_camera_position.z), Vector3(initial_camera_position.x, -10000, initial_camera_position.z))
-		var result = space_state.intersect_ray(query)
-		if result:
-			$Test/TestBall.global_transform.origin = Vector3(initial_camera_position.x + 10, result.position.y + 50, initial_camera_position.z + 10)
-			$Player/Player.global_transform.origin = Vector3(initial_camera_position.x, result.position.y + 50, initial_camera_position.z)
-		if initial_player_pos != null && initial_player_basis != null:
-			$Player/Player.global_transform.origin = initial_player_pos #+  Vector3(10, 5000, 10)
-			$Player/Player.global_transform.basis = initial_player_basis
-			$Test/TestBall.global_transform.origin = initial_player_pos + Vector3(10, 50, 10)
-		#$Test/TestBall.global_transform.origin = Vector3(initial_camera_position.x + 10, 500, initial_camera_position.z + 10)
-		$Test/TestBall.visible = true
-		#$Player/Player.visible = true
-		$Player/Player.set_player_in_world(true)
-		post_world_deploy_initialized = true
+		if initial_camera_position != null:
+			var space_state = get_world_3d().direct_space_state
+			var query = PhysicsRayQueryParameters3D.create(Vector3(initial_camera_position.x, 10000, initial_camera_position.z), Vector3(initial_camera_position.x, -10000, initial_camera_position.z))
+			var result = space_state.intersect_ray(query)
+			if result:
+				$Test/TestBall.global_transform.origin = Vector3(initial_camera_position.x + 10, result.position.y + 50, initial_camera_position.z + 10)
+				$Player/Player.global_transform.origin = Vector3(initial_camera_position.x, result.position.y + 50, initial_camera_position.z)
+			if initial_player_pos != null && initial_player_basis != null:
+				$Player/Player.global_transform.origin = initial_player_pos #+  Vector3(10, 5000, 10)
+				$Player/Player.global_transform.basis = initial_player_basis
+				$Test/TestBall.global_transform.origin = initial_player_pos + Vector3(10, 50, 10)
+			#$Test/TestBall.global_transform.origin = Vector3(initial_camera_position.x + 10, 500, initial_camera_position.z + 10)
+			$Test/TestBall.visible = true
+			#$Player/Player.visible = true
+			$Player/Player.set_player_in_world(true)
+			post_world_deploy_initialized = true
 	
 	#if scene_initialized && post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 	if post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
@@ -365,7 +421,16 @@ func _process(_delta):
 		tw_viewer.set_info_panel_external_value("Player pos: (" + str(snapped(_player_pos.x, 0.01)) + ", " + str(snapped(_player_pos.y, 0.01)) + ", " + str(snapped(_player_pos.z, 0.01)) + ")", _player_info_line_1_index)
 		#tw_viewer.set_info_panel_external_value("Speed: " + str(snapped(velocity, 0.01)) + " m/s " +  str(int((velocity * 60 * 60)) / 1000) + " km/h  H: " + player_dist_from_terrain, _player_info_2_line_index) 
 		tw_viewer.set_info_panel_external_value("Player speed: " + str(snapped(velocity, 0.01)) + " m/s " +  str(floor((velocity * 60 * 60) / 1000)) + " km/h  alt: " + player_dist_from_terrain, _player_info_line_2_index) 
-	
+		
+		if _viewpoint_to_save > 0:
+			save_current_position(_viewpoint_to_save)
+			_viewpoint_to_save = 0
+		
+		if _viewpoint_to_load > 0:			
+			if not $Player/Player.camera_tracking_player():
+				load_position(_viewpoint_to_load)
+			_viewpoint_to_load = 0
+			
 	if debug_window_active:
 		fps = Engine.get_frames_per_second()
 		var _chunk_debug_mode : String = gdn_viewer.get_chunk_debug_mode()
@@ -663,3 +728,60 @@ func test_subvieport(node : Node) -> void:
 	node.add_child(_sprite)
 	_sprite.position = Vector2(256 + 512, 256)
 	_sprite.texture = _viewport.get_texture()
+
+func save_current_position(viewpoint : int) -> void:
+	var camera : Camera3D = null
+	camera = TWViewer().get_camera()
+	if camera != null && camera.has_method("get_yaw") && camera.has_method("get_pitch") && camera.has_method("get_roll"):
+		#var config = ConfigFile.new()
+		#@warning_ignore("unused_variable")
+		#var err = config.load(config_file_name)
+		@warning_ignore("unassigned_variable")
+		var camera_ypr : Vector3
+		camera_ypr.x = camera.get_yaw(false)
+		camera_ypr.y = camera.get_pitch(false)
+		camera_ypr.z = camera.get_roll(false)
+		var param_key_camera_pos := ""
+		var param_key_camera_ypr := ""
+		if viewpoint == 0:
+			_config.set_value(tw_const.param_group_player, tw_const.param_key_player_pos, $Player/Player.global_transform.origin)
+			_config.set_value(tw_const.param_group_player, tw_const.param_key_player_basis, $Player/Player.global_transform.basis)
+			param_key_camera_pos = tw_const.param_key_initial_camera_pos
+			param_key_camera_ypr = tw_const.param_key_initial_camera_ypr
+		else:
+			param_key_camera_pos = tw_const.param_key_viewpoint_camera_pos + str(viewpoint)
+			param_key_camera_ypr = tw_const.param_key_viewpoint_camera_ypr + str(viewpoint)
+		_config.set_value(tw_const.param_group_camera, param_key_camera_pos, camera.global_transform.origin)
+		_config.set_value(tw_const.param_group_camera, param_key_camera_ypr, camera_ypr)
+		_config.save(_config_file_name)
+
+func load_position(viewpoint : int) -> void:
+	var param_key_camera_pos := ""
+	var param_key_camera_ypr := ""
+	if viewpoint == 0:
+		param_key_camera_pos = tw_const.param_key_initial_camera_pos
+		param_key_camera_ypr = tw_const.param_key_initial_camera_ypr
+	else:
+		param_key_camera_pos = tw_const.param_key_viewpoint_camera_pos + str(viewpoint)
+		param_key_camera_ypr = tw_const.param_key_viewpoint_camera_ypr + str(viewpoint)
+	var camera_position : Variant = _config.get_value(tw_const.param_group_camera, param_key_camera_pos)
+	var camera_ypr : Variant = _config.get_value(tw_const.param_group_camera, param_key_camera_ypr)
+	if camera_position != null and camera_ypr != null:
+		TWViewer()._set_camera_param_initial_pos(camera_position)
+		TWViewer()._set_camera_param_initial_yaw_pitch_roll(camera_ypr)
+	
+func read_shift_ctrl_alt() -> void:
+	if Input.is_action_pressed("ui_alt"):
+		altPressed = true
+	else:
+		altPressed = false
+
+	if Input.is_action_pressed("ui_ctrl"):
+		ctrlPressed = true
+	else:
+		ctrlPressed = false
+
+	if Input.is_action_pressed("ui_shift"):
+		shiftPressed = true
+	else:
+		shiftPressed = false
