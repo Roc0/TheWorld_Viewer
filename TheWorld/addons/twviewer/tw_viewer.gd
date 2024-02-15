@@ -129,11 +129,18 @@ func _set_world_param_cache_quad(cache_quad : int):
 		_world_param_cache_quad_changed = true
 
 var _world_param_info_panel_visibility_changed := true
-@export var _world_param_info_visible : bool = false:
+@export var _world_param_info_panel_visible : bool = false:
 	set = _set_world_param_info_panel_visible
 func _set_world_param_info_panel_visible(info_panel_visible : bool):
-	_world_param_info_visible = info_panel_visible
+	_world_param_info_panel_visible = info_panel_visible
 	_world_param_info_panel_visibility_changed = true
+
+var _world_param_edit_panel_visibility_changed := true
+@export var _world_param_edit_panel_visible : bool = false:
+	set = _set_world_param_edit_panel_visible
+func _set_world_param_edit_panel_visible(edit_panel_visible : bool):
+	_world_param_edit_panel_visible = edit_panel_visible
+	_world_param_edit_panel_visibility_changed = true
 
 var _world_param_deploy_world_changed := true
 @export var _world_param_deploy_world : bool = true :
@@ -161,11 +168,18 @@ func _set_world_editor_param_cache_quad(cache_quad : int):
 		_world_editor_param_cache_quad_changed = true
 
 var _world_editor_param_info_panel_visibility_changed := true
-@export var _world_editor_param_info_visible : bool = false:
+@export var _world_editor_param_info_panel_visible : bool = false:
 	set = _set_world_editor_param_info_panel_visible
 func _set_world_editor_param_info_panel_visible(info_panel_visible : bool):
-	_world_editor_param_info_visible = info_panel_visible
+	_world_editor_param_info_panel_visible = info_panel_visible
 	_world_editor_param_info_panel_visibility_changed = true
+
+var _world_editor_param_edit_panel_visibility_changed := true
+@export var _world_editor_param_edit_panel_visible : bool = false:
+	set = _set_world_editor_param_edit_panel_visible
+func _set_world_editor_param_edit_panel_visible(edit_panel_visible : bool):
+	_world_editor_param_edit_panel_visible = edit_panel_visible
+	_world_editor_param_edit_panel_visibility_changed = true
 
 var _world_editor_param_deploy_world_changed := true
 @export var _world_editor_param_deploy_world : bool = false :
@@ -513,9 +527,19 @@ func _process(delta):
 		if _world_editor_param_info_panel_visibility_changed:
 			#print(str("DEBUG _info_panel=", _info_panel, " visible=", _world_editor_param_info_visible))
 			if _info_panel != null:
-				_info_panel.visible = _world_editor_param_info_visible
+				_info_panel.visible = _world_editor_param_info_panel_visible
 				#print(str("_info_panel_visible=", _info_panel.visible))
 			_world_editor_param_info_panel_visibility_changed = false
+
+		if _world_editor_param_edit_panel_visibility_changed:
+			if gdn_viewer.has_method("set_edit_mode"):
+				gdn_viewer.set_edit_mode(_world_editor_param_edit_panel_visible)
+			_world_editor_param_edit_panel_visibility_changed = false
+		else:
+			var edit_mode = gdn_viewer.is_edit_mode()
+			if edit_mode != _world_editor_param_edit_panel_visible:
+				_world_editor_param_edit_panel_visible = edit_mode
+				_world_editor_param_edit_panel_visibility_changed = false
 	else:
 		if _world_param_depth_quad_changed:
 			if gdn_viewer.has_method("set_depth_quad"):
@@ -531,10 +555,19 @@ func _process(delta):
 
 		if _world_param_info_panel_visibility_changed:
 			if _info_panel != null:
-				_info_panel.visible = _world_param_info_visible
+				_info_panel.visible = _world_param_info_panel_visible
 				#print(str("_info_panel_visible=", _info_panel.visible))
 			_world_param_info_panel_visibility_changed = false
 		
+		if _world_param_edit_panel_visibility_changed:
+			if gdn_viewer.has_method("set_edit_mode"):
+				gdn_viewer.set_edit_mode(_world_param_edit_panel_visible)
+			_world_param_edit_panel_visibility_changed = false
+		else:
+			var edit_mode = gdn_viewer.is_edit_mode()
+			if edit_mode != _world_param_edit_panel_visible:
+				_world_param_edit_panel_visible = edit_mode
+				_world_param_edit_panel_visibility_changed = false
 
 	if gdn_viewer.has_method("set_shader_parameter"):
 		
@@ -1120,7 +1153,7 @@ func log_error(text : String) -> void:
 	error_print(ctx, _text, false)
 	
 func error_print(context: String, text : String, godot_print : bool):
-	#if Engine.is_editor_hint:
+	#if Engine.is_editor_hint():
 	#	return
 	var gdn_globals = GDN_globals()
 	if gdn_globals != null:
@@ -1128,11 +1161,11 @@ func error_print(context: String, text : String, godot_print : bool):
 			gdn_globals.error_print(str(context,": ", text), godot_print)
 
 func toggle_info_panel_visibility():
-	if Engine.is_editor_hint:
-		_world_editor_param_info_visible = !_world_editor_param_info_visible
+	if Engine.is_editor_hint():
+		_world_editor_param_info_panel_visible = !_world_editor_param_info_panel_visible
 		_world_editor_param_info_panel_visibility_changed = true
 	else:
-		_world_param_info_visible = !_world_param_info_visible
+		_world_param_info_panel_visible = !_world_param_info_panel_visible
 		_world_param_info_panel_visibility_changed = true
 
 func toggle_track_mouse():
@@ -1181,7 +1214,7 @@ func create_info_panel():
 	_info_panel.name = "InfoPanel"
 	log_debug(str("_info_panel:", _info_panel, " ", _info_panel.name))
 	add_child(_info_panel)
-	if _world_editor_param_info_visible:
+	if _world_editor_param_info_panel_visible:
 		_info_panel.visible = true
 	else:
 		_info_panel.visible = false
