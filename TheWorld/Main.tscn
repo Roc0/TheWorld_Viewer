@@ -298,12 +298,14 @@ shader = ExtResource("9_2dtkh")
 
 [node name="RootNode" type="Node"]
 
-[node name="WorldEnvironment" parent="." instance=ExtResource("4_gxev0")]
-
 [node name="TheWorld_Main" type="Node3D" parent="."]
 script = ExtResource("1_760ml")
 
-[node name="TWViewer" type="Node3D" parent="TheWorld_Main"]
+[node name="WorldEnvironment" parent="TheWorld_Main" instance=ExtResource("4_gxev0")]
+
+[node name="Landscape" type="Node3D" parent="TheWorld_Main"]
+
+[node name="TWViewer" type="Node3D" parent="TheWorld_Main/Landscape"]
 script = ExtResource("3_yxvy6")
 _world_param_depth_quad = 6
 _world_param_info_visible = true
@@ -316,10 +318,10 @@ _shader_param_ground_uv_scale = 6.0
 _shader_param_globalmap_blend_start = 3000.0
 _shader_param_texture_blending_size = 0.33
 
-[node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main/TWViewer"]
+[node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main/Landscape/TWViewer"]
 perfparam_threshold_cache_heights = 15000.0
 
-[node name="GDN_TW_Viewer" type="GDN_TheWorld_Viewer" parent="TheWorld_Main/TWViewer"]
+[node name="GDN_TW_Viewer" type="GDN_TheWorld_Viewer" parent="TheWorld_Main/Landscape/TWViewer"]
 metadata/debug_wirecube_mesh_lod_5 = SubResource("ArrayMesh_kfft6")
 metadata/debug_wirecube_mesh_lod_6 = SubResource("ArrayMesh_4lakm")
 metadata/debug_wirecube_mesh_lod_3 = SubResource("ArrayMesh_inpye")
@@ -335,72 +337,78 @@ metadata/debug_wiresquare_mesh_lod_0 = SubResource("ArrayMesh_prsjq")
 metadata/debug_wiresquare_mesh_lod_1 = SubResource("ArrayMesh_cx5y7")
 metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
-[node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/TWViewer"]
+[node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1500, 0)
 far = 30000.0
 
-[node name="UI" parent="TheWorld_Main" instance=ExtResource("4_cjpoh")]
+[node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main/Landscape/TWViewer"]
+
+[node name="TestQuadrants" type="Node3D" parent="TheWorld_Main/Landscape"]
+
+[node name="Origin" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
+visible = false
+mesh = SubResource("SphereMesh_812q2")
+skeleton = NodePath("../../../..")
+
+[node name="TWTestQuadrant1" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6144, 0, 26624)
+skeleton = NodePath("../../../..")
+script = ExtResource("7_7uq48")
+_pos = Vector2(4096, 24576)
+_pos_index = Vector2(1, 6)
+_points_per_size = 513
+_size_read_only = 4096.0
+_step_read_only = 2.0
+_num_vertices_read_only = 263169
+
+[node name="TWTestQuadrant2" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6144, 0, 26624)
+visible = false
+skeleton = NodePath("../../../..")
+script = ExtResource("7_7uq48")
+_pos = Vector2(4096, 24576)
+_pos_index = Vector2(1, 6)
+_points_per_size = 513
+
+[node name="TWTestQuadrant3" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6144, 0, 2048)
+visible = false
+skeleton = NodePath("../../../..")
+script = ExtResource("7_7uq48")
+_pos = Vector2(-8192, 0)
+_points_per_size = 513
+
+[node name="TWTestQuadrant4" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6144, 0, 6144)
+visible = false
+skeleton = NodePath("../../../..")
+script = ExtResource("7_7uq48")
+_pos = Vector2(-8192, 4096)
+_points_per_size = 513
 
 [node name="Test" parent="TheWorld_Main" instance=ExtResource("5_kid0l")]
 
 [node name="Player" parent="TheWorld_Main" instance=ExtResource("6_wlxwp")]
 
-[node name="TestQuadrants" type="Node3D" parent="."]
+[node name="TestModels" type="Node3D" parent="TheWorld_Main"]
 
-[node name="Origin" type="MeshInstance3D" parent="TestQuadrants"]
-visible = false
-mesh = SubResource("SphereMesh_812q2")
-skeleton = NodePath("../..")
-
-[node name="TWTestQuadrant1" type="MeshInstance3D" parent="TestQuadrants"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10240, 0, 2048)
-visible = false
-skeleton = NodePath("../..")
-script = ExtResource("7_7uq48")
-_pos = Vector2(-12288, 0)
-_points_per_size = 513
-
-[node name="TWTestQuadrant2" type="MeshInstance3D" parent="TestQuadrants"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10240, 0, 6144)
-visible = false
-skeleton = NodePath("../..")
-script = ExtResource("7_7uq48")
-_pos = Vector2(-12288, 4096)
-_points_per_size = 513
-
-[node name="TWTestQuadrant3" type="MeshInstance3D" parent="TestQuadrants"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6144, 0, 2048)
-visible = false
-skeleton = NodePath("../..")
-script = ExtResource("7_7uq48")
-_pos = Vector2(-8192, 0)
-_points_per_size = 513
-
-[node name="TWTestQuadrant4" type="MeshInstance3D" parent="TestQuadrants"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6144, 0, 6144)
-visible = false
-skeleton = NodePath("../..")
-script = ExtResource("7_7uq48")
-_pos = Vector2(-8192, 4096)
-_points_per_size = 513
-
-[node name="TestModels" type="Node3D" parent="."]
-
-[node name="maple_tree" parent="TestModels" instance=ExtResource("11_kq4xa")]
+[node name="maple_tree" parent="TheWorld_Main/TestModels" instance=ExtResource("11_kq4xa")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 5536, 1500, 25741)
 
-[node name="pine_tree" parent="TestModels" instance=ExtResource("11_fbf05")]
+[node name="pine_tree" parent="TheWorld_Main/TestModels" instance=ExtResource("11_fbf05")]
 transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 5527, 1500, 25741)
 
-[node name="small_rock" parent="TestModels" instance=ExtResource("12_ffcy8")]
+[node name="small_rock" parent="TheWorld_Main/TestModels" instance=ExtResource("12_ffcy8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5538.51, 1500, 25741)
 
-[node name="large_rock" parent="TestModels" instance=ExtResource("13_tf3dr")]
+[node name="large_rock" parent="TheWorld_Main/TestModels" instance=ExtResource("13_tf3dr")]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 5549, 1500, 25741)
 
-[node name="godot_ball" parent="TestModels" instance=ExtResource("14_4otfj")]
+[node name="godot_ball" parent="TheWorld_Main/TestModels" instance=ExtResource("14_4otfj")]
 transform = Transform3D(-0.947768, 0, -0.318959, 0, 1, 0, 0.318959, 0, -0.947768, 5539.51, 1499.75, 25726.7)
+
+[node name="UI" parent="TheWorld_Main" instance=ExtResource("4_cjpoh")]
 
 [node name="PostProcessGreyScaleEffect" type="CanvasLayer" parent="."]
 visible = false

@@ -18,10 +18,14 @@ var _render_changed := false
 var _material : ShaderMaterial = null
 
 var _var_read_only = true
+var _pos_index_last_changed = false
 
 @export var _render := false:
 	set = _set_render
-@export var _pos := Vector2(0.0, 0.0)
+@export var _pos := Vector2(0.0, 0.0):
+	set = _set_pos
+@export var _pos_index := Vector2(0.0, 0.0):
+	set = _set_pos_index
 @export var _points_per_size : int = 0
 @export var _size_read_only : float = 0:
 	set = _set_size_read_only
@@ -34,6 +38,14 @@ func _set_render(b : bool) -> void:
 	if (_render != b):
 		_render = b
 		_render_changed = true
+
+func _set_pos(v : Vector2) -> void:
+	_pos = v
+	_pos_index_last_changed = false
+
+func _set_pos_index(v : Vector2) -> void:
+	_pos_index = v
+	_pos_index_last_changed = true
 
 func _set_size_read_only(v : float) -> void:
 	if not _var_read_only:
@@ -143,8 +155,14 @@ func render():
 	if (gdn_viewer == null):
 		_logger.debug(str("gdn_viewer null"))
 		return
-	var b : bool = gdn_viewer.load_quadrant_data(_pos.x, _pos.y, 0)
+	
+	var b : bool = false
+	if _pos_index_last_changed:
+		b = gdn_viewer.load_quadrant_data_index(_pos_index.x, _pos_index.y, 0)
+	else:
+		b = gdn_viewer.load_quadrant_data(_pos.x, _pos.y, 0)
 	_pos = gdn_viewer.get_quadrant_pos()
+	_pos_index = gdn_viewer.get_quadrant_pos_index()
 	
 	_logger.debug(str("size=", size, " points_per_size=", points_per_size))
 	_plane_mesh = PlaneMesh.new()

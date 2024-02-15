@@ -26,6 +26,8 @@ var initial_camera_position : Variant = null
 #var initialCameraAltitudeForced = 0
 #var initialYawPitchRoll := Vector3(-0.238, -0.098, 0)
 
+var _saved_time_to_fade_message = 0
+
 var _window_mode = Window.MODE_MAXIMIZED if (true) else Window.MODE_WINDOWED
 const initialLevel := 0
 #var init_world_thread : Thread
@@ -122,12 +124,14 @@ func resizing():
 	log_debug(str("Resizing: ", get_viewport().size))
 
 func TWViewer() -> Node3D:
-	if $TWViewer == null:
+	if $Landscape/TWViewer == null:
 		return null
-	return $TWViewer.get_self()
+	return $Landscape/TWViewer.get_self()
 
 func init():
 	log_debug("init")
+	$UI/MessageContainer/Message.add_theme_color_override("font_color", Color(251.0 / 255.0, 206.0 / 255.0, 177.0 / 255.0))
+	$UI/MessageContainer/Message.text = "Deploying world ..."
 	_config_file_name = TWViewer().GDN_globals().get_config_filename(0)
 	#var config = ConfigFile.new()
 	var _err = _config.load(_config_file_name)
@@ -154,6 +158,7 @@ func deinit():
 func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> void:
 	if new_client_status == tw_const.clientstatus_world_undeploy_in_progress:
 		save_current_position(0)
+		$UI/MessageContainer/Message.text = "Undeploying world ..."
 			
 	_clientstatus = new_client_status
 	_client_status = Globals.Constants.status_to_string(new_client_status)
@@ -332,6 +337,10 @@ func _exit_tree():
 	
 func _process(_delta):
 
+	if _saved_time_to_fade_message > 0 and (Time.get_ticks_msec() - _saved_time_to_fade_message) > 3000:
+		$UI/MessageContainer/Message.text = ""
+		_saved_time_to_fade_message = 0
+	
 	if Globals.appstatus != Globals.appstatus_running:
 		return
 	
@@ -406,6 +415,7 @@ func _process(_delta):
 			$Test/TestBall.visible = true
 			#$Player/Player.visible = true
 			$Player/Player.set_player_in_world(true)
+			$UI/MessageContainer/Message.text = ""
 			post_world_deploy_initialized = true
 	
 	#if scene_initialized && post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
@@ -424,11 +434,15 @@ func _process(_delta):
 		
 		if _viewpoint_to_save > 0:
 			save_current_position(_viewpoint_to_save)
+			$UI/MessageContainer/Message.text = "Viewpoint " + str(_viewpoint_to_save) + " saved!"
+			_saved_time_to_fade_message = Time.get_ticks_msec()
 			_viewpoint_to_save = 0
 		
 		if _viewpoint_to_load > 0:			
 			if not $Player/Player.camera_tracking_player():
 				load_position(_viewpoint_to_load)
+				$UI/MessageContainer/Message.text = "Viewpoint " + str(_viewpoint_to_load) + " loaded!"
+				_saved_time_to_fade_message = Time.get_ticks_msec()
 			_viewpoint_to_load = 0
 			
 	if debug_window_active:

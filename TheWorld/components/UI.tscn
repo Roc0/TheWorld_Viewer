@@ -16,3 +16,15 @@ script = ExtResource("1_ujynt")
 
 [node name="Column" type="VBoxContainer" parent="DebugStats"]
 layout_mode = 2
+
+[node name="MessageContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 14.925
+anchor_right = 26.45
+offset_left = 23.9999
+offset_right = -18.0
+offset_bottom = 23.0
+
+[node name="Message" type="Label" parent="MessageContainer"]
+layout_mode = 2
