@@ -196,136 +196,139 @@ func render():
 	#_logger.debug(str("MeshInstance transform = ", global_transform))
 	#_logger.debug(str("Shader global transform = ", gt))
 	
-	var mat : ShaderMaterial = get_active_material(0)
+	var mat : ShaderMaterial = null
+	var m = get_active_material(0)
+	if m != null and m is ShaderMaterial:
+		mat = m
+			
 	if mat == null:
-		_logger.debug(str("no material active"))
-		return
+		_logger.debug(str("no shader material active"))
+	else:
+		_logger.debug(str("Shader = ", mat.get_shader().get_path()))
+	
+		var tex : ImageTexture
 		
-	_logger.debug(str("Shader = ", mat.get_shader().get_path()))
-	
-	var tex : ImageTexture
-	
-	var image : Image = gdn_viewer.get_quadrant_heightmap_image()
-	if image != null:
-		tex = ImageTexture.create_from_image(image)
-		mat.set_shader_parameter("u_terrain_heightmap", tex)
+		var image : Image = gdn_viewer.get_quadrant_heightmap_image()
+		if image != null:
+			tex = ImageTexture.create_from_image(image)
+			mat.set_shader_parameter("u_terrain_heightmap", tex)
 
-	image = gdn_viewer.get_quadrant_normalmap_image()
-	if image != null:
-		tex = ImageTexture.create_from_image(image)
-		mat.set_shader_parameter("u_terrain_normalmap", tex)
+		image = gdn_viewer.get_quadrant_normalmap_image()
+		if image != null:
+			tex = ImageTexture.create_from_image(image)
+			mat.set_shader_parameter("u_terrain_normalmap", tex)
 
-	image = gdn_viewer.get_quadrant_splatmap_image()
-	if image != null:
-		tex = ImageTexture.create_from_image(image)
-		mat.set_shader_parameter("u_terrain_splatmap", tex)
+		image = gdn_viewer.get_quadrant_splatmap_image()
+		if image != null:
+			tex = ImageTexture.create_from_image(image)
+			mat.set_shader_parameter("u_terrain_splatmap", tex)
 
-	image = gdn_viewer.get_quadrant_globalmap_image()
-	if image != null:
-		tex = ImageTexture.create_from_image(image)
-		mat.set_shader_parameter("u_terrain_globalmap", tex)
+		image = gdn_viewer.get_quadrant_globalmap_image()
+		if image != null:
+			tex = ImageTexture.create_from_image(image)
+			mat.set_shader_parameter("u_terrain_globalmap", tex)
 
-	image = gdn_viewer.get_quadrant_colormap_image()
-	if image != null:
-		tex = ImageTexture.create_from_image(image)
-		mat.set_shader_parameter("u_terrain_colormap", tex)
+		image = gdn_viewer.get_quadrant_colormap_image()
+		if image != null:
+			tex = ImageTexture.create_from_image(image)
+			mat.set_shader_parameter("u_terrain_colormap", tex)
 
-	mat.set_shader_parameter("u_terrain_inverse_transform", inv_gt)
-	#RenderingServer.global_shader_parameter_set("gu_terrain_inverse_transform", inv_gt)
-	_logger.debug(str("u_terrain_inverse_transform = ", inv_gt))
+		mat.set_shader_parameter("u_terrain_inverse_transform", inv_gt)
+		#RenderingServer.global_shader_parameter_set("gu_terrain_inverse_transform", inv_gt)
+		_logger.debug(str("u_terrain_inverse_transform = ", inv_gt))
 
-	mat.set_shader_parameter("u_terrain_normal_basis", normal_basis)
-	_logger.debug(str("u_terrain_normal_basis = ", normal_basis))
+		mat.set_shader_parameter("u_terrain_normal_basis", normal_basis)
+		_logger.debug(str("u_terrain_normal_basis = ", normal_basis))
 
-	mat.set_shader_parameter("u_grid_step", step)
-	#RenderingServer.global_shader_parameter_set("gu_grid_step", step)
-	_logger.debug(str("u_grid_step = ", step))
+		mat.set_shader_parameter("u_grid_step", step)
+		#RenderingServer.global_shader_parameter_set("gu_grid_step", step)
+		_logger.debug(str("u_grid_step = ", step))
 
-	# low
-	#tex = gdn_viewer.get_ground_texture_albedo_bump(gdn_viewer.get_ground_texture_name(0))
-	#if tex != null:
-	#	mat.set_shader_parameter("u_ground_albedo_bump_0", tex)
-	#tex = gdn_viewer.get_ground_texture_normal_roughness(gdn_viewer.get_ground_texture_name(0))
-	#if tex != null:
-	#	mat.set_shader_parameter("u_ground_normal_roughness_0", tex)
+		# low
+		#tex = gdn_viewer.get_ground_texture_albedo_bump(gdn_viewer.get_ground_texture_name(0))
+		#if tex != null:
+		#	mat.set_shader_parameter("u_ground_albedo_bump_0", tex)
+		#tex = gdn_viewer.get_ground_texture_normal_roughness(gdn_viewer.get_ground_texture_name(0))
+		#if tex != null:
+		#	mat.set_shader_parameter("u_ground_normal_roughness_0", tex)
 
-	# high
-	#tex = gdn_viewer.get_ground_texture_albedo_bump(gdn_viewer.get_ground_texture_name(1))
-	#if tex != null:
-	#	mat.set_shader_parameter("u_ground_albedo_bump_1", tex)
-	#tex = gdn_viewer.get_ground_texture_normal_roughness(gdn_viewer.get_ground_texture_name(1))
-	#if tex != null:
-	#	mat.set_shader_parameter("u_ground_normal_roughness_1", tex)
+		# high
+		#tex = gdn_viewer.get_ground_texture_albedo_bump(gdn_viewer.get_ground_texture_name(1))
+		#if tex != null:
+		#	mat.set_shader_parameter("u_ground_albedo_bump_1", tex)
+		#tex = gdn_viewer.get_ground_texture_normal_roughness(gdn_viewer.get_ground_texture_name(1))
+		#if tex != null:
+		#	mat.set_shader_parameter("u_ground_normal_roughness_1", tex)
 
-	# dirt
-	#tex = gdn_viewer.get_ground_texture_albedo_bump(gdn_viewer.get_ground_texture_name(2))
-	#if tex != null:
-	#	mat.set_shader_parameter("u_ground_albedo_bump_2", tex)
-	#tex = gdn_viewer.get_ground_texture_normal_roughness(gdn_viewer.get_ground_texture_name(2))
-	#if tex != null:
-	#	mat.set_shader_parameter("u_ground_normal_roughness_2", tex)
+		# dirt
+		#tex = gdn_viewer.get_ground_texture_albedo_bump(gdn_viewer.get_ground_texture_name(2))
+		#if tex != null:
+		#	mat.set_shader_parameter("u_ground_albedo_bump_2", tex)
+		#tex = gdn_viewer.get_ground_texture_normal_roughness(gdn_viewer.get_ground_texture_name(2))
+		#if tex != null:
+		#	mat.set_shader_parameter("u_ground_normal_roughness_2", tex)
 
-	# rocks
-	#tex = gdn_viewer.get_ground_texture_albedo_bump(gdn_viewer.get_ground_texture_name(3))
-	#if tex != null:
-	#	mat.set_shader_parameter("u_ground_albedo_bump_3", tex)
-	#tex = gdn_viewer.get_ground_texture_normal_roughness(gdn_viewer.get_ground_texture_name(3))
-	#if tex != null:
-	#	mat.set_shader_parameter("u_ground_normal_roughness_3", tex)
+		# rocks
+		#tex = gdn_viewer.get_ground_texture_albedo_bump(gdn_viewer.get_ground_texture_name(3))
+		#if tex != null:
+		#	mat.set_shader_parameter("u_ground_albedo_bump_3", tex)
+		#tex = gdn_viewer.get_ground_texture_normal_roughness(gdn_viewer.get_ground_texture_name(3))
+		#if tex != null:
+		#	mat.set_shader_parameter("u_ground_normal_roughness_3", tex)
+			
+		var v4 : Vector4 = gdn_viewer.get_ground_texture_layers()
+		mat.set_shader_parameter("u_ground_layers", v4)
+		_logger.debug(str("u_ground_layers = ", v4))
+
+		var plane : Plane = gdn_viewer.get_shader_param_ground_uv_scale()
+		v4 = Vector4(plane.normal.x, plane.normal.y, plane.normal.z, plane.d)
+		mat.set_shader_parameter("u_ground_uv_scale_per_texture", v4)
+		_logger.debug(str("u_ground_uv_scale_per_texture = ", v4))
+
+		b = gdn_viewer.get_shader_param_depth_blending()
+		mat.set_shader_parameter("u_depth_blending", b)
+		_logger.debug(str("u_depth_blending = ", b))
 		
-	var v4 : Vector4 = gdn_viewer.get_ground_texture_layers()
-	mat.set_shader_parameter("u_ground_layers", v4)
-	_logger.debug(str("u_ground_layers = ", v4))
-
-	var plane : Plane = gdn_viewer.get_shader_param_ground_uv_scale()
-	v4 = Vector4(plane.normal.x, plane.normal.y, plane.normal.z, plane.d)
-	mat.set_shader_parameter("u_ground_uv_scale_per_texture", v4)
-	_logger.debug(str("u_ground_uv_scale_per_texture = ", v4))
-
-	b = gdn_viewer.get_shader_param_depth_blending()
-	mat.set_shader_parameter("u_depth_blending", b)
-	_logger.debug(str("u_depth_blending = ", b))
-	
-	b = gdn_viewer.get_shader_param_triplanar()
-	mat.set_shader_parameter("u_triplanar", b)
-	_logger.debug(str("u_triplanar = ", b))
-	
-	plane = gdn_viewer.get_shader_param_tile_reduction()
-	v4 = Vector4(plane.normal.x, plane.normal.y, plane.normal.z, plane.d)
-	mat.set_shader_parameter("u_tile_reduction_per_texture", v4)
-	_logger.debug(str("u_tile_reduction_per_texture = ", v4))
-	
-	gdn_viewer.clear_quadrant_data()
-	
-	if name == "TWTestQuadrant1":
-		v4 = Vector4(1, 1, 9, 10)
-		mat.set_shader_parameter("u_south_ground_layers", v4)
-		_logger.debug(str(name + " - u_south_ground_layers = ", v4))
-		v4 = Vector4(1, 8, 9, 10)
-		mat.set_shader_parameter("u_east_ground_layers", v4)
-		_logger.debug(str(name + " - u_east_ground_layers = ", v4))
-	elif name == "TWTestQuadrant2":
-		v4 = Vector4(1, 5, 9, 10)
-		mat.set_shader_parameter("u_north_ground_layers", v4)
-		_logger.debug(str(name + " - u_north_ground_layers = ", v4))
-		v4 = Vector4(1, 1, 9, 10)
-		mat.set_shader_parameter("u_east_ground_layers", v4)
-		_logger.debug(str(name + " - u_east_ground_layers = ", v4))
-	elif name == "TWTestQuadrant3":
-		v4 = Vector4(1, 1, 9, 10)
-		mat.set_shader_parameter("u_south_ground_layers", v4)
-		_logger.debug(str(name + " - u_south_ground_layers = ", v4))
-		v4 = Vector4(1, 5, 9, 10)
-		mat.set_shader_parameter("u_west_ground_layers", v4)
-		_logger.debug(str(name + " - u_west_ground_layers = ", v4))
-	elif name == "TWTestQuadrant4":
-		v4 = Vector4(1, 8, 9, 10)
-		mat.set_shader_parameter("u_north_ground_layers", v4)
-		_logger.debug(str(name + " - u_north_ground_layers = ", v4))
-		v4 = Vector4(1, 1, 9, 10)
-		mat.set_shader_parameter("u_west_ground_layers", v4)
-		_logger.debug(str(name + " - u_west_ground_layers = ", v4))
+		b = gdn_viewer.get_shader_param_triplanar()
+		mat.set_shader_parameter("u_triplanar", b)
+		_logger.debug(str("u_triplanar = ", b))
+		
+		plane = gdn_viewer.get_shader_param_tile_reduction()
+		v4 = Vector4(plane.normal.x, plane.normal.y, plane.normal.z, plane.d)
+		mat.set_shader_parameter("u_tile_reduction_per_texture", v4)
+		_logger.debug(str("u_tile_reduction_per_texture = ", v4))
+		
+		gdn_viewer.clear_quadrant_data()
+		
+		if name == "TWTestQuadrant1":
+			v4 = Vector4(1, 1, 9, 10)
+			mat.set_shader_parameter("u_south_ground_layers", v4)
+			_logger.debug(str(name + " - u_south_ground_layers = ", v4))
+			v4 = Vector4(1, 8, 9, 10)
+			mat.set_shader_parameter("u_east_ground_layers", v4)
+			_logger.debug(str(name + " - u_east_ground_layers = ", v4))
+		elif name == "TWTestQuadrant2":
+			v4 = Vector4(1, 5, 9, 10)
+			mat.set_shader_parameter("u_north_ground_layers", v4)
+			_logger.debug(str(name + " - u_north_ground_layers = ", v4))
+			v4 = Vector4(1, 1, 9, 10)
+			mat.set_shader_parameter("u_east_ground_layers", v4)
+			_logger.debug(str(name + " - u_east_ground_layers = ", v4))
+		elif name == "TWTestQuadrant3":
+			v4 = Vector4(1, 1, 9, 10)
+			mat.set_shader_parameter("u_south_ground_layers", v4)
+			_logger.debug(str(name + " - u_south_ground_layers = ", v4))
+			v4 = Vector4(1, 5, 9, 10)
+			mat.set_shader_parameter("u_west_ground_layers", v4)
+			_logger.debug(str(name + " - u_west_ground_layers = ", v4))
+		elif name == "TWTestQuadrant4":
+			v4 = Vector4(1, 8, 9, 10)
+			mat.set_shader_parameter("u_north_ground_layers", v4)
+			_logger.debug(str(name + " - u_north_ground_layers = ", v4))
+			v4 = Vector4(1, 1, 9, 10)
+			mat.set_shader_parameter("u_west_ground_layers", v4)
+			_logger.debug(str(name + " - u_west_ground_layers = ", v4))
 
 func clear_rendering():
-	material_override = null
+	#material_override = null
 	mesh = null

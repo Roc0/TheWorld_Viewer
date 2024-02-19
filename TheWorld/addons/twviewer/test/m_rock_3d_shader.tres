@@ -1,0 +1,28 @@
+[gd_resource type="ShaderMaterial" load_steps=6 format=3 uid="uid://jyg3s0wnp04q"]
+
+[ext_resource type="Texture2D" uid="uid://8u6tcq801ajw" path="res://assets/textures/rock/rock_albedo.jpg" id="1_1qk3m"]
+[ext_resource type="Shader" uid="uid://cdfgfo65satf2" path="res://addons/twviewer/test/rock_3d_shader.tres" id="1_m5sfa"]
+[ext_resource type="Texture2D" uid="uid://drxc4t5kursot" path="res://assets/textures/rock/rock_ao.jpg" id="2_kkk8o"]
+[ext_resource type="Texture2D" uid="uid://bdxs3ti5err5s" path="res://assets/textures/rock/rock_metal.jpg" id="4_5b203"]
+[ext_resource type="Texture2D" uid="uid://dgaa8vll0w5cn" path="res://assets/textures/rock/rock_rough.jpg" id="5_jvobm"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_m5sfa")
+shader_parameter/albedo = Color(1, 1, 1, 1)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = Vector4(1, 0, 0, 0)
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.12
+shader_parameter/normal_scale = 1.0
+shader_parameter/ao_texture_channel = Vector4(1, 0, 0, 0)
+shader_parameter/ao_light_affect = 0.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/texture_albedo = ExtResource("1_1qk3m")
+shader_parameter/texture_roughness = ExtResource("5_jvobm")
+shader_parameter/texture_normal = ExtResource("4_5b203")
+shader_parameter/texture_ambient_occlusion = ExtResource("2_kkk8o")

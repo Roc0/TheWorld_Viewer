@@ -711,7 +711,7 @@ parameter_name = "u_east_ground_layers"
 param_type = 6
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_bq5dl"]
-size = Vector2(920, 2440)
+size = Vector2(960, 2860)
 expression = "if (editmode_pixel || globalmap_pixel) {
 	roughness_out = roughness_in;
 	albedo_out = albedo_in;
@@ -781,12 +781,14 @@ expression = "if (editmode_pixel || globalmap_pixel) {
 	normal_out = mix(normal_out, normal_in, globalmap_factor);
 	albedo_out = mix(albedo_out, albedo_in, globalmap_factor);
 	roughness_out = mix(roughness_out, 1.0, globalmap_factor);
+	AO = (w.r * ab0.a +	w.g * ab1.a + w.b * ab2.a +	w.a * ab3.a) / w_sum;
+	AO_LIGHT_AFFECT = 0.1;
 	
-	vec3 red = vec3(1.0, 0.0, 0.0);
+	/*vec3 red = vec3(1.0, 0.0, 0.0);
 	vec3 green = vec3(0.0, 1.0, 0.0);
 	vec3 blue = vec3(0.0, 0.0, 1.0);
 	vec3 yellow = vec3(1.0, 0.749, 0.0);
-	/*if (splat.x < 0.0)	{
+	if (splat.x < 0.0)	{
 		albedo_out = red;
 	}
 	if (splat.y < 0.0)	{
@@ -2648,12 +2650,14 @@ void fragment() {
 			n_out56p2 = mix(n_out56p2, n_out30p2, n_out33p2);
 			n_out56p0 = mix(n_out56p0, n_out30p0, n_out33p2);
 			n_out56p1 = mix(n_out56p1, 1.0, n_out33p2);
+			AO = (w.r * n_out30p3.a +	w.g * n_out30p4.a + w.b * n_out30p5.a +	w.a * n_out30p6.a) / w_sum;
+			AO_LIGHT_AFFECT = 0.1;
 			
-			vec3 red = vec3(1.0, 0.0, 0.0);
+			/*vec3 red = vec3(1.0, 0.0, 0.0);
 			vec3 green = vec3(0.0, 1.0, 0.0);
 			vec3 blue = vec3(0.0, 0.0, 1.0);
 			vec3 yellow = vec3(1.0, 0.749, 0.0);
-			/*if (n_out73p4.x < 0.0)	{
+			if (n_out73p4.x < 0.0)	{
 				n_out56p0 = red;
 			}
 			if (n_out73p4.y < 0.0)	{
@@ -2769,6 +2773,7 @@ void fragment() {
 
 }
 "
+graph_offset = Vector2(3378.14, 1451.28)
 modes/specular = 1
 varyings/v_vertex_world_pos = "0,5"
 varyings/v_vertex_cell_coords_in_textures = "0,3"
@@ -3771,7 +3776,7 @@ nodes/fragment/55/node = SubResource("VisualShaderNodeParameterRef_0u6ja")
 nodes/fragment/55/position = Vector2(-3500, 1660)
 nodes/fragment/56/node = SubResource("VisualShaderNodeExpression_bq5dl")
 nodes/fragment/56/position = Vector2(4620, 200)
-nodes/fragment/56/size = Vector2(920, 2440)
+nodes/fragment/56/size = Vector2(960, 2860)
 nodes/fragment/56/input_ports = "0,4,albedo_in;1,0,roughness_in;2,0,globalmap_factor;3,4,normal_in;4,6,editmode_pixel;5,6,globalmap_pixel;6,4,tint0;7,4,tint1;8,4,tint2;9,4,tint3;10,5,splat;11,6,depth_blending;12,5,ab0;13,5,ab1;14,5,ab2;15,5,ab3;16,5,nr0;17,5,nr1;18,5,nr2;19,5,nr3;"
 nodes/fragment/56/output_ports = "0,4,albedo_out;1,0,roughness_out;2,4,normal_out;"
 nodes/fragment/56/expression = "if (editmode_pixel || globalmap_pixel) {
@@ -3843,12 +3848,14 @@ nodes/fragment/56/expression = "if (editmode_pixel || globalmap_pixel) {
 	normal_out = mix(normal_out, normal_in, globalmap_factor);
 	albedo_out = mix(albedo_out, albedo_in, globalmap_factor);
 	roughness_out = mix(roughness_out, 1.0, globalmap_factor);
+	AO = (w.r * ab0.a +	w.g * ab1.a + w.b * ab2.a +	w.a * ab3.a) / w_sum;
+	AO_LIGHT_AFFECT = 0.1;
 	
-	vec3 red = vec3(1.0, 0.0, 0.0);
+	/*vec3 red = vec3(1.0, 0.0, 0.0);
 	vec3 green = vec3(0.0, 1.0, 0.0);
 	vec3 blue = vec3(0.0, 0.0, 1.0);
 	vec3 yellow = vec3(1.0, 0.749, 0.0);
-	/*if (splat.x < 0.0)	{
+	if (splat.x < 0.0)	{
 		albedo_out = red;
 	}
 	if (splat.y < 0.0)	{

@@ -1,0 +1,139 @@
+*** Albedo/Color Map ***
+
+
+*** AO Map ***
+
+An Ambient Occlusion or AO map is a grayscale map which contains lighting data. It is not typically used as its own map, and is instead usually combined with the diffuse map to bake in soft shadows.
+
+*** Diffuse Map ***
+
+What is diffuse map texture?
+The basic texture stores the colors of the model surface. Built from the photos projected onto geometry or from another diffuse map of another model (source: images or mesh model)
+
+What is the difference between albedo and diffuse map?
+Albedo. The Albedo map is the base color input that defines the diffuse color or reflectivity of the surface. This is very similar to a diffuse map but is more the pure color of an object, while diffuse is both color as well as shaded with some diffuse lighting.
+
+*** Bump Map ***
+
+What is a bump texture?
+Bump maps create the illusion of depth and texture on the surface of a 3D model using computer graphics. Textures are artificially created on the surface of objects using grayscale and simple lighting tricks, rather than having to manually create individual bumps and cracks.
+
+*** Displacement Map ***
+
+What is texture displacement?
+Displacement mapping is an alternative computer graphics technique in contrast to bump, normal, and parallax mapping, using a texture or height map to cause an effect where the actual geometric position of points over the textured surface are displaced, often along the local surface normal, according to the value the texture function evaluates to at each point on the surface.[1] It gives surfaces a great sense of depth and detail, permitting in particular self-occlusion, self-shadowing and silhouettes; on the other hand, it is the most costly of this class of techniques owing to the large amount of additional geometry.
+
+*** Roughness Map ***
+
+Roughness texture maps define the microsurface variations of a material, determining how light interacts with a surface. By emphasizing roughness, we can achieve realistic reflections, highlights, and shadows, adding depth and authenticity to the overall appearance of 3D models.
+
+*** Normal Map ***
+
+In 3D computer graphics, normal mapping, or Dot3 bump mapping, is a texture mapping technique used for faking the lighting of bumps and dents – an implementation of bump mapping. It is used to add details without using more polygons. A common use of this technique is to greatly enhance the appearance and details of a low polygon model by generating a normal map from a high polygon model or height map.
+
+*********
+Some tips
+*********
+
+VERTEX
+
+	UV
+		uniform vec3 uv1_scale;
+		uniform vec3 uv1_offset;
+		uniform vec3 uv2_scale;
+		uniform vec3 uv2_offset;
+
+		UV=UV*uv1_scale.xy+uv1_offset.xy;
+	
+FRAGMENT
+
+	ALBEDO
+
+		uniform vec4 albedo : source_color;
+		uniform sampler2D texture_albedo : source_color,filter_linear_mipmap_anisotropic,repeat_enable;
+		
+		vec2 base_uv = UV;
+		vec4 albedo_tex = texture(texture_albedo,base_uv);
+		ALBEDO = albedo.rgb * albedo_tex.rgb;
+
+	METALLIC
+
+		uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap_anisotropic,repeat_enable;
+		uniform vec4 metallic_texture_channel;
+		uniform float specular;
+		uniform float metallic;
+
+		vec2 base_uv = UV;
+		float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
+		METALLIC = metallic_tex * metallic;
+		SPECULAR = specular;
+
+	ROUGHNESS
+
+		uniform float roughness : hint_range(0,1);
+		uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap_anisotropic,repeat_enable;
+
+		vec2 base_uv = UV;
+		vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
+		float roughness_tex = dot(texture(texture_roughness,base_uv),roughness_texture_channel);
+		ROUGHNESS = roughness_tex * roughness;
+
+	NORMAL_MAP
+	
+		uniform sampler2D texture_normal : hint_roughness_normal,filter_linear_mipmap_anisotropic,repeat_enable;
+		uniform float normal_scale : hint_range(-16,16);
+		
+		vec2 base_uv = UV;
+		NORMAL_MAP = texture(texture_normal,base_uv).rgb;
+		NORMAL_MAP_DEPTH = normal_scale;
+
+	AO
+
+		uniform sampler2D texture_ambient_occlusion : hint_default_white, filter_linear_mipmap_anisotropic,repeat_enable;
+		uniform vec4 ao_texture_channel;
+		uniform float ao_light_affect;
+
+		vec2 base_uv = UV;
+		AO = dot(texture(texture_ambient_occlusion,base_uv),ao_texture_channel);
+		AO_LIGHT_AFFECT = ao_light_affect;
+		
+shader_type spatial;
+render_mode blend_mix,depth_draw_opaque,cull_back,diffuse_burley,specular_schlick_ggx;
+uniform vec4 albedo : source_color;
+uniform sampler2D texture_albedo : source_color,filter_linear_mipmap_anisotropic,repeat_enable;
+uniform float point_size : hint_range(0,128);
+uniform float roughness : hint_range(0,1);
+uniform sampler2D texture_metallic : hint_default_white,filter_linear_mipmap_anisotropic,repeat_enable;
+uniform vec4 metallic_texture_channel;
+uniform sampler2D texture_roughness : hint_roughness_r,filter_linear_mipmap_anisotropic,repeat_enable;
+uniform float specular;
+uniform float metallic;
+uniform sampler2D texture_normal : hint_roughness_normal,filter_linear_mipmap_anisotropic,repeat_enable;
+uniform float normal_scale : hint_range(-16,16);
+uniform sampler2D texture_ambient_occlusion : hint_default_white, filter_linear_mipmap_anisotropic,repeat_enable;
+uniform vec4 ao_texture_channel;
+uniform float ao_light_affect;
+uniform vec3 uv1_scale;
+uniform vec3 uv1_offset;
+uniform vec3 uv2_scale;
+uniform vec3 uv2_offset;
+
+void vertex() {
+	UV=UV*uv1_scale.xy+uv1_offset.xy;
+}
+
+void fragment() {
+	vec2 base_uv = UV;
+	vec4 albedo_tex = texture(texture_albedo,base_uv);
+	ALBEDO = albedo.rgb * albedo_tex.rgb;
+	float metallic_tex = dot(texture(texture_metallic,base_uv),metallic_texture_channel);
+	METALLIC = metallic_tex * metallic;
+	vec4 roughness_texture_channel = vec4(1.0,0.0,0.0,0.0);
+	float roughness_tex = dot(texture(texture_roughness,base_uv),roughness_texture_channel);
+	ROUGHNESS = roughness_tex * roughness;
+	SPECULAR = specular;
+	NORMAL_MAP = texture(texture_normal,base_uv).rgb;
+	NORMAL_MAP_DEPTH = normal_scale;
+	AO = dot(texture(texture_ambient_occlusion,base_uv),ao_texture_channel);
+	AO_LIGHT_AFFECT = ao_light_affect;
+}

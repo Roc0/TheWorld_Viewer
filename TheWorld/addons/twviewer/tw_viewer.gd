@@ -282,6 +282,13 @@ func _set_shader_param_splatmap_blending_size(splatmap_blending_size : float):
 	_shader_param_splatmap_blending_size = splatmap_blending_size
 	_shader_param_splatmap_blending_size_changed = true
 
+var _shader_param_force_elevation_0_changed := true
+@export var _shader_param_force_elevation_0 : bool = false:
+	set = _set_shader_param_force_elevation_0
+func _set_shader_param_force_elevation_0(v : bool):
+	_shader_param_force_elevation_0 = v
+	_shader_param_force_elevation_0_changed = true
+
 @export_group("", "")
 
 func _init():
@@ -613,6 +620,11 @@ func _process(delta):
 			gdn_viewer.set_shader_parameter("colormap_opacity", _shader_param_colormap_opacity)
 			log_debug(str("set_shader_parameter colormap_opacity=", _shader_param_colormap_opacity))
 			_shader_param_colormap_opacity_changed = false
+
+		if _shader_param_force_elevation_0_changed:
+			gdn_viewer.set_shader_parameter("force_elevation_0", _shader_param_force_elevation_0)
+			log_debug(str("set_shader_parameter force_elevation_0=", _shader_param_force_elevation_0))
+			_shader_param_force_elevation_0_changed = false
 
 	if _edit_panel_visibility_changed:
 		gdn_viewer.toggle_edit_mode()

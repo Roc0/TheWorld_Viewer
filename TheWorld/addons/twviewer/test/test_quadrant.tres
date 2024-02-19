@@ -1,41 +1,21 @@
-[gd_resource type="VisualShader" load_steps=128 format=3 uid="uid://cux0qnf6ydgr2"]
+[gd_resource type="VisualShader" load_steps=132 format=3 uid="uid://cux0qnf6ydgr2"]
 
 [ext_resource type="Texture2D" uid="uid://bllki0xhd1pqa" path="res://assets/textures/ground/Grass004_1K-PNG_albedo_bump.ground.png" id="1_oimdd"]
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_elcve"]
 size = Vector2(1380, 1180)
 expression = "vec3 base_ground_uv;
-/*if (!new) {
-	//ground_uv_scale_per_texture = vec4(300.0);
-	if (south_border_pixel) {
-		// mirror
-		base_ground_uv = vec3(vertex_cell_coords_in_textures.x, 
-							vertex_world_pos.y * MODEL_MATRIX[1][1],
-							float(textureSize(terrain_heightmap, 0).y) - vertex_cell_coords_in_textures.y);
-	} else if (east_border_pixel) {
-		// mirror
-		base_ground_uv = vec3(float(textureSize(terrain_heightmap, 0).x) - vertex_cell_coords_in_textures.x, 
-							vertex_world_pos.y * MODEL_MATRIX[1][1],
-							vertex_cell_coords_in_textures.y);
-	} else {
-		base_ground_uv = vec3(vertex_cell_coords_in_textures.x, vertex_world_pos.y * MODEL_MATRIX[1][1], vertex_cell_coords_in_textures.y);
-	}
-	//base_ground_uv = vec3(vertex_cell_coords_in_textures.x, vertex_world_pos.y * MODEL_MATRIX[1][1], vertex_cell_coords_in_textures.y);
-	// 2-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor
-	// these coordinates are used to fetch ground_albedo_bump and ground_normal_roughness 
-	ground_uv0 = base_ground_uv.xz / ground_uv_scale_per_texture.x;
-	ground_uv1 = base_ground_uv.xz / ground_uv_scale_per_texture.y;
-	ground_uv2 = base_ground_uv.xz / ground_uv_scale_per_texture.z;
-	// 3-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor (y coord is height in world coord)
-	ground_uv3 = base_ground_uv / ground_uv_scale_per_texture.w;
-} else {*/
-	//ground_uv_scale_per_texture = vec4(2.0);
-	base_ground_uv = vec3(uv.x, vertex_world_pos.y * MODEL_MATRIX[1][1], uv.y);
-	ground_uv0 = base_ground_uv.xz * ground_uv_scale_per_texture.x;
-	ground_uv1 = base_ground_uv.xz * ground_uv_scale_per_texture.y;
-	ground_uv2 = base_ground_uv.xz * ground_uv_scale_per_texture.z;
-	ground_uv3 = base_ground_uv * ground_uv_scale_per_texture.w;
-//}"
+
+//ground_uv_scale_per_texture = vec4(2.0);
+if (new) {
+	ground_uv_scale_per_texture = vec4(1.0, 1.0, 1.0, 1.0);
+}
+base_ground_uv = vec3(uv.x, vertex_world_pos.y * MODEL_MATRIX[1][1], uv.y);
+ground_uv0 = base_ground_uv.xz * ground_uv_scale_per_texture.x;
+ground_uv1 = base_ground_uv.xz * ground_uv_scale_per_texture.y;
+ground_uv2 = base_ground_uv.xz * ground_uv_scale_per_texture.z;
+ground_uv3 = base_ground_uv * ground_uv_scale_per_texture.w;
+"
 
 [sub_resource type="VisualShaderNodeVaryingGetter" id="VisualShaderNodeVaryingGetter_s41u1"]
 varying_name = "v_vertex_cell_coords_in_textures"
@@ -51,7 +31,7 @@ input_name = "uv"
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_aptmw"]
 size = Vector2(740, 220)
 expression = "terrain_normal_world = get_normal(terrain_normalmap, u_terrain_normal_basis, uv);
-normal = terrain_normal_world;"
+//normal = terrain_normal_world;"
 
 [sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_8mkxg"]
 parameter_name = "u_terrain_normalmap"
@@ -201,7 +181,7 @@ if (!editmode_pixel && !globalmap_pixel) {
 }"
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_mc40n"]
-size = Vector2(1160, 1820)
+size = Vector2(1040, 2080)
 expression = "albedo_out = albedo_in;
 normal_out = (VIEW_MATRIX * (vec4(normal_in, 0.0))).xyz;
 roughness_out = roughness_in;
@@ -219,6 +199,8 @@ float grid_line_thickness = 0.05;
 	albedo_out = vec3(1.0, 0.0, 1.0);
 }*/
 // DEBUG: wisualize pieces
+//albedo_out = vec3(v_close_mask);	// DEBUG
+//albedo_out = vec3(v_middle_mask);	// DEBUG
 
 //bool grid_on = !(mouse_hit == vec2(-1));
 if (grid_on) {
@@ -317,63 +299,65 @@ size = Vector2(1100, 1700)
 expression = "//ground_uv_scale_per_texture_in = vec4(200.0, 200.0, 200.0, 200.0);
 ground_uv_scale_per_texture_out = ground_uv_scale_per_texture_in;
 pieces_from_camera_piece = -1;
-new = true;
-
-/*if (!new) {
-	ground_uv_scale_per_texture_out = vec4(300.0);
-	scale_per_texture_factor = 10.0;
-} else {
-	ground_uv_scale_per_texture_out = vec4(2.0);
-	scale_per_texture_factor = 1.0;
-	piecing_threshold_factor = uint(4);
-	piece_size = 200.0;
-}*/
 
 int alt_piece = int(floor(camera_altitude_from_terrain / piece_size));
-if (alt_piece < 4) {
+/*if (alt_piece < 4) {
+	scale_per_texture_factor *= pow(2.0, float(alt_piece));
+} else {
+	camera_altitude_from_terrain = -1.0;
+}*/
+if (camera_altitude_from_terrain < altitude_uv_scale_threshold) {
 	scale_per_texture_factor *= pow(2.0, float(alt_piece));
 } else {
 	camera_altitude_from_terrain = -1.0;
 }
 
-if (camera_altitude_from_terrain > 0.0 && distance_from_camera_on_terrain < 2000.0) {
-	vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(vertex, 1.0)).xyz;
-	int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / piece_size));
-	int camera_piece_z = int(floor(CAMERA_POSITION_WORLD.z / piece_size));
-	int frag_piece_x = int(floor(fragment_world_pos.x / piece_size));
-	int frag_piece_z = int(floor(fragment_world_pos.z / piece_size));
-	pieces_from_camera_piece = max(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_z - frag_piece_z)));
-	if (pieces_from_camera_piece <= 1)
-	{
-		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 20.0);
-		//ground_uv_scale_per_texture_out = vec4(40.0);
+if (distance_from_camera_on_terrain < ground_uv_scale_threshold) {
+	if (camera_altitude_from_terrain > 0.0) {
+		vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(vertex, 1.0)).xyz;
+		int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / piece_size));
+		int camera_piece_z = int(floor(CAMERA_POSITION_WORLD.z / piece_size));
+		int frag_piece_x = int(floor(fragment_world_pos.x / piece_size));
+		int frag_piece_z = int(floor(fragment_world_pos.z / piece_size));
+		pieces_from_camera_piece = max(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_z - frag_piece_z)));
+		if (pieces_from_camera_piece <= 1)
+		{
+			ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 20.0);
+			//ground_uv_scale_per_texture_out = vec4(40.0);
+		}
+		else if (pieces_from_camera_piece <= 3)
+		{
+			ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 10.0);
+			//ground_uv_scale_per_texture_out = vec4(20.0);
+		}
+		else if (pieces_from_camera_piece <= 5)
+		{
+			ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 10.0);
+			//ground_uv_scale_per_texture_out = vec4(20.0);
+		}
+		else if (pieces_from_camera_piece <= 7)
+		{
+			ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 8.0);
+			//ground_uv_scale_per_texture_out = vec4(16.0);
+			//ground_uv_scale_per_texture_out = ground_uv_scale_per_texture_in;
+		}
+		else if (pieces_from_camera_piece <= 9)
+		{
+			ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 4.0);
+		}
+		else if (pieces_from_camera_piece <= 11)
+		{
+			ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 2.0);
+			//ground_uv_scale_per_texture_out = vec4(6.0);
+		}
 	}
-	else if (pieces_from_camera_piece <= 3)
-	{
-		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 10.0);
-		//ground_uv_scale_per_texture_out = vec4(20.0);
-	}
-	else if (pieces_from_camera_piece <= 5)
-	{
-		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 10.0);
-		//ground_uv_scale_per_texture_out = vec4(20.0);
-	}
-	else if (pieces_from_camera_piece <= 7)
-	{
-		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 8.0);
-		//ground_uv_scale_per_texture_out = vec4(16.0);
-	}
-	/*else if (pieces_from_camera_piece == 4)
-	{
-		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 3.0);
-		//ground_uv_scale_per_texture_out = vec4(6.0);
-	}
-	else if (pieces_from_camera_piece == 5)
-	{
-		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 3.0);
-		//ground_uv_scale_per_texture_out = vec4(6.0);
-	}*/
-}"
+}
+else
+{
+	float forced_scale_value_beyond_threshold = 1.0;
+	ground_uv_scale_per_texture_out = vec4(forced_scale_value_beyond_threshold);
+}
+"
 
 [sub_resource type="VisualShaderNodeVaryingGetter" id="VisualShaderNodeVaryingGetter_hik7b"]
 varying_name = "v_tint2"
@@ -385,37 +369,25 @@ varying_type = 4
 
 [sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_o5i0w"]
 size = Vector2(920, 3880)
-expression = "vec4 texture_albedo_bump_dismiss(int type, float layer, vec2 uv)
-{
-	if (layer < 0.0) {
-		if (type == 0) {
-			return texture(u_ground_albedo_bump_0, uv);
-		} else if (type == 1) {
-			return texture(u_ground_albedo_bump_1, uv);
-		} else if (type == 2) {
-			return texture(u_ground_albedo_bump_2, uv);
-		} else {
-			return texture(u_ground_albedo_bump_3, uv);
-		}
+expression = "vec4 distance_texture(sampler2D _tex, vec2 _uv) {
+	if (!new) {
+		return texture(_tex, _uv);
 	} else {
-		return texture(gu_ground_albedo_bump_array, vec3(uv, layer));
+		vec4 final = texture(_tex, _uv * far_uv_scale);
+		final = mix(final, texture(_tex, _uv * middle_uv_scale), v_middle_mask);
+		final = mix(final, texture(_tex, _uv * close_uv_scale), v_close_mask);
+		return final;
 	}
 }
 
-vec4 texture_normal_roughness_dismiss(int type, float layer, vec2 uv)
-{
-	if (layer < 0.0) {
-		if (type == 0) {
-			return texture(u_ground_normal_roughness_0, uv);
-		} else if (type == 1) {
-			return texture(u_ground_normal_roughness_1, uv);
-		} else if (type == 2) {
-			return texture(u_ground_normal_roughness_2, uv);
-		} else {
-			return texture(u_ground_normal_roughness_3, uv);
-		}
+vec4 distance_texture_layer(sampler2DArray _tex, vec3 _uv) {
+	if (!new) {
+		return texture(_tex, _uv);
 	} else {
-		return texture(gu_ground_normal_roughness_array, vec3(uv, layer));
+		vec4 final = texture(_tex, vec3(_uv.xy * far_uv_scale, _uv.z));
+		final = mix(final, texture(_tex, vec3(_uv.xy * middle_uv_scale, _uv.z)), v_middle_mask);
+		final = mix(final, texture(_tex, vec3(_uv.xy * close_uv_scale, _uv.z)), v_close_mask);
+		return final;
 	}
 }
 
@@ -428,59 +400,59 @@ vec4 texture_albedo_bump(int type,
 {
 	if (type == 0) {
 		if (north_border_pixel && u_north_ground_layers.x >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.x));
-		//} else if (south_border_pixel && u_south_ground_layers.x >= 0.0) {
-		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.x));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.x));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.x));
 		} else if (west_border_pixel && u_west_ground_layers.x >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.x));
-		//} else if (east_border_pixel && u_east_ground_layers.x >= 0.0) {
-		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.x));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.x));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.x));
 		} else if (u_ground_layers.x >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.x));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.x));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.x));
 		} else {
-			return texture(u_ground_albedo_bump_0, uv);
+			return distance_texture(u_ground_albedo_bump_0, uv);
+			//return texture(u_ground_albedo_bump_0, uv);
 		}
 	} else if (type == 1) {
 		if (north_border_pixel && u_north_ground_layers.y >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.y));
-		//} else if (south_border_pixel && u_south_ground_layers.y >= 0.0) {
-		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.y));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.y));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.y));
 		} else if (west_border_pixel && u_west_ground_layers.y >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.y));
-		//} else if (east_border_pixel && u_east_ground_layers.y >= 0.0) {
-		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.y));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.y));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.y));
 		} else if (u_ground_layers.y >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.y));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.y));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.y));
 		} else {
-			return texture(u_ground_albedo_bump_1, uv);
+			return distance_texture(u_ground_albedo_bump_1, uv);
+			//return texture(u_ground_albedo_bump_1, uv);
 		}
 	} else if (type == 2) {
 		if (north_border_pixel && u_north_ground_layers.z >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.z));
-		//} else if (south_border_pixel && u_south_ground_layers.z >= 0.0) {
-		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.z));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.z));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.z));
 		} else if (west_border_pixel && u_west_ground_layers.z >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.z));
-		//} else if (east_border_pixel && u_east_ground_layers.z >= 0.0) {
-		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.z));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.z));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.z));
 		} else if (u_ground_layers.z >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.z));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.z));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.z));
 		} else {
-			return texture(u_ground_albedo_bump_2, uv);
+			return distance_texture(u_ground_albedo_bump_2, uv);
+			//return texture(u_ground_albedo_bump_2, uv);
 		}
 	} else {
 		if (north_border_pixel && u_north_ground_layers.a >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.a));
-		//} else if (south_border_pixel && u_south_ground_layers.a >= 0.0) {
-		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.a));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.a));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.a));
 		} else if (west_border_pixel && u_west_ground_layers.a >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.a));
-		//} else if (east_border_pixel && u_east_ground_layers.a >= 0.0) {
-		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.a));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.a));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.a));
 		} else if (u_ground_layers.a >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.a));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.a));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.a));
 		} else {
-			return texture(u_ground_albedo_bump_3, uv);
+			return distance_texture(u_ground_albedo_bump_3, uv);
+			//return texture(u_ground_albedo_bump_3, uv);
 		}
 	}
 }
@@ -494,59 +466,59 @@ vec4 texture_normal_roughness(int type,
 {
 	if (type == 0) {
 		if (north_border_pixel && u_north_ground_layers.x >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.x));
-		//} else if (south_border_pixel && u_south_ground_layers.x >= 0.0) {
-		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.x));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.x));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.x));
 		} else if (west_border_pixel && u_west_ground_layers.x >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.x));
-		//} else if (east_border_pixel && u_east_ground_layers.x >= 0.0) {
-		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.x));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.x));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.x));
 		} else if (u_ground_layers.x >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.x));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.x));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.x));
 		} else {
-			return texture(u_ground_normal_roughness_0, uv);
+			return distance_texture(u_ground_normal_roughness_0, uv);
+			//return texture(u_ground_normal_roughness_0, uv);
 		}
 	} else if (type == 1) {
 		if (north_border_pixel && u_north_ground_layers.y >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.y));
-		//} else if (south_border_pixel && u_south_ground_layers.y >= 0.0) {
-		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.y));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.y));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.y));
 		} else if (west_border_pixel && u_west_ground_layers.y >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.y));
-		//} else if (east_border_pixel && u_east_ground_layers.y >= 0.0) {
-		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.y));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.y));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.y));
 		} else if (u_ground_layers.y >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.y));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.y));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.y));
 		} else {
-			return texture(u_ground_normal_roughness_1, uv);
+			return distance_texture(u_ground_normal_roughness_1, uv);
+			//return texture(u_ground_normal_roughness_1, uv);
 		}
 	} else if (type == 2) {
 		if (north_border_pixel && u_north_ground_layers.z >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.z));
-		//} else if (south_border_pixel && u_south_ground_layers.z >= 0.0) {
-		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.z));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.z));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.z));
 		} else if (west_border_pixel && u_west_ground_layers.z >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.z));
-		//} else if (east_border_pixel && u_east_ground_layers.z >= 0.0) {
-		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.z));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.z));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.z));
 		} else if (u_ground_layers.z >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.z));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.z));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.z));
 		} else {
-			return texture(u_ground_normal_roughness_2, uv);
+			return distance_texture(u_ground_normal_roughness_2, uv);
+			//return texture(u_ground_normal_roughness_2, uv);
 		}
 	} else {
 		if (north_border_pixel && u_north_ground_layers.a >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.a));
-		//} else if (south_border_pixel && u_south_ground_layers.a >= 0.0) {
-		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.a));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.a));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.a));
 		} else if (west_border_pixel && u_west_ground_layers.a >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.a));
-		//} else if (east_border_pixel && u_east_ground_layers.a >= 0.0) {
-		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.a));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.a));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.a));
 		} else if (u_ground_layers.a >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.a));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.a));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.a));
 		} else {
-			return texture(u_ground_normal_roughness_3, uv);
+			return distance_texture(u_ground_normal_roughness_3, uv);
+			//return texture(u_ground_normal_roughness_3, uv);
 		}
 	}
 }"
@@ -711,7 +683,7 @@ parameter_name = "u_east_ground_layers"
 param_type = 6
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_bq5dl"]
-size = Vector2(920, 2440)
+size = Vector2(960, 2860)
 expression = "if (editmode_pixel || globalmap_pixel) {
 	roughness_out = roughness_in;
 	albedo_out = albedo_in;
@@ -781,12 +753,16 @@ expression = "if (editmode_pixel || globalmap_pixel) {
 	normal_out = mix(normal_out, normal_in, globalmap_factor);
 	albedo_out = mix(albedo_out, albedo_in, globalmap_factor);
 	roughness_out = mix(roughness_out, 1.0, globalmap_factor);
+	ao_out = (w.r * ab0.a +	w.g * ab1.a + w.b * ab2.a +	w.a * ab3.a) / w_sum;
+	ao_light_affect_out = 0.1;
+	//METALLIC = (w.r * ab0.a +	w.g * ab1.a + w.b * ab2.a +	w.a * ab3.a) / w_sum;
+	//SPECULAR = 0.5;
 	
-	vec3 red = vec3(1.0, 0.0, 0.0);
+	/*vec3 red = vec3(1.0, 0.0, 0.0);
 	vec3 green = vec3(0.0, 1.0, 0.0);
 	vec3 blue = vec3(0.0, 0.0, 1.0);
 	vec3 yellow = vec3(1.0, 0.749, 0.0);
-	/*if (splat.x < 0.0)	{
+	if (splat.x < 0.0)	{
 		albedo_out = red;
 	}
 	if (splat.y < 0.0)	{
@@ -1018,7 +994,7 @@ default_input_values = [0, 0.0, 1, 0.0, 2, 0.0, 3, 0.0]
 op_type = 2
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_cue6k"]
-size = Vector2(500, 880)
+size = Vector2(580, 1180)
 expression = "north_border_pixel = false;
 south_border_pixel = false;
 west_border_pixel = false;
@@ -1097,13 +1073,19 @@ parameter_name = "gu_grid_step"
 [sub_resource type="VisualShaderNodeVaryingGetter" id="VisualShaderNodeVaryingGetter_ucse7"]
 varying_name = "v_distance_from_camera_on_terrain"
 
+[sub_resource type="VisualShaderNodeVaryingGetter" id="VisualShaderNodeVaryingGetter_bgqns"]
+varying_name = "v_close_mask"
+
+[sub_resource type="VisualShaderNodeVaryingGetter" id="VisualShaderNodeVaryingGetter_ufhs2"]
+varying_name = "v_middle_mask"
+
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_28flk"]
 size = Vector2(620, 200)
 expression = "// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need to trasform in world coord to abstract from chunk
 vertex_world_pos = MODEL_MATRIX * vec4(vertex, 1);"
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_51pd1"]
-size = Vector2(1060, 760)
+size = Vector2(1060, 780)
 expression = "// to calculate coords of the vertex local to the quadrant we use affine inverse matrix of the global trasform of the quadtree
 vec4 vertex_local_to_quadrant_pos = terrain_inverse_transform * vertex_world_pos;
 // to get correct value from the textures (in the range 0 / max size in local coord) we need to consider the step 
@@ -1159,10 +1141,14 @@ expression = "/*float get_height(sampler2D tex, float terrain_height, vec2 uv)
 }*/"
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_ytuk2"]
-size = Vector2(1220, 260)
+size = Vector2(1240, 420)
 expression = "vec3 camera_pos = INV_VIEW_MATRIX[3].xyz;
 distance_from_camera = distance(vertex_world_pos.xyz, camera_pos);
-distance_from_camera_on_terrain = distance(vertex_world_pos.xyz, vec3(camera_pos.x, camera_pos.y - gu_camera_altitude_from_terrain, camera_pos.z));"
+distance_from_camera_on_terrain = distance(vertex_world_pos.xyz, vec3(camera_pos.x, camera_pos.y - gu_camera_altitude_from_terrain, camera_pos.z));
+if (new) {
+	close_mask = smoothstep(close_distance + close_blend_amount, close_distance, distance_from_camera);
+	middle_mask = smoothstep(middle_distance + middle_blend_amount, middle_distance, distance_from_camera);
+}"
 
 [sub_resource type="VisualShaderNodeVaryingSetter" id="VisualShaderNodeVaryingSetter_8av8q"]
 varying_name = "v_distance_from_camera"
@@ -1173,21 +1159,36 @@ expression = "vec3 normal = get_normal(terrain_normalmap, u_terrain_normal_basis
 
 [sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_oqaba"]
 size = Vector2(700, 420)
-expression = "/*vec4 pack_normal(vec3 n, float a) {
-	//n.z *= -1.0;
-	return vec4((n.xzy + vec3(1.0)) * 0.5, a);
+expression = "/*
+const float close_distance = 20.0;
+const float close_blend_amount = 5.0;
+const float middle_distance = 60.0;
+const float middle_blend_amount = 10.0;
+
+const float close_uv_scale = 0.5;
+const float middle_uv_scale = 0.1;
+const float far_uv_scale = 0.01;
+
+varying float close_mask;
+varying float middle_mask;
+
+vec4 distance_texture(sampler2D _tex, vec2 _uv) {
+	vec4 final = texture(_tex, _uv * far_uv_scale);
+	final = mix(final, texture(_tex, _uv * middle_uv_scale), middle_mask);
+	final = mix(final, texture(_tex, _uv * close_uv_scale), close_mask);
+	return final;
 }
 
-vec3 unpack_normal(vec4 rgba) {
-	// If we consider texture space starts from top-left corner and Y goes down,
-	// then Y+ in pixel space corresponds to Z+ in terrain space,
-	// while X+ also corresponds to X+ in terrain space.
-	vec3 n = rgba.xzy * 2.0 - vec3(1.0);
-	// Had to negate Z because it comes from Y in the normal map,
-	// and OpenGL-style normal maps are Y-up.
-	//n.z *= -1.0;
-	return n;
-}*/"
+vertex
+
+	float dis = lenght(CAMERA_POSITION_WOLRD - world_pos);
+	close_mask = smoothstep(close_distance + close_blend_amount, close_distance, dis);		1 if dis < close_distance, 0 if dis > close_distance + close_blend_amount else an intermediate value
+	middle_mask = smoothstep(middle_distance + middle_blend_amount, middle_distance, dis);
+	
+fragment
+
+	tutte le fetch delle texture devono essere fatte con distance_texture invece che con texture
+	*/"
 
 [sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_bl3mn"]
 size = Vector2(680, 220)
@@ -1446,8 +1447,14 @@ default_value = -1.0
 [sub_resource type="VisualShaderNodeVaryingSetter" id="VisualShaderNodeVaryingSetter_p8wnk"]
 varying_name = "v_distance_from_camera_on_terrain"
 
+[sub_resource type="VisualShaderNodeVaryingSetter" id="VisualShaderNodeVaryingSetter_l7c6t"]
+varying_name = "v_close_mask"
+
+[sub_resource type="VisualShaderNodeVaryingSetter" id="VisualShaderNodeVaryingSetter_ot70l"]
+varying_name = "v_middle_mask"
+
 [sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_m8jdv"]
-size = Vector2(700, 640)
+size = Vector2(700, 1000)
 expression = "#include \"res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc\"
 
 //vec3 model_world_space = MODEL_MATRIX[3].xyz; // Object's world space position. This is the equivalent to global_transform.origin in GDScript.
@@ -1471,7 +1478,23 @@ uniform sampler2D u_ground_normal_roughness_3;
 //uniform vec4 u_tile_reduction_per_texture = vec4(0.0, 0.0, 0.0, 0.0);	// Each component corresponds to a ground texture. Set greater than zero to enable.
 //uniform float u_globalmap_blend_start = 0;		// 2000 ==> optimization: at 2000 WU from camera will be used global map instead of u_ground_albedo_bump_0/3 and u_ground_normal_roughness_0/3
 //uniform float u_globalmap_blend_distance = 0;	// 1	==> 0 = disable use of global map
-uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);	// NOTSET"
+uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);	// NOTSET
+const float ground_uv_scale_threshold = 15000.0;
+const float altitude_uv_scale_threshold = 800.0;
+
+const bool new = false;
+//const bool new = true;
+// NEW
+const float close_distance = 30.0;
+const float close_blend_amount = 5.0;
+const float middle_distance_increment = 1200.0;
+const float middle_blend_amount = 10.0;
+const float middle_distance = close_distance + middle_distance_increment;
+const float close_uv_scale = 50.0;
+const float middle_uv_scale = 20.0;
+const float far_uv_scale = 1.0;
+// NEW
+"
 
 [resource]
 code = "shader_type spatial;
@@ -1515,6 +1538,8 @@ varying vec3 v_tint1;
 varying vec3 v_tint2;
 varying vec3 v_tint3;
 varying float v_distance_from_camera_on_terrain;
+varying float v_close_mask;
+varying float v_middle_mask;
 
 uniform mat4 u_terrain_inverse_transform;
 uniform float u_grid_step = 2;
@@ -1549,27 +1574,58 @@ uniform sampler2D tex_frg_62;
 	//uniform float u_globalmap_blend_start = 0;		// 2000 ==> optimization: at 2000 WU from camera will be used global map instead of u_ground_albedo_bump_0/3 and u_ground_normal_roughness_0/3
 	//uniform float u_globalmap_blend_distance = 0;	// 1	==> 0 = disable use of global map
 	uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);	// NOTSET
+	const float ground_uv_scale_threshold = 15000.0;
+	const float altitude_uv_scale_threshold = 800.0;
+	
+	const bool new = false;
+	//const bool new = true;
+	// NEW
+	const float close_distance = 30.0;
+	const float close_blend_amount = 5.0;
+	const float middle_distance_increment = 1200.0;
+	const float middle_blend_amount = 10.0;
+	const float middle_distance = close_distance + middle_distance_increment;
+	const float close_uv_scale = 50.0;
+	const float middle_uv_scale = 20.0;
+	const float far_uv_scale = 1.0;
+	// NEW
+	
 // GlobalExpression:1
 	/*float get_height(sampler2D tex, float terrain_height, vec2 uv)
 	{
 		return texture(tex, uv).r * terrain_height;
 	}*/
 // GlobalExpression:2
-	/*vec4 pack_normal(vec3 n, float a) {
-		//n.z *= -1.0;
-		return vec4((n.xzy + vec3(1.0)) * 0.5, a);
+	/*
+	const float close_distance = 20.0;
+	const float close_blend_amount = 5.0;
+	const float middle_distance = 60.0;
+	const float middle_blend_amount = 10.0;
+	
+	const float close_uv_scale = 0.5;
+	const float middle_uv_scale = 0.1;
+	const float far_uv_scale = 0.01;
+	
+	varying float close_mask;
+	varying float middle_mask;
+	
+	vec4 distance_texture(sampler2D _tex, vec2 _uv) {
+		vec4 final = texture(_tex, _uv * far_uv_scale);
+		final = mix(final, texture(_tex, _uv * middle_uv_scale), middle_mask);
+		final = mix(final, texture(_tex, _uv * close_uv_scale), close_mask);
+		return final;
 	}
 	
-	vec3 unpack_normal(vec4 rgba) {
-		// If we consider texture space starts from top-left corner and Y goes down,
-		// then Y+ in pixel space corresponds to Z+ in terrain space,
-		// while X+ also corresponds to X+ in terrain space.
-		vec3 n = rgba.xzy * 2.0 - vec3(1.0);
-		// Had to negate Z because it comes from Y in the normal map,
-		// and OpenGL-style normal maps are Y-up.
-		//n.z *= -1.0;
-		return n;
-	}*/
+	vertex
+	
+		float dis = lenght(CAMERA_POSITION_WOLRD - world_pos);
+		close_mask = smoothstep(close_distance + close_blend_amount, close_distance, dis);		1 if dis < close_distance, 0 if dis > close_distance + close_blend_amount else an intermediate value
+		middle_mask = smoothstep(middle_distance + middle_blend_amount, middle_distance, dis);
+		
+	fragment
+	
+		tutte le fetch delle texture devono essere fatte con distance_texture invece che con texture
+		*/
 // GlobalExpression:3
 	/*vec3 get_normal(sampler2D tex, mat3 terrain_normal_basis, vec2 uv){
 		// Need to use terrain_normal_basis to handle scaling.
@@ -1643,37 +1699,25 @@ uniform sampler2D tex_frg_62;
 		return clamp(d, 0, 1);
 	}
 // GlobalExpression:7
-	vec4 texture_albedo_bump_dismiss(int type, float layer, vec2 uv)
-	{
-		if (layer < 0.0) {
-			if (type == 0) {
-				return texture(u_ground_albedo_bump_0, uv);
-			} else if (type == 1) {
-				return texture(u_ground_albedo_bump_1, uv);
-			} else if (type == 2) {
-				return texture(u_ground_albedo_bump_2, uv);
-			} else {
-				return texture(u_ground_albedo_bump_3, uv);
-			}
+	vec4 distance_texture(sampler2D _tex, vec2 _uv) {
+		if (!new) {
+			return texture(_tex, _uv);
 		} else {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, layer));
+			vec4 final = texture(_tex, _uv * far_uv_scale);
+			final = mix(final, texture(_tex, _uv * middle_uv_scale), v_middle_mask);
+			final = mix(final, texture(_tex, _uv * close_uv_scale), v_close_mask);
+			return final;
 		}
 	}
 	
-	vec4 texture_normal_roughness_dismiss(int type, float layer, vec2 uv)
-	{
-		if (layer < 0.0) {
-			if (type == 0) {
-				return texture(u_ground_normal_roughness_0, uv);
-			} else if (type == 1) {
-				return texture(u_ground_normal_roughness_1, uv);
-			} else if (type == 2) {
-				return texture(u_ground_normal_roughness_2, uv);
-			} else {
-				return texture(u_ground_normal_roughness_3, uv);
-			}
+	vec4 distance_texture_layer(sampler2DArray _tex, vec3 _uv) {
+		if (!new) {
+			return texture(_tex, _uv);
 		} else {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, layer));
+			vec4 final = texture(_tex, vec3(_uv.xy * far_uv_scale, _uv.z));
+			final = mix(final, texture(_tex, vec3(_uv.xy * middle_uv_scale, _uv.z)), v_middle_mask);
+			final = mix(final, texture(_tex, vec3(_uv.xy * close_uv_scale, _uv.z)), v_close_mask);
+			return final;
 		}
 	}
 	
@@ -1686,59 +1730,59 @@ uniform sampler2D tex_frg_62;
 	{
 		if (type == 0) {
 			if (north_border_pixel && u_north_ground_layers.x >= 0.0) {
-				return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.x));
-			//} else if (south_border_pixel && u_south_ground_layers.x >= 0.0) {
-			//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.x));
+				return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.x));
+				//return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.x));
 			} else if (west_border_pixel && u_west_ground_layers.x >= 0.0) {
-				return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.x));
-			//} else if (east_border_pixel && u_east_ground_layers.x >= 0.0) {
-			//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.x));
+				return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.x));
+				//return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.x));
 			} else if (u_ground_layers.x >= 0.0) {
-				return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.x));
+				return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.x));
+				//return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.x));
 			} else {
-				return texture(u_ground_albedo_bump_0, uv);
+				return distance_texture(u_ground_albedo_bump_0, uv);
+				//return texture(u_ground_albedo_bump_0, uv);
 			}
 		} else if (type == 1) {
 			if (north_border_pixel && u_north_ground_layers.y >= 0.0) {
-				return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.y));
-			//} else if (south_border_pixel && u_south_ground_layers.y >= 0.0) {
-			//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.y));
+				return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.y));
+				//return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.y));
 			} else if (west_border_pixel && u_west_ground_layers.y >= 0.0) {
-				return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.y));
-			//} else if (east_border_pixel && u_east_ground_layers.y >= 0.0) {
-			//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.y));
+				return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.y));
+				//return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.y));
 			} else if (u_ground_layers.y >= 0.0) {
-				return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.y));
+				return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.y));
+				//return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.y));
 			} else {
-				return texture(u_ground_albedo_bump_1, uv);
+				return distance_texture(u_ground_albedo_bump_1, uv);
+				//return texture(u_ground_albedo_bump_1, uv);
 			}
 		} else if (type == 2) {
 			if (north_border_pixel && u_north_ground_layers.z >= 0.0) {
-				return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.z));
-			//} else if (south_border_pixel && u_south_ground_layers.z >= 0.0) {
-			//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.z));
+				return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.z));
+				//return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.z));
 			} else if (west_border_pixel && u_west_ground_layers.z >= 0.0) {
-				return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.z));
-			//} else if (east_border_pixel && u_east_ground_layers.z >= 0.0) {
-			//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.z));
+				return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.z));
+				//return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.z));
 			} else if (u_ground_layers.z >= 0.0) {
-				return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.z));
+				return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.z));
+				//return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.z));
 			} else {
-				return texture(u_ground_albedo_bump_2, uv);
+				return distance_texture(u_ground_albedo_bump_2, uv);
+				//return texture(u_ground_albedo_bump_2, uv);
 			}
 		} else {
 			if (north_border_pixel && u_north_ground_layers.a >= 0.0) {
-				return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.a));
-			//} else if (south_border_pixel && u_south_ground_layers.a >= 0.0) {
-			//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.a));
+				return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.a));
+				//return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.a));
 			} else if (west_border_pixel && u_west_ground_layers.a >= 0.0) {
-				return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.a));
-			//} else if (east_border_pixel && u_east_ground_layers.a >= 0.0) {
-			//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.a));
+				return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.a));
+				//return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.a));
 			} else if (u_ground_layers.a >= 0.0) {
-				return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.a));
+				return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.a));
+				//return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.a));
 			} else {
-				return texture(u_ground_albedo_bump_3, uv);
+				return distance_texture(u_ground_albedo_bump_3, uv);
+				//return texture(u_ground_albedo_bump_3, uv);
 			}
 		}
 	}
@@ -1752,59 +1796,59 @@ uniform sampler2D tex_frg_62;
 	{
 		if (type == 0) {
 			if (north_border_pixel && u_north_ground_layers.x >= 0.0) {
-				return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.x));
-			//} else if (south_border_pixel && u_south_ground_layers.x >= 0.0) {
-			//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.x));
+				return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.x));
+				//return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.x));
 			} else if (west_border_pixel && u_west_ground_layers.x >= 0.0) {
-				return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.x));
-			//} else if (east_border_pixel && u_east_ground_layers.x >= 0.0) {
-			//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.x));
+				return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.x));
+				//return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.x));
 			} else if (u_ground_layers.x >= 0.0) {
-				return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.x));
+				return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.x));
+				//return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.x));
 			} else {
-				return texture(u_ground_normal_roughness_0, uv);
+				return distance_texture(u_ground_normal_roughness_0, uv);
+				//return texture(u_ground_normal_roughness_0, uv);
 			}
 		} else if (type == 1) {
 			if (north_border_pixel && u_north_ground_layers.y >= 0.0) {
-				return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.y));
-			//} else if (south_border_pixel && u_south_ground_layers.y >= 0.0) {
-			//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.y));
+				return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.y));
+				//return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.y));
 			} else if (west_border_pixel && u_west_ground_layers.y >= 0.0) {
-				return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.y));
-			//} else if (east_border_pixel && u_east_ground_layers.y >= 0.0) {
-			//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.y));
+				return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.y));
+				//return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.y));
 			} else if (u_ground_layers.y >= 0.0) {
-				return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.y));
+				return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.y));
+				//return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.y));
 			} else {
-				return texture(u_ground_normal_roughness_1, uv);
+				return distance_texture(u_ground_normal_roughness_1, uv);
+				//return texture(u_ground_normal_roughness_1, uv);
 			}
 		} else if (type == 2) {
 			if (north_border_pixel && u_north_ground_layers.z >= 0.0) {
-				return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.z));
-			//} else if (south_border_pixel && u_south_ground_layers.z >= 0.0) {
-			//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.z));
+				return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.z));
+				//return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.z));
 			} else if (west_border_pixel && u_west_ground_layers.z >= 0.0) {
-				return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.z));
-			//} else if (east_border_pixel && u_east_ground_layers.z >= 0.0) {
-			//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.z));
+				return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.z));
+				//return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.z));
 			} else if (u_ground_layers.z >= 0.0) {
-				return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.z));
+				return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.z));
+				//return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.z));
 			} else {
-				return texture(u_ground_normal_roughness_2, uv);
+				return distance_texture(u_ground_normal_roughness_2, uv);
+				//return texture(u_ground_normal_roughness_2, uv);
 			}
 		} else {
 			if (north_border_pixel && u_north_ground_layers.a >= 0.0) {
-				return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.a));
-			//} else if (south_border_pixel && u_south_ground_layers.a >= 0.0) {
-			//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.a));
+				return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.a));
+				//return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.a));
 			} else if (west_border_pixel && u_west_ground_layers.a >= 0.0) {
-				return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.a));
-			//} else if (east_border_pixel && u_east_ground_layers.a >= 0.0) {
-			//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.a));
+				return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.a));
+				//return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.a));
 			} else if (u_ground_layers.a >= 0.0) {
-				return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.a));
+				return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.a));
+				//return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.a));
 			} else {
-				return texture(u_ground_normal_roughness_3, uv);
+				return distance_texture(u_ground_normal_roughness_3, uv);
+				//return texture(u_ground_normal_roughness_3, uv);
 			}
 		}
 	}
@@ -2036,13 +2080,21 @@ void vertex() {
 
 	float n_out18p0;
 	float n_out18p1;
+	float n_out18p2;
+	float n_out18p3;
 // Expression:18
 	n_out18p0 = 0.0;
 	n_out18p1 = 0.0;
+	n_out18p2 = 0.0;
+	n_out18p3 = 0.0;
 	{
 		vec3 camera_pos = INV_VIEW_MATRIX[3].xyz;
 		n_out18p0 = distance(n_out13p1.xyz, camera_pos);
 		n_out18p1 = distance(n_out13p1.xyz, vec3(camera_pos.x, camera_pos.y - gu_camera_altitude_from_terrain, camera_pos.z));
+		if (new) {
+			n_out18p2 = smoothstep(close_distance + close_blend_amount, close_distance, n_out18p0);
+			n_out18p3 = smoothstep(middle_distance + middle_blend_amount, middle_distance, n_out18p0);
+		}
 	}
 
 
@@ -2104,6 +2156,14 @@ void vertex() {
 
 // VaryingSetter:68
 	v_distance_from_camera_on_terrain = n_out18p1;
+
+
+// VaryingSetter:69
+	v_close_mask = n_out18p2;
+
+
+// VaryingSetter:70
+	v_middle_mask = n_out18p3;
 
 
 }
@@ -2187,7 +2247,7 @@ void fragment() {
 	n_out14p1 = vec3(0.0, 0.0, 0.0);
 	{
 		n_out14p0 = get_normal(u_terrain_normalmap, u_terrain_normal_basis, n_out13p0);
-		n_out14p1 = n_out14p0;
+		//n_out14p1 = n_out14p0;
 	}
 
 
@@ -2228,73 +2288,73 @@ void fragment() {
 
 
 	vec4 n_out4p0;
-	bool n_out4p1;
-	int n_out4p2;
+	int n_out4p1;
 // Expression:4
 	n_out4p0 = vec4(0.0, 0.0, 0.0, 0.0);
-	n_out4p1 = false;
-	n_out4p2 = 0;
+	n_out4p1 = 0;
 	{
 		//n_out17p0 = vec4(200.0, 200.0, 200.0, 200.0);
 		n_out4p0 = n_out17p0;
-		n_out4p2 = -1;
-		n_out4p1 = true;
-		
-		/*if (!n_out4p1) {
-			n_out4p0 = vec4(300.0);
-			n_out20p0 = 10.0;
-		} else {
-			n_out4p0 = vec4(2.0);
-			n_out20p0 = 1.0;
-			n_out18p0 = uint(4);
-			n_out19p0 = 200.0;
-		}*/
+		n_out4p1 = -1;
 		
 		int alt_piece = int(floor(n_out82p0 / n_out19p0));
-		if (alt_piece < 4) {
+		/*if (alt_piece < 4) {
+			n_out20p0 *= pow(2.0, float(alt_piece));
+		} else {
+			n_out82p0 = -1.0;
+		}*/
+		if (n_out82p0 < altitude_uv_scale_threshold) {
 			n_out20p0 *= pow(2.0, float(alt_piece));
 		} else {
 			n_out82p0 = -1.0;
 		}
 		
-		if (n_out82p0 > 0.0 && n_out84p0 < 2000.0) {
-			vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(n_out8p0, 1.0)).xyz;
-			int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / n_out19p0));
-			int camera_piece_z = int(floor(CAMERA_POSITION_WORLD.z / n_out19p0));
-			int frag_piece_x = int(floor(fragment_world_pos.x / n_out19p0));
-			int frag_piece_z = int(floor(fragment_world_pos.z / n_out19p0));
-			n_out4p2 = max(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_z - frag_piece_z)));
-			if (n_out4p2 <= 1)
-			{
-				n_out4p0 /= (n_out20p0 / 20.0);
-				//n_out4p0 = vec4(40.0);
+		if (n_out84p0 < ground_uv_scale_threshold) {
+			if (n_out82p0 > 0.0) {
+				vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(n_out8p0, 1.0)).xyz;
+				int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / n_out19p0));
+				int camera_piece_z = int(floor(CAMERA_POSITION_WORLD.z / n_out19p0));
+				int frag_piece_x = int(floor(fragment_world_pos.x / n_out19p0));
+				int frag_piece_z = int(floor(fragment_world_pos.z / n_out19p0));
+				n_out4p1 = max(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_z - frag_piece_z)));
+				if (n_out4p1 <= 1)
+				{
+					n_out4p0 /= (n_out20p0 / 20.0);
+					//n_out4p0 = vec4(40.0);
+				}
+				else if (n_out4p1 <= 3)
+				{
+					n_out4p0 /= (n_out20p0 / 10.0);
+					//n_out4p0 = vec4(20.0);
+				}
+				else if (n_out4p1 <= 5)
+				{
+					n_out4p0 /= (n_out20p0 / 10.0);
+					//n_out4p0 = vec4(20.0);
+				}
+				else if (n_out4p1 <= 7)
+				{
+					n_out4p0 /= (n_out20p0 / 8.0);
+					//n_out4p0 = vec4(16.0);
+					//n_out4p0 = n_out17p0;
+				}
+				else if (n_out4p1 <= 9)
+				{
+					n_out4p0 /= (n_out20p0 / 4.0);
+				}
+				else if (n_out4p1 <= 11)
+				{
+					n_out4p0 /= (n_out20p0 / 2.0);
+					//n_out4p0 = vec4(6.0);
+				}
 			}
-			else if (n_out4p2 <= 3)
-			{
-				n_out4p0 /= (n_out20p0 / 10.0);
-				//n_out4p0 = vec4(20.0);
-			}
-			else if (n_out4p2 <= 5)
-			{
-				n_out4p0 /= (n_out20p0 / 10.0);
-				//n_out4p0 = vec4(20.0);
-			}
-			else if (n_out4p2 <= 7)
-			{
-				n_out4p0 /= (n_out20p0 / 8.0);
-				//n_out4p0 = vec4(16.0);
-			}
-			/*else if (n_out4p2 == 4)
-			{
-				n_out4p0 /= (n_out20p0 / 3.0);
-				//n_out4p0 = vec4(6.0);
-			}
-			else if (n_out4p2 == 5)
-			{
-				n_out4p0 /= (n_out20p0 / 3.0);
-				//n_out4p0 = vec4(6.0);
-			}*/
 		}
+		else
+		{
+			float forced_scale_value_beyond_threshold = 1.0;
+			n_out4p0 = vec4(forced_scale_value_beyond_threshold);
+		}
+		
 	}
 
 
@@ -2400,37 +2460,17 @@ void fragment() {
 	n_out10p3 = vec3(0.0, 0.0, 0.0);
 	{
 		vec3 base_ground_uv;
-		/*if (!n_out4p1) {
-			//n_out4p0 = vec4(300.0);
-			if (n_out73p1) {
-				// mirror
-				base_ground_uv = vec3(n_out11p0.x, 
-									n_out12p0.y * MODEL_MATRIX[1][1],
-									float(textureSize(u_terrain_heightmap, 0).y) - n_out11p0.y);
-			} else if (n_out73p3) {
-				// mirror
-				base_ground_uv = vec3(float(textureSize(u_terrain_heightmap, 0).x) - n_out11p0.x, 
-									n_out12p0.y * MODEL_MATRIX[1][1],
-									n_out11p0.y);
-			} else {
-				base_ground_uv = vec3(n_out11p0.x, n_out12p0.y * MODEL_MATRIX[1][1], n_out11p0.y);
-			}
-			//base_ground_uv = vec3(n_out11p0.x, n_out12p0.y * MODEL_MATRIX[1][1], n_out11p0.y);
-			// 2-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor
-			// these coordinates are used to fetch ground_albedo_bump and ground_normal_roughness 
-			n_out10p0 = base_ground_uv.xz / n_out4p0.x;
-			n_out10p1 = base_ground_uv.xz / n_out4p0.y;
-			n_out10p2 = base_ground_uv.xz / n_out4p0.z;
-			// 3-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor (y coord is height in world coord)
-			n_out10p3 = base_ground_uv / n_out4p0.w;
-		} else {*/
-			//n_out4p0 = vec4(2.0);
-			base_ground_uv = vec3(n_out13p0.x, n_out12p0.y * MODEL_MATRIX[1][1], n_out13p0.y);
-			n_out10p0 = base_ground_uv.xz * n_out4p0.x;
-			n_out10p1 = base_ground_uv.xz * n_out4p0.y;
-			n_out10p2 = base_ground_uv.xz * n_out4p0.z;
-			n_out10p3 = base_ground_uv * n_out4p0.w;
-		//}
+		
+		//n_out4p0 = vec4(2.0);
+		if (new) {
+			n_out4p0 = vec4(1.0, 1.0, 1.0, 1.0);
+		}
+		base_ground_uv = vec3(n_out13p0.x, n_out12p0.y * MODEL_MATRIX[1][1], n_out13p0.y);
+		n_out10p0 = base_ground_uv.xz * n_out4p0.x;
+		n_out10p1 = base_ground_uv.xz * n_out4p0.y;
+		n_out10p2 = base_ground_uv.xz * n_out4p0.z;
+		n_out10p3 = base_ground_uv * n_out4p0.w;
+		
 	}
 
 
@@ -2574,10 +2614,14 @@ void fragment() {
 	vec3 n_out56p0;
 	float n_out56p1;
 	vec3 n_out56p2;
+	float n_out56p3;
+	float n_out56p4;
 // Expression:56
 	n_out56p0 = vec3(0.0, 0.0, 0.0);
 	n_out56p1 = 0.0;
 	n_out56p2 = vec3(0.0, 0.0, 0.0);
+	n_out56p3 = 0.0;
+	n_out56p4 = 0.0;
 	{
 		if (n_out25p0 || n_out25p1) {
 			n_out56p1 = n_out30p1;
@@ -2648,12 +2692,16 @@ void fragment() {
 			n_out56p2 = mix(n_out56p2, n_out30p2, n_out33p2);
 			n_out56p0 = mix(n_out56p0, n_out30p0, n_out33p2);
 			n_out56p1 = mix(n_out56p1, 1.0, n_out33p2);
+			n_out56p3 = (w.r * n_out30p3.a +	w.g * n_out30p4.a + w.b * n_out30p5.a +	w.a * n_out30p6.a) / w_sum;
+			n_out56p4 = 0.1;
+			//METALLIC = (w.r * n_out30p3.a +	w.g * n_out30p4.a + w.b * n_out30p5.a +	w.a * n_out30p6.a) / w_sum;
+			//SPECULAR = 0.5;
 			
-			vec3 red = vec3(1.0, 0.0, 0.0);
+			/*vec3 red = vec3(1.0, 0.0, 0.0);
 			vec3 green = vec3(0.0, 1.0, 0.0);
 			vec3 blue = vec3(0.0, 0.0, 1.0);
 			vec3 yellow = vec3(1.0, 0.749, 0.0);
-			/*if (n_out73p4.x < 0.0)	{
+			if (n_out73p4.x < 0.0)	{
 				n_out56p0 = red;
 			}
 			if (n_out73p4.y < 0.0)	{
@@ -2696,16 +2744,18 @@ void fragment() {
 		float grid_line_thickness = 0.05;
 		
 		// DEBUG: wisualize pieces
-		/*if (n_out4p2 == 0) {
+		/*if (n_out4p1 == 0) {
 			n_out31p0 = vec3(1.0, 0.0, 0.0);
-		} else if (n_out4p2 == 1) {
+		} else if (n_out4p1 == 1) {
 			n_out31p0 = vec3(0.0, 1.0, 0.0);
-		} else if (n_out4p2 == 2) {
+		} else if (n_out4p1 == 2) {
 			n_out31p0 = vec3(0.0, 0.0, 1.0);
-		} else if (n_out4p2 == 3) {
+		} else if (n_out4p1 == 3) {
 			n_out31p0 = vec3(1.0, 0.0, 1.0);
 		}*/
 		// DEBUG: wisualize pieces
+		//n_out31p0 = vec3(v_close_mask);	// DEBUG
+		//n_out31p0 = vec3(v_middle_mask);	// DEBUG
 		
 		//bool n_out81p0 = !(n_out27p0 == vec2(-1));
 		if (n_out81p0) {
@@ -2764,6 +2814,8 @@ void fragment() {
 // Output:0
 	ALBEDO = n_out31p0;
 	ROUGHNESS = n_out31p1;
+	AO = n_out56p3;
+	AO_LIGHT_AFFECT = n_out56p4;
 	NORMAL = n_out31p2;
 
 
@@ -2779,10 +2831,12 @@ varyings/v_tint1 = "0,4"
 varyings/v_tint2 = "0,4"
 varyings/v_tint3 = "0,4"
 varyings/v_distance_from_camera_on_terrain = "0,0"
+varyings/v_close_mask = "0,0"
+varyings/v_middle_mask = "0,0"
 nodes/vertex/0/position = Vector2(3240, -860)
 nodes/vertex/8/node = SubResource("VisualShaderNodeGlobalExpression_m8jdv")
-nodes/vertex/8/position = Vector2(-2680, -1540)
-nodes/vertex/8/size = Vector2(700, 640)
+nodes/vertex/8/position = Vector2(-2720, -1840)
+nodes/vertex/8/size = Vector2(700, 1000)
 nodes/vertex/8/input_ports = ""
 nodes/vertex/8/output_ports = ""
 nodes/vertex/8/expression = "#include \"res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc\"
@@ -2808,7 +2862,23 @@ uniform sampler2D u_ground_normal_roughness_3;
 //uniform vec4 u_tile_reduction_per_texture = vec4(0.0, 0.0, 0.0, 0.0);	// Each component corresponds to a ground texture. Set greater than zero to enable.
 //uniform float u_globalmap_blend_start = 0;		// 2000 ==> optimization: at 2000 WU from camera will be used global map instead of u_ground_albedo_bump_0/3 and u_ground_normal_roughness_0/3
 //uniform float u_globalmap_blend_distance = 0;	// 1	==> 0 = disable use of global map
-uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);	// NOTSET"
+uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);	// NOTSET
+const float ground_uv_scale_threshold = 15000.0;
+const float altitude_uv_scale_threshold = 800.0;
+
+const bool new = false;
+//const bool new = true;
+// NEW
+const float close_distance = 30.0;
+const float close_blend_amount = 5.0;
+const float middle_distance_increment = 1200.0;
+const float middle_blend_amount = 10.0;
+const float middle_distance = close_distance + middle_distance_increment;
+const float close_uv_scale = 50.0;
+const float middle_uv_scale = 20.0;
+const float far_uv_scale = 1.0;
+// NEW
+"
 nodes/vertex/11/node = SubResource("VisualShaderNodeExpression_28flk")
 nodes/vertex/11/position = Vector2(-1340, -360)
 nodes/vertex/11/size = Vector2(620, 200)
@@ -2818,7 +2888,7 @@ nodes/vertex/11/expression = "// VERTEX coords are local to the chunk (as the ma
 vertex_world_pos = MODEL_MATRIX * vec4(vertex, 1);"
 nodes/vertex/12/node = SubResource("VisualShaderNodeExpression_51pd1")
 nodes/vertex/12/position = Vector2(-500, -1080)
-nodes/vertex/12/size = Vector2(1060, 760)
+nodes/vertex/12/size = Vector2(1060, 780)
 nodes/vertex/12/input_ports = "0,5,vertex_world_pos;1,7,terrain_inverse_transform;2,8,terrain_heightmap;3,0,grid_step;4,2,optimization_level;"
 nodes/vertex/12/output_ports = "0,3,vertex_cell_coords_in_textures;1,3,uv;"
 nodes/vertex/12/expression = "// to calculate coords of the vertex local to the quadrant we use affine inverse matrix of the global trasform of the quadtree
@@ -2875,12 +2945,16 @@ nodes/vertex/17/expression = "/*float get_height(sampler2D tex, float terrain_he
 }*/"
 nodes/vertex/18/node = SubResource("VisualShaderNodeExpression_ytuk2")
 nodes/vertex/18/position = Vector2(2160, -120)
-nodes/vertex/18/size = Vector2(1220, 260)
+nodes/vertex/18/size = Vector2(1240, 420)
 nodes/vertex/18/input_ports = "0,5,vertex_world_pos;"
-nodes/vertex/18/output_ports = "0,0,distance_from_camera;1,0,distance_from_camera_on_terrain;"
+nodes/vertex/18/output_ports = "0,0,distance_from_camera;1,0,distance_from_camera_on_terrain;2,0,close_mask;3,0,middle_mask;"
 nodes/vertex/18/expression = "vec3 camera_pos = INV_VIEW_MATRIX[3].xyz;
 distance_from_camera = distance(vertex_world_pos.xyz, camera_pos);
-distance_from_camera_on_terrain = distance(vertex_world_pos.xyz, vec3(camera_pos.x, camera_pos.y - gu_camera_altitude_from_terrain, camera_pos.z));"
+distance_from_camera_on_terrain = distance(vertex_world_pos.xyz, vec3(camera_pos.x, camera_pos.y - gu_camera_altitude_from_terrain, camera_pos.z));
+if (new) {
+	close_mask = smoothstep(close_distance + close_blend_amount, close_distance, distance_from_camera);
+	middle_mask = smoothstep(middle_distance + middle_blend_amount, middle_distance, distance_from_camera);
+}"
 nodes/vertex/19/node = SubResource("VisualShaderNodeVaryingSetter_8av8q")
 nodes/vertex/19/position = Vector2(3500, -120)
 nodes/vertex/20/node = SubResource("VisualShaderNodeExpression_ah843")
@@ -2894,21 +2968,36 @@ nodes/vertex/21/position = Vector2(-2700, -400)
 nodes/vertex/21/size = Vector2(700, 420)
 nodes/vertex/21/input_ports = ""
 nodes/vertex/21/output_ports = ""
-nodes/vertex/21/expression = "/*vec4 pack_normal(vec3 n, float a) {
-	//n.z *= -1.0;
-	return vec4((n.xzy + vec3(1.0)) * 0.5, a);
+nodes/vertex/21/expression = "/*
+const float close_distance = 20.0;
+const float close_blend_amount = 5.0;
+const float middle_distance = 60.0;
+const float middle_blend_amount = 10.0;
+
+const float close_uv_scale = 0.5;
+const float middle_uv_scale = 0.1;
+const float far_uv_scale = 0.01;
+
+varying float close_mask;
+varying float middle_mask;
+
+vec4 distance_texture(sampler2D _tex, vec2 _uv) {
+	vec4 final = texture(_tex, _uv * far_uv_scale);
+	final = mix(final, texture(_tex, _uv * middle_uv_scale), middle_mask);
+	final = mix(final, texture(_tex, _uv * close_uv_scale), close_mask);
+	return final;
 }
 
-vec3 unpack_normal(vec4 rgba) {
-	// If we consider texture space starts from top-left corner and Y goes down,
-	// then Y+ in pixel space corresponds to Z+ in terrain space,
-	// while X+ also corresponds to X+ in terrain space.
-	vec3 n = rgba.xzy * 2.0 - vec3(1.0);
-	// Had to negate Z because it comes from Y in the normal map,
-	// and OpenGL-style normal maps are Y-up.
-	//n.z *= -1.0;
-	return n;
-}*/"
+vertex
+
+	float dis = lenght(CAMERA_POSITION_WOLRD - world_pos);
+	close_mask = smoothstep(close_distance + close_blend_amount, close_distance, dis);		1 if dis < close_distance, 0 if dis > close_distance + close_blend_amount else an intermediate value
+	middle_mask = smoothstep(middle_distance + middle_blend_amount, middle_distance, dis);
+	
+fragment
+
+	tutte le fetch delle texture devono essere fatte con distance_texture invece che con texture
+	*/"
 nodes/vertex/22/node = SubResource("VisualShaderNodeGlobalExpression_bl3mn")
 nodes/vertex/22/position = Vector2(-2680, -640)
 nodes/vertex/22/size = Vector2(680, 220)
@@ -3091,114 +3180,100 @@ nodes/vertex/67/node = SubResource("VisualShaderNodeFloatParameter_x7bg6")
 nodes/vertex/67/position = Vector2(-1080, -1920)
 nodes/vertex/68/node = SubResource("VisualShaderNodeVaryingSetter_p8wnk")
 nodes/vertex/68/position = Vector2(3500, -40)
-nodes/vertex/connections = PackedInt32Array(12, 1, 0, 4, 11, 0, 12, 0, 12, 1, 13, 0, 13, 0, 0, 0, 11, 0, 13, 1, 13, 1, 14, 0, 15, 0, 13, 2, 12, 0, 16, 0, 15, 0, 11, 0, 13, 1, 18, 0, 18, 0, 19, 0, 12, 1, 20, 0, 20, 0, 0, 1, 23, 0, 24, 0, 12, 1, 23, 0, 25, 0, 26, 0, 25, 1, 27, 0, 25, 2, 28, 0, 25, 3, 29, 0, 12, 1, 25, 0, 35, 0, 12, 1, 30, 0, 12, 2, 37, 0, 12, 3, 36, 0, 12, 4, 34, 0, 25, 1, 31, 0, 20, 1, 32, 0, 23, 1, 38, 0, 23, 2, 30, 0, 13, 3, 18, 1, 68, 0)
-nodes/fragment/0/position = Vector2(7240, -460)
+nodes/vertex/69/node = SubResource("VisualShaderNodeVaryingSetter_l7c6t")
+nodes/vertex/69/position = Vector2(3500, 40)
+nodes/vertex/70/node = SubResource("VisualShaderNodeVaryingSetter_ot70l")
+nodes/vertex/70/position = Vector2(3500, 120)
+nodes/vertex/connections = PackedInt32Array(12, 1, 0, 4, 11, 0, 12, 0, 12, 1, 13, 0, 13, 0, 0, 0, 11, 0, 13, 1, 13, 1, 14, 0, 15, 0, 13, 2, 12, 0, 16, 0, 15, 0, 11, 0, 13, 1, 18, 0, 18, 0, 19, 0, 12, 1, 20, 0, 20, 0, 0, 1, 23, 0, 24, 0, 12, 1, 23, 0, 25, 0, 26, 0, 25, 1, 27, 0, 25, 2, 28, 0, 25, 3, 29, 0, 12, 1, 25, 0, 35, 0, 12, 1, 30, 0, 12, 2, 37, 0, 12, 3, 36, 0, 12, 4, 34, 0, 25, 1, 31, 0, 20, 1, 32, 0, 23, 1, 38, 0, 23, 2, 30, 0, 13, 3, 18, 1, 68, 0, 18, 2, 69, 0, 18, 3, 70, 0)
+nodes/fragment/0/position = Vector2(7200, -520)
 nodes/fragment/3/node = SubResource("VisualShaderNodeVaryingGetter_pe6em")
 nodes/fragment/3/position = Vector2(-2720, -740)
 nodes/fragment/4/node = SubResource("VisualShaderNodeExpression_yk7c6")
 nodes/fragment/4/position = Vector2(-1440, -480)
 nodes/fragment/4/size = Vector2(1100, 1700)
 nodes/fragment/4/input_ports = "0,0,distance_from_camera_on_terrain;1,4,vertex;2,5,ground_uv_scale_per_texture_in;3,2,piecing_threshold_factor;4,0,piece_size;5,0,scale_per_texture_factor;6,0,camera_altitude_from_terrain;"
-nodes/fragment/4/output_ports = "0,5,ground_uv_scale_per_texture_out;1,6,new;2,1,pieces_from_camera_piece;"
+nodes/fragment/4/output_ports = "0,5,ground_uv_scale_per_texture_out;1,1,pieces_from_camera_piece;"
 nodes/fragment/4/expression = "//ground_uv_scale_per_texture_in = vec4(200.0, 200.0, 200.0, 200.0);
 ground_uv_scale_per_texture_out = ground_uv_scale_per_texture_in;
 pieces_from_camera_piece = -1;
-new = true;
-
-/*if (!new) {
-	ground_uv_scale_per_texture_out = vec4(300.0);
-	scale_per_texture_factor = 10.0;
-} else {
-	ground_uv_scale_per_texture_out = vec4(2.0);
-	scale_per_texture_factor = 1.0;
-	piecing_threshold_factor = uint(4);
-	piece_size = 200.0;
-}*/
 
 int alt_piece = int(floor(camera_altitude_from_terrain / piece_size));
-if (alt_piece < 4) {
+/*if (alt_piece < 4) {
+	scale_per_texture_factor *= pow(2.0, float(alt_piece));
+} else {
+	camera_altitude_from_terrain = -1.0;
+}*/
+if (camera_altitude_from_terrain < altitude_uv_scale_threshold) {
 	scale_per_texture_factor *= pow(2.0, float(alt_piece));
 } else {
 	camera_altitude_from_terrain = -1.0;
 }
 
-if (camera_altitude_from_terrain > 0.0 && distance_from_camera_on_terrain < 2000.0) {
-	vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(vertex, 1.0)).xyz;
-	int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / piece_size));
-	int camera_piece_z = int(floor(CAMERA_POSITION_WORLD.z / piece_size));
-	int frag_piece_x = int(floor(fragment_world_pos.x / piece_size));
-	int frag_piece_z = int(floor(fragment_world_pos.z / piece_size));
-	pieces_from_camera_piece = max(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_z - frag_piece_z)));
-	if (pieces_from_camera_piece <= 1)
-	{
-		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 20.0);
-		//ground_uv_scale_per_texture_out = vec4(40.0);
+if (distance_from_camera_on_terrain < ground_uv_scale_threshold) {
+	if (camera_altitude_from_terrain > 0.0) {
+		vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(vertex, 1.0)).xyz;
+		int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / piece_size));
+		int camera_piece_z = int(floor(CAMERA_POSITION_WORLD.z / piece_size));
+		int frag_piece_x = int(floor(fragment_world_pos.x / piece_size));
+		int frag_piece_z = int(floor(fragment_world_pos.z / piece_size));
+		pieces_from_camera_piece = max(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_z - frag_piece_z)));
+		if (pieces_from_camera_piece <= 1)
+		{
+			ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 20.0);
+			//ground_uv_scale_per_texture_out = vec4(40.0);
+		}
+		else if (pieces_from_camera_piece <= 3)
+		{
+			ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 10.0);
+			//ground_uv_scale_per_texture_out = vec4(20.0);
+		}
+		else if (pieces_from_camera_piece <= 5)
+		{
+			ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 10.0);
+			//ground_uv_scale_per_texture_out = vec4(20.0);
+		}
+		else if (pieces_from_camera_piece <= 7)
+		{
+			ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 8.0);
+			//ground_uv_scale_per_texture_out = vec4(16.0);
+			//ground_uv_scale_per_texture_out = ground_uv_scale_per_texture_in;
+		}
+		else if (pieces_from_camera_piece <= 9)
+		{
+			ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 4.0);
+		}
+		else if (pieces_from_camera_piece <= 11)
+		{
+			ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 2.0);
+			//ground_uv_scale_per_texture_out = vec4(6.0);
+		}
 	}
-	else if (pieces_from_camera_piece <= 3)
-	{
-		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 10.0);
-		//ground_uv_scale_per_texture_out = vec4(20.0);
-	}
-	else if (pieces_from_camera_piece <= 5)
-	{
-		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 10.0);
-		//ground_uv_scale_per_texture_out = vec4(20.0);
-	}
-	else if (pieces_from_camera_piece <= 7)
-	{
-		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 8.0);
-		//ground_uv_scale_per_texture_out = vec4(16.0);
-	}
-	/*else if (pieces_from_camera_piece == 4)
-	{
-		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 3.0);
-		//ground_uv_scale_per_texture_out = vec4(6.0);
-	}
-	else if (pieces_from_camera_piece == 5)
-	{
-		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 3.0);
-		//ground_uv_scale_per_texture_out = vec4(6.0);
-	}*/
-}"
+}
+else
+{
+	float forced_scale_value_beyond_threshold = 1.0;
+	ground_uv_scale_per_texture_out = vec4(forced_scale_value_beyond_threshold);
+}
+"
 nodes/fragment/8/node = SubResource("VisualShaderNodeInput_sy0wq")
 nodes/fragment/8/position = Vector2(-2620, -40)
 nodes/fragment/10/node = SubResource("VisualShaderNodeExpression_elcve")
 nodes/fragment/10/position = Vector2(140, -520)
 nodes/fragment/10/size = Vector2(1380, 1180)
-nodes/fragment/10/input_ports = "0,3,vertex_cell_coords_in_textures;1,5,vertex_world_pos;2,5,ground_uv_scale_per_texture;3,6,north_border_pixel;4,6,south_border_pixel;5,6,west_border_pixel;6,6,east_border_pixel;7,8,terrain_heightmap;8,3,uv;9,6,new;"
+nodes/fragment/10/input_ports = "0,3,vertex_cell_coords_in_textures;1,5,vertex_world_pos;2,5,ground_uv_scale_per_texture;3,6,north_border_pixel;4,6,south_border_pixel;5,6,west_border_pixel;6,6,east_border_pixel;7,8,terrain_heightmap;8,3,uv;"
 nodes/fragment/10/output_ports = "0,3,ground_uv0;1,3,ground_uv1;2,3,ground_uv2;3,4,ground_uv3;"
 nodes/fragment/10/expression = "vec3 base_ground_uv;
-/*if (!new) {
-	//ground_uv_scale_per_texture = vec4(300.0);
-	if (south_border_pixel) {
-		// mirror
-		base_ground_uv = vec3(vertex_cell_coords_in_textures.x, 
-							vertex_world_pos.y * MODEL_MATRIX[1][1],
-							float(textureSize(terrain_heightmap, 0).y) - vertex_cell_coords_in_textures.y);
-	} else if (east_border_pixel) {
-		// mirror
-		base_ground_uv = vec3(float(textureSize(terrain_heightmap, 0).x) - vertex_cell_coords_in_textures.x, 
-							vertex_world_pos.y * MODEL_MATRIX[1][1],
-							vertex_cell_coords_in_textures.y);
-	} else {
-		base_ground_uv = vec3(vertex_cell_coords_in_textures.x, vertex_world_pos.y * MODEL_MATRIX[1][1], vertex_cell_coords_in_textures.y);
-	}
-	//base_ground_uv = vec3(vertex_cell_coords_in_textures.x, vertex_world_pos.y * MODEL_MATRIX[1][1], vertex_cell_coords_in_textures.y);
-	// 2-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor
-	// these coordinates are used to fetch ground_albedo_bump and ground_normal_roughness 
-	ground_uv0 = base_ground_uv.xz / ground_uv_scale_per_texture.x;
-	ground_uv1 = base_ground_uv.xz / ground_uv_scale_per_texture.y;
-	ground_uv2 = base_ground_uv.xz / ground_uv_scale_per_texture.z;
-	// 3-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor (y coord is height in world coord)
-	ground_uv3 = base_ground_uv / ground_uv_scale_per_texture.w;
-} else {*/
-	//ground_uv_scale_per_texture = vec4(2.0);
-	base_ground_uv = vec3(uv.x, vertex_world_pos.y * MODEL_MATRIX[1][1], uv.y);
-	ground_uv0 = base_ground_uv.xz * ground_uv_scale_per_texture.x;
-	ground_uv1 = base_ground_uv.xz * ground_uv_scale_per_texture.y;
-	ground_uv2 = base_ground_uv.xz * ground_uv_scale_per_texture.z;
-	ground_uv3 = base_ground_uv * ground_uv_scale_per_texture.w;
-//}"
+
+//ground_uv_scale_per_texture = vec4(2.0);
+if (new) {
+	ground_uv_scale_per_texture = vec4(1.0, 1.0, 1.0, 1.0);
+}
+base_ground_uv = vec3(uv.x, vertex_world_pos.y * MODEL_MATRIX[1][1], uv.y);
+ground_uv0 = base_ground_uv.xz * ground_uv_scale_per_texture.x;
+ground_uv1 = base_ground_uv.xz * ground_uv_scale_per_texture.y;
+ground_uv2 = base_ground_uv.xz * ground_uv_scale_per_texture.z;
+ground_uv3 = base_ground_uv * ground_uv_scale_per_texture.w;
+"
 nodes/fragment/11/node = SubResource("VisualShaderNodeVaryingGetter_s41u1")
 nodes/fragment/11/position = Vector2(-2720, -980)
 nodes/fragment/12/node = SubResource("VisualShaderNodeVaryingGetter_jtb7g")
@@ -3211,7 +3286,7 @@ nodes/fragment/14/size = Vector2(740, 220)
 nodes/fragment/14/input_ports = "0,3,uv;1,8,terrain_normalmap;"
 nodes/fragment/14/output_ports = "0,4,terrain_normal_world;1,4,normal;"
 nodes/fragment/14/expression = "terrain_normal_world = get_normal(terrain_normalmap, u_terrain_normal_basis, uv);
-normal = terrain_normal_world;"
+//normal = terrain_normal_world;"
 nodes/fragment/16/node = SubResource("VisualShaderNodeParameterRef_8mkxg")
 nodes/fragment/16/position = Vector2(-2980, 940)
 nodes/fragment/17/node = SubResource("VisualShaderNodeParameterRef_jubu6")
@@ -3229,7 +3304,7 @@ nodes/fragment/23/position = Vector2(-2980, 1100)
 nodes/fragment/24/node = SubResource("VisualShaderNodeParameterRef_hwvs7")
 nodes/fragment/24/position = Vector2(-2980, 1180)
 nodes/fragment/25/node = SubResource("VisualShaderNodeExpression_tusg1")
-nodes/fragment/25/position = Vector2(-2260, 1920)
+nodes/fragment/25/position = Vector2(-2220, 1920)
 nodes/fragment/25/size = Vector2(740, 440)
 nodes/fragment/25/input_ports = "0,0,editmode_selected;1,3,uv;2,6,use_globalmap;"
 nodes/fragment/25/output_ports = "0,6,editmode_pixel;1,6,globalmap_pixel;"
@@ -3344,7 +3419,7 @@ if (!editmode_pixel && !globalmap_pixel) {
 }"
 nodes/fragment/31/node = SubResource("VisualShaderNodeExpression_mc40n")
 nodes/fragment/31/position = Vector2(6020, -480)
-nodes/fragment/31/size = Vector2(1160, 1820)
+nodes/fragment/31/size = Vector2(1040, 2080)
 nodes/fragment/31/input_ports = "0,4,albedo_in;1,3,mouse_hit;2,0,mouse_hit_radius;3,4,normal_in;4,0,roughness_in;5,3,uv;6,3,ground_uv0;7,3,ground_uv1;8,3,ground_uv2;9,4,ground_uv3;10,6,grid_on;11,1,pieces_from_camera_piece;"
 nodes/fragment/31/output_ports = "0,4,albedo_out;1,0,roughness_out;2,4,normal_out;"
 nodes/fragment/31/expression = "albedo_out = albedo_in;
@@ -3364,6 +3439,8 @@ float grid_line_thickness = 0.05;
 	albedo_out = vec3(1.0, 0.0, 1.0);
 }*/
 // DEBUG: wisualize pieces
+//albedo_out = vec3(v_close_mask);	// DEBUG
+//albedo_out = vec3(v_middle_mask);	// DEBUG
 
 //bool grid_on = !(mouse_hit == vec2(-1));
 if (grid_on) {
@@ -3417,7 +3494,7 @@ if (mouse_hit != vec2(-1)) {
 	}
 }"
 nodes/fragment/33/node = SubResource("VisualShaderNodeExpression_halt2")
-nodes/fragment/33/position = Vector2(-600, 1480)
+nodes/fragment/33/position = Vector2(-660, 1500)
 nodes/fragment/33/size = Vector2(1000, 660)
 nodes/fragment/33/input_ports = "0,0,distance_from_camera;1,0,globalmap_blend_start;2,0,globalmap_blend_distance;3,8,terrain_globalmap;4,3,uv;5,6,editmode_pixel;6,6,globalmap_pixel;"
 nodes/fragment/33/output_ports = "0,4,albedo_out;1,0,roughness_out;2,0,globalmap_factor;"
@@ -3455,37 +3532,25 @@ nodes/fragment/45/position = Vector2(-5640, -860)
 nodes/fragment/45/size = Vector2(920, 3880)
 nodes/fragment/45/input_ports = ""
 nodes/fragment/45/output_ports = ""
-nodes/fragment/45/expression = "vec4 texture_albedo_bump_dismiss(int type, float layer, vec2 uv)
-{
-	if (layer < 0.0) {
-		if (type == 0) {
-			return texture(u_ground_albedo_bump_0, uv);
-		} else if (type == 1) {
-			return texture(u_ground_albedo_bump_1, uv);
-		} else if (type == 2) {
-			return texture(u_ground_albedo_bump_2, uv);
-		} else {
-			return texture(u_ground_albedo_bump_3, uv);
-		}
+nodes/fragment/45/expression = "vec4 distance_texture(sampler2D _tex, vec2 _uv) {
+	if (!new) {
+		return texture(_tex, _uv);
 	} else {
-		return texture(gu_ground_albedo_bump_array, vec3(uv, layer));
+		vec4 final = texture(_tex, _uv * far_uv_scale);
+		final = mix(final, texture(_tex, _uv * middle_uv_scale), v_middle_mask);
+		final = mix(final, texture(_tex, _uv * close_uv_scale), v_close_mask);
+		return final;
 	}
 }
 
-vec4 texture_normal_roughness_dismiss(int type, float layer, vec2 uv)
-{
-	if (layer < 0.0) {
-		if (type == 0) {
-			return texture(u_ground_normal_roughness_0, uv);
-		} else if (type == 1) {
-			return texture(u_ground_normal_roughness_1, uv);
-		} else if (type == 2) {
-			return texture(u_ground_normal_roughness_2, uv);
-		} else {
-			return texture(u_ground_normal_roughness_3, uv);
-		}
+vec4 distance_texture_layer(sampler2DArray _tex, vec3 _uv) {
+	if (!new) {
+		return texture(_tex, _uv);
 	} else {
-		return texture(gu_ground_normal_roughness_array, vec3(uv, layer));
+		vec4 final = texture(_tex, vec3(_uv.xy * far_uv_scale, _uv.z));
+		final = mix(final, texture(_tex, vec3(_uv.xy * middle_uv_scale, _uv.z)), v_middle_mask);
+		final = mix(final, texture(_tex, vec3(_uv.xy * close_uv_scale, _uv.z)), v_close_mask);
+		return final;
 	}
 }
 
@@ -3498,59 +3563,59 @@ vec4 texture_albedo_bump(int type,
 {
 	if (type == 0) {
 		if (north_border_pixel && u_north_ground_layers.x >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.x));
-		//} else if (south_border_pixel && u_south_ground_layers.x >= 0.0) {
-		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.x));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.x));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.x));
 		} else if (west_border_pixel && u_west_ground_layers.x >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.x));
-		//} else if (east_border_pixel && u_east_ground_layers.x >= 0.0) {
-		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.x));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.x));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.x));
 		} else if (u_ground_layers.x >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.x));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.x));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.x));
 		} else {
-			return texture(u_ground_albedo_bump_0, uv);
+			return distance_texture(u_ground_albedo_bump_0, uv);
+			//return texture(u_ground_albedo_bump_0, uv);
 		}
 	} else if (type == 1) {
 		if (north_border_pixel && u_north_ground_layers.y >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.y));
-		//} else if (south_border_pixel && u_south_ground_layers.y >= 0.0) {
-		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.y));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.y));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.y));
 		} else if (west_border_pixel && u_west_ground_layers.y >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.y));
-		//} else if (east_border_pixel && u_east_ground_layers.y >= 0.0) {
-		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.y));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.y));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.y));
 		} else if (u_ground_layers.y >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.y));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.y));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.y));
 		} else {
-			return texture(u_ground_albedo_bump_1, uv);
+			return distance_texture(u_ground_albedo_bump_1, uv);
+			//return texture(u_ground_albedo_bump_1, uv);
 		}
 	} else if (type == 2) {
 		if (north_border_pixel && u_north_ground_layers.z >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.z));
-		//} else if (south_border_pixel && u_south_ground_layers.z >= 0.0) {
-		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.z));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.z));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.z));
 		} else if (west_border_pixel && u_west_ground_layers.z >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.z));
-		//} else if (east_border_pixel && u_east_ground_layers.z >= 0.0) {
-		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.z));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.z));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.z));
 		} else if (u_ground_layers.z >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.z));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.z));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.z));
 		} else {
-			return texture(u_ground_albedo_bump_2, uv);
+			return distance_texture(u_ground_albedo_bump_2, uv);
+			//return texture(u_ground_albedo_bump_2, uv);
 		}
 	} else {
 		if (north_border_pixel && u_north_ground_layers.a >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.a));
-		//} else if (south_border_pixel && u_south_ground_layers.a >= 0.0) {
-		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.a));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.a));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.a));
 		} else if (west_border_pixel && u_west_ground_layers.a >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.a));
-		//} else if (east_border_pixel && u_east_ground_layers.a >= 0.0) {
-		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.a));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.a));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.a));
 		} else if (u_ground_layers.a >= 0.0) {
-			return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.a));
+			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.a));
+			//return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.a));
 		} else {
-			return texture(u_ground_albedo_bump_3, uv);
+			return distance_texture(u_ground_albedo_bump_3, uv);
+			//return texture(u_ground_albedo_bump_3, uv);
 		}
 	}
 }
@@ -3564,59 +3629,59 @@ vec4 texture_normal_roughness(int type,
 {
 	if (type == 0) {
 		if (north_border_pixel && u_north_ground_layers.x >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.x));
-		//} else if (south_border_pixel && u_south_ground_layers.x >= 0.0) {
-		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.x));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.x));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.x));
 		} else if (west_border_pixel && u_west_ground_layers.x >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.x));
-		//} else if (east_border_pixel && u_east_ground_layers.x >= 0.0) {
-		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.x));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.x));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.x));
 		} else if (u_ground_layers.x >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.x));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.x));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.x));
 		} else {
-			return texture(u_ground_normal_roughness_0, uv);
+			return distance_texture(u_ground_normal_roughness_0, uv);
+			//return texture(u_ground_normal_roughness_0, uv);
 		}
 	} else if (type == 1) {
 		if (north_border_pixel && u_north_ground_layers.y >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.y));
-		//} else if (south_border_pixel && u_south_ground_layers.y >= 0.0) {
-		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.y));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.y));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.y));
 		} else if (west_border_pixel && u_west_ground_layers.y >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.y));
-		//} else if (east_border_pixel && u_east_ground_layers.y >= 0.0) {
-		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.y));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.y));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.y));
 		} else if (u_ground_layers.y >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.y));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.y));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.y));
 		} else {
-			return texture(u_ground_normal_roughness_1, uv);
+			return distance_texture(u_ground_normal_roughness_1, uv);
+			//return texture(u_ground_normal_roughness_1, uv);
 		}
 	} else if (type == 2) {
 		if (north_border_pixel && u_north_ground_layers.z >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.z));
-		//} else if (south_border_pixel && u_south_ground_layers.z >= 0.0) {
-		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.z));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.z));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.z));
 		} else if (west_border_pixel && u_west_ground_layers.z >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.z));
-		//} else if (east_border_pixel && u_east_ground_layers.z >= 0.0) {
-		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.z));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.z));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.z));
 		} else if (u_ground_layers.z >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.z));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.z));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.z));
 		} else {
-			return texture(u_ground_normal_roughness_2, uv);
+			return distance_texture(u_ground_normal_roughness_2, uv);
+			//return texture(u_ground_normal_roughness_2, uv);
 		}
 	} else {
 		if (north_border_pixel && u_north_ground_layers.a >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.a));
-		//} else if (south_border_pixel && u_south_ground_layers.a >= 0.0) {
-		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.a));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.a));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.a));
 		} else if (west_border_pixel && u_west_ground_layers.a >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.a));
-		//} else if (east_border_pixel && u_east_ground_layers.a >= 0.0) {
-		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.a));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.a));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.a));
 		} else if (u_ground_layers.a >= 0.0) {
-			return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.a));
+			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.a));
+			//return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.a));
 		} else {
-			return texture(u_ground_normal_roughness_3, uv);
+			return distance_texture(u_ground_normal_roughness_3, uv);
+			//return texture(u_ground_normal_roughness_3, uv);
 		}
 	}
 }"
@@ -3771,9 +3836,9 @@ nodes/fragment/55/node = SubResource("VisualShaderNodeParameterRef_0u6ja")
 nodes/fragment/55/position = Vector2(-3500, 1660)
 nodes/fragment/56/node = SubResource("VisualShaderNodeExpression_bq5dl")
 nodes/fragment/56/position = Vector2(4620, 200)
-nodes/fragment/56/size = Vector2(920, 2440)
+nodes/fragment/56/size = Vector2(960, 2860)
 nodes/fragment/56/input_ports = "0,4,albedo_in;1,0,roughness_in;2,0,globalmap_factor;3,4,normal_in;4,6,editmode_pixel;5,6,globalmap_pixel;6,4,tint0;7,4,tint1;8,4,tint2;9,4,tint3;10,5,splat;11,6,depth_blending;12,5,ab0;13,5,ab1;14,5,ab2;15,5,ab3;16,5,nr0;17,5,nr1;18,5,nr2;19,5,nr3;"
-nodes/fragment/56/output_ports = "0,4,albedo_out;1,0,roughness_out;2,4,normal_out;"
+nodes/fragment/56/output_ports = "0,4,albedo_out;1,0,roughness_out;2,4,normal_out;3,0,ao_out;4,0,ao_light_affect_out;"
 nodes/fragment/56/expression = "if (editmode_pixel || globalmap_pixel) {
 	roughness_out = roughness_in;
 	albedo_out = albedo_in;
@@ -3843,12 +3908,16 @@ nodes/fragment/56/expression = "if (editmode_pixel || globalmap_pixel) {
 	normal_out = mix(normal_out, normal_in, globalmap_factor);
 	albedo_out = mix(albedo_out, albedo_in, globalmap_factor);
 	roughness_out = mix(roughness_out, 1.0, globalmap_factor);
+	ao_out = (w.r * ab0.a +	w.g * ab1.a + w.b * ab2.a +	w.a * ab3.a) / w_sum;
+	ao_light_affect_out = 0.1;
+	//METALLIC = (w.r * ab0.a +	w.g * ab1.a + w.b * ab2.a +	w.a * ab3.a) / w_sum;
+	//SPECULAR = 0.5;
 	
-	vec3 red = vec3(1.0, 0.0, 0.0);
+	/*vec3 red = vec3(1.0, 0.0, 0.0);
 	vec3 green = vec3(0.0, 1.0, 0.0);
 	vec3 blue = vec3(0.0, 0.0, 1.0);
 	vec3 yellow = vec3(1.0, 0.749, 0.0);
-	/*if (splat.x < 0.0)	{
+	if (splat.x < 0.0)	{
 		albedo_out = red;
 	}
 	if (splat.y < 0.0)	{
@@ -4060,7 +4129,7 @@ nodes/fragment/72/node = SubResource("VisualShaderNodeVectorCompose_dtdk1")
 nodes/fragment/72/position = Vector2(3060, 4300)
 nodes/fragment/73/node = SubResource("VisualShaderNodeExpression_cue6k")
 nodes/fragment/73/position = Vector2(1640, 1460)
-nodes/fragment/73/size = Vector2(500, 880)
+nodes/fragment/73/size = Vector2(580, 1180)
 nodes/fragment/73/input_ports = "0,6,editmode_pixel;1,6,globalmap_pixel;2,3,uv;3,5,splat_in;4,5,noise_color;5,0,distance_from_border;"
 nodes/fragment/73/output_ports = "0,6,north_border_pixel;1,6,south_border_pixel;2,6,west_border_pixel;3,6,east_border_pixel;4,5,splat_out;"
 nodes/fragment/73/expression = "north_border_pixel = false;
@@ -4123,4 +4192,8 @@ nodes/fragment/83/node = SubResource("VisualShaderNodeParameterRef_r28t2")
 nodes/fragment/83/position = Vector2(-2680, -1840)
 nodes/fragment/84/node = SubResource("VisualShaderNodeVaryingGetter_ucse7")
 nodes/fragment/84/position = Vector2(-2720, -820)
-nodes/fragment/connections = PackedInt32Array(8, 0, 4, 1, 4, 0, 10, 2, 12, 0, 10, 1, 11, 0, 10, 0, 13, 0, 14, 0, 16, 0, 14, 1, 17, 0, 4, 2, 18, 0, 4, 3, 19, 0, 4, 4, 20, 0, 4, 5, 26, 0, 25, 0, 13, 0, 25, 1, 21, 0, 25, 2, 29, 0, 33, 3, 13, 0, 33, 4, 24, 0, 33, 2, 23, 0, 33, 1, 3, 0, 33, 0, 25, 0, 33, 5, 25, 1, 33, 6, 27, 0, 31, 1, 28, 0, 31, 2, 33, 0, 30, 0, 33, 1, 30, 1, 56, 0, 31, 0, 56, 1, 31, 4, 56, 2, 31, 3, 25, 0, 56, 4, 25, 1, 56, 5, 36, 0, 56, 11, 38, 0, 56, 6, 39, 0, 56, 7, 40, 0, 56, 8, 41, 0, 56, 9, 33, 2, 56, 2, 10, 0, 30, 6, 10, 1, 30, 7, 10, 2, 30, 8, 10, 3, 30, 9, 14, 0, 30, 3, 34, 0, 30, 2, 25, 1, 30, 5, 35, 0, 30, 10, 31, 1, 0, 3, 31, 2, 0, 8, 58, 3, 59, 3, 58, 0, 60, 0, 58, 1, 60, 1, 58, 2, 60, 2, 60, 0, 61, 0, 61, 1, 59, 0, 61, 2, 59, 1, 61, 3, 59, 2, 57, 0, 61, 1, 13, 0, 31, 5, 63, 4, 58, 0, 25, 0, 30, 4, 13, 0, 66, 0, 31, 0, 0, 0, 62, 0, 69, 0, 71, 0, 70, 1, 70, 1, 72, 0, 70, 2, 72, 1, 70, 3, 72, 2, 65, 0, 63, 15, 30, 0, 56, 0, 30, 1, 56, 1, 30, 2, 56, 3, 30, 3, 56, 12, 30, 4, 56, 13, 30, 5, 56, 14, 30, 6, 56, 15, 30, 7, 56, 16, 30, 8, 56, 17, 30, 9, 56, 18, 30, 10, 56, 19, 13, 0, 73, 2, 25, 1, 73, 1, 25, 0, 73, 0, 73, 0, 30, 11, 73, 1, 30, 12, 73, 2, 30, 13, 73, 3, 30, 14, 75, 0, 76, 0, 74, 0, 76, 3, 75, 0, 76, 4, 75, 0, 76, 5, 76, 0, 69, 1, 69, 0, 73, 5, 37, 0, 73, 3, 78, 0, 77, 0, 62, 0, 79, 0, 79, 0, 77, 1, 73, 4, 56, 10, 73, 0, 10, 3, 73, 1, 10, 4, 73, 2, 10, 5, 73, 3, 10, 6, 80, 0, 10, 7, 10, 0, 31, 6, 10, 1, 31, 7, 10, 2, 31, 8, 10, 3, 31, 9, 81, 0, 31, 10, 13, 0, 10, 8, 4, 1, 10, 9, 4, 2, 31, 11, 82, 0, 4, 6, 84, 0, 4, 0)
+nodes/fragment/85/node = SubResource("VisualShaderNodeVaryingGetter_bgqns")
+nodes/fragment/85/position = Vector2(-2720, -580)
+nodes/fragment/86/node = SubResource("VisualShaderNodeVaryingGetter_ufhs2")
+nodes/fragment/86/position = Vector2(-2720, -500)
+nodes/fragment/connections = PackedInt32Array(8, 0, 4, 1, 4, 0, 10, 2, 12, 0, 10, 1, 11, 0, 10, 0, 13, 0, 14, 0, 16, 0, 14, 1, 17, 0, 4, 2, 18, 0, 4, 3, 19, 0, 4, 4, 20, 0, 4, 5, 26, 0, 25, 0, 13, 0, 25, 1, 21, 0, 25, 2, 29, 0, 33, 3, 13, 0, 33, 4, 24, 0, 33, 2, 23, 0, 33, 1, 3, 0, 33, 0, 25, 0, 33, 5, 25, 1, 33, 6, 27, 0, 31, 1, 28, 0, 31, 2, 33, 0, 30, 0, 33, 1, 30, 1, 56, 0, 31, 0, 56, 1, 31, 4, 56, 2, 31, 3, 25, 0, 56, 4, 25, 1, 56, 5, 36, 0, 56, 11, 38, 0, 56, 6, 39, 0, 56, 7, 40, 0, 56, 8, 41, 0, 56, 9, 33, 2, 56, 2, 10, 0, 30, 6, 10, 1, 30, 7, 10, 2, 30, 8, 10, 3, 30, 9, 14, 0, 30, 3, 34, 0, 30, 2, 25, 1, 30, 5, 35, 0, 30, 10, 31, 1, 0, 3, 31, 2, 0, 8, 58, 3, 59, 3, 58, 0, 60, 0, 58, 1, 60, 1, 58, 2, 60, 2, 60, 0, 61, 0, 61, 1, 59, 0, 61, 2, 59, 1, 61, 3, 59, 2, 57, 0, 61, 1, 13, 0, 31, 5, 63, 4, 58, 0, 25, 0, 30, 4, 13, 0, 66, 0, 31, 0, 0, 0, 62, 0, 69, 0, 71, 0, 70, 1, 70, 1, 72, 0, 70, 2, 72, 1, 70, 3, 72, 2, 65, 0, 63, 15, 30, 0, 56, 0, 30, 1, 56, 1, 30, 2, 56, 3, 30, 3, 56, 12, 30, 4, 56, 13, 30, 5, 56, 14, 30, 6, 56, 15, 30, 7, 56, 16, 30, 8, 56, 17, 30, 9, 56, 18, 30, 10, 56, 19, 13, 0, 73, 2, 25, 1, 73, 1, 25, 0, 73, 0, 73, 0, 30, 11, 73, 1, 30, 12, 73, 2, 30, 13, 73, 3, 30, 14, 75, 0, 76, 0, 74, 0, 76, 3, 75, 0, 76, 4, 75, 0, 76, 5, 76, 0, 69, 1, 69, 0, 73, 5, 37, 0, 73, 3, 78, 0, 77, 0, 62, 0, 79, 0, 79, 0, 77, 1, 73, 4, 56, 10, 73, 0, 10, 3, 73, 1, 10, 4, 73, 2, 10, 5, 73, 3, 10, 6, 80, 0, 10, 7, 10, 0, 31, 6, 10, 1, 31, 7, 10, 2, 31, 8, 10, 3, 31, 9, 81, 0, 31, 10, 13, 0, 10, 8, 82, 0, 4, 6, 84, 0, 4, 0, 56, 3, 0, 6, 56, 4, 0, 7, 4, 1, 31, 11)

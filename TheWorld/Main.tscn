@@ -1,9 +1,10 @@
-[gd_scene load_steps=47 format=3 uid="uid://c4ukh1kw4impi"]
+[gd_scene load_steps=48 format=3 uid="uid://c4ukh1kw4impi"]
 
 [ext_resource type="Script" path="res://main/TheWorld_Main.gd" id="1_760ml"]
 [ext_resource type="Script" path="res://addons/twviewer/tw_viewer.gd" id="3_yxvy6"]
 [ext_resource type="PackedScene" uid="uid://djjd1xm5iotj1" path="res://components/UI.tscn" id="4_cjpoh"]
 [ext_resource type="PackedScene" uid="uid://cdlipa2pmvrju" path="res://components/world_environment.tscn" id="4_gxev0"]
+[ext_resource type="Material" uid="uid://b7mgxyjtil11g" path="res://addons/twviewer/test/m_test_quadrant.tres" id="4_svbuk"]
 [ext_resource type="PackedScene" uid="uid://bi138l8muok7h" path="res://components/test.tscn" id="5_kid0l"]
 [ext_resource type="PackedScene" uid="uid://v6sfi8k7dr7o" path="res://player.tscn" id="6_wlxwp"]
 [ext_resource type="Script" path="res://addons/twviewer/test/test_quadrant.gd" id="7_7uq48"]
@@ -315,7 +316,7 @@ _world_editor_param_info_panel_visible = true
 _camera_param_initial_pos = Vector3(0, 1500, 0)
 _camera_param_initial_yaw_pitch_roll = Vector3(0, 0, 0)
 _shader_param_ground_uv_scale = 6.0
-_shader_param_globalmap_blend_start = 3000.0
+_shader_param_globalmap_blend_start = 10000.0
 _shader_param_texture_blending_size = 0.33
 
 [node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main/Landscape/TWViewer"]
@@ -353,6 +354,7 @@ skeleton = NodePath("../../../..")
 
 [node name="TWTestQuadrant1" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6144, 0, 26624)
+material_override = ExtResource("4_svbuk")
 skeleton = NodePath("../../../..")
 script = ExtResource("7_7uq48")
 _pos = Vector2(4096, 24576)

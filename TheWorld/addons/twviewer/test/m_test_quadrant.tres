@@ -1,0 +1,34 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://b7mgxyjtil11g"]
+
+[ext_resource type="Shader" uid="uid://cux0qnf6ydgr2" path="res://addons/twviewer/test/test_quadrant.tres" id="1_280wy"]
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_280wy")
+shader_parameter/u_use_globalmap = false
+shader_parameter/u_ground_uv_scale_per_texture = Vector4(2, 2, 2, 2)
+shader_parameter/u_piece_size = 200.0
+shader_parameter/u_scale_per_texture_factor = 1.0
+shader_parameter/u_piecing_threshold_factor = 4
+shader_parameter/u_globalmap_blend_start = 0.0
+shader_parameter/u_globalmap_blend_distance = 0.0
+shader_parameter/u_editmode_selected = 0.0
+shader_parameter/u_mouse_hit = Vector2(-1, -1)
+shader_parameter/u_mouse_hit_radius = 0.001
+shader_parameter/u_triplanar = false
+shader_parameter/u_tile_reduction_per_texture = Vector4(0, 0, 0, 0)
+shader_parameter/u_depth_blending = false
+shader_parameter/u_ground_layers = Vector4(-1, -1, -1, -1)
+shader_parameter/u_north_ground_layers = Vector4(-1, -1, -1, -1)
+shader_parameter/u_east_ground_layers = Vector4(-1, -1, -1, -1)
+shader_parameter/u_west_ground_layers = Vector4(-1, -1, -1, -1)
+shader_parameter/u_south_ground_layers = Vector4(-1, -1, -1, -1)
+shader_parameter/u_grid_on = false
+shader_parameter/u_terrain_inverse_transform = null
+shader_parameter/u_grid_step = 2.0
+shader_parameter/u_optimization_level = 0
+shader_parameter/u_terrain_normal_basis = null
+shader_parameter/u_terrain_height = 1.0
+shader_parameter/u_quad_border_line_thickness = 0.005
+shader_parameter/u_force_height_0 = false
+shader_parameter/u_colormap_opacity_per_texture = Vector4(1, 1, 1, 1)
