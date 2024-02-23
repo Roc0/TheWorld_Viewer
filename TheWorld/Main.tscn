@@ -312,9 +312,8 @@ _world_param_depth_quad = 6
 _world_param_info_panel_visible = true
 _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 1
-_world_editor_param_info_panel_visible = true
-_camera_param_initial_pos = Vector3(0, 1500, 0)
-_camera_param_initial_yaw_pitch_roll = Vector3(0, 0, 0)
+_camera_param_initial_pos = Vector3(5441.95, 1511.6, 26052.1)
+_camera_param_initial_yaw_pitch_roll = Vector3(-9.84637, -0.650933, 0)
 _shader_param_ground_uv_scale = 6.0
 _shader_param_globalmap_blend_start = 10000.0
 _shader_param_texture_blending_size = 0.33
@@ -340,7 +339,7 @@ metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1500, 0)
+transform = Transform3D(-0.899727, 0.0660525, -0.431427, 0, 0.988482, 0.151339, 0.436454, 0.136164, -0.889363, 4669.85, 2505.12, 23627.6)
 far = 30000.0
 
 [node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main/Landscape/TWViewer"]
@@ -360,15 +359,20 @@ script = ExtResource("7_7uq48")
 _pos = Vector2(4096, 24576)
 _pos_index = Vector2(1, 6)
 _points_per_size = 513
+_size_read_only = 4096.0
+_step_read_only = 2.0
+_num_vertices_read_only = 263169
 
 [node name="TWTestQuadrant2" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6144, 0, 26624)
-visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6144, 0, 30720)
 skeleton = NodePath("../../../..")
 script = ExtResource("7_7uq48")
-_pos = Vector2(4096, 24576)
-_pos_index = Vector2(1, 6)
+_pos = Vector2(4096, 28672)
+_pos_index = Vector2(1, 7)
 _points_per_size = 513
+_size_read_only = 4096.0
+_step_read_only = 2.0
+_num_vertices_read_only = 263169
 
 [node name="TWTestQuadrant3" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6144, 0, 2048)

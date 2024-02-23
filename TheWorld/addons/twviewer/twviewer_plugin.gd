@@ -8,7 +8,7 @@ const TWTestQuadrant = preload("./test/test_quadrant.gd")
 var TWTestQuadrant_array : Array = []
 
 const tw_editor_util = preload("./tools/util/editor_util.gd")
-const tw_constants = preload("./tw_const.gd")
+const tw_const = preload("./tw_const.gd")
 
 const HT_Logger = preload("./util/logger.gd")
 var _logger = HT_Logger.get_for(self)
@@ -24,6 +24,9 @@ var _world_initialized : bool = false
 var _viewer : Node3D = null
 var _viewer_init_done : bool = false
 
+var _camera : Camera3D = null
+var _camera_altitude_from_terrain : Variant = null
+
 var _alt_pressed : bool = false
 var _ctrl_pressed : bool = false
 var _shift_pressed : bool = false
@@ -33,6 +36,11 @@ var _info_panel : Control = null
 var _edit_mode_ui_control : Control = null
 
 var _close_requested : bool = false
+
+var _config_file_name : String = ""
+var _config := ConfigFile.new()
+var _viewpoint_to_save : int = 0
+var _viewpoint_to_load : int = 0
 
 #const AUTOLOAD_NAME = "Globals"
 #const AUTOLOAD_SCRIPT = "res://addons/twviewer/init/Globals.gd"
@@ -66,7 +74,7 @@ func _process(delta: float):
 	
 	if !_viewer_init_done && !_close_requested:
 		#_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done))
-		_viewer = find_node_by_name(tw_constants.tw_viewer_node_name)
+		_viewer = find_node_by_name(tw_const.tw_viewer_node_name)
 		#_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done, ", TWViewer=", _viewer, ", _viewer.has_method(is_ready)=", _viewer.has_method("is_ready"), ", _viewer.is_ready()=", _viewer.is_ready()))
 		if _viewer != null && _viewer.has_method("is_ready") && _viewer.is_ready():
 			_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done, " initializing ..."))
@@ -113,9 +121,35 @@ func _process(delta: float):
 	clientstatus = get_clientstatus()
 
 	#print(_world_initialized)
-	if _viewer != null && clientstatus >= tw_constants.clientstatus_session_initialized && !_world_initialized:
+	if _viewer != null && clientstatus >= tw_const.clientstatus_session_initialized && !_world_initialized:
 		#_viewer.GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.y, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
+		_config_file_name = _viewer.GDN_globals().get_config_filename(0)
+		var _err = _config.load(_config_file_name)
+		print(str("_config_file_name=", _config_file_name, " load=", _err))
 		_world_initialized = true
+		
+	if not _world_initialized:
+		return
+
+	if _viewpoint_to_save != 0 and _camera != null and _config_file_name != "" and clientstatus == tw_const.clientstatus_world_deployed:
+		tw_const.save_current_position(_viewpoint_to_save, _camera, _config, _config_file_name)
+		_viewpoint_to_save = 0
+
+	if _viewpoint_to_load != 0 and _camera != null and clientstatus == tw_const.clientstatus_world_deployed:
+		tw_const.load_position(_viewpoint_to_load, _config, _viewer)
+		_viewpoint_to_load = 0
+		
+	if _camera != null and _camera.current:
+		var n : Node = get_tree().get_first_node_in_group(tw_const.custom_cameras_group)
+		if (n != null and not n.current):
+			#n.global_transform = _camera.global_transform
+			n.set_camera_global_transform(_camera.global_transform)
+			var camera_altitude_from_terrain : float = n.get_camera_altitude_from_terrain()
+			if _camera_altitude_from_terrain != camera_altitude_from_terrain:
+				_camera_altitude_from_terrain = camera_altitude_from_terrain
+				RenderingServer.global_shader_parameter_set(tw_const.global_shader_param_camera_altitude_from_terrain, _camera_altitude_from_terrain)
+			#print(str(n))
+			#print(typeof(n))
 
 func recurse_in_children(children : Array, num : int):
 	if !children.is_empty():
@@ -163,8 +197,23 @@ func _forward_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:
 	
 	if _viewer != null:
 		_viewer.set_editor_camera(p_camera)
+		
+	_camera = p_camera
+	
+	#print(str(p_event))
 	
 	if p_event is InputEventKey:
+		var dict : Dictionary = {'viewpoint_to_save' : _viewpoint_to_save, "viewpoint_to_load" : _viewpoint_to_load}
+		tw_const.check_viewpoin_input(p_event, dict)
+		_viewpoint_to_save = dict['viewpoint_to_save']
+		_viewpoint_to_load = dict['viewpoint_to_load']
+		#if _viewpoint_to_save != 0:
+		#	print(str("_viewpoint_to_save=", _viewpoint_to_save))
+		#	_viewpoint_to_save = 0
+		#if _viewpoint_to_load != 0:
+		#	print(str("_viewpoint_to_load=", _viewpoint_to_load))
+		#	_viewpoint_to_load = 0
+		
 		#print(str("_forward_3d_gui_input: keycode=", p_event.keycode))
 		if p_event.keycode == KEY_ALT:
 			if p_event.is_pressed():
@@ -225,7 +274,7 @@ func _notification(_what):
 
 func _apply_changes():
 	_logger.debug("_apply_changes")
-	var viewer : Node = find_node_by_name(tw_constants.tw_viewer_node_name)
+	var viewer : Node = find_node_by_name(tw_const.tw_viewer_node_name)
 	if viewer != null:
 		_viewer_init_done = false
 		_logger.debug(str("_apply_changes _viewer_init_done=", _viewer_init_done, ", _viewer=", _viewer))
@@ -259,7 +308,7 @@ func get_icon(icon_name: String) -> Texture2D:
 	return tw_editor_util.load_texture("res://addons/zylann.hterrain/tools/icons/icon_" + icon_name + ".svg")
 
 func get_clientstatus() -> int:
-	var clientstatus = tw_constants.clientstatus_uninitialized
+	var clientstatus = tw_const.clientstatus_uninitialized
 	if _viewer != null && _viewer.has_method("get_clientstatus"):
 		var _clientstatus = _viewer.get_clientstatus()
 		if _clientstatus != null:
@@ -312,4 +361,7 @@ func remove_test_quadrant_from_array(node : Object) -> void:
 	if TWTestQuadrant_array.has(node):
 		TWTestQuadrant_array.erase(node)
 		print (str(node, " removed from TWTestQuadrant_array (", TWTestQuadrant_array.size(), ")"))
+	
+func _get_plugin_name() -> String:
+	return "TWViewerPlugin"
 	

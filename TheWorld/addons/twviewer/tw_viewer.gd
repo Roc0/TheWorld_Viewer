@@ -665,6 +665,9 @@ func _process(delta):
 			camera = gdn_viewer.get_camera()
 			if (camera != null):
 				camera.global_transform.origin = _camera_param_initial_pos
+				#var gizmos := []
+				#gizmos = camera.get_gizmos()
+				#print(str("gizmos=",gizmos.size()))
 		_camera_param_initial_pos_changed = false
 	
 	if _camera_param_initial_yaw_pitch_roll_changed:
@@ -674,10 +677,31 @@ func _process(delta):
 			if (camera != null):
 				if camera.has_method("set_yaw"):
 					camera.set_yaw(_camera_param_initial_yaw_pitch_roll.x, false)
+				else:
+					var radiant_yaw : float = (_camera_param_initial_yaw_pitch_roll.x * PI) / 180
+					var t : Transform3D = camera.global_transform
+					var v : Vector3 = t.basis.get_euler()
+					v.y = radiant_yaw
+					t.basis = Basis.from_euler(v)
+					camera.global_transform = t
 				if camera.has_method("set_pitch"):
 					camera.set_pitch(_camera_param_initial_yaw_pitch_roll.y, false)
+				else:
+					var radiant_pitch : float = (_camera_param_initial_yaw_pitch_roll.y * PI) / 180
+					var t : Transform3D = camera.global_transform
+					var v : Vector3 = t.basis.get_euler()
+					v.x = radiant_pitch
+					t.basis = Basis.from_euler(v)
+					camera.global_transform = t
 				if camera.has_method("set_roll"):
 					camera.set_roll(_camera_param_initial_yaw_pitch_roll.z, false)
+				else:
+					var radiant_roll : float = (_camera_param_initial_yaw_pitch_roll.z * PI) / 180
+					var t : Transform3D = camera.global_transform
+					var v : Vector3 = t.basis.get_euler()
+					v.z = radiant_roll
+					t.basis = Basis.from_euler(v)
+					camera.global_transform = t
 			_camera_param_initial_yaw_pitch_roll_changed = false
 		
 	if Engine.is_editor_hint():
@@ -707,9 +731,11 @@ func _process(delta):
 		_info_panel_status = "Status: " + tw_constants.status_to_string(_client_status) + " (" + str(num_element_initialized) + "/"+ str(tot_element_to_initialize) + ")" + "\n"
 		var camera : Camera3D = null
 		camera = gdn_viewer.get_camera()
+		#print(str(camera))
 		var e : Vector3 
 		if camera != null:
 			e = camera.global_transform.basis.get_euler()
+		var viewer_custom_camera = get_tree().get_first_node_in_group(tw_constants.custom_cameras_group)
 		var update_quads1_duration : int = gdn_viewer.get_update_quads1_duration()
 		var update_quads2_duration : int = gdn_viewer.get_update_quads2_duration()
 		var update_quads3_duration : int = gdn_viewer.get_update_quads3_duration()
@@ -719,14 +745,14 @@ func _process(delta):
 				_delta_pos = _hit_pos - _prev_hit_pos
 				_prev_hit_pos = _hit_pos
 			_last_check_delta_pos = Time.get_ticks_msec()
-		if !Engine.is_editor_hint():
+		if !Engine.is_editor_hint() or Engine.is_editor_hint():
 			_info_panel_draw_mode = "Draw mode: " +  gdn_viewer.get_debug_draw_mode() + "\n"
 			_info_panel_num_locks = "Locks: " + str(gdn_viewer.get_num_process_not_owns_lock()) + "\n"
-			if camera != null && camera.has_method("get_yaw"):
-				_info_panel_camera_degree_from_north = "  Deg. north: " + str(snapped(camera.get_angle_from_north_degree(), 0.01)) + " Alt: " + str(snapped(camera.get_camera_altitude_from_terrain(), 0.01)) + "\n"
-				_info_panel_camera_yaw = "  Yaw: " + str(snapped(camera.get_yaw(false), 0.01)) 
-				_info_panel_camera_pitch = "  Pitch: " + str(snapped(camera.get_pitch(false), 0.01))
-				_info_panel_camera_roll = "  Roll: " + str(snapped(camera.get_roll(false), 0.01)) + "\n"
+			if viewer_custom_camera != null && viewer_custom_camera.has_method("get_yaw"):
+				_info_panel_camera_degree_from_north = "  Deg. north: " + str(snapped(viewer_custom_camera.get_angle_from_north_degree(), 0.01)) + " Alt: " + str(snapped(viewer_custom_camera.get_camera_altitude_from_terrain(), 0.01)) + "\n"
+				_info_panel_camera_yaw = "  Yaw: " + str(snapped(viewer_custom_camera.get_yaw(false), 0.01)) 
+				_info_panel_camera_pitch = "  Pitch: " + str(snapped(viewer_custom_camera.get_pitch(false), 0.01))
+				_info_panel_camera_roll = "  Roll: " + str(snapped(viewer_custom_camera.get_roll(false), 0.01)) + "\n"
 		_info_panel_grid_origin = "Grid origin: " + str(gdn_viewer.global_transform.origin) + "\n"
 		_info_panel_render_process_durations_mcs = "Render process (mcs): " + str(gdn_viewer.get_process_duration()) + "\n"
 		#+ " UQ " + String (update_quads1_duration + update_quads2_duration + update_quads3_duration) \

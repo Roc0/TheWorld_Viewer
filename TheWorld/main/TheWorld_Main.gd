@@ -172,79 +172,10 @@ func _input(event):
 		pass
 		
 	if event is InputEventKey && event.is_pressed():
-		#if event.is_action_pressed("ui_alt"):
-		#	altPressed = true
-		#if event.is_action_released("ui_alt"):
-		#	altPressed = false
-
-		#if event.is_action_pressed("ui_ctrl"):
-		#	ctrlPressed = true
-		#if event.is_action_released("ui_ctrl"):
-		#	ctrlPressed = false
-
-		if event.keycode == KEY_1:
-			if event.ctrl_pressed:
-				if _viewpoint_to_save == 0:
-					_viewpoint_to_save = 1
-			elif event.alt_pressed:
-				if _viewpoint_to_load == 0:
-					_viewpoint_to_load = 1
-		elif event.keycode == KEY_2:
-			if event.ctrl_pressed:
-				if _viewpoint_to_save == 0:
-					_viewpoint_to_save = 2
-			elif event.alt_pressed:
-				if _viewpoint_to_load == 0:
-					_viewpoint_to_load = 2
-		elif event.keycode == KEY_3:
-			if event.ctrl_pressed:
-				if _viewpoint_to_save == 0:
-					_viewpoint_to_save = 3
-			elif event.alt_pressed:
-				if _viewpoint_to_load == 0:
-					_viewpoint_to_load = 3
-		elif event.keycode == KEY_4:
-			if event.ctrl_pressed:
-				if _viewpoint_to_save == 0:
-					_viewpoint_to_save = 4
-			elif event.alt_pressed:
-				if _viewpoint_to_load == 0:
-					_viewpoint_to_load = 4
-		elif event.keycode == KEY_5:
-			if event.ctrl_pressed:
-				if _viewpoint_to_save == 0:
-					_viewpoint_to_save = 5
-			elif event.alt_pressed:
-				if _viewpoint_to_load == 0:
-					_viewpoint_to_load = 5
-		elif event.keycode == KEY_6:
-			if event.ctrl_pressed:
-				if _viewpoint_to_save == 0:
-					_viewpoint_to_save = 6
-			elif event.alt_pressed:
-				if _viewpoint_to_load == 0:
-					_viewpoint_to_load = 6
-		elif event.keycode == KEY_7:
-			if event.ctrl_pressed:
-				if _viewpoint_to_save == 0:
-					_viewpoint_to_save = 7
-			elif event.alt_pressed:
-				if _viewpoint_to_load == 0:
-					_viewpoint_to_load = 7
-		elif event.keycode == KEY_8:
-			if event.ctrl_pressed:
-				if _viewpoint_to_save == 0:
-					_viewpoint_to_save = 8
-			elif event.alt_pressed:
-				if _viewpoint_to_load == 0:
-					_viewpoint_to_load = 8
-		elif event.keycode == KEY_9:
-			if event.ctrl_pressed:
-				if _viewpoint_to_save == 0:
-					_viewpoint_to_save = 9
-			elif event.alt_pressed:
-				if _viewpoint_to_load == 0:
-					_viewpoint_to_load = 9
+		var dict : Dictionary = {'viewpoint_to_save' : _viewpoint_to_save, "viewpoint_to_load" : _viewpoint_to_load}
+		tw_const.check_viewpoin_input(event, dict)
+		_viewpoint_to_save = dict['viewpoint_to_save']
+		_viewpoint_to_load = dict['viewpoint_to_load']
 
 		if event.is_action_pressed("ui_toggle_debug_stats"):
 			if debug_window_active:
@@ -400,6 +331,7 @@ func _process(_delta):
 	
 	#if scene_initialized && !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 	if !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
+		
 		if initial_camera_position != null:
 			var space_state = get_world_3d().direct_space_state
 			var query = PhysicsRayQueryParameters3D.create(Vector3(initial_camera_position.x, 10000, initial_camera_position.z), Vector3(initial_camera_position.x, -10000, initial_camera_position.z))
@@ -415,8 +347,11 @@ func _process(_delta):
 			$Test/TestBall.visible = true
 			#$Player/Player.visible = true
 			$Player/Player.set_player_in_world(true)
-			$UI/MessageContainer/Message.text = ""
-			post_world_deploy_initialized = true
+			#$UI/MessageContainer/Message.text = ""
+		
+		$UI/MessageContainer/Message.text = "World deployed"
+		_saved_time_to_fade_message = Time.get_ticks_msec()
+		post_world_deploy_initialized = true
 	
 	#if scene_initialized && post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 	if post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
