@@ -130,6 +130,7 @@ func TWViewer() -> Node3D:
 
 func init():
 	log_debug("init")
+	#visible = false
 	$UI/MessageContainer/Message.add_theme_color_override("font_color", Color(251.0 / 255.0, 206.0 / 255.0, 177.0 / 255.0))
 	$UI/MessageContainer/Message.text = "Deploying world ..."
 	_config_file_name = TWViewer().GDN_globals().get_config_filename(0)
@@ -350,6 +351,7 @@ func _process(_delta):
 			#$UI/MessageContainer/Message.text = ""
 		
 		$UI/MessageContainer/Message.text = "World deployed"
+		#visible = true
 		_saved_time_to_fade_message = Time.get_ticks_msec()
 		post_world_deploy_initialized = true
 	
