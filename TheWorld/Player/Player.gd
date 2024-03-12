@@ -19,6 +19,7 @@ func get_player_dist_from_terrain() -> float:
 	return _player_dist_from_terrain
 
 var _is_at_correct_heigth_from_floor := false
+var _previous_collision_point : Vector3 = Vector3(0, 0, 0)
 var _moving_forward : bool
 
 var _target_velocity := Vector3.ZERO
@@ -77,13 +78,16 @@ func set_player_in_world(value : bool) -> void:
 	visible = _player_in_world
 	_is_at_correct_heigth_from_floor = false
 
-func get_input(delta):
+func get_input(delta) -> bool:
+	var input_received : bool = false
+	
 	if !_camera_tracking_player:
-		return
+		return input_received
 		
 	# Handle jump.
 	if Input.is_action_just_pressed("ui_accept") and _is_at_correct_heigth_from_floor:
 		_target_velocity.y += jump_speed
+		input_received = true
 		
 	var dot = transform.basis.z.dot(_target_velocity)	# velocity on forward/backward direction 
 
@@ -94,6 +98,7 @@ func get_input(delta):
 			change_dir_increment = 3.0
 		_target_velocity += -transform.basis.z * acceleration_speed * change_dir_increment * delta
 		accelerating = true
+		input_received = true
 		#print("ui_forward pressed ... velocity = " + str(_target_velocity) + " length = " + str(_target_velocity.length()))
 	if Input.is_action_pressed("ui_backward"):
 		var change_dir_increment := 1.0
@@ -101,12 +106,15 @@ func get_input(delta):
 			change_dir_increment = 3.0
 		_target_velocity += transform.basis.z * acceleration_speed * change_dir_increment * delta
 		accelerating = true
+		input_received = true
 		#print("ui_backward pressed ... velocity = " + str(_target_velocity) + " length = " + str(_target_velocity.length()))
 	if Input.is_action_pressed("ui_right"):
 		rotate_y(-rot_speed * delta)
+		input_received = true
 		#print("ui_right pressed ... velocity = " + str(_target_velocity) + " length = " + str(_target_velocity.length()))
 	if Input.is_action_pressed("ui_left"):
 		rotate_y(rot_speed * delta)
+		input_received = true
 		#print("ui_left pressed ... velocity = " + str(_target_velocity) + " length = " + str(_target_velocity.length()))
 		
 	var vy = _target_velocity.y
@@ -129,6 +137,8 @@ func get_input(delta):
 		_moving_forward = false
 		
 	_target_velocity.y = vy
+	
+	return input_received
 
 func align_with_y(xform : Transform3D, new_y : Vector3, rotated_angle : float):
 	if rotated_angle != 0:
@@ -139,6 +149,7 @@ func align_with_y(xform : Transform3D, new_y : Vector3, rotated_angle : float):
 	return xform
 
 func move_player (delta):
+	#var t3_debug : Transform3D = global_transform
 	var collision_normal : Vector3 = Vector3.ZERO
 	var collision_point : Vector3 = Vector3.ZERO
 	var point_to_terrain = false
@@ -158,59 +169,85 @@ func move_player (delta):
 	if have_collision_vert:
 		# TODO: implement check if the collider is really the terrain
 		if _player_dist_from_terrain < 0:
+			#print(str("1 ", _player_dist_from_terrain, " ", global_transform.origin, " ", global_transform.basis))
 			global_position = Vector3(global_position.x, collision_point.y + height_from_floor + height_from_floor_tolerance, global_position.z)
 			_target_velocity.y = 0
 			_is_at_correct_heigth_from_floor = false
+			_previous_collision_point =  Vector3(0, 0, 0)
 		elif _player_dist_from_terrain < (height_from_floor - height_from_floor_tolerance):
+			#print(str("2 ", _player_dist_from_terrain, " ", global_transform.origin, " ", global_transform.basis))
 			var xform : Transform3D
 			xform = Transform3D(global_transform.basis, Vector3(global_position.x, collision_point.y + height_from_floor, global_position.z))
 			global_transform = global_transform.interpolate_with(xform, 0.2)
 			_target_velocity.y = 0
 			_is_at_correct_heigth_from_floor = false
+			_previous_collision_point =  Vector3(0, 0, 0)
 		elif _player_dist_from_terrain < (height_from_floor + height_from_floor_tolerance):
-			var xform : Transform3D
-			xform = Transform3D(global_transform.basis, Vector3(global_position.x, collision_point.y + height_from_floor, global_position.z))
-			global_transform = global_transform.interpolate_with(xform, 0.1)
+			if abs(_previous_collision_point.y - collision_point.y) > 0.1:	
+				#print(str("3 ", _player_dist_from_terrain, " ", global_transform.origin, " ", global_transform.basis))
+				var xform : Transform3D
+				xform = Transform3D(global_transform.basis, Vector3(global_position.x, collision_point.y + height_from_floor, global_position.z))
+				global_transform = global_transform.interpolate_with(xform, 0.1)
+			else:
+				global_transform.origin.y = collision_point.y + height_from_floor
+			_previous_collision_point = collision_point
 			_is_at_correct_heigth_from_floor = true
 			if (_target_velocity.y < 0):
 				_target_velocity.y = 0
 		else:
+			#print(str("4 ", _player_dist_from_terrain, " ", global_transform.origin, " ", global_transform.basis))
 			if _is_at_correct_heigth_from_floor:
 				point_to_terrain = true
 			_target_velocity.y += gravity * delta
 			_is_at_correct_heigth_from_floor = false
+			_previous_collision_point =  Vector3(0, 0, 0)
 	else:
+		#print(str("5 ", global_position))
 		if _is_at_correct_heigth_from_floor:
 			point_to_terrain = true
-			print("rotate")
+			#print("rotate")
 		_target_velocity.y += gravity * delta
 		_player_dist_from_terrain = -1
 		_cur_vert_raycast_target_dist *= 2
 		_is_at_correct_heigth_from_floor = false
+		_previous_collision_point =  Vector3(0, 0, 0)
 		
-	get_input(delta)
-	velocity = _target_velocity
-	var _b : bool = move_and_slide()
+	var input_received := get_input(delta)
+	#var t_debug : Transform3D = global_transform
+	if input_received or not _is_at_correct_heigth_from_floor or _target_velocity.length() > 2.0:
+		velocity = _target_velocity
+		var _b : bool = move_and_slide()
+		#print(str("5 ", _player_dist_from_terrain, " ", global_transform.origin, " ", global_transform.basis, " ", _b, " ", _target_velocity, " ", _target_velocity.length()))
+	else:
+		velocity = Vector3.ZERO
+		
+	#var t1_debug : Transform3D = global_transform
 	_target_velocity = velocity
 
+	#return
 	# align with surface
 	if collision_normal.length() > 0:
 		var rotated_angle : float = 0
 		var weight : float = 0.05
 		var xform : Transform3D
 		point_to_terrain = false
-		if point_to_terrain:
-			weight = 1
-			if _moving_forward:
-				rotated_angle = -PI / 12
-				print("rotate forward")
+		var angleToNewY : float = global_transform.basis.y.angle_to(collision_normal)
+		if (angleToNewY > 0.05):
+			#print (str("Angle to new Y = ", angleToNewY))
+			if point_to_terrain:
+				weight = 1
+				if _moving_forward:
+					rotated_angle = -PI / 12
+					#print("rotate forward")
+				else:
+					rotated_angle = PI / 12
+					#print("rotate backward")
+				xform = align_with_y(global_transform, collision_normal, rotated_angle)
 			else:
-				rotated_angle = PI / 12
-				print("rotate backward")
-			xform = align_with_y(global_transform, collision_normal, rotated_angle)
-		else:
-			xform = align_with_y(global_transform, collision_normal, rotated_angle)
-		global_transform = global_transform.interpolate_with(xform, weight)
+				xform = align_with_y(global_transform, collision_normal, rotated_angle)
+			global_transform = global_transform.interpolate_with(xform, weight)
+	#var t2_debug : Transform3D = global_transform
+	#t2_debug = global_transform
 
 func camera_tracking_player() -> bool:
 	return _camera_tracking_player
