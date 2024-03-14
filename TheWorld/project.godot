@@ -233,10 +233,6 @@ gu_texture_blending_size={
 "type": "float",
 "value": 0.3
 }
-gu_splatmap_blending_size={
-"type": "float",
-"value": 0.2
-}
 gu_player_altitude_from_terrain={
 "type": "float",
 "value": -1.0
@@ -244,4 +240,8 @@ gu_player_altitude_from_terrain={
 gu_player_pos={
 "type": "vec3",
 "value": Vector3(0, 0, 0)
+}
+gu_splatmap_blending_size={
+"type": "float",
+"value": 0.2
 }

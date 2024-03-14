@@ -1,0 +1,4133 @@
+[gd_resource type="VisualShader" load_steps=128 format=3 uid="uid://cux0qnf6ydgr2"]
+
+[ext_resource type="Texture2D" uid="uid://bllki0xhd1pqa" path="res://assets/textures/ground/Grass004_1K-PNG_albedo_bump.ground.png" id="1_oimdd"]
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_elcve"]
+size = Vector2(1380, 1180)
+expression = "vec3 base_ground_uv;
+/*if (!new) {
+	//ground_uv_scale_per_texture = vec4(300.0);
+	if (south_border_pixel) {
+		// mirror
+		base_ground_uv = vec3(vertex_cell_coords_in_textures.x, 
+							vertex_world_pos.y * MODEL_MATRIX[1][1],
+							float(textureSize(terrain_heightmap, 0).y) - vertex_cell_coords_in_textures.y);
+	} else if (east_border_pixel) {
+		// mirror
+		base_ground_uv = vec3(float(textureSize(terrain_heightmap, 0).x) - vertex_cell_coords_in_textures.x, 
+							vertex_world_pos.y * MODEL_MATRIX[1][1],
+							vertex_cell_coords_in_textures.y);
+	} else {
+		base_ground_uv = vec3(vertex_cell_coords_in_textures.x, vertex_world_pos.y * MODEL_MATRIX[1][1], vertex_cell_coords_in_textures.y);
+	}
+	//base_ground_uv = vec3(vertex_cell_coords_in_textures.x, vertex_world_pos.y * MODEL_MATRIX[1][1], vertex_cell_coords_in_textures.y);
+	// 2-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor
+	// these coordinates are used to fetch ground_albedo_bump and ground_normal_roughness 
+	ground_uv0 = base_ground_uv.xz / ground_uv_scale_per_texture.x;
+	ground_uv1 = base_ground_uv.xz / ground_uv_scale_per_texture.y;
+	ground_uv2 = base_ground_uv.xz / ground_uv_scale_per_texture.z;
+	// 3-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor (y coord is height in world coord)
+	ground_uv3 = base_ground_uv / ground_uv_scale_per_texture.w;
+} else {*/
+	//ground_uv_scale_per_texture = vec4(2.0);
+	base_ground_uv = vec3(uv.x, vertex_world_pos.y * MODEL_MATRIX[1][1], uv.y);
+	ground_uv0 = base_ground_uv.xz * ground_uv_scale_per_texture.x;
+	ground_uv1 = base_ground_uv.xz * ground_uv_scale_per_texture.y;
+	ground_uv2 = base_ground_uv.xz * ground_uv_scale_per_texture.z;
+	ground_uv3 = base_ground_uv * ground_uv_scale_per_texture.w;
+//}"
+
+[sub_resource type="VisualShaderNodeVaryingGetter" id="VisualShaderNodeVaryingGetter_s41u1"]
+varying_name = "v_vertex_cell_coords_in_textures"
+varying_type = 3
+
+[sub_resource type="VisualShaderNodeVaryingGetter" id="VisualShaderNodeVaryingGetter_jtb7g"]
+varying_name = "v_vertex_world_pos"
+varying_type = 5
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_u5d6r"]
+input_name = "uv"
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_aptmw"]
+size = Vector2(740, 220)
+expression = "terrain_normal_world = get_normal(terrain_normalmap, u_terrain_normal_basis, uv);
+normal = terrain_normal_world;"
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_8mkxg"]
+parameter_name = "u_terrain_normalmap"
+param_type = 9
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_jubu6"]
+parameter_name = "u_ground_uv_scale_per_texture"
+param_type = 6
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_meqoj"]
+parameter_name = "u_piecing_threshold_factor"
+param_type = 2
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_7w8sv"]
+parameter_name = "u_piece_size"
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_b5pov"]
+parameter_name = "u_scale_per_texture_factor"
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_s0or1"]
+parameter_name = "u_use_globalmap"
+param_type = 3
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_olttj"]
+parameter_name = "u_globalmap_blend_start"
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_hwvs7"]
+parameter_name = "u_globalmap_blend_distance"
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_tusg1"]
+size = Vector2(740, 440)
+expression = "if (editmode_selected > 0.0 && is_on_the_border(uv, u_quad_border_line_thickness)) {
+	editmode_pixel = true;
+} else {
+	editmode_pixel = false;
+}
+if (use_globalmap) {
+	globalmap_pixel = true;
+} else {
+	globalmap_pixel = false;
+}"
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_b5i76"]
+parameter_name = "u_editmode_selected"
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_gapoe"]
+parameter_name = "u_mouse_hit"
+param_type = 4
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_hv2co"]
+parameter_name = "u_mouse_hit_radius"
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_l5ham"]
+parameter_name = "u_terrain_globalmap"
+param_type = 9
+
+[sub_resource type="VisualShaderNodeVaryingGetter" id="VisualShaderNodeVaryingGetter_pe6em"]
+varying_name = "v_distance_from_camera"
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_pjdvi"]
+size = Vector2(1200, 2560)
+expression = "roughness_out = roughness_in;
+albedo_out = albedo_in;
+normal_out = normal_in;
+
+if (!editmode_pixel && !globalmap_pixel) {
+	if (triplanar) {
+		// Only do triplanar on one texture slot,
+		// because otherwise it would be very expensive and cost many more ifs.
+		// I chose the last slot because first slot is the default on new splatmaps,
+		// and that's a feature used for cliffs, which are usually designed later.
+
+		vec3 blending = get_triplanar_blend(normal_in);
+
+		//ab3 = texture_triplanar(u_ground_albedo_bump_3, ground_uv3, blending);
+		//nr3 = texture_triplanar(u_ground_normal_roughness_3, ground_uv3, blending);
+		ab3 = texture_triplanar_ab_layers(3, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv3, blending);
+		nr3 = texture_triplanar_nr_layers(3, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv3, blending);
+
+	} else {
+		if (tile_reduction_per_texture[3] > 0.0) {
+			//ab3 = texture_antitile(u_ground_albedo_bump_3, u_ground_normal_roughness_3, ground_uv3.xz, nr3);
+			ab3 = texture_antitile_layers(3, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv3.xz, nr3);
+		} else {
+			//ab3 = texture(u_ground_albedo_bump_3, ground_uv3.xz);
+			//nr3 = texture(u_ground_normal_roughness_3, ground_uv3.xz);
+			ab3 = texture_albedo_bump(3, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv3.xz);
+			nr3 = texture_normal_roughness(3, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv3.xz);
+		}
+	}
+
+	if (tile_reduction_per_texture[0] > 0.0) {
+		//ab0 = texture_antitile(u_ground_albedo_bump_0, u_ground_normal_roughness_0, ground_uv0, nr0);
+		ab0 = texture_antitile_layers(0, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv0, nr0);
+	} else {
+		//ab0 = texture(u_ground_albedo_bump_0, ground_uv0);
+		//nr0 = texture(u_ground_normal_roughness_0, ground_uv0);
+		ab0 = texture_albedo_bump(0, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv0);
+		nr0 = texture_normal_roughness(0, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv0);
+	}
+	if (tile_reduction_per_texture[1] > 0.0) {
+		//ab1 = texture_antitile(u_ground_albedo_bump_1, u_ground_normal_roughness_1, ground_uv1, nr1);
+		ab1 = texture_antitile_layers(1, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv1, nr1);
+	} else {
+		//ab1 = texture(u_ground_albedo_bump_1, ground_uv1);
+		//nr1 = texture(u_ground_normal_roughness_1, ground_uv1);
+		ab1 = texture_albedo_bump(1, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv1);
+		nr1 = texture_normal_roughness(1, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv1);
+	}
+	if (tile_reduction_per_texture[2] > 0.0) {
+		//ab2 = texture_antitile(u_ground_albedo_bump_2, u_ground_normal_roughness_2, ground_uv2, nr2);
+		ab2 = texture_antitile_layers(2, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv2, nr2);
+	} else {
+		//ab2 = texture(u_ground_albedo_bump_2, ground_uv2);
+		//nr2 = texture(u_ground_normal_roughness_2, ground_uv2);
+		ab2 = texture_albedo_bump(2, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv2);
+		nr2 = texture_normal_roughness(2, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv2);
+	}
+	/*vec3 red = vec3(1.0, 0.0, 0.0);
+	vec3 green = vec3(0.0, 1.0, 0.0);
+	vec3 blue = vec3(0.0, 0.0, 1.0);
+	vec3 yellow = vec3(1.0, 0.749, 0.0);
+	if (north_border_pixel)	{
+		ab0.rgb = red;
+		ab1.rgb = red;
+		ab2.rgb = red;
+		ab3.rgb = red;
+	}
+	if (south_border_pixel)	{
+		ab0.rgb = green;
+		ab1.rgb = green;
+		ab2.rgb = green;
+		ab3.rgb = green;
+	}
+	if (west_border_pixel)	{
+		ab0.rgb = blue;
+		ab1.rgb = blue;
+		ab2.rgb = blue;
+		ab3.rgb = blue;
+	}
+	if (east_border_pixel)	{
+		ab0.rgb = yellow;
+		ab1.rgb = yellow;
+		ab2.rgb = yellow;
+		ab3.rgb = yellow;
+	}*/
+}"
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_mc40n"]
+size = Vector2(1160, 1820)
+expression = "albedo_out = albedo_in;
+normal_out = (VIEW_MATRIX * (vec4(normal_in, 0.0))).xyz;
+roughness_out = roughness_in;
+
+float grid_line_thickness = 0.05;
+
+// DEBUG: wisualize pieces
+/*if (pieces_from_camera_piece == 0) {
+	albedo_out = vec3(1.0, 0.0, 0.0);
+} else if (pieces_from_camera_piece == 1) {
+	albedo_out = vec3(0.0, 1.0, 0.0);
+} else if (pieces_from_camera_piece == 2) {
+	albedo_out = vec3(0.0, 0.0, 1.0);
+} else if (pieces_from_camera_piece == 3) {
+	albedo_out = vec3(1.0, 0.0, 1.0);
+}*/
+// DEBUG: wisualize pieces
+
+//bool grid_on = !(mouse_hit == vec2(-1));
+if (grid_on) {
+	float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
+	vec2 uv_begin_texel = uv - vec2(half_texel_size);
+	vec2 distance_from_vertex = 
+		fract(vec2(uv_begin_texel.x / (half_texel_size * 2.0), uv_begin_texel.y / (half_texel_size * 2.0)));
+	if (distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness
+		|| distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness) {
+		if ((distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness)
+			&& (distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness)) {
+			//albedo_out = mix(albedo_out, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
+			albedo_out = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
+		} else {
+			//albedo_out = mix(albedo_out, vec3(1.0, 0.749, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+			albedo_out = vec3(1.0, 0.749, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+		}
+	}
+	vec2 g_uv0 = fract(ground_uv0);
+	float uv_line_thickness = grid_line_thickness / 10.0;
+	if (g_uv0.x < uv_line_thickness || (1.0 - g_uv0.x) < uv_line_thickness
+		|| g_uv0.y < uv_line_thickness || (1.0 - g_uv0.y) < uv_line_thickness) {
+		albedo_out = mix(albedo_out, vec3(0.0, 0.0, 1.0), 0.3);		// GDN_TheWorld_Globals::g_color_blue;
+	}
+}
+
+if (mouse_hit != vec2(-1)) {
+	float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
+	vec2 uv_begin_texel = uv - vec2(half_texel_size);
+	vec2 distance_from_vertex = 
+		fract(vec2(uv_begin_texel.x / (half_texel_size * 2.0), uv_begin_texel.y / (half_texel_size * 2.0)));
+	float grid_radius = mouse_hit_radius * 5.0;
+	if (grid_radius != 0.0 && distance(mouse_hit, uv) < grid_radius)
+	{
+		if (distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness
+			|| distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness) {
+			if ((distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness)
+				&& (distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness)) {
+				//albedo_out = mix(albedo_out, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
+				albedo_out = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
+			} else {
+				//albedo_out = mix(albedo_out, vec3(1.0, 0.749, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+				albedo_out = vec3(1.0, 0.749, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+			}
+		}
+	}
+
+	if (mouse_hit_radius != 0.0 && distance(mouse_hit, uv) < mouse_hit_radius) {
+		vec3 mouse_hit_albedo = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+		albedo_out = mix(albedo_out, mouse_hit_albedo, 0.3);
+	}
+}"
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_halt2"]
+size = Vector2(1000, 660)
+expression = "globalmap_factor = 1.0;
+roughness_out = 1.0;
+if (editmode_pixel) {
+	albedo_out = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+} else {
+	albedo_out = texture(terrain_globalmap, uv).rgb;
+	if (globalmap_pixel) {
+		roughness_out = 0.5;
+	} else {
+		globalmap_factor = clamp((distance_from_camera - globalmap_blend_start) * globalmap_blend_distance, 0.0, 1.0);
+		globalmap_factor *= globalmap_factor; // slower start, faster transition but far away
+	}
+}"
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_85o46"]
+parameter_name = "u_triplanar"
+param_type = 3
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_iurjx"]
+parameter_name = "u_tile_reduction_per_texture"
+param_type = 6
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_oes0e"]
+parameter_name = "u_depth_blending"
+param_type = 3
+
+[sub_resource type="VisualShaderNodeVaryingGetter" id="VisualShaderNodeVaryingGetter_4j37f"]
+varying_name = "v_splat"
+varying_type = 5
+
+[sub_resource type="VisualShaderNodeVaryingGetter" id="VisualShaderNodeVaryingGetter_lpke1"]
+varying_name = "v_tint0"
+varying_type = 4
+
+[sub_resource type="VisualShaderNodeVaryingGetter" id="VisualShaderNodeVaryingGetter_cppnw"]
+varying_name = "v_tint1"
+varying_type = 4
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_yk7c6"]
+size = Vector2(1100, 1700)
+expression = "//ground_uv_scale_per_texture_in = vec4(200.0, 200.0, 200.0, 200.0);
+ground_uv_scale_per_texture_out = ground_uv_scale_per_texture_in;
+pieces_from_camera_piece = -1;
+new = true;
+
+/*if (!new) {
+	ground_uv_scale_per_texture_out = vec4(300.0);
+	scale_per_texture_factor = 10.0;
+} else {
+	ground_uv_scale_per_texture_out = vec4(2.0);
+	scale_per_texture_factor = 1.0;
+	piecing_threshold_factor = uint(4);
+	piece_size = 200.0;
+}*/
+
+int alt_piece = int(floor(camera_altitude_from_terrain / piece_size));
+if (alt_piece < 4) {
+	scale_per_texture_factor *= pow(2.0, float(alt_piece));
+} else {
+	camera_altitude_from_terrain = -1.0;
+}
+
+if (camera_altitude_from_terrain > 0.0 && distance_from_camera_on_terrain < 2000.0) {
+	vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(vertex, 1.0)).xyz;
+	int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / piece_size));
+	int camera_piece_z = int(floor(CAMERA_POSITION_WORLD.z / piece_size));
+	int frag_piece_x = int(floor(fragment_world_pos.x / piece_size));
+	int frag_piece_z = int(floor(fragment_world_pos.z / piece_size));
+	pieces_from_camera_piece = max(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_z - frag_piece_z)));
+	if (pieces_from_camera_piece <= 1)
+	{
+		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 20.0);
+		//ground_uv_scale_per_texture_out = vec4(40.0);
+	}
+	else if (pieces_from_camera_piece <= 3)
+	{
+		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 10.0);
+		//ground_uv_scale_per_texture_out = vec4(20.0);
+	}
+	else if (pieces_from_camera_piece <= 5)
+	{
+		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 10.0);
+		//ground_uv_scale_per_texture_out = vec4(20.0);
+	}
+	else if (pieces_from_camera_piece <= 7)
+	{
+		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 8.0);
+		//ground_uv_scale_per_texture_out = vec4(16.0);
+	}
+	/*else if (pieces_from_camera_piece == 4)
+	{
+		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 3.0);
+		//ground_uv_scale_per_texture_out = vec4(6.0);
+	}
+	else if (pieces_from_camera_piece == 5)
+	{
+		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 3.0);
+		//ground_uv_scale_per_texture_out = vec4(6.0);
+	}*/
+}"
+
+[sub_resource type="VisualShaderNodeVaryingGetter" id="VisualShaderNodeVaryingGetter_hik7b"]
+varying_name = "v_tint2"
+varying_type = 4
+
+[sub_resource type="VisualShaderNodeVaryingGetter" id="VisualShaderNodeVaryingGetter_atn2x"]
+varying_name = "v_tint3"
+varying_type = 4
+
+[sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_o5i0w"]
+size = Vector2(920, 3880)
+expression = "vec4 texture_albedo_bump_dismiss(int type, float layer, vec2 uv)
+{
+	if (layer < 0.0) {
+		if (type == 0) {
+			return texture(u_ground_albedo_bump_0, uv);
+		} else if (type == 1) {
+			return texture(u_ground_albedo_bump_1, uv);
+		} else if (type == 2) {
+			return texture(u_ground_albedo_bump_2, uv);
+		} else {
+			return texture(u_ground_albedo_bump_3, uv);
+		}
+	} else {
+		return texture(gu_ground_albedo_bump_array, vec3(uv, layer));
+	}
+}
+
+vec4 texture_normal_roughness_dismiss(int type, float layer, vec2 uv)
+{
+	if (layer < 0.0) {
+		if (type == 0) {
+			return texture(u_ground_normal_roughness_0, uv);
+		} else if (type == 1) {
+			return texture(u_ground_normal_roughness_1, uv);
+		} else if (type == 2) {
+			return texture(u_ground_normal_roughness_2, uv);
+		} else {
+			return texture(u_ground_normal_roughness_3, uv);
+		}
+	} else {
+		return texture(gu_ground_normal_roughness_array, vec3(uv, layer));
+	}
+}
+
+vec4 texture_albedo_bump(int type,
+	bool north_border_pixel, 
+	bool south_border_pixel, 
+	bool west_border_pixel, 
+	bool east_border_pixel, 
+	vec2 uv)
+{
+	if (type == 0) {
+		if (north_border_pixel && u_north_ground_layers.x >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.x));
+		//} else if (south_border_pixel && u_south_ground_layers.x >= 0.0) {
+		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.x));
+		} else if (west_border_pixel && u_west_ground_layers.x >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.x));
+		//} else if (east_border_pixel && u_east_ground_layers.x >= 0.0) {
+		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.x));
+		} else if (u_ground_layers.x >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.x));
+		} else {
+			return texture(u_ground_albedo_bump_0, uv);
+		}
+	} else if (type == 1) {
+		if (north_border_pixel && u_north_ground_layers.y >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.y));
+		//} else if (south_border_pixel && u_south_ground_layers.y >= 0.0) {
+		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.y));
+		} else if (west_border_pixel && u_west_ground_layers.y >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.y));
+		//} else if (east_border_pixel && u_east_ground_layers.y >= 0.0) {
+		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.y));
+		} else if (u_ground_layers.y >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.y));
+		} else {
+			return texture(u_ground_albedo_bump_1, uv);
+		}
+	} else if (type == 2) {
+		if (north_border_pixel && u_north_ground_layers.z >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.z));
+		//} else if (south_border_pixel && u_south_ground_layers.z >= 0.0) {
+		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.z));
+		} else if (west_border_pixel && u_west_ground_layers.z >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.z));
+		//} else if (east_border_pixel && u_east_ground_layers.z >= 0.0) {
+		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.z));
+		} else if (u_ground_layers.z >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.z));
+		} else {
+			return texture(u_ground_albedo_bump_2, uv);
+		}
+	} else {
+		if (north_border_pixel && u_north_ground_layers.a >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.a));
+		//} else if (south_border_pixel && u_south_ground_layers.a >= 0.0) {
+		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.a));
+		} else if (west_border_pixel && u_west_ground_layers.a >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.a));
+		//} else if (east_border_pixel && u_east_ground_layers.a >= 0.0) {
+		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.a));
+		} else if (u_ground_layers.a >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.a));
+		} else {
+			return texture(u_ground_albedo_bump_3, uv);
+		}
+	}
+}
+
+vec4 texture_normal_roughness(int type,
+	bool north_border_pixel, 
+	bool south_border_pixel, 
+	bool west_border_pixel, 
+	bool east_border_pixel, 
+	vec2 uv)
+{
+	if (type == 0) {
+		if (north_border_pixel && u_north_ground_layers.x >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.x));
+		//} else if (south_border_pixel && u_south_ground_layers.x >= 0.0) {
+		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.x));
+		} else if (west_border_pixel && u_west_ground_layers.x >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.x));
+		//} else if (east_border_pixel && u_east_ground_layers.x >= 0.0) {
+		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.x));
+		} else if (u_ground_layers.x >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.x));
+		} else {
+			return texture(u_ground_normal_roughness_0, uv);
+		}
+	} else if (type == 1) {
+		if (north_border_pixel && u_north_ground_layers.y >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.y));
+		//} else if (south_border_pixel && u_south_ground_layers.y >= 0.0) {
+		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.y));
+		} else if (west_border_pixel && u_west_ground_layers.y >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.y));
+		//} else if (east_border_pixel && u_east_ground_layers.y >= 0.0) {
+		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.y));
+		} else if (u_ground_layers.y >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.y));
+		} else {
+			return texture(u_ground_normal_roughness_1, uv);
+		}
+	} else if (type == 2) {
+		if (north_border_pixel && u_north_ground_layers.z >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.z));
+		//} else if (south_border_pixel && u_south_ground_layers.z >= 0.0) {
+		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.z));
+		} else if (west_border_pixel && u_west_ground_layers.z >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.z));
+		//} else if (east_border_pixel && u_east_ground_layers.z >= 0.0) {
+		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.z));
+		} else if (u_ground_layers.z >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.z));
+		} else {
+			return texture(u_ground_normal_roughness_2, uv);
+		}
+	} else {
+		if (north_border_pixel && u_north_ground_layers.a >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.a));
+		//} else if (south_border_pixel && u_south_ground_layers.a >= 0.0) {
+		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.a));
+		} else if (west_border_pixel && u_west_ground_layers.a >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.a));
+		//} else if (east_border_pixel && u_east_ground_layers.a >= 0.0) {
+		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.a));
+		} else if (u_ground_layers.a >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.a));
+		} else {
+			return texture(u_ground_normal_roughness_3, uv);
+		}
+	}
+}"
+
+[sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_ebbh8"]
+size = Vector2(1080, 2080)
+expression = "vec4 depth_blend2(vec4 a_value, float a_bump, vec4 b_value, float b_bump, float t) {
+	// https://www.gamasutra.com
+	// /blogs/AndreyMishkinis/20130716/196339/Advanced_Terrain_Texture_Splatting.php
+	float d = 0.1;
+	float ma = max(a_bump + (1.0 - t), b_bump + t) - d;
+	float ba = max(a_bump + (1.0 - t) - ma, 0.0);
+	float bb = max(b_bump + t - ma, 0.0);
+	return (a_value * ba + b_value * bb) / (ba + bb);
+}
+
+vec2 rotate(vec2 v, float cosa, float sina) {
+	return vec2(cosa * v.x - sina * v.y, sina * v.x + cosa * v.y);
+}
+
+vec4 texture_antitile_dismiss(sampler2D albedo_tex, sampler2D normal_tex, vec2 uv, out vec4 out_normal) {
+	float frequency = 2.0;
+	float scale = 1.3;
+	float sharpness = 0.7;
+	
+	// Rotate and scale UV
+	float rot = 3.14 * 0.6;
+	float cosa = cos(rot);
+	float sina = sin(rot);
+	vec2 uv2 = rotate(uv, cosa, sina) * scale;
+	
+	vec4 col0 = texture(albedo_tex, uv);
+	vec4 col1 = texture(albedo_tex, uv2);
+	vec4 nrm0 = texture(normal_tex, uv);
+	vec4 nrm1 = texture(normal_tex, uv2);
+	//col0 = vec4(0.0, 0.5, 0.5, 1.0); // Highlights variations
+
+	// Normals have to be rotated too since we are rotating the texture...
+	// TODO Probably not the most efficient but understandable for now
+	vec3 n = unpack_normal(nrm1);
+	// Had to negate the Y axis for some reason. I never remember the myriad of conventions around
+	n.xz = rotate(n.xz, cosa, -sina);
+	nrm1 = pack_normal(n, nrm1.a);
+	
+	// Periodically alternate between the two versions using a warped checker pattern
+	float t = 1.2 + 
+		  sin(uv2.x * frequency + sin(uv.x) * 2.0) 
+		* cos(uv2.y * frequency + sin(uv.y) * 2.0); // Result in [0..2]
+	t = smoothstep(sharpness, 2.0 - sharpness, t);
+
+	// Using depth blend because classic alpha blending smoothes out details.
+	out_normal = depth_blend2(nrm0, col0.a, nrm1, col1.a, t);
+	return depth_blend2(col0, col0.a, col1, col1.a, t);
+}
+
+vec4 texture_antitile_layers(int type, 
+	bool north_border_pixel, 
+	bool south_border_pixel, 
+	bool west_border_pixel, 
+	bool east_border_pixel, 
+	vec2 uv, out vec4 out_normal)
+{
+	float frequency = 2.0;
+	float scale = 1.3;
+	float sharpness = 0.7;
+	
+	// Rotate and scale UV
+	float rot = 3.14 * 0.6;
+	float cosa = cos(rot);
+	float sina = sin(rot);
+	vec2 uv2 = rotate(uv, cosa, sina) * scale;
+	
+	vec4 col0 = texture_albedo_bump(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, uv);
+	vec4 col1 = texture_albedo_bump(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, uv2);
+	vec4 nrm0 = texture_normal_roughness(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, uv);
+	vec4 nrm1 = texture_normal_roughness(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, uv2);
+	//col0 = vec4(0.0, 0.5, 0.5, 1.0); // Highlights variations
+
+	// Normals have to be rotated too since we are rotating the texture...
+	// TODO Probably not the most efficient but understandable for now
+	vec3 n = unpack_normal(nrm1);
+	// Had to negate the Y axis for some reason. I never remember the myriad of conventions around
+	n.xz = rotate(n.xz, cosa, -sina);
+	nrm1 = pack_normal(n, nrm1.a);
+	
+	// Periodically alternate between the two versions using a warped checker pattern
+	float t = 1.2 + 
+		  sin(uv2.x * frequency + sin(uv.x) * 2.0) 
+		* cos(uv2.y * frequency + sin(uv.y) * 2.0); // Result in [0..2]
+	t = smoothstep(sharpness, 2.0 - sharpness, t);
+
+	// Using depth blend because classic alpha blending smoothes out details.
+	out_normal = depth_blend2(nrm0, col0.a, nrm1, col1.a, t);
+	return depth_blend2(col0, col0.a, col1, col1.a, t);
+}
+"
+
+[sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_3i73b"]
+size = Vector2(1160, 860)
+expression = "vec4 texture_triplanar_dismiss(sampler2D tex, vec3 world_pos, vec3 blend) {
+	vec4 xaxis = texture(tex, world_pos.yz);
+	vec4 yaxis = texture(tex, world_pos.xz);
+	vec4 zaxis = texture(tex, world_pos.xy);
+	// blend the results of the 3 planar projections.
+	return xaxis * blend.x + yaxis * blend.y + zaxis * blend.z;
+}
+
+vec4 texture_triplanar_ab_layers(int type, 
+	bool north_border_pixel, 
+	bool south_border_pixel, 
+	bool west_border_pixel, 
+	bool east_border_pixel, 
+	vec3 world_pos, vec3 blend)
+{
+	vec4 xaxis = texture_albedo_bump(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, world_pos.yz);
+	vec4 yaxis = texture_albedo_bump(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, world_pos.xz);
+	vec4 zaxis = texture_albedo_bump(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, world_pos.xy);
+	// blend the results of the 3 planar projections.
+	return xaxis * blend.x + yaxis * blend.y + zaxis * blend.z;
+}
+
+vec4 texture_triplanar_nr_layers(int type, 
+	bool north_border_pixel, 
+	bool south_border_pixel, 
+	bool west_border_pixel, 
+	bool east_border_pixel, 
+	vec3 world_pos, vec3 blend)
+{
+	vec4 xaxis = texture_normal_roughness(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, world_pos.yz);
+	vec4 yaxis = texture_normal_roughness(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, world_pos.xz);
+	vec4 zaxis = texture_normal_roughness(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, world_pos.xy);
+	// blend the results of the 3 planar projections.
+	return xaxis * blend.x + yaxis * blend.y + zaxis * blend.z;
+}"
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_3ox3m"]
+parameter_name = "gu_ground_albedo_bump_array"
+param_type = 9
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_wt5ws"]
+parameter_name = "gu_ground_normal_roughness_array"
+param_type = 9
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_wkfnv"]
+parameter_name = "u_ground_layers"
+param_type = 6
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_30hul"]
+parameter_name = "u_north_ground_layers"
+param_type = 6
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_5y5gl"]
+parameter_name = "u_south_ground_layers"
+param_type = 6
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_sjeeh"]
+parameter_name = "u_west_ground_layers"
+param_type = 6
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_0u6ja"]
+parameter_name = "u_east_ground_layers"
+param_type = 6
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_bq5dl"]
+size = Vector2(960, 2860)
+expression = "if (editmode_pixel || globalmap_pixel) {
+	roughness_out = roughness_in;
+	albedo_out = albedo_in;
+	normal_out = normal_in;
+} else {
+	// col(0-3) is the result of the pixel fetched from u_ground_albedo_bump_(0-3) modified
+	// by the value fetched from u_terrain_colormap and relative to the vertex corresponding
+	// to current pixel
+	// the value fetched from u_terrain_colormap if modified to the white according to the
+	// vector u_colormap_opacity_per_texture (default value don't modify the color)
+	vec3 col0 = ab0.rgb * tint0;	
+	vec3 col1 = ab1.rgb * tint1;	
+	vec3 col2 = ab2.rgb * tint2;
+	vec3 col3 = ab3.rgb * tint3;
+	//col0 = ab0.rgb;
+	//col1 = ab1.rgb;
+	//col2 = ab2.rgb;
+	//col3 = ab3.rgb;
+
+	vec4 rough = vec4(nr0.a, nr1.a, nr2.a, nr3.a);
+
+	//vec3 normal0 = unpack_normal(nr0);
+	//vec3 normal1 = unpack_normal(nr1);
+	//vec3 normal2 = unpack_normal(nr2);
+	//vec3 normal3 = unpack_normal(nr3);
+	vec3 normal0 = nr0.rgb;
+	vec3 normal1 = nr1.rgb;
+	vec3 normal2 = nr2.rgb;
+	vec3 normal3 = nr3.rgb;
+
+	vec4 w;
+	// TODO An #ifdef macro would be nice! Or copy/paste everything in a different shader...
+	if (depth_blending) {
+		w = get_depth_blended_weights(splat, vec4(ab0.a, ab1.a, ab2.a, ab3.a));
+	} else {
+		w = splat.rgba;
+	}
+
+	float w_sum = (w.r + w.g + w.b + w.a);
+
+	albedo_out = (
+		w.r * col0.rgb +
+		w.g * col1.rgb +
+		w.b * col2.rgb +
+		w.a * col3.rgb) / w_sum;
+
+	roughness_out = (
+		w.r * rough.r +
+		w.g * rough.g +
+		w.b * rough.b +
+		w.a * rough.a) / w_sum;
+
+	vec3 ground_normal = /*u_terrain_normal_basis **/ (
+		w.r * normal0 +
+		w.g * normal1 +
+		w.b * normal2 +
+		w.a * normal3) / w_sum;
+	// If no splat textures are defined, normal vectors will default to (1,1,1),
+	// which is incorrect, and causes the terrain to be shaded wrongly in some directions.
+	// However, this should not be a problem to fix in the shader,
+	// because there MUST be at least one splat texture set.
+	//ground_normal = normalize(ground_normal);
+	// TODO Make the plugin insert a default normalmap if it's empty
+
+	// Combine terrain normals with detail normals (not sure if correct but looks ok)
+	normal_out = normalize(vec3(normal_in.x + ground_normal.x, normal_in.y, normal_in.z + ground_normal.z));
+	normal_out = mix(normal_out, normal_in, globalmap_factor);
+	albedo_out = mix(albedo_out, albedo_in, globalmap_factor);
+	roughness_out = mix(roughness_out, 1.0, globalmap_factor);
+	AO = (w.r * ab0.a +	w.g * ab1.a + w.b * ab2.a +	w.a * ab3.a) / w_sum;
+	AO_LIGHT_AFFECT = 0.1;
+	
+	/*vec3 red = vec3(1.0, 0.0, 0.0);
+	vec3 green = vec3(0.0, 1.0, 0.0);
+	vec3 blue = vec3(0.0, 0.0, 1.0);
+	vec3 yellow = vec3(1.0, 0.749, 0.0);
+	if (splat.x < 0.0)	{
+		albedo_out = red;
+	}
+	if (splat.y < 0.0)	{
+		albedo_out = green;
+	}
+	if (splat.z < 0.0)	{
+		albedo_out = blue;
+	}
+	if (splat.a < 0.0)	{
+		albedo_out = yellow;
+	}*/
+}"
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_ep3ip"]
+texture = ExtResource("1_oimdd")
+
+[sub_resource type="VisualShaderNodeVectorDecompose" id="VisualShaderNodeVectorDecompose_1lmha"]
+default_input_values = [0, Quaternion(0, 0, 0, 0)]
+op_type = 2
+
+[sub_resource type="VisualShaderNodeVectorCompose" id="VisualShaderNodeVectorCompose_tdm5f"]
+default_input_values = [0, 0.0, 1, 0.0, 2, 0.0, 3, 0.0]
+op_type = 2
+
+[sub_resource type="VisualShaderNodeVectorCompose" id="VisualShaderNodeVectorCompose_rba8r"]
+expanded_output_ports = [0]
+
+[sub_resource type="VisualShaderNodeMix" id="VisualShaderNodeMix_ledrt"]
+default_input_values = [0, Vector3(0, 0, 0), 1, Vector3(1, 1, 1), 2, Vector3(0.5, 0.5, 0.5)]
+expanded_output_ports = [0]
+op_type = 3
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_qdsek"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_6ho8f"]
+noise = SubResource("FastNoiseLite_qdsek")
+
+[sub_resource type="VisualShaderNodeTexture" id="VisualShaderNodeTexture_b2thk"]
+texture = SubResource("NoiseTexture2D_6ho8f")
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_2wp3x"]
+size = Vector2(760, 3480)
+expression = "roughness_out = roughness_in;
+albedo_out = albedo_in;
+normal_out = normal_in;
+ab0_out = ab0_in;
+ab1_out = ab1_in;
+ab2_out = ab2_in;
+ab3_out = ab3_in;
+nr0_out = nr0_in;
+nr1_out = nr1_in;
+nr2_out = nr2_in;
+nr3_out = nr3_in;
+
+if (!editmode_pixel && !globalmap_pixel) {
+	if (is_on_upper_border(uv, distance_from_border)) {
+		if (u_north_ground_layers.x >= 0.0) {
+			vec4 ab0_north = texture_albedo_bump(0, u_north_ground_layers.x, uv);
+			ab0_out = mix(ab0_out, ab0_north, weight);
+			vec4 nr0_north = texture_normal_roughness(0, u_north_ground_layers.x, uv);
+			nr0_out = mix(nr0_out, nr0_north, weight);
+			//ab0_out = texture_albedo_bump(0, u_north_ground_layers.x, uv);
+			//nr0_out = texture_normal_roughness(0, u_north_ground_layers.x, uv);
+		}
+		if (u_north_ground_layers.y >= 0.0) {
+			vec4 ab1_north = texture_albedo_bump(1, u_north_ground_layers.y, uv);
+			ab1_out = mix(ab1_out, ab1_north, weight);
+			vec4 nr1_north = texture_normal_roughness(1, u_north_ground_layers.y, uv);
+			nr1_out = mix(nr1_out, nr1_north, weight);
+			//ab1_out = texture_albedo_bump(1, u_north_ground_layers.y, uv);
+			//nr1_out = texture_normal_roughness(1, u_north_ground_layers.y, uv);
+		}
+		if (u_north_ground_layers.z >= 0.0) {
+			vec4 ab2_north = texture_albedo_bump(2, u_north_ground_layers.z, uv);
+			ab2_out = mix(ab2_out, ab2_north, weight);
+			vec4 nr2_north = texture_normal_roughness(2, u_north_ground_layers.z, uv);
+			nr2_out = mix(nr2_out, nr2_north, weight);
+			//ab2_out = texture_albedo_bump(2, u_north_ground_layers.z, uv);
+			//nr2_out = texture_normal_roughness(2, u_north_ground_layers.z, uv);
+		}
+		if (u_north_ground_layers.a >= 0.0) {
+			vec4 ab3_north = texture_albedo_bump(3, u_north_ground_layers.a, uv);
+			ab3_out = mix(ab3_out, ab3_north, weight);
+			vec4 nr3_north = texture_normal_roughness(3, u_north_ground_layers.a, uv);
+			nr3_out = mix(nr3_out, nr3_north, weight);
+			//ab3_out = texture_albedo_bump(3, u_north_ground_layers.a, uv);
+			//nr3_out = texture_normal_roughness(3, u_north_ground_layers.a, uv);
+		}
+		//ab0_out = vec4(0.0, 1.0, 0.0, 1.0);
+		//ab1_out = vec4(1.0, 0.0, 0.0, 1.0);
+	}
+	if (is_on_lower_border(uv, distance_from_border)) {
+		if (u_south_ground_layers.x >= 0.0) {
+			vec4 ab0_south = texture_albedo_bump(0, u_south_ground_layers.x, uv);
+			ab0_out = mix(ab0_out, ab0_south, weight);
+			vec4 nr0_south = texture_normal_roughness(0, u_south_ground_layers.x, uv);
+			nr0_out = mix(nr0_out, nr0_south, weight);
+			//ab0_out = texture_albedo_bump(0, u_south_ground_layers.x, uv);
+			//nr0_out = texture_normal_roughness(0, u_south_ground_layers.x, uv);
+		}
+		if (u_south_ground_layers.y >= 0.0) {
+			vec4 ab1_south = texture_albedo_bump(1, u_south_ground_layers.y, uv);
+			ab1_out = mix(ab1_out, ab1_south, weight);
+			vec4 nr1_south = texture_normal_roughness(1, u_south_ground_layers.y, uv);
+			nr1_out = mix(nr1_out, nr1_south, weight);
+			//ab1_out = texture_albedo_bump(1, u_south_ground_layers.y, uv);
+			//nr1_out = texture_normal_roughness(1, u_south_ground_layers.y, uv);
+		}
+		if (u_south_ground_layers.z >= 0.0) {
+			vec4 ab2_south = texture_albedo_bump(2, u_south_ground_layers.z, uv);
+			ab2_out = mix(ab2_out, ab2_south, weight);
+			vec4 nr2_south = texture_normal_roughness(2, u_south_ground_layers.z, uv);
+			nr2_out = mix(nr2_out, nr2_south, weight);
+			//ab2_out = texture_albedo_bump(2, u_south_ground_layers.z, uv);
+			//nr2_out = texture_normal_roughness(2, u_south_ground_layers.z, uv);
+		}
+		if (u_south_ground_layers.a >= 0.0) {
+			vec4 ab3_south = texture_albedo_bump(3, u_south_ground_layers.a, uv);
+			ab3_out = mix(ab3_out, ab3_south, weight);
+			vec4 nr3_south = texture_normal_roughness(3, u_south_ground_layers.a, uv);
+			nr3_out = mix(nr3_out, nr3_south, weight);
+			//ab3_out = texture_albedo_bump(3, u_south_ground_layers.a, uv);
+			//nr3_out = texture_normal_roughness(3, u_south_ground_layers.a, uv);
+		}
+		//ab0_out = vec4(0.0, 1.0, 0.0, 1.0);
+		//ab1_out = vec4(1.0, 0.0, 0.0, 1.0);
+	}
+	if (is_on_left_border(uv, distance_from_border)) {
+		if (u_west_ground_layers.x >= 0.0) {
+			vec4 ab0_west = texture_albedo_bump(0, u_west_ground_layers.x, uv);
+			ab0_out = mix(ab0_out, ab0_west, weight);
+			vec4 nr0_west = texture_normal_roughness(0, u_west_ground_layers.x, uv);
+			nr0_out = mix(nr0_out, nr0_west, weight);
+			//ab0_out = texture_albedo_bump(0, u_west_ground_layers.x, uv);
+			//nr0_out = texture_normal_roughness(0, u_west_ground_layers.x, uv);
+		}
+		if (u_west_ground_layers.y >= 0.0) {
+			vec4 ab1_west = texture_albedo_bump(1, u_west_ground_layers.y, uv);
+			ab1_out = mix(ab1_out, ab1_west, weight);
+			vec4 nr1_west = texture_normal_roughness(1, u_west_ground_layers.y, uv);
+			nr1_out = mix(nr1_out, nr1_west, weight);
+			//ab1_out = texture_albedo_bump(1, u_west_ground_layers.y, uv);
+			//nr1_out = texture_normal_roughness(1, u_west_ground_layers.y, uv);
+		}
+		if (u_west_ground_layers.z >= 0.0) {
+			vec4 ab2_west = texture_albedo_bump(2, u_west_ground_layers.z, uv);
+			ab2_out = mix(ab2_out, ab2_west, weight);
+			vec4 nr2_west = texture_normal_roughness(2, u_west_ground_layers.z, uv);
+			nr2_out = mix(nr2_out, nr2_west, weight);
+			//ab2_out = texture_albedo_bump(2, u_west_ground_layers.z, uv);
+			//nr2_out = texture_normal_roughness(2, u_west_ground_layers.z, uv);
+		}
+		if (u_west_ground_layers.a >= 0.0) {
+			vec4 ab3_west = texture_albedo_bump(3, u_west_ground_layers.a, uv);
+			ab3_out = mix(ab3_out, ab3_west, weight);
+			vec4 nr3_west = texture_normal_roughness(3, u_west_ground_layers.a, uv);
+			nr3_out = mix(nr3_out, nr3_west, weight);
+			//ab3_out = texture_albedo_bump(3, u_west_ground_layers.a, uv);
+			//nr3_out = texture_normal_roughness(3, u_west_ground_layers.a, uv);
+		}
+		//ab0_out = vec4(0.0, 1.0, 0.0, 1.0);
+		//ab1_out = vec4(1.0, 0.0, 0.0, 1.0);
+	}
+	if (is_on_right_border(uv, distance_from_border)) {
+		if (u_east_ground_layers.x >= 0.0) {
+			vec4 ab0_east = texture_albedo_bump(0, u_east_ground_layers.x, uv);
+			ab0_out = mix(ab0_out, ab0_east, weight);
+			vec4 nr0_east = texture_normal_roughness(0, u_east_ground_layers.x, uv);
+			nr0_out = mix(nr0_out, nr0_east, weight);
+			//ab0_out = texture_albedo_bump(0, u_east_ground_layers.x, uv);
+			//nr0_out = texture_normal_roughness(0, u_east_ground_layers.x, uv);
+		}
+		if (u_east_ground_layers.y >= 0.0) {
+			vec4 ab1_east = texture_albedo_bump(1, u_east_ground_layers.y, uv);
+			ab1_out = mix(ab1_out, ab1_east, weight);
+			vec4 nr1_east = texture_normal_roughness(1, u_east_ground_layers.y, uv);
+			nr1_out = mix(nr1_out, nr1_east, weight);
+			//ab1_out = texture_albedo_bump(1, u_east_ground_layers.y, uv);
+			//nr1_out = texture_normal_roughness(1, u_east_ground_layers.y, uv);
+		}
+		if (u_east_ground_layers.z >= 0.0) {
+			vec4 ab2_east = texture_albedo_bump(2, u_east_ground_layers.z, uv);
+			ab2_out = mix(ab2_out, ab2_east, weight);
+			vec4 nr2_east = texture_normal_roughness(2, u_east_ground_layers.z, uv);
+			nr2_out = mix(nr2_out, nr2_east, weight);
+			//ab2_out = texture_albedo_bump(2, u_east_ground_layers.z, uv);
+			//nr2_out = texture_normal_roughness(2, u_east_ground_layers.z, uv);
+		}
+		if (u_east_ground_layers.a >= 0.0) {
+			vec4 ab3_east = texture_albedo_bump(3, u_east_ground_layers.a, uv);
+			ab3_out = mix(ab3_out, ab3_east, weight);
+			vec4 nr3_east = texture_normal_roughness(3, u_east_ground_layers.a, uv);
+			nr3_out = mix(nr3_out, nr3_east, weight);
+			//ab3_out = texture_albedo_bump(3, u_east_ground_layers.a, uv);
+			//nr3_out = texture_normal_roughness(3, u_east_ground_layers.a, uv);
+		}
+		//ab0_out = vec4(0.0, 1.0, 0.0, 1.0);
+		//ab1_out = vec4(1.0, 0.0, 0.0, 1.0);
+	}
+}"
+
+[sub_resource type="VisualShaderNodeVec4Constant" id="VisualShaderNodeVec4Constant_g0f2n"]
+constant = Quaternion(0.4, 0.4, 0.4, 0.4)
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_45ek4"]
+size = Vector2(760, 300)
+expression = "albedo_out = vec3(0.0, 0.0, 0.0);
+if (uv.x >= 0.0 && uv.x <= 1.0) {
+	albedo_out = vec3(1.0, 0.0, 0.0);
+}
+if (uv.y >= 0.0 && uv.y <= 1.0) {
+	albedo_out = mix(albedo_out, vec3(0.0, 1.0, 0.0), vec3(0.5, 0.5, 0.5));
+}"
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_2h4ao"]
+default_input_values = [0, Vector3(0, 0, 0), 1, Vector3(0.1, 0.1, 0.1)]
+operator = 2
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_igkdc"]
+default_input_values = [0, Vector3(0, 0, 0), 1, Vector3(0.1, 0.1, 0.1)]
+expanded_output_ports = [0]
+operator = 2
+
+[sub_resource type="VisualShaderNodeFloatConstant" id="VisualShaderNodeFloatConstant_b0bam"]
+constant = 0.4
+
+[sub_resource type="VisualShaderNodeVectorCompose" id="VisualShaderNodeVectorCompose_dtdk1"]
+default_input_values = [0, 0.0, 1, 0.0, 2, 0.0, 3, 0.0]
+op_type = 2
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_cue6k"]
+size = Vector2(500, 880)
+expression = "north_border_pixel = false;
+south_border_pixel = false;
+west_border_pixel = false;
+east_border_pixel = false;
+splat_out = splat_in;
+
+if (!editmode_pixel && !globalmap_pixel) {
+	if (is_on_upper_border(uv, distance_from_border)) {
+		north_border_pixel = true;
+		//splat_out = splat_out + noise_color;
+	}
+	if (is_on_lower_border(uv, distance_from_border)) {
+		south_border_pixel = true;
+		//splat_out = splat_out + noise_color;
+	}
+	if (is_on_left_border(uv, distance_from_border)) {
+		west_border_pixel = true;
+		//splat_out = splat_out + noise_color;
+	}
+	if (is_on_right_border(uv, distance_from_border)) {
+		east_border_pixel = true;
+		//splat_out = splat_out + noise_color;
+	}
+
+	/*if (is_on_upper_border(uv, distance_from_border)) {
+		splat_out = vec4(-1.0, 0.0, 0.0, 0.0);
+	}
+	if (is_on_lower_border(uv, distance_from_border)) {
+		splat_out = vec4(0.0, -1.0, 0.0, 0.0);
+	}
+	if (is_on_left_border(uv, distance_from_border)) {
+		splat_out = vec4(0.0, 0.0, -1.0, 0.0);
+	}
+	if (is_on_right_border(uv, distance_from_border)) {
+		splat_out = vec4(0.0, 0.0, 0.0, -1.0);
+	}*/
+}
+//splat_out = splat_in;"
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_g4tok"]
+parameter_name = "gu_texture_blending_size"
+
+[sub_resource type="VisualShaderNodeFloatConstant" id="VisualShaderNodeFloatConstant_m7n1d"]
+
+[sub_resource type="VisualShaderNodeIf" id="VisualShaderNodeIf_djiwm"]
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_nygba"]
+default_input_values = [0, Quaternion(0, 0, 0, 0), 1, Quaternion(0, 0, 0, 0)]
+op_type = 2
+operator = 2
+
+[sub_resource type="VisualShaderNodeFloatConstant" id="VisualShaderNodeFloatConstant_mqt22"]
+
+[sub_resource type="VisualShaderNodeVectorOp" id="VisualShaderNodeVectorOp_xgxso"]
+default_input_values = [0, Quaternion(0, 0, 0, 0), 1, Quaternion(0.5, 0.5, 0.5, 0.5)]
+op_type = 2
+operator = 1
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_sy0wq"]
+input_name = "vertex"
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_xo7o0"]
+parameter_name = "u_terrain_heightmap"
+param_type = 9
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_tfuts"]
+parameter_name = "u_grid_on"
+param_type = 3
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_cahgs"]
+parameter_name = "gu_camera_altitude_from_terrain"
+
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_r28t2"]
+parameter_name = "gu_grid_step"
+
+[sub_resource type="VisualShaderNodeVaryingGetter" id="VisualShaderNodeVaryingGetter_ucse7"]
+varying_name = "v_distance_from_camera_on_terrain"
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_28flk"]
+size = Vector2(620, 200)
+expression = "// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need to trasform in world coord to abstract from chunk
+vertex_world_pos = MODEL_MATRIX * vec4(vertex, 1);"
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_51pd1"]
+size = Vector2(1060, 760)
+expression = "// to calculate coords of the vertex local to the quadrant we use affine inverse matrix of the global trasform of the quadtree
+vec4 vertex_local_to_quadrant_pos = terrain_inverse_transform * vertex_world_pos;
+// to get correct value from the textures (in the range 0 / max size in local coord) we need to consider the step 
+// (dividing by it): in the textures heigths/normals are adjacent but in global/local coords are separated by the step
+// ***  after next line vertex_cell_coords_in_textures ranges from 0 to heightmap size - 1 (heightmap size vertices per
+// size of quadrant - f.i. 2049) so it is an index of the pixel in heightmap/normalmap/splatmap etc. texture ***
+vertex_cell_coords_in_textures = vertex_local_to_quadrant_pos.xz / vec2(grid_step * pow(2.0, float(optimization_level)));
+// Moreover must add a half-offset so that we sample the center of pixels, otherwise bilinear filtering of the textures
+// will give us mixed results (#183): as we fetch pixels from textures with UV which is a percentage value ranging from
+// 0.0 to 1.0 we have to convert our index (vertex_cell_coords_in_textures) in percentage; without summing vec2(0.5)
+// first index 0 would be 0.0 and we qould have next indices summing 1 / heightmap size with the second index being
+// 1 / heightmap size and the last index being (heightmap size - 1) / heightmap size. In this way transforming percentages
+// index we touch the exact point where our pixel start and where the previous texture pixel ends so the engine, not knowing
+// which value consider make an interpolation from the values of our texel and the previous but this is not what we want as we
+// want the exact value of the texel; to avoid this we have to sum half so the UV points in the exact medium of the texel
+// (remember tha UV is a percentage that approximate to a vertex index) avoiding linear interpolation.
+// look at https://gamedev.stackexchange.com/questions/46963/how-to-avoid-texture-bleeding-in-a-texture-atlas
+// and https://learn.microsoft.com/it-it/windows/win32/direct3d9/directly-mapping-texels-to-pixels?redirectedfrom=MSDN
+vertex_cell_coords_in_textures += vec2(0.5);	// IMPORTANT: now vertex_cell_coords_in_textures ranges from 0.5 
+												// to (heightmap size - 1) + 0.5 with increment of 1.0 between each coord
+// Normalized UV to be in the range 0/1
+uv = vertex_cell_coords_in_textures / vec2(textureSize(terrain_heightmap, 0));"
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_64s2i"]
+size = Vector2(920, 500)
+expression = "vertex_with_h = vertex;
+vertex_world_pos_with_h = vertex_world_pos;
+float h = get_height(terrain_heightmap, u_terrain_height, uv);		// Height displacement from heigthmap
+if (u_force_height_0) {													// Needed to bake globalmap
+	vertex_with_h.y = 0.0;
+	vertex_world_pos_with_h.y = 0.0;
+} else {
+	vertex_with_h.y = h;
+	vertex_world_pos_with_h.y = h;
+}"
+
+[sub_resource type="VisualShaderNodeVaryingSetter" id="VisualShaderNodeVaryingSetter_2eqbt"]
+varying_name = "v_vertex_world_pos"
+varying_type = 5
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_05hhf"]
+input_name = "vertex"
+
+[sub_resource type="VisualShaderNodeVaryingSetter" id="VisualShaderNodeVaryingSetter_70mmm"]
+varying_name = "v_vertex_cell_coords_in_textures"
+varying_type = 3
+
+[sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_8y5d2"]
+size = Vector2(680, 160)
+expression = "/*float get_height(sampler2D tex, float terrain_height, vec2 uv)
+{
+	return texture(tex, uv).r * terrain_height;
+}*/"
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_ytuk2"]
+size = Vector2(1220, 260)
+expression = "vec3 camera_pos = INV_VIEW_MATRIX[3].xyz;
+distance_from_camera = distance(vertex_world_pos.xyz, camera_pos);
+distance_from_camera_on_terrain = distance(vertex_world_pos.xyz, vec3(camera_pos.x, camera_pos.y - gu_camera_altitude_from_terrain, camera_pos.z));"
+
+[sub_resource type="VisualShaderNodeVaryingSetter" id="VisualShaderNodeVaryingSetter_8av8q"]
+varying_name = "v_distance_from_camera"
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_ah843"]
+size = Vector2(660, 200)
+expression = "vec3 normal = get_normal(terrain_normalmap, u_terrain_normal_basis, uv);"
+
+[sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_oqaba"]
+size = Vector2(700, 420)
+expression = "/*vec4 pack_normal(vec3 n, float a) {
+	//n.z *= -1.0;
+	return vec4((n.xzy + vec3(1.0)) * 0.5, a);
+}
+
+vec3 unpack_normal(vec4 rgba) {
+	// If we consider texture space starts from top-left corner and Y goes down,
+	// then Y+ in pixel space corresponds to Z+ in terrain space,
+	// while X+ also corresponds to X+ in terrain space.
+	vec3 n = rgba.xzy * 2.0 - vec3(1.0);
+	// Had to negate Z because it comes from Y in the normal map,
+	// and OpenGL-style normal maps are Y-up.
+	//n.z *= -1.0;
+	return n;
+}*/"
+
+[sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_bl3mn"]
+size = Vector2(680, 220)
+expression = "/*vec3 get_normal(sampler2D tex, mat3 terrain_normal_basis, vec2 uv){
+	// Need to use terrain_normal_basis to handle scaling.
+	vec3 n = terrain_normal_basis * unpack_normal(texture(tex, uv));
+	//vec3 n = unpack_normal(texture(tex, uv));
+	return normalize(n);
+}*/"
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_dks25"]
+size = Vector2(500, 280)
+expression = "if (!use_globalmap) {
+		splat = texture(terrain_splatmap, uv);
+}"
+
+[sub_resource type="VisualShaderNodeVaryingSetter" id="VisualShaderNodeVaryingSetter_pgyig"]
+varying_name = "v_splat"
+varying_type = 5
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_anper"]
+size = Vector2(620, 380)
+expression = "vec4 tint = texture(terrain_colormap, uv);
+tint0 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.x);	// decreasing u_colormap_opacity_per_texture dimensions approximates vector tint (u_terrain_colormap texel) to white: each dimnesion (1-4) acts
+tint1 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.y);	// on the corresponding bump_map (1-4). More precisely u_colormap_opacity_per_texture.(x-w) must be in the interval 0-1, if 0 the function returns 
+tint2 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.z);	// vec3(1.0) if 1 (default value) the function returns tint.rgb
+tint3 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.w);"
+
+[sub_resource type="VisualShaderNodeVaryingSetter" id="VisualShaderNodeVaryingSetter_6cx8w"]
+varying_name = "v_tint0"
+varying_type = 4
+
+[sub_resource type="VisualShaderNodeVaryingSetter" id="VisualShaderNodeVaryingSetter_8jjv6"]
+varying_name = "v_tint1"
+varying_type = 4
+
+[sub_resource type="VisualShaderNodeVaryingSetter" id="VisualShaderNodeVaryingSetter_468sk"]
+varying_name = "v_tint2"
+varying_type = 4
+
+[sub_resource type="VisualShaderNodeVaryingSetter" id="VisualShaderNodeVaryingSetter_3uqvl"]
+varying_name = "v_tint3"
+varying_type = 4
+
+[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_jltqu"]
+parameter_name = "u_terrain_heightmap"
+
+[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_3cfda"]
+parameter_name = "u_terrain_normalmap"
+
+[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_iuadx"]
+parameter_name = "u_terrain_splatmap"
+
+[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_mrp0p"]
+parameter_name = "u_terrain_colormap"
+
+[sub_resource type="VisualShaderNodeTransformParameter" id="VisualShaderNodeTransformParameter_dicqs"]
+parameter_name = "u_terrain_inverse_transform"
+
+[sub_resource type="VisualShaderNodeUIntParameter" id="VisualShaderNodeUIntParameter_hoofg"]
+parameter_name = "u_optimization_level"
+default_value_enabled = true
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_5p3ym"]
+parameter_name = "u_grid_step"
+default_value_enabled = true
+default_value = 2.0
+
+[sub_resource type="VisualShaderNodeBooleanParameter" id="VisualShaderNodeBooleanParameter_6ufu5"]
+parameter_name = "u_use_globalmap"
+default_value_enabled = true
+
+[sub_resource type="VisualShaderNodeTexture2DParameter" id="VisualShaderNodeTexture2DParameter_g66lb"]
+parameter_name = "u_terrain_globalmap"
+texture_type = 1
+
+[sub_resource type="VisualShaderNodeVec4Parameter" id="VisualShaderNodeVec4Parameter_wgd05"]
+parameter_name = "u_ground_uv_scale_per_texture"
+default_value_enabled = true
+default_value = Vector4(2, 2, 2, 2)
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_uo8la"]
+parameter_name = "u_piece_size"
+default_value_enabled = true
+default_value = 200.0
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_j470r"]
+parameter_name = "u_scale_per_texture_factor"
+default_value_enabled = true
+default_value = 1.0
+
+[sub_resource type="VisualShaderNodeUIntParameter" id="VisualShaderNodeUIntParameter_u1i38"]
+parameter_name = "u_piecing_threshold_factor"
+default_value_enabled = true
+default_value = 4
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_gcxiv"]
+parameter_name = "u_globalmap_blend_start"
+default_value_enabled = true
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_0p8cp"]
+parameter_name = "u_globalmap_blend_distance"
+default_value_enabled = true
+
+[sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_kpbi3"]
+size = Vector2(1240, 940)
+expression = "/*bool is_on_the_border(vec2 uv, float distance_from_border) {
+	if (uv.x > distance_from_border && uv.x < (1.0 - distance_from_border) && uv.y > distance_from_border && uv.y < (1.0 - distance_from_border)) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
+bool is_on_upper_border(vec2 uv, float distance_from_border) {
+	if (uv.y >= 0.0 && uv.y < distance_from_border) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool is_on_lower_border(vec2 uv, float distance_from_border) {
+	if (uv.y > (1.0 - distance_from_border) && uv.y <= 1.0) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool is_on_left_border(vec2 uv, float distance_from_border) {
+	if (uv.x >= 0.0 && uv.x < distance_from_border) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool is_on_right_border(vec2 uv, float distance_from_border) {
+	if (uv.x > (1.0 - distance_from_border) && uv.x <= 1.0) {
+		return true;
+	} else {
+		return false;
+	}
+}*/"
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_oq2vk"]
+parameter_name = "u_editmode_selected"
+default_value_enabled = true
+
+[sub_resource type="VisualShaderNodeVec2Parameter" id="VisualShaderNodeVec2Parameter_b2pge"]
+parameter_name = "u_mouse_hit"
+default_value_enabled = true
+default_value = Vector2(-1, -1)
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_esiem"]
+parameter_name = "u_mouse_hit_radius"
+default_value_enabled = true
+default_value = 0.001
+
+[sub_resource type="VisualShaderNodeBooleanParameter" id="VisualShaderNodeBooleanParameter_21mki"]
+parameter_name = "u_triplanar"
+default_value_enabled = true
+
+[sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_7fih6"]
+size = Vector2(700, 220)
+expression = "vec3 get_triplanar_blend(vec3 world_normal) {
+	vec3 blending = abs(world_normal);
+	blending = normalize(max(blending, vec3(0.00001))); // Force weights to sum to 1.0
+	float b = blending.x + blending.y + blending.z;
+	return blending / vec3(b, b, b);
+}"
+
+[sub_resource type="VisualShaderNodeVec4Parameter" id="VisualShaderNodeVec4Parameter_gqsa8"]
+parameter_name = "u_tile_reduction_per_texture"
+default_value_enabled = true
+
+[sub_resource type="VisualShaderNodeBooleanParameter" id="VisualShaderNodeBooleanParameter_g6xqy"]
+parameter_name = "u_depth_blending"
+default_value_enabled = true
+
+[sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_qxhqq"]
+size = Vector2(520, 460)
+expression = "vec4 get_depth_blended_weights(vec4 splat, vec4 bumps) {
+	float dh = 0.2;
+
+	vec4 h = bumps + splat;
+
+	// TODO Keep improving multilayer blending, there are still some edge cases...
+	// Mitigation: nullify layers with near-zero splat
+	h *= smoothstep(0, 0.05, splat);
+
+	vec4 d = h + dh;
+	d.r -= max(h.g, max(h.b, h.a));
+	d.g -= max(h.r, max(h.b, h.a));
+	d.b -= max(h.g, max(h.r, h.a));
+	d.a -= max(h.g, max(h.b, h.r));
+
+	return clamp(d, 0, 1);
+}"
+
+[sub_resource type="VisualShaderNodeTexture2DArrayParameter" id="VisualShaderNodeTexture2DArrayParameter_gfs1p"]
+parameter_name = "gu_ground_albedo_bump_array"
+qualifier = 1
+texture_type = 1
+
+[sub_resource type="VisualShaderNodeTexture2DArrayParameter" id="VisualShaderNodeTexture2DArrayParameter_pr4ow"]
+parameter_name = "gu_ground_normal_roughness_array"
+qualifier = 1
+
+[sub_resource type="VisualShaderNodeVec4Parameter" id="VisualShaderNodeVec4Parameter_em321"]
+parameter_name = "u_ground_layers"
+default_value_enabled = true
+default_value = Vector4(-1, -1, -1, -1)
+
+[sub_resource type="VisualShaderNodeVec4Parameter" id="VisualShaderNodeVec4Parameter_uohu5"]
+parameter_name = "u_north_ground_layers"
+default_value_enabled = true
+default_value = Vector4(-1, -1, -1, -1)
+
+[sub_resource type="VisualShaderNodeVec4Parameter" id="VisualShaderNodeVec4Parameter_syvlc"]
+parameter_name = "u_east_ground_layers"
+default_value_enabled = true
+default_value = Vector4(-1, -1, -1, -1)
+
+[sub_resource type="VisualShaderNodeVec4Parameter" id="VisualShaderNodeVec4Parameter_c8kla"]
+parameter_name = "u_west_ground_layers"
+default_value_enabled = true
+default_value = Vector4(-1, -1, -1, -1)
+
+[sub_resource type="VisualShaderNodeVec4Parameter" id="VisualShaderNodeVec4Parameter_dib85"]
+parameter_name = "u_south_ground_layers"
+default_value_enabled = true
+default_value = Vector4(-1, -1, -1, -1)
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_hcory"]
+parameter_name = "gu_texture_blending_size"
+qualifier = 1
+default_value_enabled = true
+default_value = 0.4
+
+[sub_resource type="VisualShaderNodeBooleanParameter" id="VisualShaderNodeBooleanParameter_0h6ro"]
+parameter_name = "u_grid_on"
+default_value_enabled = true
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_ppomx"]
+parameter_name = "gu_grid_step"
+qualifier = 1
+
+[sub_resource type="VisualShaderNodeFloatParameter" id="VisualShaderNodeFloatParameter_x7bg6"]
+parameter_name = "gu_camera_altitude_from_terrain"
+qualifier = 1
+default_value_enabled = true
+default_value = -1.0
+
+[sub_resource type="VisualShaderNodeVaryingSetter" id="VisualShaderNodeVaryingSetter_p8wnk"]
+varying_name = "v_distance_from_camera_on_terrain"
+
+[sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_m8jdv"]
+size = Vector2(700, 640)
+expression = "#include \"res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc\"
+
+//vec3 model_world_space = MODEL_MATRIX[3].xyz; // Object's world space position. This is the equivalent to global_transform.origin in GDScript.
+//mat3 model_transform_basis = mat3(MODEL_MATRIX); // Object's world space transform basis. This is the equivalent to global_transform.basis in GDScript.
+//vec3 camera_world_space = INV_VIEW_MATRIX[3].xyz; // Camera's world space position. This is the equivalent to camera.global_transform.origin in GDScript.
+//vec3 camera_eye_world_space = VIEW_MATRIX[3].xyz; // Camera eye vector in world space direction of the camera.
+//vec3 camera_to_object_world_space = normalize(MODEL_MATRIX[3].xyz - INV_VIEW_MATRIX[3].xyz); // Camera's direction to the object in world space.
+
+uniform mat3 u_terrain_normal_basis;
+uniform float u_terrain_height = 1.0;	// NOTSET
+uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
+uniform bool u_force_height_0 = false;
+uniform sampler2D u_ground_albedo_bump_0 : source_color;
+uniform sampler2D u_ground_albedo_bump_1 : source_color;
+uniform sampler2D u_ground_albedo_bump_2 : source_color;
+uniform sampler2D u_ground_albedo_bump_3 : source_color;
+uniform sampler2D u_ground_normal_roughness_0;
+uniform sampler2D u_ground_normal_roughness_1;
+uniform sampler2D u_ground_normal_roughness_2;
+uniform sampler2D u_ground_normal_roughness_3;
+//uniform vec4 u_tile_reduction_per_texture = vec4(0.0, 0.0, 0.0, 0.0);	// Each component corresponds to a ground texture. Set greater than zero to enable.
+//uniform float u_globalmap_blend_start = 0;		// 2000 ==> optimization: at 2000 WU from camera will be used global map instead of u_ground_albedo_bump_0/3 and u_ground_normal_roughness_0/3
+//uniform float u_globalmap_blend_distance = 0;	// 1	==> 0 = disable use of global map
+uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);	// NOTSET"
+
+[resource]
+code = "shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_toon;
+
+uniform sampler2D u_terrain_heightmap;
+uniform sampler2D u_terrain_normalmap;
+uniform bool u_use_globalmap = false;
+uniform sampler2D u_terrain_globalmap : source_color;
+uniform vec4 u_ground_uv_scale_per_texture = vec4(2.000000, 2.000000, 2.000000, 2.000000);
+uniform float u_piece_size = 200;
+uniform float u_scale_per_texture_factor = 1;
+uniform uint u_piecing_threshold_factor = 4;
+uniform float u_globalmap_blend_start = 0;
+uniform float u_globalmap_blend_distance = 0;
+uniform float u_editmode_selected = 0;
+uniform vec2 u_mouse_hit = vec2(-1.000000, -1.000000);
+uniform float u_mouse_hit_radius = 0.0010000000475;
+uniform bool u_triplanar = false;
+uniform vec4 u_tile_reduction_per_texture = vec4(0.000000, 0.000000, 0.000000, 0.000000);
+uniform bool u_depth_blending = false;
+global uniform sampler2DArray gu_ground_albedo_bump_array : source_color;
+global uniform sampler2DArray gu_ground_normal_roughness_array;
+uniform vec4 u_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
+uniform vec4 u_north_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
+uniform vec4 u_east_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
+uniform vec4 u_west_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
+uniform vec4 u_south_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
+global uniform float gu_texture_blending_size = 0.40000000596046;
+uniform bool u_grid_on = false;
+global uniform float gu_grid_step;
+global uniform float gu_camera_altitude_from_terrain = -1;
+
+// Varyings
+varying vec4 v_vertex_world_pos;
+varying vec2 v_vertex_cell_coords_in_textures;
+varying float v_distance_from_camera;
+varying vec4 v_splat;
+varying vec3 v_tint0;
+varying vec3 v_tint1;
+varying vec3 v_tint2;
+varying vec3 v_tint3;
+varying float v_distance_from_camera_on_terrain;
+
+uniform mat4 u_terrain_inverse_transform;
+uniform float u_grid_step = 2;
+uniform uint u_optimization_level = 0;
+uniform sampler2D u_terrain_splatmap;
+uniform sampler2D u_terrain_colormap;
+uniform sampler2D tex_frg_62;
+
+
+// GlobalExpression:0
+	#include \"res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc\"
+	
+	//vec3 model_world_space = MODEL_MATRIX[3].xyz; // Object's world space position. This is the equivalent to global_transform.origin in GDScript.
+	//mat3 model_transform_basis = mat3(MODEL_MATRIX); // Object's world space transform basis. This is the equivalent to global_transform.basis in GDScript.
+	//vec3 camera_world_space = INV_VIEW_MATRIX[3].xyz; // Camera's world space position. This is the equivalent to camera.global_transform.origin in GDScript.
+	//vec3 camera_eye_world_space = VIEW_MATRIX[3].xyz; // Camera eye vector in world space direction of the camera.
+	//vec3 camera_to_object_world_space = normalize(MODEL_MATRIX[3].xyz - INV_VIEW_MATRIX[3].xyz); // Camera's direction to the object in world space.
+	
+	uniform mat3 u_terrain_normal_basis;
+	uniform float u_terrain_height = 1.0;	// NOTSET
+	uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
+	uniform bool u_force_height_0 = false;
+	uniform sampler2D u_ground_albedo_bump_0 : source_color;
+	uniform sampler2D u_ground_albedo_bump_1 : source_color;
+	uniform sampler2D u_ground_albedo_bump_2 : source_color;
+	uniform sampler2D u_ground_albedo_bump_3 : source_color;
+	uniform sampler2D u_ground_normal_roughness_0;
+	uniform sampler2D u_ground_normal_roughness_1;
+	uniform sampler2D u_ground_normal_roughness_2;
+	uniform sampler2D u_ground_normal_roughness_3;
+	//uniform vec4 u_tile_reduction_per_texture = vec4(0.0, 0.0, 0.0, 0.0);	// Each component corresponds to a ground texture. Set greater than zero to enable.
+	//uniform float u_globalmap_blend_start = 0;		// 2000 ==> optimization: at 2000 WU from camera will be used global map instead of u_ground_albedo_bump_0/3 and u_ground_normal_roughness_0/3
+	//uniform float u_globalmap_blend_distance = 0;	// 1	==> 0 = disable use of global map
+	uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);	// NOTSET
+// GlobalExpression:1
+	/*float get_height(sampler2D tex, float terrain_height, vec2 uv)
+	{
+		return texture(tex, uv).r * terrain_height;
+	}*/
+// GlobalExpression:2
+	/*vec4 pack_normal(vec3 n, float a) {
+		//n.z *= -1.0;
+		return vec4((n.xzy + vec3(1.0)) * 0.5, a);
+	}
+	
+	vec3 unpack_normal(vec4 rgba) {
+		// If we consider texture space starts from top-left corner and Y goes down,
+		// then Y+ in pixel space corresponds to Z+ in terrain space,
+		// while X+ also corresponds to X+ in terrain space.
+		vec3 n = rgba.xzy * 2.0 - vec3(1.0);
+		// Had to negate Z because it comes from Y in the normal map,
+		// and OpenGL-style normal maps are Y-up.
+		//n.z *= -1.0;
+		return n;
+	}*/
+// GlobalExpression:3
+	/*vec3 get_normal(sampler2D tex, mat3 terrain_normal_basis, vec2 uv){
+		// Need to use terrain_normal_basis to handle scaling.
+		vec3 n = terrain_normal_basis * unpack_normal(texture(tex, uv));
+		//vec3 n = unpack_normal(texture(tex, uv));
+		return normalize(n);
+	}*/
+// GlobalExpression:4
+	/*bool is_on_the_border(vec2 uv, float distance_from_border) {
+		if (uv.x > distance_from_border && uv.x < (1.0 - distance_from_border) && uv.y > distance_from_border && uv.y < (1.0 - distance_from_border)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	bool is_on_upper_border(vec2 uv, float distance_from_border) {
+		if (uv.y >= 0.0 && uv.y < distance_from_border) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	bool is_on_lower_border(vec2 uv, float distance_from_border) {
+		if (uv.y > (1.0 - distance_from_border) && uv.y <= 1.0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	bool is_on_left_border(vec2 uv, float distance_from_border) {
+		if (uv.x >= 0.0 && uv.x < distance_from_border) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	bool is_on_right_border(vec2 uv, float distance_from_border) {
+		if (uv.x > (1.0 - distance_from_border) && uv.x <= 1.0) {
+			return true;
+		} else {
+			return false;
+		}
+	}*/
+// GlobalExpression:5
+	vec3 get_triplanar_blend(vec3 world_normal) {
+		vec3 blending = abs(world_normal);
+		blending = normalize(max(blending, vec3(0.00001))); // Force weights to sum to 1.0
+		float b = blending.x + blending.y + blending.z;
+		return blending / vec3(b, b, b);
+	}
+// GlobalExpression:6
+	vec4 get_depth_blended_weights(vec4 splat, vec4 bumps) {
+		float dh = 0.2;
+	
+		vec4 h = bumps + splat;
+	
+		// TODO Keep improving multilayer blending, there are still some edge cases...
+		// Mitigation: nullify layers with near-zero splat
+		h *= smoothstep(0, 0.05, splat);
+	
+		vec4 d = h + dh;
+		d.r -= max(h.g, max(h.b, h.a));
+		d.g -= max(h.r, max(h.b, h.a));
+		d.b -= max(h.g, max(h.r, h.a));
+		d.a -= max(h.g, max(h.b, h.r));
+	
+		return clamp(d, 0, 1);
+	}
+// GlobalExpression:7
+	vec4 texture_albedo_bump_dismiss(int type, float layer, vec2 uv)
+	{
+		if (layer < 0.0) {
+			if (type == 0) {
+				return texture(u_ground_albedo_bump_0, uv);
+			} else if (type == 1) {
+				return texture(u_ground_albedo_bump_1, uv);
+			} else if (type == 2) {
+				return texture(u_ground_albedo_bump_2, uv);
+			} else {
+				return texture(u_ground_albedo_bump_3, uv);
+			}
+		} else {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, layer));
+		}
+	}
+	
+	vec4 texture_normal_roughness_dismiss(int type, float layer, vec2 uv)
+	{
+		if (layer < 0.0) {
+			if (type == 0) {
+				return texture(u_ground_normal_roughness_0, uv);
+			} else if (type == 1) {
+				return texture(u_ground_normal_roughness_1, uv);
+			} else if (type == 2) {
+				return texture(u_ground_normal_roughness_2, uv);
+			} else {
+				return texture(u_ground_normal_roughness_3, uv);
+			}
+		} else {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, layer));
+		}
+	}
+	
+	vec4 texture_albedo_bump(int type,
+		bool north_border_pixel, 
+		bool south_border_pixel, 
+		bool west_border_pixel, 
+		bool east_border_pixel, 
+		vec2 uv)
+	{
+		if (type == 0) {
+			if (north_border_pixel && u_north_ground_layers.x >= 0.0) {
+				return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.x));
+			//} else if (south_border_pixel && u_south_ground_layers.x >= 0.0) {
+			//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.x));
+			} else if (west_border_pixel && u_west_ground_layers.x >= 0.0) {
+				return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.x));
+			//} else if (east_border_pixel && u_east_ground_layers.x >= 0.0) {
+			//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.x));
+			} else if (u_ground_layers.x >= 0.0) {
+				return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.x));
+			} else {
+				return texture(u_ground_albedo_bump_0, uv);
+			}
+		} else if (type == 1) {
+			if (north_border_pixel && u_north_ground_layers.y >= 0.0) {
+				return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.y));
+			//} else if (south_border_pixel && u_south_ground_layers.y >= 0.0) {
+			//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.y));
+			} else if (west_border_pixel && u_west_ground_layers.y >= 0.0) {
+				return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.y));
+			//} else if (east_border_pixel && u_east_ground_layers.y >= 0.0) {
+			//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.y));
+			} else if (u_ground_layers.y >= 0.0) {
+				return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.y));
+			} else {
+				return texture(u_ground_albedo_bump_1, uv);
+			}
+		} else if (type == 2) {
+			if (north_border_pixel && u_north_ground_layers.z >= 0.0) {
+				return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.z));
+			//} else if (south_border_pixel && u_south_ground_layers.z >= 0.0) {
+			//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.z));
+			} else if (west_border_pixel && u_west_ground_layers.z >= 0.0) {
+				return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.z));
+			//} else if (east_border_pixel && u_east_ground_layers.z >= 0.0) {
+			//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.z));
+			} else if (u_ground_layers.z >= 0.0) {
+				return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.z));
+			} else {
+				return texture(u_ground_albedo_bump_2, uv);
+			}
+		} else {
+			if (north_border_pixel && u_north_ground_layers.a >= 0.0) {
+				return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.a));
+			//} else if (south_border_pixel && u_south_ground_layers.a >= 0.0) {
+			//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.a));
+			} else if (west_border_pixel && u_west_ground_layers.a >= 0.0) {
+				return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.a));
+			//} else if (east_border_pixel && u_east_ground_layers.a >= 0.0) {
+			//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.a));
+			} else if (u_ground_layers.a >= 0.0) {
+				return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.a));
+			} else {
+				return texture(u_ground_albedo_bump_3, uv);
+			}
+		}
+	}
+	
+	vec4 texture_normal_roughness(int type,
+		bool north_border_pixel, 
+		bool south_border_pixel, 
+		bool west_border_pixel, 
+		bool east_border_pixel, 
+		vec2 uv)
+	{
+		if (type == 0) {
+			if (north_border_pixel && u_north_ground_layers.x >= 0.0) {
+				return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.x));
+			//} else if (south_border_pixel && u_south_ground_layers.x >= 0.0) {
+			//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.x));
+			} else if (west_border_pixel && u_west_ground_layers.x >= 0.0) {
+				return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.x));
+			//} else if (east_border_pixel && u_east_ground_layers.x >= 0.0) {
+			//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.x));
+			} else if (u_ground_layers.x >= 0.0) {
+				return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.x));
+			} else {
+				return texture(u_ground_normal_roughness_0, uv);
+			}
+		} else if (type == 1) {
+			if (north_border_pixel && u_north_ground_layers.y >= 0.0) {
+				return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.y));
+			//} else if (south_border_pixel && u_south_ground_layers.y >= 0.0) {
+			//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.y));
+			} else if (west_border_pixel && u_west_ground_layers.y >= 0.0) {
+				return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.y));
+			//} else if (east_border_pixel && u_east_ground_layers.y >= 0.0) {
+			//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.y));
+			} else if (u_ground_layers.y >= 0.0) {
+				return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.y));
+			} else {
+				return texture(u_ground_normal_roughness_1, uv);
+			}
+		} else if (type == 2) {
+			if (north_border_pixel && u_north_ground_layers.z >= 0.0) {
+				return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.z));
+			//} else if (south_border_pixel && u_south_ground_layers.z >= 0.0) {
+			//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.z));
+			} else if (west_border_pixel && u_west_ground_layers.z >= 0.0) {
+				return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.z));
+			//} else if (east_border_pixel && u_east_ground_layers.z >= 0.0) {
+			//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.z));
+			} else if (u_ground_layers.z >= 0.0) {
+				return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.z));
+			} else {
+				return texture(u_ground_normal_roughness_2, uv);
+			}
+		} else {
+			if (north_border_pixel && u_north_ground_layers.a >= 0.0) {
+				return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.a));
+			//} else if (south_border_pixel && u_south_ground_layers.a >= 0.0) {
+			//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.a));
+			} else if (west_border_pixel && u_west_ground_layers.a >= 0.0) {
+				return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.a));
+			//} else if (east_border_pixel && u_east_ground_layers.a >= 0.0) {
+			//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.a));
+			} else if (u_ground_layers.a >= 0.0) {
+				return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.a));
+			} else {
+				return texture(u_ground_normal_roughness_3, uv);
+			}
+		}
+	}
+// GlobalExpression:8
+	vec4 depth_blend2(vec4 a_value, float a_bump, vec4 b_value, float b_bump, float t) {
+		// https://www.gamasutra.com
+		// /blogs/AndreyMishkinis/20130716/196339/Advanced_Terrain_Texture_Splatting.php
+		float d = 0.1;
+		float ma = max(a_bump + (1.0 - t), b_bump + t) - d;
+		float ba = max(a_bump + (1.0 - t) - ma, 0.0);
+		float bb = max(b_bump + t - ma, 0.0);
+		return (a_value * ba + b_value * bb) / (ba + bb);
+	}
+	
+	vec2 rotate(vec2 v, float cosa, float sina) {
+		return vec2(cosa * v.x - sina * v.y, sina * v.x + cosa * v.y);
+	}
+	
+	vec4 texture_antitile_dismiss(sampler2D albedo_tex, sampler2D normal_tex, vec2 uv, out vec4 out_normal) {
+		float frequency = 2.0;
+		float scale = 1.3;
+		float sharpness = 0.7;
+		
+		// Rotate and scale UV
+		float rot = 3.14 * 0.6;
+		float cosa = cos(rot);
+		float sina = sin(rot);
+		vec2 uv2 = rotate(uv, cosa, sina) * scale;
+		
+		vec4 col0 = texture(albedo_tex, uv);
+		vec4 col1 = texture(albedo_tex, uv2);
+		vec4 nrm0 = texture(normal_tex, uv);
+		vec4 nrm1 = texture(normal_tex, uv2);
+		//col0 = vec4(0.0, 0.5, 0.5, 1.0); // Highlights variations
+	
+		// Normals have to be rotated too since we are rotating the texture...
+		// TODO Probably not the most efficient but understandable for now
+		vec3 n = unpack_normal(nrm1);
+		// Had to negate the Y axis for some reason. I never remember the myriad of conventions around
+		n.xz = rotate(n.xz, cosa, -sina);
+		nrm1 = pack_normal(n, nrm1.a);
+		
+		// Periodically alternate between the two versions using a warped checker pattern
+		float t = 1.2 + 
+			  sin(uv2.x * frequency + sin(uv.x) * 2.0) 
+			* cos(uv2.y * frequency + sin(uv.y) * 2.0); // Result in [0..2]
+		t = smoothstep(sharpness, 2.0 - sharpness, t);
+	
+		// Using depth blend because classic alpha blending smoothes out details.
+		out_normal = depth_blend2(nrm0, col0.a, nrm1, col1.a, t);
+		return depth_blend2(col0, col0.a, col1, col1.a, t);
+	}
+	
+	vec4 texture_antitile_layers(int type, 
+		bool north_border_pixel, 
+		bool south_border_pixel, 
+		bool west_border_pixel, 
+		bool east_border_pixel, 
+		vec2 uv, out vec4 out_normal)
+	{
+		float frequency = 2.0;
+		float scale = 1.3;
+		float sharpness = 0.7;
+		
+		// Rotate and scale UV
+		float rot = 3.14 * 0.6;
+		float cosa = cos(rot);
+		float sina = sin(rot);
+		vec2 uv2 = rotate(uv, cosa, sina) * scale;
+		
+		vec4 col0 = texture_albedo_bump(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, uv);
+		vec4 col1 = texture_albedo_bump(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, uv2);
+		vec4 nrm0 = texture_normal_roughness(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, uv);
+		vec4 nrm1 = texture_normal_roughness(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, uv2);
+		//col0 = vec4(0.0, 0.5, 0.5, 1.0); // Highlights variations
+	
+		// Normals have to be rotated too since we are rotating the texture...
+		// TODO Probably not the most efficient but understandable for now
+		vec3 n = unpack_normal(nrm1);
+		// Had to negate the Y axis for some reason. I never remember the myriad of conventions around
+		n.xz = rotate(n.xz, cosa, -sina);
+		nrm1 = pack_normal(n, nrm1.a);
+		
+		// Periodically alternate between the two versions using a warped checker pattern
+		float t = 1.2 + 
+			  sin(uv2.x * frequency + sin(uv.x) * 2.0) 
+			* cos(uv2.y * frequency + sin(uv.y) * 2.0); // Result in [0..2]
+		t = smoothstep(sharpness, 2.0 - sharpness, t);
+	
+		// Using depth blend because classic alpha blending smoothes out details.
+		out_normal = depth_blend2(nrm0, col0.a, nrm1, col1.a, t);
+		return depth_blend2(col0, col0.a, col1, col1.a, t);
+	}
+	
+// GlobalExpression:9
+	vec4 texture_triplanar_dismiss(sampler2D tex, vec3 world_pos, vec3 blend) {
+		vec4 xaxis = texture(tex, world_pos.yz);
+		vec4 yaxis = texture(tex, world_pos.xz);
+		vec4 zaxis = texture(tex, world_pos.xy);
+		// blend the results of the 3 planar projections.
+		return xaxis * blend.x + yaxis * blend.y + zaxis * blend.z;
+	}
+	
+	vec4 texture_triplanar_ab_layers(int type, 
+		bool north_border_pixel, 
+		bool south_border_pixel, 
+		bool west_border_pixel, 
+		bool east_border_pixel, 
+		vec3 world_pos, vec3 blend)
+	{
+		vec4 xaxis = texture_albedo_bump(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, world_pos.yz);
+		vec4 yaxis = texture_albedo_bump(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, world_pos.xz);
+		vec4 zaxis = texture_albedo_bump(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, world_pos.xy);
+		// blend the results of the 3 planar projections.
+		return xaxis * blend.x + yaxis * blend.y + zaxis * blend.z;
+	}
+	
+	vec4 texture_triplanar_nr_layers(int type, 
+		bool north_border_pixel, 
+		bool south_border_pixel, 
+		bool west_border_pixel, 
+		bool east_border_pixel, 
+		vec3 world_pos, vec3 blend)
+	{
+		vec4 xaxis = texture_normal_roughness(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, world_pos.yz);
+		vec4 yaxis = texture_normal_roughness(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, world_pos.xz);
+		vec4 zaxis = texture_normal_roughness(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, world_pos.xy);
+		// blend the results of the 3 planar projections.
+		return xaxis * blend.x + yaxis * blend.y + zaxis * blend.z;
+	}
+
+void vertex() {
+// Input:15
+	vec3 n_out15p0 = VERTEX;
+
+
+	vec4 n_out11p0;
+// Expression:11
+	n_out11p0 = vec4(0.0, 0.0, 0.0, 0.0);
+	{
+		// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need to trasform in world coord to abstract from chunk
+		n_out11p0 = MODEL_MATRIX * vec4(n_out15p0, 1);
+	}
+
+
+// TransformParameter:35
+	mat4 n_out35p0 = u_terrain_inverse_transform;
+
+
+// FloatParameter:37
+	float n_out37p0 = u_grid_step;
+
+
+// UIntParameter:36
+	uint n_out36p0 = u_optimization_level;
+
+
+	vec2 n_out12p0;
+	vec2 n_out12p1;
+// Expression:12
+	n_out12p0 = vec2(0.0, 0.0);
+	n_out12p1 = vec2(0.0, 0.0);
+	{
+		// to calculate coords of the vertex local to the quadrant we use affine inverse matrix of the global trasform of the quadtree
+		vec4 vertex_local_to_quadrant_pos = n_out35p0 * n_out11p0;
+		// to get correct value from the textures (in the range 0 / max size in local coord) we need to consider the step 
+		// (dividing by it): in the textures heigths/normals are adjacent but in global/local coords are separated by the step
+		// ***  after next line n_out12p0 ranges from 0 to heightmap size - 1 (heightmap size vertices per
+		// size of quadrant - f.i. 2049) so it is an index of the pixel in heightmap/normalmap/splatmap etc. texture ***
+		n_out12p0 = vertex_local_to_quadrant_pos.xz / vec2(n_out37p0 * pow(2.0, float(n_out36p0)));
+		// Moreover must add a half-offset so that we sample the center of pixels, otherwise bilinear filtering of the textures
+		// will give us mixed results (#183): as we fetch pixels from textures with UV which is a percentage value ranging from
+		// 0.0 to 1.0 we have to convert our index (n_out12p0) in percentage; without summing vec2(0.5)
+		// first index 0 would be 0.0 and we qould have next indices summing 1 / heightmap size with the second index being
+		// 1 / heightmap size and the last index being (heightmap size - 1) / heightmap size. In this way transforming percentages
+		// index we touch the exact point where our pixel start and where the previous texture pixel ends so the engine, not knowing
+		// which value consider make an interpolation from the values of our texel and the previous but this is not what we want as we
+		// want the exact value of the texel; to avoid this we have to sum half so the UV points in the exact medium of the texel
+		// (remember tha UV is a percentage that approximate to a vertex index) avoiding linear interpolation.
+		// look at https://gamedev.stackexchange.com/questions/46963/how-to-avoid-texture-bleeding-in-a-texture-atlas
+		// and https://learn.microsoft.com/it-it/windows/win32/direct3d9/directly-mapping-texels-to-pixels?redirectedfrom=MSDN
+		n_out12p0 += vec2(0.5);	// IMPORTANT: now n_out12p0 ranges from 0.5 
+														// to (heightmap size - 1) + 0.5 with increment of 1.0 between each coord
+		// Normalized UV to be in the range 0/1
+		n_out12p1 = n_out12p0 / vec2(textureSize(u_terrain_heightmap, 0));
+	}
+
+
+	vec3 n_out13p0;
+	vec4 n_out13p1;
+// Expression:13
+	n_out13p0 = vec3(0.0, 0.0, 0.0);
+	n_out13p1 = vec4(0.0, 0.0, 0.0, 0.0);
+	{
+		n_out13p0 = n_out15p0;
+		n_out13p1 = n_out11p0;
+		float h = get_height(u_terrain_heightmap, u_terrain_height, n_out12p1);		// Height displacement from heigthmap
+		if (u_force_height_0) {													// Needed to bake globalmap
+			n_out13p0.y = 0.0;
+			n_out13p1.y = 0.0;
+		} else {
+			n_out13p0.y = h;
+			n_out13p1.y = h;
+		}
+	}
+
+
+	vec3 n_out20p0;
+// Expression:20
+	n_out20p0 = vec3(0.0, 0.0, 0.0);
+	{
+		vec3 n_out20p0 = get_normal(u_terrain_normalmap, u_terrain_normal_basis, n_out12p1);
+	}
+
+
+// Output:0
+	VERTEX = n_out13p0;
+	NORMAL = n_out20p0;
+	UV = n_out12p1;
+
+
+// VaryingSetter:14
+	v_vertex_world_pos = n_out13p1;
+
+
+// VaryingSetter:16
+	v_vertex_cell_coords_in_textures = n_out12p0;
+
+
+	float n_out18p0;
+	float n_out18p1;
+// Expression:18
+	n_out18p0 = 0.0;
+	n_out18p1 = 0.0;
+	{
+		vec3 camera_pos = INV_VIEW_MATRIX[3].xyz;
+		n_out18p0 = distance(n_out13p1.xyz, camera_pos);
+		n_out18p1 = distance(n_out13p1.xyz, vec3(camera_pos.x, camera_pos.y - gu_camera_altitude_from_terrain, camera_pos.z));
+	}
+
+
+// VaryingSetter:19
+	v_distance_from_camera = n_out18p0;
+
+
+// BooleanParameter:38
+	bool n_out38p0 = u_use_globalmap;
+
+
+	vec4 n_out23p0;
+// Expression:23
+	n_out23p0 = vec4(0.0, 0.0, 0.0, 0.0);
+	{
+		if (!n_out38p0) {
+				n_out23p0 = texture(u_terrain_splatmap, n_out12p1);
+		}
+	}
+
+
+// VaryingSetter:24
+	v_splat = n_out23p0;
+
+
+	vec3 n_out25p0;
+	vec3 n_out25p1;
+	vec3 n_out25p2;
+	vec3 n_out25p3;
+// Expression:25
+	n_out25p0 = vec3(0.0, 0.0, 0.0);
+	n_out25p1 = vec3(0.0, 0.0, 0.0);
+	n_out25p2 = vec3(0.0, 0.0, 0.0);
+	n_out25p3 = vec3(0.0, 0.0, 0.0);
+	{
+		vec4 tint = texture(u_terrain_colormap, n_out12p1);
+		n_out25p0 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.x);	// decreasing u_colormap_opacity_per_texture dimensions approximates vector tint (u_terrain_colormap texel) to white: each dimnesion (1-4) acts
+		n_out25p1 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.y);	// on the corresponding bump_map (1-4). More precisely u_colormap_opacity_per_texture.(x-w) must be in the interval 0-1, if 0 the function returns 
+		n_out25p2 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.z);	// vec3(1.0) if 1 (default value) the function returns tint.rgb
+		n_out25p3 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.w);
+	}
+
+
+// VaryingSetter:26
+	v_tint0 = n_out25p0;
+
+
+// VaryingSetter:27
+	v_tint1 = n_out25p1;
+
+
+// VaryingSetter:28
+	v_tint2 = n_out25p2;
+
+
+// VaryingSetter:29
+	v_tint3 = n_out25p3;
+
+
+// VaryingSetter:68
+	v_distance_from_camera_on_terrain = n_out18p1;
+
+
+}
+
+void fragment() {
+// VaryingGetter:3
+	float n_out3p0 = v_distance_from_camera;
+
+
+// ParameterRef:23
+	float n_out23p0 = u_globalmap_blend_start;
+
+
+// ParameterRef:24
+	float n_out24p0 = u_globalmap_blend_distance;
+
+
+// Input:13
+	vec2 n_out13p0 = UV;
+
+
+// ParameterRef:26
+	float n_out26p0 = u_editmode_selected;
+
+
+// ParameterRef:21
+	bool n_out21p0 = u_use_globalmap;
+
+
+	bool n_out25p0;
+	bool n_out25p1;
+// Expression:25
+	n_out25p0 = false;
+	n_out25p1 = false;
+	{
+		if (n_out26p0 > 0.0 && is_on_the_border(n_out13p0, u_quad_border_line_thickness)) {
+			n_out25p0 = true;
+		} else {
+			n_out25p0 = false;
+		}
+		if (n_out21p0) {
+			n_out25p1 = true;
+		} else {
+			n_out25p1 = false;
+		}
+	}
+
+
+	vec3 n_out33p0;
+	float n_out33p1;
+	float n_out33p2;
+// Expression:33
+	n_out33p0 = vec3(0.0, 0.0, 0.0);
+	n_out33p1 = 0.0;
+	n_out33p2 = 0.0;
+	{
+		n_out33p2 = 1.0;
+		n_out33p1 = 1.0;
+		if (n_out25p0) {
+			n_out33p0 = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+		} else {
+			n_out33p0 = texture(u_terrain_globalmap, n_out13p0).rgb;
+			if (n_out25p1) {
+				n_out33p1 = 0.5;
+			} else {
+				n_out33p2 = clamp((n_out3p0 - n_out23p0) * n_out24p0, 0.0, 1.0);
+				n_out33p2 *= n_out33p2; // slower start, faster transition but far away
+			}
+		}
+	}
+
+
+// ParameterRef:34
+	bool n_out34p0 = u_triplanar;
+
+
+	vec3 n_out14p0;
+	vec3 n_out14p1;
+// Expression:14
+	n_out14p0 = vec3(0.0, 0.0, 0.0);
+	n_out14p1 = vec3(0.0, 0.0, 0.0);
+	{
+		n_out14p0 = get_normal(u_terrain_normalmap, u_terrain_normal_basis, n_out13p0);
+		n_out14p1 = n_out14p0;
+	}
+
+
+// VaryingGetter:11
+	vec2 n_out11p0 = v_vertex_cell_coords_in_textures;
+
+
+// VaryingGetter:12
+	vec4 n_out12p0 = v_vertex_world_pos;
+
+
+// VaryingGetter:84
+	float n_out84p0 = v_distance_from_camera_on_terrain;
+
+
+// Input:8
+	vec3 n_out8p0 = VERTEX;
+
+
+// ParameterRef:17
+	vec4 n_out17p0 = u_ground_uv_scale_per_texture;
+
+
+// ParameterRef:18
+	uint n_out18p0 = u_piecing_threshold_factor;
+
+
+// ParameterRef:19
+	float n_out19p0 = u_piece_size;
+
+
+// ParameterRef:20
+	float n_out20p0 = u_scale_per_texture_factor;
+
+
+// ParameterRef:82
+	float n_out82p0 = gu_camera_altitude_from_terrain;
+
+
+	vec4 n_out4p0;
+	bool n_out4p1;
+	int n_out4p2;
+// Expression:4
+	n_out4p0 = vec4(0.0, 0.0, 0.0, 0.0);
+	n_out4p1 = false;
+	n_out4p2 = 0;
+	{
+		//n_out17p0 = vec4(200.0, 200.0, 200.0, 200.0);
+		n_out4p0 = n_out17p0;
+		n_out4p2 = -1;
+		n_out4p1 = true;
+		
+		/*if (!n_out4p1) {
+			n_out4p0 = vec4(300.0);
+			n_out20p0 = 10.0;
+		} else {
+			n_out4p0 = vec4(2.0);
+			n_out20p0 = 1.0;
+			n_out18p0 = uint(4);
+			n_out19p0 = 200.0;
+		}*/
+		
+		int alt_piece = int(floor(n_out82p0 / n_out19p0));
+		if (alt_piece < 4) {
+			n_out20p0 *= pow(2.0, float(alt_piece));
+		} else {
+			n_out82p0 = -1.0;
+		}
+		
+		if (n_out82p0 > 0.0 && n_out84p0 < 2000.0) {
+			vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(n_out8p0, 1.0)).xyz;
+			int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / n_out19p0));
+			int camera_piece_z = int(floor(CAMERA_POSITION_WORLD.z / n_out19p0));
+			int frag_piece_x = int(floor(fragment_world_pos.x / n_out19p0));
+			int frag_piece_z = int(floor(fragment_world_pos.z / n_out19p0));
+			n_out4p2 = max(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_z - frag_piece_z)));
+			if (n_out4p2 <= 1)
+			{
+				n_out4p0 /= (n_out20p0 / 20.0);
+				//n_out4p0 = vec4(40.0);
+			}
+			else if (n_out4p2 <= 3)
+			{
+				n_out4p0 /= (n_out20p0 / 10.0);
+				//n_out4p0 = vec4(20.0);
+			}
+			else if (n_out4p2 <= 5)
+			{
+				n_out4p0 /= (n_out20p0 / 10.0);
+				//n_out4p0 = vec4(20.0);
+			}
+			else if (n_out4p2 <= 7)
+			{
+				n_out4p0 /= (n_out20p0 / 8.0);
+				//n_out4p0 = vec4(16.0);
+			}
+			/*else if (n_out4p2 == 4)
+			{
+				n_out4p0 /= (n_out20p0 / 3.0);
+				//n_out4p0 = vec4(6.0);
+			}
+			else if (n_out4p2 == 5)
+			{
+				n_out4p0 /= (n_out20p0 / 3.0);
+				//n_out4p0 = vec4(6.0);
+			}*/
+		}
+	}
+
+
+// VaryingGetter:37
+	vec4 n_out37p0 = v_splat;
+
+
+// Texture2D:62
+	vec4 n_out62p0 = texture(tex_frg_62, UV);
+
+
+// FloatConstant:75
+	float n_out75p0 = 0.000000;
+
+
+// ParameterRef:74
+	float n_out74p0 = gu_texture_blending_size;
+
+
+	vec3 n_out76p0;
+// If:76
+	float n_in76p1 = 0.00000;
+	float n_in76p2 = 0.00001;
+	if(abs(n_out75p0 - n_in76p1) < n_in76p2)
+	{
+		n_out76p0 = vec3(n_out74p0);
+	}
+	else if(n_out75p0 < n_in76p1)
+	{
+		n_out76p0 = vec3(n_out75p0);
+	}
+	else
+	{
+		n_out76p0 = vec3(n_out75p0);
+	}
+
+
+// VectorOp:69
+	vec3 n_out69p0 = vec3(n_out62p0.xyz) * n_out76p0;
+
+
+	bool n_out73p0;
+	bool n_out73p1;
+	bool n_out73p2;
+	bool n_out73p3;
+	vec4 n_out73p4;
+// Expression:73
+	n_out73p0 = false;
+	n_out73p1 = false;
+	n_out73p2 = false;
+	n_out73p3 = false;
+	n_out73p4 = vec4(0.0, 0.0, 0.0, 0.0);
+	{
+		n_out73p0 = false;
+		n_out73p1 = false;
+		n_out73p2 = false;
+		n_out73p3 = false;
+		n_out73p4 = n_out37p0;
+		
+		if (!n_out25p0 && !n_out25p1) {
+			if (is_on_upper_border(n_out13p0, n_out69p0.x)) {
+				n_out73p0 = true;
+				//n_out73p4 = n_out73p4 + ;
+			}
+			if (is_on_lower_border(n_out13p0, n_out69p0.x)) {
+				n_out73p1 = true;
+				//n_out73p4 = n_out73p4 + ;
+			}
+			if (is_on_left_border(n_out13p0, n_out69p0.x)) {
+				n_out73p2 = true;
+				//n_out73p4 = n_out73p4 + ;
+			}
+			if (is_on_right_border(n_out13p0, n_out69p0.x)) {
+				n_out73p3 = true;
+				//n_out73p4 = n_out73p4 + ;
+			}
+		
+			/*if (is_on_upper_border(n_out13p0, n_out69p0.x)) {
+				n_out73p4 = vec4(-1.0, 0.0, 0.0, 0.0);
+			}
+			if (is_on_lower_border(n_out13p0, n_out69p0.x)) {
+				n_out73p4 = vec4(0.0, -1.0, 0.0, 0.0);
+			}
+			if (is_on_left_border(n_out13p0, n_out69p0.x)) {
+				n_out73p4 = vec4(0.0, 0.0, -1.0, 0.0);
+			}
+			if (is_on_right_border(n_out13p0, n_out69p0.x)) {
+				n_out73p4 = vec4(0.0, 0.0, 0.0, -1.0);
+			}*/
+		}
+		//n_out73p4 = n_out37p0;
+	}
+
+
+	vec2 n_out10p0;
+	vec2 n_out10p1;
+	vec2 n_out10p2;
+	vec3 n_out10p3;
+// Expression:10
+	n_out10p0 = vec2(0.0, 0.0);
+	n_out10p1 = vec2(0.0, 0.0);
+	n_out10p2 = vec2(0.0, 0.0);
+	n_out10p3 = vec3(0.0, 0.0, 0.0);
+	{
+		vec3 base_ground_uv;
+		/*if (!n_out4p1) {
+			//n_out4p0 = vec4(300.0);
+			if (n_out73p1) {
+				// mirror
+				base_ground_uv = vec3(n_out11p0.x, 
+									n_out12p0.y * MODEL_MATRIX[1][1],
+									float(textureSize(u_terrain_heightmap, 0).y) - n_out11p0.y);
+			} else if (n_out73p3) {
+				// mirror
+				base_ground_uv = vec3(float(textureSize(u_terrain_heightmap, 0).x) - n_out11p0.x, 
+									n_out12p0.y * MODEL_MATRIX[1][1],
+									n_out11p0.y);
+			} else {
+				base_ground_uv = vec3(n_out11p0.x, n_out12p0.y * MODEL_MATRIX[1][1], n_out11p0.y);
+			}
+			//base_ground_uv = vec3(n_out11p0.x, n_out12p0.y * MODEL_MATRIX[1][1], n_out11p0.y);
+			// 2-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor
+			// these coordinates are used to fetch ground_albedo_bump and ground_normal_roughness 
+			n_out10p0 = base_ground_uv.xz / n_out4p0.x;
+			n_out10p1 = base_ground_uv.xz / n_out4p0.y;
+			n_out10p2 = base_ground_uv.xz / n_out4p0.z;
+			// 3-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor (y coord is height in world coord)
+			n_out10p3 = base_ground_uv / n_out4p0.w;
+		} else {*/
+			//n_out4p0 = vec4(2.0);
+			base_ground_uv = vec3(n_out13p0.x, n_out12p0.y * MODEL_MATRIX[1][1], n_out13p0.y);
+			n_out10p0 = base_ground_uv.xz * n_out4p0.x;
+			n_out10p1 = base_ground_uv.xz * n_out4p0.y;
+			n_out10p2 = base_ground_uv.xz * n_out4p0.z;
+			n_out10p3 = base_ground_uv * n_out4p0.w;
+		//}
+	}
+
+
+// ParameterRef:35
+	vec4 n_out35p0 = u_tile_reduction_per_texture;
+
+
+	vec3 n_out30p0;
+	float n_out30p1;
+	vec3 n_out30p2;
+	vec4 n_out30p3;
+	vec4 n_out30p4;
+	vec4 n_out30p5;
+	vec4 n_out30p6;
+	vec4 n_out30p7;
+	vec4 n_out30p8;
+	vec4 n_out30p9;
+	vec4 n_out30p10;
+// Expression:30
+	n_out30p0 = vec3(0.0, 0.0, 0.0);
+	n_out30p1 = 0.0;
+	n_out30p2 = vec3(0.0, 0.0, 0.0);
+	n_out30p3 = vec4(0.0, 0.0, 0.0, 0.0);
+	n_out30p4 = vec4(0.0, 0.0, 0.0, 0.0);
+	n_out30p5 = vec4(0.0, 0.0, 0.0, 0.0);
+	n_out30p6 = vec4(0.0, 0.0, 0.0, 0.0);
+	n_out30p7 = vec4(0.0, 0.0, 0.0, 0.0);
+	n_out30p8 = vec4(0.0, 0.0, 0.0, 0.0);
+	n_out30p9 = vec4(0.0, 0.0, 0.0, 0.0);
+	n_out30p10 = vec4(0.0, 0.0, 0.0, 0.0);
+	{
+		n_out30p1 = n_out33p1;
+		n_out30p0 = n_out33p0;
+		n_out30p2 = n_out14p0;
+		
+		if (!n_out25p0 && !n_out25p1) {
+			if (n_out34p0) {
+				// Only do n_out34p0 on one texture slot,
+				// because otherwise it would be very expensive and cost many more ifs.
+				// I chose the last slot because first slot is the default on new splatmaps,
+				// and that's a feature used for cliffs, which are usually designed later.
+		
+				vec3 blending = get_triplanar_blend(n_out14p0);
+		
+				//n_out30p6 = texture_triplanar(u_ground_albedo_bump_3, n_out10p3, blending);
+				//n_out30p10 = texture_triplanar(u_ground_normal_roughness_3, n_out10p3, blending);
+				n_out30p6 = texture_triplanar_ab_layers(3, n_out73p0, n_out73p1, n_out73p2, n_out73p3, n_out10p3, blending);
+				n_out30p10 = texture_triplanar_nr_layers(3, n_out73p0, n_out73p1, n_out73p2, n_out73p3, n_out10p3, blending);
+		
+			} else {
+				if (n_out35p0[3] > 0.0) {
+					//n_out30p6 = texture_antitile(u_ground_albedo_bump_3, u_ground_normal_roughness_3, n_out10p3.xz, n_out30p10);
+					n_out30p6 = texture_antitile_layers(3, n_out73p0, n_out73p1, n_out73p2, n_out73p3, n_out10p3.xz, n_out30p10);
+				} else {
+					//n_out30p6 = texture(u_ground_albedo_bump_3, n_out10p3.xz);
+					//n_out30p10 = texture(u_ground_normal_roughness_3, n_out10p3.xz);
+					n_out30p6 = texture_albedo_bump(3, n_out73p0, n_out73p1, n_out73p2, n_out73p3, n_out10p3.xz);
+					n_out30p10 = texture_normal_roughness(3, n_out73p0, n_out73p1, n_out73p2, n_out73p3, n_out10p3.xz);
+				}
+			}
+		
+			if (n_out35p0[0] > 0.0) {
+				//n_out30p3 = texture_antitile(u_ground_albedo_bump_0, u_ground_normal_roughness_0, n_out10p0, n_out30p7);
+				n_out30p3 = texture_antitile_layers(0, n_out73p0, n_out73p1, n_out73p2, n_out73p3, n_out10p0, n_out30p7);
+			} else {
+				//n_out30p3 = texture(u_ground_albedo_bump_0, n_out10p0);
+				//n_out30p7 = texture(u_ground_normal_roughness_0, n_out10p0);
+				n_out30p3 = texture_albedo_bump(0, n_out73p0, n_out73p1, n_out73p2, n_out73p3, n_out10p0);
+				n_out30p7 = texture_normal_roughness(0, n_out73p0, n_out73p1, n_out73p2, n_out73p3, n_out10p0);
+			}
+			if (n_out35p0[1] > 0.0) {
+				//n_out30p4 = texture_antitile(u_ground_albedo_bump_1, u_ground_normal_roughness_1, n_out10p1, n_out30p8);
+				n_out30p4 = texture_antitile_layers(1, n_out73p0, n_out73p1, n_out73p2, n_out73p3, n_out10p1, n_out30p8);
+			} else {
+				//n_out30p4 = texture(u_ground_albedo_bump_1, n_out10p1);
+				//n_out30p8 = texture(u_ground_normal_roughness_1, n_out10p1);
+				n_out30p4 = texture_albedo_bump(1, n_out73p0, n_out73p1, n_out73p2, n_out73p3, n_out10p1);
+				n_out30p8 = texture_normal_roughness(1, n_out73p0, n_out73p1, n_out73p2, n_out73p3, n_out10p1);
+			}
+			if (n_out35p0[2] > 0.0) {
+				//n_out30p5 = texture_antitile(u_ground_albedo_bump_2, u_ground_normal_roughness_2, n_out10p2, n_out30p9);
+				n_out30p5 = texture_antitile_layers(2, n_out73p0, n_out73p1, n_out73p2, n_out73p3, n_out10p2, n_out30p9);
+			} else {
+				//n_out30p5 = texture(u_ground_albedo_bump_2, n_out10p2);
+				//n_out30p9 = texture(u_ground_normal_roughness_2, n_out10p2);
+				n_out30p5 = texture_albedo_bump(2, n_out73p0, n_out73p1, n_out73p2, n_out73p3, n_out10p2);
+				n_out30p9 = texture_normal_roughness(2, n_out73p0, n_out73p1, n_out73p2, n_out73p3, n_out10p2);
+			}
+			/*vec3 red = vec3(1.0, 0.0, 0.0);
+			vec3 green = vec3(0.0, 1.0, 0.0);
+			vec3 blue = vec3(0.0, 0.0, 1.0);
+			vec3 yellow = vec3(1.0, 0.749, 0.0);
+			if (n_out73p0)	{
+				n_out30p3.rgb = red;
+				n_out30p4.rgb = red;
+				n_out30p5.rgb = red;
+				n_out30p6.rgb = red;
+			}
+			if (n_out73p1)	{
+				n_out30p3.rgb = green;
+				n_out30p4.rgb = green;
+				n_out30p5.rgb = green;
+				n_out30p6.rgb = green;
+			}
+			if (n_out73p2)	{
+				n_out30p3.rgb = blue;
+				n_out30p4.rgb = blue;
+				n_out30p5.rgb = blue;
+				n_out30p6.rgb = blue;
+			}
+			if (n_out73p3)	{
+				n_out30p3.rgb = yellow;
+				n_out30p4.rgb = yellow;
+				n_out30p5.rgb = yellow;
+				n_out30p6.rgb = yellow;
+			}*/
+		}
+	}
+
+
+// VaryingGetter:38
+	vec3 n_out38p0 = v_tint0;
+
+
+// VaryingGetter:39
+	vec3 n_out39p0 = v_tint1;
+
+
+// VaryingGetter:40
+	vec3 n_out40p0 = v_tint2;
+
+
+// VaryingGetter:41
+	vec3 n_out41p0 = v_tint3;
+
+
+// ParameterRef:36
+	bool n_out36p0 = u_depth_blending;
+
+
+	vec3 n_out56p0;
+	float n_out56p1;
+	vec3 n_out56p2;
+// Expression:56
+	n_out56p0 = vec3(0.0, 0.0, 0.0);
+	n_out56p1 = 0.0;
+	n_out56p2 = vec3(0.0, 0.0, 0.0);
+	{
+		if (n_out25p0 || n_out25p1) {
+			n_out56p1 = n_out30p1;
+			n_out56p0 = n_out30p0;
+			n_out56p2 = n_out30p2;
+		} else {
+			// col(0-3) is the result of the pixel fetched from u_ground_albedo_bump_(0-3) modified
+			// by the value fetched from u_terrain_colormap and relative to the vertex corresponding
+			// to current pixel
+			// the value fetched from u_terrain_colormap if modified to the white according to the
+			// vector u_colormap_opacity_per_texture (default value don't modify the color)
+			vec3 col0 = n_out30p3.rgb * n_out38p0;	
+			vec3 col1 = n_out30p4.rgb * n_out39p0;	
+			vec3 col2 = n_out30p5.rgb * n_out40p0;
+			vec3 col3 = n_out30p6.rgb * n_out41p0;
+			//col0 = n_out30p3.rgb;
+			//col1 = n_out30p4.rgb;
+			//col2 = n_out30p5.rgb;
+			//col3 = n_out30p6.rgb;
+		
+			vec4 rough = vec4(n_out30p7.a, n_out30p8.a, n_out30p9.a, n_out30p10.a);
+		
+			//vec3 normal0 = unpack_normal(n_out30p7);
+			//vec3 normal1 = unpack_normal(n_out30p8);
+			//vec3 normal2 = unpack_normal(n_out30p9);
+			//vec3 normal3 = unpack_normal(n_out30p10);
+			vec3 normal0 = n_out30p7.rgb;
+			vec3 normal1 = n_out30p8.rgb;
+			vec3 normal2 = n_out30p9.rgb;
+			vec3 normal3 = n_out30p10.rgb;
+		
+			vec4 w;
+			// TODO An #ifdef macro would be nice! Or copy/paste everything in a different shader...
+			if (n_out36p0) {
+				w = get_depth_blended_weights(n_out73p4, vec4(n_out30p3.a, n_out30p4.a, n_out30p5.a, n_out30p6.a));
+			} else {
+				w = n_out73p4.rgba;
+			}
+		
+			float w_sum = (w.r + w.g + w.b + w.a);
+		
+			n_out56p0 = (
+				w.r * col0.rgb +
+				w.g * col1.rgb +
+				w.b * col2.rgb +
+				w.a * col3.rgb) / w_sum;
+		
+			n_out56p1 = (
+				w.r * rough.r +
+				w.g * rough.g +
+				w.b * rough.b +
+				w.a * rough.a) / w_sum;
+		
+			vec3 ground_normal = /*u_terrain_normal_basis **/ (
+				w.r * normal0 +
+				w.g * normal1 +
+				w.b * normal2 +
+				w.a * normal3) / w_sum;
+			// If no n_out73p4 textures are defined, normal vectors will default to (1,1,1),
+			// which is incorrect, and causes the terrain to be shaded wrongly in some directions.
+			// However, this should not be a problem to fix in the shader,
+			// because there MUST be at least one n_out73p4 texture set.
+			//ground_normal = normalize(ground_normal);
+			// TODO Make the plugin insert a default normalmap if it's empty
+		
+			// Combine terrain normals with detail normals (not sure if correct but looks ok)
+			n_out56p2 = normalize(vec3(n_out30p2.x + ground_normal.x, n_out30p2.y, n_out30p2.z + ground_normal.z));
+			n_out56p2 = mix(n_out56p2, n_out30p2, n_out33p2);
+			n_out56p0 = mix(n_out56p0, n_out30p0, n_out33p2);
+			n_out56p1 = mix(n_out56p1, 1.0, n_out33p2);
+			AO = (w.r * n_out30p3.a +	w.g * n_out30p4.a + w.b * n_out30p5.a +	w.a * n_out30p6.a) / w_sum;
+			AO_LIGHT_AFFECT = 0.1;
+			
+			/*vec3 red = vec3(1.0, 0.0, 0.0);
+			vec3 green = vec3(0.0, 1.0, 0.0);
+			vec3 blue = vec3(0.0, 0.0, 1.0);
+			vec3 yellow = vec3(1.0, 0.749, 0.0);
+			if (n_out73p4.x < 0.0)	{
+				n_out56p0 = red;
+			}
+			if (n_out73p4.y < 0.0)	{
+				n_out56p0 = green;
+			}
+			if (n_out73p4.z < 0.0)	{
+				n_out56p0 = blue;
+			}
+			if (n_out73p4.a < 0.0)	{
+				n_out56p0 = yellow;
+			}*/
+		}
+	}
+
+
+// ParameterRef:27
+	vec2 n_out27p0 = u_mouse_hit;
+
+
+// ParameterRef:28
+	float n_out28p0 = u_mouse_hit_radius;
+
+
+// ParameterRef:81
+	bool n_out81p0 = u_grid_on;
+
+
+	vec3 n_out31p0;
+	float n_out31p1;
+	vec3 n_out31p2;
+// Expression:31
+	n_out31p0 = vec3(0.0, 0.0, 0.0);
+	n_out31p1 = 0.0;
+	n_out31p2 = vec3(0.0, 0.0, 0.0);
+	{
+		n_out31p0 = n_out56p0;
+		n_out31p2 = (VIEW_MATRIX * (vec4(n_out56p2, 0.0))).xyz;
+		n_out31p1 = n_out56p1;
+		
+		float grid_line_thickness = 0.05;
+		
+		// DEBUG: wisualize pieces
+		/*if (n_out4p2 == 0) {
+			n_out31p0 = vec3(1.0, 0.0, 0.0);
+		} else if (n_out4p2 == 1) {
+			n_out31p0 = vec3(0.0, 1.0, 0.0);
+		} else if (n_out4p2 == 2) {
+			n_out31p0 = vec3(0.0, 0.0, 1.0);
+		} else if (n_out4p2 == 3) {
+			n_out31p0 = vec3(1.0, 0.0, 1.0);
+		}*/
+		// DEBUG: wisualize pieces
+		
+		//bool n_out81p0 = !(n_out27p0 == vec2(-1));
+		if (n_out81p0) {
+			float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
+			vec2 uv_begin_texel = n_out13p0 - vec2(half_texel_size);
+			vec2 distance_from_vertex = 
+				fract(vec2(uv_begin_texel.x / (half_texel_size * 2.0), uv_begin_texel.y / (half_texel_size * 2.0)));
+			if (distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness
+				|| distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness) {
+				if ((distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness)
+					&& (distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness)) {
+					//n_out31p0 = mix(n_out31p0, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
+					n_out31p0 = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
+				} else {
+					//n_out31p0 = mix(n_out31p0, vec3(1.0, 0.749, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+					n_out31p0 = vec3(1.0, 0.749, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+				}
+			}
+			vec2 g_uv0 = fract(n_out10p0);
+			float uv_line_thickness = grid_line_thickness / 10.0;
+			if (g_uv0.x < uv_line_thickness || (1.0 - g_uv0.x) < uv_line_thickness
+				|| g_uv0.y < uv_line_thickness || (1.0 - g_uv0.y) < uv_line_thickness) {
+				n_out31p0 = mix(n_out31p0, vec3(0.0, 0.0, 1.0), 0.3);		// GDN_TheWorld_Globals::g_color_blue;
+			}
+		}
+		
+		if (n_out27p0 != vec2(-1)) {
+			float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
+			vec2 uv_begin_texel = n_out13p0 - vec2(half_texel_size);
+			vec2 distance_from_vertex = 
+				fract(vec2(uv_begin_texel.x / (half_texel_size * 2.0), uv_begin_texel.y / (half_texel_size * 2.0)));
+			float grid_radius = n_out28p0 * 5.0;
+			if (grid_radius != 0.0 && distance(n_out27p0, n_out13p0) < grid_radius)
+			{
+				if (distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness
+					|| distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness) {
+					if ((distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness)
+						&& (distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness)) {
+						//n_out31p0 = mix(n_out31p0, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
+						n_out31p0 = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
+					} else {
+						//n_out31p0 = mix(n_out31p0, vec3(1.0, 0.749, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+						n_out31p0 = vec3(1.0, 0.749, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+					}
+				}
+			}
+		
+			if (n_out28p0 != 0.0 && distance(n_out27p0, n_out13p0) < n_out28p0) {
+				vec3 mouse_hit_albedo = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+				n_out31p0 = mix(n_out31p0, mouse_hit_albedo, 0.3);
+			}
+		}
+	}
+
+
+// Output:0
+	ALBEDO = n_out31p0;
+	ROUGHNESS = n_out31p1;
+	NORMAL = n_out31p2;
+
+
+}
+"
+graph_offset = Vector2(3378.14, 1451.28)
+modes/specular = 1
+varyings/v_vertex_world_pos = "0,5"
+varyings/v_vertex_cell_coords_in_textures = "0,3"
+varyings/v_distance_from_camera = "0,0"
+varyings/v_splat = "0,5"
+varyings/v_tint0 = "0,4"
+varyings/v_tint1 = "0,4"
+varyings/v_tint2 = "0,4"
+varyings/v_tint3 = "0,4"
+varyings/v_distance_from_camera_on_terrain = "0,0"
+nodes/vertex/0/position = Vector2(3240, -860)
+nodes/vertex/8/node = SubResource("VisualShaderNodeGlobalExpression_m8jdv")
+nodes/vertex/8/position = Vector2(-2680, -1540)
+nodes/vertex/8/size = Vector2(700, 640)
+nodes/vertex/8/input_ports = ""
+nodes/vertex/8/output_ports = ""
+nodes/vertex/8/expression = "#include \"res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc\"
+
+//vec3 model_world_space = MODEL_MATRIX[3].xyz; // Object's world space position. This is the equivalent to global_transform.origin in GDScript.
+//mat3 model_transform_basis = mat3(MODEL_MATRIX); // Object's world space transform basis. This is the equivalent to global_transform.basis in GDScript.
+//vec3 camera_world_space = INV_VIEW_MATRIX[3].xyz; // Camera's world space position. This is the equivalent to camera.global_transform.origin in GDScript.
+//vec3 camera_eye_world_space = VIEW_MATRIX[3].xyz; // Camera eye vector in world space direction of the camera.
+//vec3 camera_to_object_world_space = normalize(MODEL_MATRIX[3].xyz - INV_VIEW_MATRIX[3].xyz); // Camera's direction to the object in world space.
+
+uniform mat3 u_terrain_normal_basis;
+uniform float u_terrain_height = 1.0;	// NOTSET
+uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
+uniform bool u_force_height_0 = false;
+uniform sampler2D u_ground_albedo_bump_0 : source_color;
+uniform sampler2D u_ground_albedo_bump_1 : source_color;
+uniform sampler2D u_ground_albedo_bump_2 : source_color;
+uniform sampler2D u_ground_albedo_bump_3 : source_color;
+uniform sampler2D u_ground_normal_roughness_0;
+uniform sampler2D u_ground_normal_roughness_1;
+uniform sampler2D u_ground_normal_roughness_2;
+uniform sampler2D u_ground_normal_roughness_3;
+//uniform vec4 u_tile_reduction_per_texture = vec4(0.0, 0.0, 0.0, 0.0);	// Each component corresponds to a ground texture. Set greater than zero to enable.
+//uniform float u_globalmap_blend_start = 0;		// 2000 ==> optimization: at 2000 WU from camera will be used global map instead of u_ground_albedo_bump_0/3 and u_ground_normal_roughness_0/3
+//uniform float u_globalmap_blend_distance = 0;	// 1	==> 0 = disable use of global map
+uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);	// NOTSET"
+nodes/vertex/11/node = SubResource("VisualShaderNodeExpression_28flk")
+nodes/vertex/11/position = Vector2(-1340, -360)
+nodes/vertex/11/size = Vector2(620, 200)
+nodes/vertex/11/input_ports = "0,4,vertex;"
+nodes/vertex/11/output_ports = "0,5,vertex_world_pos;"
+nodes/vertex/11/expression = "// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need to trasform in world coord to abstract from chunk
+vertex_world_pos = MODEL_MATRIX * vec4(vertex, 1);"
+nodes/vertex/12/node = SubResource("VisualShaderNodeExpression_51pd1")
+nodes/vertex/12/position = Vector2(-500, -1080)
+nodes/vertex/12/size = Vector2(1060, 760)
+nodes/vertex/12/input_ports = "0,5,vertex_world_pos;1,7,terrain_inverse_transform;2,8,terrain_heightmap;3,0,grid_step;4,2,optimization_level;"
+nodes/vertex/12/output_ports = "0,3,vertex_cell_coords_in_textures;1,3,uv;"
+nodes/vertex/12/expression = "// to calculate coords of the vertex local to the quadrant we use affine inverse matrix of the global trasform of the quadtree
+vec4 vertex_local_to_quadrant_pos = terrain_inverse_transform * vertex_world_pos;
+// to get correct value from the textures (in the range 0 / max size in local coord) we need to consider the step 
+// (dividing by it): in the textures heigths/normals are adjacent but in global/local coords are separated by the step
+// ***  after next line vertex_cell_coords_in_textures ranges from 0 to heightmap size - 1 (heightmap size vertices per
+// size of quadrant - f.i. 2049) so it is an index of the pixel in heightmap/normalmap/splatmap etc. texture ***
+vertex_cell_coords_in_textures = vertex_local_to_quadrant_pos.xz / vec2(grid_step * pow(2.0, float(optimization_level)));
+// Moreover must add a half-offset so that we sample the center of pixels, otherwise bilinear filtering of the textures
+// will give us mixed results (#183): as we fetch pixels from textures with UV which is a percentage value ranging from
+// 0.0 to 1.0 we have to convert our index (vertex_cell_coords_in_textures) in percentage; without summing vec2(0.5)
+// first index 0 would be 0.0 and we qould have next indices summing 1 / heightmap size with the second index being
+// 1 / heightmap size and the last index being (heightmap size - 1) / heightmap size. In this way transforming percentages
+// index we touch the exact point where our pixel start and where the previous texture pixel ends so the engine, not knowing
+// which value consider make an interpolation from the values of our texel and the previous but this is not what we want as we
+// want the exact value of the texel; to avoid this we have to sum half so the UV points in the exact medium of the texel
+// (remember tha UV is a percentage that approximate to a vertex index) avoiding linear interpolation.
+// look at https://gamedev.stackexchange.com/questions/46963/how-to-avoid-texture-bleeding-in-a-texture-atlas
+// and https://learn.microsoft.com/it-it/windows/win32/direct3d9/directly-mapping-texels-to-pixels?redirectedfrom=MSDN
+vertex_cell_coords_in_textures += vec2(0.5);	// IMPORTANT: now vertex_cell_coords_in_textures ranges from 0.5 
+												// to (heightmap size - 1) + 0.5 with increment of 1.0 between each coord
+// Normalized UV to be in the range 0/1
+uv = vertex_cell_coords_in_textures / vec2(textureSize(terrain_heightmap, 0));"
+nodes/vertex/13/node = SubResource("VisualShaderNodeExpression_64s2i")
+nodes/vertex/13/position = Vector2(1000, -340)
+nodes/vertex/13/size = Vector2(920, 500)
+nodes/vertex/13/input_ports = "0,3,uv;1,5,vertex_world_pos;2,4,vertex;3,8,terrain_heightmap;"
+nodes/vertex/13/output_ports = "0,4,vertex_with_h;1,5,vertex_world_pos_with_h;"
+nodes/vertex/13/expression = "vertex_with_h = vertex;
+vertex_world_pos_with_h = vertex_world_pos;
+float h = get_height(terrain_heightmap, u_terrain_height, uv);		// Height displacement from heigthmap
+if (u_force_height_0) {													// Needed to bake globalmap
+	vertex_with_h.y = 0.0;
+	vertex_world_pos_with_h.y = 0.0;
+} else {
+	vertex_with_h.y = h;
+	vertex_world_pos_with_h.y = h;
+}"
+nodes/vertex/14/node = SubResource("VisualShaderNodeVaryingSetter_2eqbt")
+nodes/vertex/14/position = Vector2(3240, -500)
+nodes/vertex/15/node = SubResource("VisualShaderNodeInput_05hhf")
+nodes/vertex/15/position = Vector2(-1700, -180)
+nodes/vertex/16/node = SubResource("VisualShaderNodeVaryingSetter_70mmm")
+nodes/vertex/16/position = Vector2(3240, -980)
+nodes/vertex/17/node = SubResource("VisualShaderNodeGlobalExpression_8y5d2")
+nodes/vertex/17/position = Vector2(-2680, -820)
+nodes/vertex/17/size = Vector2(680, 160)
+nodes/vertex/17/input_ports = ""
+nodes/vertex/17/output_ports = ""
+nodes/vertex/17/expression = "/*float get_height(sampler2D tex, float terrain_height, vec2 uv)
+{
+	return texture(tex, uv).r * terrain_height;
+}*/"
+nodes/vertex/18/node = SubResource("VisualShaderNodeExpression_ytuk2")
+nodes/vertex/18/position = Vector2(2160, -120)
+nodes/vertex/18/size = Vector2(1220, 260)
+nodes/vertex/18/input_ports = "0,5,vertex_world_pos;"
+nodes/vertex/18/output_ports = "0,0,distance_from_camera;1,0,distance_from_camera_on_terrain;"
+nodes/vertex/18/expression = "vec3 camera_pos = INV_VIEW_MATRIX[3].xyz;
+distance_from_camera = distance(vertex_world_pos.xyz, camera_pos);
+distance_from_camera_on_terrain = distance(vertex_world_pos.xyz, vec3(camera_pos.x, camera_pos.y - gu_camera_altitude_from_terrain, camera_pos.z));"
+nodes/vertex/19/node = SubResource("VisualShaderNodeVaryingSetter_8av8q")
+nodes/vertex/19/position = Vector2(3500, -120)
+nodes/vertex/20/node = SubResource("VisualShaderNodeExpression_ah843")
+nodes/vertex/20/position = Vector2(1200, -1160)
+nodes/vertex/20/size = Vector2(660, 200)
+nodes/vertex/20/input_ports = "0,3,uv;1,8,terrain_normalmap;"
+nodes/vertex/20/output_ports = "0,4,normal;"
+nodes/vertex/20/expression = "vec3 normal = get_normal(terrain_normalmap, u_terrain_normal_basis, uv);"
+nodes/vertex/21/node = SubResource("VisualShaderNodeGlobalExpression_oqaba")
+nodes/vertex/21/position = Vector2(-2700, -400)
+nodes/vertex/21/size = Vector2(700, 420)
+nodes/vertex/21/input_ports = ""
+nodes/vertex/21/output_ports = ""
+nodes/vertex/21/expression = "/*vec4 pack_normal(vec3 n, float a) {
+	//n.z *= -1.0;
+	return vec4((n.xzy + vec3(1.0)) * 0.5, a);
+}
+
+vec3 unpack_normal(vec4 rgba) {
+	// If we consider texture space starts from top-left corner and Y goes down,
+	// then Y+ in pixel space corresponds to Z+ in terrain space,
+	// while X+ also corresponds to X+ in terrain space.
+	vec3 n = rgba.xzy * 2.0 - vec3(1.0);
+	// Had to negate Z because it comes from Y in the normal map,
+	// and OpenGL-style normal maps are Y-up.
+	//n.z *= -1.0;
+	return n;
+}*/"
+nodes/vertex/22/node = SubResource("VisualShaderNodeGlobalExpression_bl3mn")
+nodes/vertex/22/position = Vector2(-2680, -640)
+nodes/vertex/22/size = Vector2(680, 220)
+nodes/vertex/22/input_ports = ""
+nodes/vertex/22/output_ports = ""
+nodes/vertex/22/expression = "/*vec3 get_normal(sampler2D tex, mat3 terrain_normal_basis, vec2 uv){
+	// Need to use terrain_normal_basis to handle scaling.
+	vec3 n = terrain_normal_basis * unpack_normal(texture(tex, uv));
+	//vec3 n = unpack_normal(texture(tex, uv));
+	return normalize(n);
+}*/"
+nodes/vertex/23/node = SubResource("VisualShaderNodeExpression_dks25")
+nodes/vertex/23/position = Vector2(1200, -1480)
+nodes/vertex/23/size = Vector2(500, 280)
+nodes/vertex/23/input_ports = "0,3,uv;1,8,terrain_splatmap;2,6,use_globalmap;"
+nodes/vertex/23/output_ports = "0,5,splat;"
+nodes/vertex/23/expression = "if (!use_globalmap) {
+		splat = texture(terrain_splatmap, uv);
+}"
+nodes/vertex/24/node = SubResource("VisualShaderNodeVaryingSetter_pgyig")
+nodes/vertex/24/position = Vector2(3240, -1080)
+nodes/vertex/25/node = SubResource("VisualShaderNodeExpression_anper")
+nodes/vertex/25/position = Vector2(1180, -1900)
+nodes/vertex/25/size = Vector2(620, 380)
+nodes/vertex/25/input_ports = "0,3,uv;1,8,terrain_colormap;"
+nodes/vertex/25/output_ports = "0,4,tint0;1,4,tint1;2,4,tint2;3,4,tint3;"
+nodes/vertex/25/expression = "vec4 tint = texture(terrain_colormap, uv);
+tint0 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.x);	// decreasing u_colormap_opacity_per_texture dimensions approximates vector tint (u_terrain_colormap texel) to white: each dimnesion (1-4) acts
+tint1 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.y);	// on the corresponding bump_map (1-4). More precisely u_colormap_opacity_per_texture.(x-w) must be in the interval 0-1, if 0 the function returns 
+tint2 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.z);	// vec3(1.0) if 1 (default value) the function returns tint.rgb
+tint3 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.w);"
+nodes/vertex/26/node = SubResource("VisualShaderNodeVaryingSetter_6cx8w")
+nodes/vertex/26/position = Vector2(3240, -1440)
+nodes/vertex/27/node = SubResource("VisualShaderNodeVaryingSetter_8jjv6")
+nodes/vertex/27/position = Vector2(3240, -1360)
+nodes/vertex/28/node = SubResource("VisualShaderNodeVaryingSetter_468sk")
+nodes/vertex/28/position = Vector2(3240, -1280)
+nodes/vertex/29/node = SubResource("VisualShaderNodeVaryingSetter_3uqvl")
+nodes/vertex/29/position = Vector2(3240, -1180)
+nodes/vertex/30/node = SubResource("VisualShaderNodeTexture2DParameter_jltqu")
+nodes/vertex/30/position = Vector2(-1980, -1460)
+nodes/vertex/31/node = SubResource("VisualShaderNodeTexture2DParameter_3cfda")
+nodes/vertex/31/position = Vector2(-1660, -1520)
+nodes/vertex/32/node = SubResource("VisualShaderNodeTexture2DParameter_iuadx")
+nodes/vertex/32/position = Vector2(-1340, -1640)
+nodes/vertex/34/node = SubResource("VisualShaderNodeTexture2DParameter_mrp0p")
+nodes/vertex/34/position = Vector2(-1000, -1700)
+nodes/vertex/35/node = SubResource("VisualShaderNodeTransformParameter_dicqs")
+nodes/vertex/35/position = Vector2(-1980, -980)
+nodes/vertex/36/node = SubResource("VisualShaderNodeUIntParameter_hoofg")
+nodes/vertex/36/position = Vector2(-1980, -620)
+nodes/vertex/37/node = SubResource("VisualShaderNodeFloatParameter_5p3ym")
+nodes/vertex/37/position = Vector2(-1980, -840)
+nodes/vertex/38/node = SubResource("VisualShaderNodeBooleanParameter_6ufu5")
+nodes/vertex/38/position = Vector2(-1980, -1160)
+nodes/vertex/39/node = SubResource("VisualShaderNodeTexture2DParameter_g66lb")
+nodes/vertex/39/position = Vector2(-660, -1760)
+nodes/vertex/40/node = SubResource("VisualShaderNodeVec4Parameter_wgd05")
+nodes/vertex/40/position = Vector2(-1980, -440)
+nodes/vertex/41/node = SubResource("VisualShaderNodeFloatParameter_uo8la")
+nodes/vertex/41/position = Vector2(-1980, -40)
+nodes/vertex/42/node = SubResource("VisualShaderNodeFloatParameter_j470r")
+nodes/vertex/42/position = Vector2(-1720, -40)
+nodes/vertex/43/node = SubResource("VisualShaderNodeUIntParameter_u1i38")
+nodes/vertex/43/position = Vector2(-1980, -220)
+nodes/vertex/44/node = SubResource("VisualShaderNodeFloatParameter_gcxiv")
+nodes/vertex/44/position = Vector2(-1460, -40)
+nodes/vertex/45/node = SubResource("VisualShaderNodeFloatParameter_0p8cp")
+nodes/vertex/45/position = Vector2(-1200, -40)
+nodes/vertex/46/node = SubResource("VisualShaderNodeGlobalExpression_kpbi3")
+nodes/vertex/46/position = Vector2(-4000, -40)
+nodes/vertex/46/size = Vector2(1240, 940)
+nodes/vertex/46/input_ports = ""
+nodes/vertex/46/output_ports = ""
+nodes/vertex/46/expression = "/*bool is_on_the_border(vec2 uv, float distance_from_border) {
+	if (uv.x > distance_from_border && uv.x < (1.0 - distance_from_border) && uv.y > distance_from_border && uv.y < (1.0 - distance_from_border)) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
+bool is_on_upper_border(vec2 uv, float distance_from_border) {
+	if (uv.y >= 0.0 && uv.y < distance_from_border) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool is_on_lower_border(vec2 uv, float distance_from_border) {
+	if (uv.y > (1.0 - distance_from_border) && uv.y <= 1.0) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool is_on_left_border(vec2 uv, float distance_from_border) {
+	if (uv.x >= 0.0 && uv.x < distance_from_border) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool is_on_right_border(vec2 uv, float distance_from_border) {
+	if (uv.x > (1.0 - distance_from_border) && uv.x <= 1.0) {
+		return true;
+	} else {
+		return false;
+	}
+}*/"
+nodes/vertex/47/node = SubResource("VisualShaderNodeFloatParameter_oq2vk")
+nodes/vertex/47/position = Vector2(-940, -40)
+nodes/vertex/48/node = SubResource("VisualShaderNodeVec2Parameter_b2pge")
+nodes/vertex/48/position = Vector2(-680, -40)
+nodes/vertex/49/node = SubResource("VisualShaderNodeFloatParameter_esiem")
+nodes/vertex/49/position = Vector2(-420, -40)
+nodes/vertex/50/node = SubResource("VisualShaderNodeBooleanParameter_21mki")
+nodes/vertex/50/position = Vector2(-160, -40)
+nodes/vertex/51/node = SubResource("VisualShaderNodeGlobalExpression_7fih6")
+nodes/vertex/51/position = Vector2(-2700, 40)
+nodes/vertex/51/size = Vector2(700, 220)
+nodes/vertex/51/input_ports = ""
+nodes/vertex/51/output_ports = ""
+nodes/vertex/51/expression = "vec3 get_triplanar_blend(vec3 world_normal) {
+	vec3 blending = abs(world_normal);
+	blending = normalize(max(blending, vec3(0.00001))); // Force weights to sum to 1.0
+	float b = blending.x + blending.y + blending.z;
+	return blending / vec3(b, b, b);
+}"
+nodes/vertex/52/node = SubResource("VisualShaderNodeVec4Parameter_gqsa8")
+nodes/vertex/52/position = Vector2(100, -40)
+nodes/vertex/53/node = SubResource("VisualShaderNodeBooleanParameter_g6xqy")
+nodes/vertex/53/position = Vector2(360, -40)
+nodes/vertex/56/node = SubResource("VisualShaderNodeGlobalExpression_qxhqq")
+nodes/vertex/56/position = Vector2(-2680, 440)
+nodes/vertex/56/size = Vector2(520, 460)
+nodes/vertex/56/input_ports = ""
+nodes/vertex/56/output_ports = ""
+nodes/vertex/56/expression = "vec4 get_depth_blended_weights(vec4 splat, vec4 bumps) {
+	float dh = 0.2;
+
+	vec4 h = bumps + splat;
+
+	// TODO Keep improving multilayer blending, there are still some edge cases...
+	// Mitigation: nullify layers with near-zero splat
+	h *= smoothstep(0, 0.05, splat);
+
+	vec4 d = h + dh;
+	d.r -= max(h.g, max(h.b, h.a));
+	d.g -= max(h.r, max(h.b, h.a));
+	d.b -= max(h.g, max(h.r, h.a));
+	d.a -= max(h.g, max(h.b, h.r));
+
+	return clamp(d, 0, 1);
+}"
+nodes/vertex/57/node = SubResource("VisualShaderNodeTexture2DArrayParameter_gfs1p")
+nodes/vertex/57/position = Vector2(-1980, -1840)
+nodes/vertex/58/node = SubResource("VisualShaderNodeTexture2DArrayParameter_pr4ow")
+nodes/vertex/58/position = Vector2(-1660, -1920)
+nodes/vertex/59/node = SubResource("VisualShaderNodeVec4Parameter_em321")
+nodes/vertex/59/position = Vector2(-1980, 180)
+nodes/vertex/60/node = SubResource("VisualShaderNodeVec4Parameter_uohu5")
+nodes/vertex/60/position = Vector2(-1720, 180)
+nodes/vertex/61/node = SubResource("VisualShaderNodeVec4Parameter_syvlc")
+nodes/vertex/61/position = Vector2(-940, 180)
+nodes/vertex/62/node = SubResource("VisualShaderNodeVec4Parameter_c8kla")
+nodes/vertex/62/position = Vector2(-1200, 180)
+nodes/vertex/63/node = SubResource("VisualShaderNodeVec4Parameter_dib85")
+nodes/vertex/63/position = Vector2(-1460, 180)
+nodes/vertex/64/node = SubResource("VisualShaderNodeFloatParameter_hcory")
+nodes/vertex/64/position = Vector2(-680, 180)
+nodes/vertex/65/node = SubResource("VisualShaderNodeBooleanParameter_0h6ro")
+nodes/vertex/65/position = Vector2(-1980, -2040)
+nodes/vertex/66/node = SubResource("VisualShaderNodeFloatParameter_ppomx")
+nodes/vertex/66/position = Vector2(-1340, -1920)
+nodes/vertex/67/node = SubResource("VisualShaderNodeFloatParameter_x7bg6")
+nodes/vertex/67/position = Vector2(-1080, -1920)
+nodes/vertex/68/node = SubResource("VisualShaderNodeVaryingSetter_p8wnk")
+nodes/vertex/68/position = Vector2(3500, -40)
+nodes/vertex/connections = PackedInt32Array(12, 1, 0, 4, 11, 0, 12, 0, 12, 1, 13, 0, 13, 0, 0, 0, 11, 0, 13, 1, 13, 1, 14, 0, 15, 0, 13, 2, 12, 0, 16, 0, 15, 0, 11, 0, 13, 1, 18, 0, 18, 0, 19, 0, 12, 1, 20, 0, 20, 0, 0, 1, 23, 0, 24, 0, 12, 1, 23, 0, 25, 0, 26, 0, 25, 1, 27, 0, 25, 2, 28, 0, 25, 3, 29, 0, 12, 1, 25, 0, 35, 0, 12, 1, 30, 0, 12, 2, 37, 0, 12, 3, 36, 0, 12, 4, 34, 0, 25, 1, 31, 0, 20, 1, 32, 0, 23, 1, 38, 0, 23, 2, 30, 0, 13, 3, 18, 1, 68, 0)
+nodes/fragment/0/position = Vector2(7240, -460)
+nodes/fragment/3/node = SubResource("VisualShaderNodeVaryingGetter_pe6em")
+nodes/fragment/3/position = Vector2(-2720, -740)
+nodes/fragment/4/node = SubResource("VisualShaderNodeExpression_yk7c6")
+nodes/fragment/4/position = Vector2(-1440, -480)
+nodes/fragment/4/size = Vector2(1100, 1700)
+nodes/fragment/4/input_ports = "0,0,distance_from_camera_on_terrain;1,4,vertex;2,5,ground_uv_scale_per_texture_in;3,2,piecing_threshold_factor;4,0,piece_size;5,0,scale_per_texture_factor;6,0,camera_altitude_from_terrain;"
+nodes/fragment/4/output_ports = "0,5,ground_uv_scale_per_texture_out;1,6,new;2,1,pieces_from_camera_piece;"
+nodes/fragment/4/expression = "//ground_uv_scale_per_texture_in = vec4(200.0, 200.0, 200.0, 200.0);
+ground_uv_scale_per_texture_out = ground_uv_scale_per_texture_in;
+pieces_from_camera_piece = -1;
+new = true;
+
+/*if (!new) {
+	ground_uv_scale_per_texture_out = vec4(300.0);
+	scale_per_texture_factor = 10.0;
+} else {
+	ground_uv_scale_per_texture_out = vec4(2.0);
+	scale_per_texture_factor = 1.0;
+	piecing_threshold_factor = uint(4);
+	piece_size = 200.0;
+}*/
+
+int alt_piece = int(floor(camera_altitude_from_terrain / piece_size));
+if (alt_piece < 4) {
+	scale_per_texture_factor *= pow(2.0, float(alt_piece));
+} else {
+	camera_altitude_from_terrain = -1.0;
+}
+
+if (camera_altitude_from_terrain > 0.0 && distance_from_camera_on_terrain < 2000.0) {
+	vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(vertex, 1.0)).xyz;
+	int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / piece_size));
+	int camera_piece_z = int(floor(CAMERA_POSITION_WORLD.z / piece_size));
+	int frag_piece_x = int(floor(fragment_world_pos.x / piece_size));
+	int frag_piece_z = int(floor(fragment_world_pos.z / piece_size));
+	pieces_from_camera_piece = max(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_z - frag_piece_z)));
+	if (pieces_from_camera_piece <= 1)
+	{
+		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 20.0);
+		//ground_uv_scale_per_texture_out = vec4(40.0);
+	}
+	else if (pieces_from_camera_piece <= 3)
+	{
+		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 10.0);
+		//ground_uv_scale_per_texture_out = vec4(20.0);
+	}
+	else if (pieces_from_camera_piece <= 5)
+	{
+		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 10.0);
+		//ground_uv_scale_per_texture_out = vec4(20.0);
+	}
+	else if (pieces_from_camera_piece <= 7)
+	{
+		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 8.0);
+		//ground_uv_scale_per_texture_out = vec4(16.0);
+	}
+	/*else if (pieces_from_camera_piece == 4)
+	{
+		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 3.0);
+		//ground_uv_scale_per_texture_out = vec4(6.0);
+	}
+	else if (pieces_from_camera_piece == 5)
+	{
+		ground_uv_scale_per_texture_out /= (scale_per_texture_factor / 3.0);
+		//ground_uv_scale_per_texture_out = vec4(6.0);
+	}*/
+}"
+nodes/fragment/8/node = SubResource("VisualShaderNodeInput_sy0wq")
+nodes/fragment/8/position = Vector2(-2620, -40)
+nodes/fragment/10/node = SubResource("VisualShaderNodeExpression_elcve")
+nodes/fragment/10/position = Vector2(140, -520)
+nodes/fragment/10/size = Vector2(1380, 1180)
+nodes/fragment/10/input_ports = "0,3,vertex_cell_coords_in_textures;1,5,vertex_world_pos;2,5,ground_uv_scale_per_texture;3,6,north_border_pixel;4,6,south_border_pixel;5,6,west_border_pixel;6,6,east_border_pixel;7,8,terrain_heightmap;8,3,uv;9,6,new;"
+nodes/fragment/10/output_ports = "0,3,ground_uv0;1,3,ground_uv1;2,3,ground_uv2;3,4,ground_uv3;"
+nodes/fragment/10/expression = "vec3 base_ground_uv;
+/*if (!new) {
+	//ground_uv_scale_per_texture = vec4(300.0);
+	if (south_border_pixel) {
+		// mirror
+		base_ground_uv = vec3(vertex_cell_coords_in_textures.x, 
+							vertex_world_pos.y * MODEL_MATRIX[1][1],
+							float(textureSize(terrain_heightmap, 0).y) - vertex_cell_coords_in_textures.y);
+	} else if (east_border_pixel) {
+		// mirror
+		base_ground_uv = vec3(float(textureSize(terrain_heightmap, 0).x) - vertex_cell_coords_in_textures.x, 
+							vertex_world_pos.y * MODEL_MATRIX[1][1],
+							vertex_cell_coords_in_textures.y);
+	} else {
+		base_ground_uv = vec3(vertex_cell_coords_in_textures.x, vertex_world_pos.y * MODEL_MATRIX[1][1], vertex_cell_coords_in_textures.y);
+	}
+	//base_ground_uv = vec3(vertex_cell_coords_in_textures.x, vertex_world_pos.y * MODEL_MATRIX[1][1], vertex_cell_coords_in_textures.y);
+	// 2-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor
+	// these coordinates are used to fetch ground_albedo_bump and ground_normal_roughness 
+	ground_uv0 = base_ground_uv.xz / ground_uv_scale_per_texture.x;
+	ground_uv1 = base_ground_uv.xz / ground_uv_scale_per_texture.y;
+	ground_uv2 = base_ground_uv.xz / ground_uv_scale_per_texture.z;
+	// 3-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor (y coord is height in world coord)
+	ground_uv3 = base_ground_uv / ground_uv_scale_per_texture.w;
+} else {*/
+	//ground_uv_scale_per_texture = vec4(2.0);
+	base_ground_uv = vec3(uv.x, vertex_world_pos.y * MODEL_MATRIX[1][1], uv.y);
+	ground_uv0 = base_ground_uv.xz * ground_uv_scale_per_texture.x;
+	ground_uv1 = base_ground_uv.xz * ground_uv_scale_per_texture.y;
+	ground_uv2 = base_ground_uv.xz * ground_uv_scale_per_texture.z;
+	ground_uv3 = base_ground_uv * ground_uv_scale_per_texture.w;
+//}"
+nodes/fragment/11/node = SubResource("VisualShaderNodeVaryingGetter_s41u1")
+nodes/fragment/11/position = Vector2(-2720, -980)
+nodes/fragment/12/node = SubResource("VisualShaderNodeVaryingGetter_jtb7g")
+nodes/fragment/12/position = Vector2(-2720, -900)
+nodes/fragment/13/node = SubResource("VisualShaderNodeInput_u5d6r")
+nodes/fragment/13/position = Vector2(-2620, 800)
+nodes/fragment/14/node = SubResource("VisualShaderNodeExpression_aptmw")
+nodes/fragment/14/position = Vector2(-1300, 1240)
+nodes/fragment/14/size = Vector2(740, 220)
+nodes/fragment/14/input_ports = "0,3,uv;1,8,terrain_normalmap;"
+nodes/fragment/14/output_ports = "0,4,terrain_normal_world;1,4,normal;"
+nodes/fragment/14/expression = "terrain_normal_world = get_normal(terrain_normalmap, u_terrain_normal_basis, uv);
+normal = terrain_normal_world;"
+nodes/fragment/16/node = SubResource("VisualShaderNodeParameterRef_8mkxg")
+nodes/fragment/16/position = Vector2(-2980, 940)
+nodes/fragment/17/node = SubResource("VisualShaderNodeParameterRef_jubu6")
+nodes/fragment/17/position = Vector2(-2980, 200)
+nodes/fragment/18/node = SubResource("VisualShaderNodeParameterRef_meqoj")
+nodes/fragment/18/position = Vector2(-2980, 280)
+nodes/fragment/19/node = SubResource("VisualShaderNodeParameterRef_7w8sv")
+nodes/fragment/19/position = Vector2(-2980, 360)
+nodes/fragment/20/node = SubResource("VisualShaderNodeParameterRef_b5pov")
+nodes/fragment/20/position = Vector2(-2980, 440)
+nodes/fragment/21/node = SubResource("VisualShaderNodeParameterRef_s0or1")
+nodes/fragment/21/position = Vector2(-2980, 1020)
+nodes/fragment/23/node = SubResource("VisualShaderNodeParameterRef_olttj")
+nodes/fragment/23/position = Vector2(-2980, 1100)
+nodes/fragment/24/node = SubResource("VisualShaderNodeParameterRef_hwvs7")
+nodes/fragment/24/position = Vector2(-2980, 1180)
+nodes/fragment/25/node = SubResource("VisualShaderNodeExpression_tusg1")
+nodes/fragment/25/position = Vector2(-2260, 1920)
+nodes/fragment/25/size = Vector2(740, 440)
+nodes/fragment/25/input_ports = "0,0,editmode_selected;1,3,uv;2,6,use_globalmap;"
+nodes/fragment/25/output_ports = "0,6,editmode_pixel;1,6,globalmap_pixel;"
+nodes/fragment/25/expression = "if (editmode_selected > 0.0 && is_on_the_border(uv, u_quad_border_line_thickness)) {
+	editmode_pixel = true;
+} else {
+	editmode_pixel = false;
+}
+if (use_globalmap) {
+	globalmap_pixel = true;
+} else {
+	globalmap_pixel = false;
+}"
+nodes/fragment/26/node = SubResource("VisualShaderNodeParameterRef_b5i76")
+nodes/fragment/26/position = Vector2(-2980, 1640)
+nodes/fragment/27/node = SubResource("VisualShaderNodeParameterRef_gapoe")
+nodes/fragment/27/position = Vector2(-2680, -1660)
+nodes/fragment/28/node = SubResource("VisualShaderNodeParameterRef_hv2co")
+nodes/fragment/28/position = Vector2(-2680, -1540)
+nodes/fragment/29/node = SubResource("VisualShaderNodeParameterRef_l5ham")
+nodes/fragment/29/position = Vector2(-2980, 1560)
+nodes/fragment/30/node = SubResource("VisualShaderNodeExpression_pjdvi")
+nodes/fragment/30/position = Vector2(2580, 880)
+nodes/fragment/30/size = Vector2(1200, 2560)
+nodes/fragment/30/input_ports = "0,4,albedo_in;1,0,roughness_in;2,6,triplanar;3,4,normal_in;4,6,editmode_pixel;5,6,globalmap_pixel;6,3,ground_uv0;7,3,ground_uv1;8,3,ground_uv2;9,4,ground_uv3;10,5,tile_reduction_per_texture;11,6,north_border_pixel;12,6,south_border_pixel;13,6,west_border_pixel;14,6,east_border_pixel;"
+nodes/fragment/30/output_ports = "0,4,albedo_out;1,0,roughness_out;2,4,normal_out;3,5,ab0;4,5,ab1;5,5,ab2;6,5,ab3;7,5,nr0;8,5,nr1;9,5,nr2;10,5,nr3;"
+nodes/fragment/30/expression = "roughness_out = roughness_in;
+albedo_out = albedo_in;
+normal_out = normal_in;
+
+if (!editmode_pixel && !globalmap_pixel) {
+	if (triplanar) {
+		// Only do triplanar on one texture slot,
+		// because otherwise it would be very expensive and cost many more ifs.
+		// I chose the last slot because first slot is the default on new splatmaps,
+		// and that's a feature used for cliffs, which are usually designed later.
+
+		vec3 blending = get_triplanar_blend(normal_in);
+
+		//ab3 = texture_triplanar(u_ground_albedo_bump_3, ground_uv3, blending);
+		//nr3 = texture_triplanar(u_ground_normal_roughness_3, ground_uv3, blending);
+		ab3 = texture_triplanar_ab_layers(3, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv3, blending);
+		nr3 = texture_triplanar_nr_layers(3, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv3, blending);
+
+	} else {
+		if (tile_reduction_per_texture[3] > 0.0) {
+			//ab3 = texture_antitile(u_ground_albedo_bump_3, u_ground_normal_roughness_3, ground_uv3.xz, nr3);
+			ab3 = texture_antitile_layers(3, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv3.xz, nr3);
+		} else {
+			//ab3 = texture(u_ground_albedo_bump_3, ground_uv3.xz);
+			//nr3 = texture(u_ground_normal_roughness_3, ground_uv3.xz);
+			ab3 = texture_albedo_bump(3, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv3.xz);
+			nr3 = texture_normal_roughness(3, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv3.xz);
+		}
+	}
+
+	if (tile_reduction_per_texture[0] > 0.0) {
+		//ab0 = texture_antitile(u_ground_albedo_bump_0, u_ground_normal_roughness_0, ground_uv0, nr0);
+		ab0 = texture_antitile_layers(0, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv0, nr0);
+	} else {
+		//ab0 = texture(u_ground_albedo_bump_0, ground_uv0);
+		//nr0 = texture(u_ground_normal_roughness_0, ground_uv0);
+		ab0 = texture_albedo_bump(0, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv0);
+		nr0 = texture_normal_roughness(0, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv0);
+	}
+	if (tile_reduction_per_texture[1] > 0.0) {
+		//ab1 = texture_antitile(u_ground_albedo_bump_1, u_ground_normal_roughness_1, ground_uv1, nr1);
+		ab1 = texture_antitile_layers(1, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv1, nr1);
+	} else {
+		//ab1 = texture(u_ground_albedo_bump_1, ground_uv1);
+		//nr1 = texture(u_ground_normal_roughness_1, ground_uv1);
+		ab1 = texture_albedo_bump(1, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv1);
+		nr1 = texture_normal_roughness(1, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv1);
+	}
+	if (tile_reduction_per_texture[2] > 0.0) {
+		//ab2 = texture_antitile(u_ground_albedo_bump_2, u_ground_normal_roughness_2, ground_uv2, nr2);
+		ab2 = texture_antitile_layers(2, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv2, nr2);
+	} else {
+		//ab2 = texture(u_ground_albedo_bump_2, ground_uv2);
+		//nr2 = texture(u_ground_normal_roughness_2, ground_uv2);
+		ab2 = texture_albedo_bump(2, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv2);
+		nr2 = texture_normal_roughness(2, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv2);
+	}
+	/*vec3 red = vec3(1.0, 0.0, 0.0);
+	vec3 green = vec3(0.0, 1.0, 0.0);
+	vec3 blue = vec3(0.0, 0.0, 1.0);
+	vec3 yellow = vec3(1.0, 0.749, 0.0);
+	if (north_border_pixel)	{
+		ab0.rgb = red;
+		ab1.rgb = red;
+		ab2.rgb = red;
+		ab3.rgb = red;
+	}
+	if (south_border_pixel)	{
+		ab0.rgb = green;
+		ab1.rgb = green;
+		ab2.rgb = green;
+		ab3.rgb = green;
+	}
+	if (west_border_pixel)	{
+		ab0.rgb = blue;
+		ab1.rgb = blue;
+		ab2.rgb = blue;
+		ab3.rgb = blue;
+	}
+	if (east_border_pixel)	{
+		ab0.rgb = yellow;
+		ab1.rgb = yellow;
+		ab2.rgb = yellow;
+		ab3.rgb = yellow;
+	}*/
+}"
+nodes/fragment/31/node = SubResource("VisualShaderNodeExpression_mc40n")
+nodes/fragment/31/position = Vector2(6020, -480)
+nodes/fragment/31/size = Vector2(1160, 1820)
+nodes/fragment/31/input_ports = "0,4,albedo_in;1,3,mouse_hit;2,0,mouse_hit_radius;3,4,normal_in;4,0,roughness_in;5,3,uv;6,3,ground_uv0;7,3,ground_uv1;8,3,ground_uv2;9,4,ground_uv3;10,6,grid_on;11,1,pieces_from_camera_piece;"
+nodes/fragment/31/output_ports = "0,4,albedo_out;1,0,roughness_out;2,4,normal_out;"
+nodes/fragment/31/expression = "albedo_out = albedo_in;
+normal_out = (VIEW_MATRIX * (vec4(normal_in, 0.0))).xyz;
+roughness_out = roughness_in;
+
+float grid_line_thickness = 0.05;
+
+// DEBUG: wisualize pieces
+/*if (pieces_from_camera_piece == 0) {
+	albedo_out = vec3(1.0, 0.0, 0.0);
+} else if (pieces_from_camera_piece == 1) {
+	albedo_out = vec3(0.0, 1.0, 0.0);
+} else if (pieces_from_camera_piece == 2) {
+	albedo_out = vec3(0.0, 0.0, 1.0);
+} else if (pieces_from_camera_piece == 3) {
+	albedo_out = vec3(1.0, 0.0, 1.0);
+}*/
+// DEBUG: wisualize pieces
+
+//bool grid_on = !(mouse_hit == vec2(-1));
+if (grid_on) {
+	float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
+	vec2 uv_begin_texel = uv - vec2(half_texel_size);
+	vec2 distance_from_vertex = 
+		fract(vec2(uv_begin_texel.x / (half_texel_size * 2.0), uv_begin_texel.y / (half_texel_size * 2.0)));
+	if (distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness
+		|| distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness) {
+		if ((distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness)
+			&& (distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness)) {
+			//albedo_out = mix(albedo_out, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
+			albedo_out = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
+		} else {
+			//albedo_out = mix(albedo_out, vec3(1.0, 0.749, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+			albedo_out = vec3(1.0, 0.749, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+		}
+	}
+	vec2 g_uv0 = fract(ground_uv0);
+	float uv_line_thickness = grid_line_thickness / 10.0;
+	if (g_uv0.x < uv_line_thickness || (1.0 - g_uv0.x) < uv_line_thickness
+		|| g_uv0.y < uv_line_thickness || (1.0 - g_uv0.y) < uv_line_thickness) {
+		albedo_out = mix(albedo_out, vec3(0.0, 0.0, 1.0), 0.3);		// GDN_TheWorld_Globals::g_color_blue;
+	}
+}
+
+if (mouse_hit != vec2(-1)) {
+	float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
+	vec2 uv_begin_texel = uv - vec2(half_texel_size);
+	vec2 distance_from_vertex = 
+		fract(vec2(uv_begin_texel.x / (half_texel_size * 2.0), uv_begin_texel.y / (half_texel_size * 2.0)));
+	float grid_radius = mouse_hit_radius * 5.0;
+	if (grid_radius != 0.0 && distance(mouse_hit, uv) < grid_radius)
+	{
+		if (distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness
+			|| distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness) {
+			if ((distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness)
+				&& (distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness)) {
+				//albedo_out = mix(albedo_out, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
+				albedo_out = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
+			} else {
+				//albedo_out = mix(albedo_out, vec3(1.0, 0.749, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+				albedo_out = vec3(1.0, 0.749, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+			}
+		}
+	}
+
+	if (mouse_hit_radius != 0.0 && distance(mouse_hit, uv) < mouse_hit_radius) {
+		vec3 mouse_hit_albedo = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+		albedo_out = mix(albedo_out, mouse_hit_albedo, 0.3);
+	}
+}"
+nodes/fragment/33/node = SubResource("VisualShaderNodeExpression_halt2")
+nodes/fragment/33/position = Vector2(-600, 1480)
+nodes/fragment/33/size = Vector2(1000, 660)
+nodes/fragment/33/input_ports = "0,0,distance_from_camera;1,0,globalmap_blend_start;2,0,globalmap_blend_distance;3,8,terrain_globalmap;4,3,uv;5,6,editmode_pixel;6,6,globalmap_pixel;"
+nodes/fragment/33/output_ports = "0,4,albedo_out;1,0,roughness_out;2,0,globalmap_factor;"
+nodes/fragment/33/expression = "globalmap_factor = 1.0;
+roughness_out = 1.0;
+if (editmode_pixel) {
+	albedo_out = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+} else {
+	albedo_out = texture(terrain_globalmap, uv).rgb;
+	if (globalmap_pixel) {
+		roughness_out = 0.5;
+	} else {
+		globalmap_factor = clamp((distance_from_camera - globalmap_blend_start) * globalmap_blend_distance, 0.0, 1.0);
+		globalmap_factor *= globalmap_factor; // slower start, faster transition but far away
+	}
+}"
+nodes/fragment/34/node = SubResource("VisualShaderNodeParameterRef_85o46")
+nodes/fragment/34/position = Vector2(-2980, 520)
+nodes/fragment/35/node = SubResource("VisualShaderNodeParameterRef_iurjx")
+nodes/fragment/35/position = Vector2(-2980, 620)
+nodes/fragment/36/node = SubResource("VisualShaderNodeParameterRef_oes0e")
+nodes/fragment/36/position = Vector2(-2980, 720)
+nodes/fragment/37/node = SubResource("VisualShaderNodeVaryingGetter_4j37f")
+nodes/fragment/37/position = Vector2(-2720, -1060)
+nodes/fragment/38/node = SubResource("VisualShaderNodeVaryingGetter_lpke1")
+nodes/fragment/38/position = Vector2(-2720, -1380)
+nodes/fragment/39/node = SubResource("VisualShaderNodeVaryingGetter_cppnw")
+nodes/fragment/39/position = Vector2(-2720, -1300)
+nodes/fragment/40/node = SubResource("VisualShaderNodeVaryingGetter_hik7b")
+nodes/fragment/40/position = Vector2(-2720, -1220)
+nodes/fragment/41/node = SubResource("VisualShaderNodeVaryingGetter_atn2x")
+nodes/fragment/41/position = Vector2(-2720, -1140)
+nodes/fragment/45/node = SubResource("VisualShaderNodeGlobalExpression_o5i0w")
+nodes/fragment/45/position = Vector2(-5640, -860)
+nodes/fragment/45/size = Vector2(920, 3880)
+nodes/fragment/45/input_ports = ""
+nodes/fragment/45/output_ports = ""
+nodes/fragment/45/expression = "vec4 texture_albedo_bump_dismiss(int type, float layer, vec2 uv)
+{
+	if (layer < 0.0) {
+		if (type == 0) {
+			return texture(u_ground_albedo_bump_0, uv);
+		} else if (type == 1) {
+			return texture(u_ground_albedo_bump_1, uv);
+		} else if (type == 2) {
+			return texture(u_ground_albedo_bump_2, uv);
+		} else {
+			return texture(u_ground_albedo_bump_3, uv);
+		}
+	} else {
+		return texture(gu_ground_albedo_bump_array, vec3(uv, layer));
+	}
+}
+
+vec4 texture_normal_roughness_dismiss(int type, float layer, vec2 uv)
+{
+	if (layer < 0.0) {
+		if (type == 0) {
+			return texture(u_ground_normal_roughness_0, uv);
+		} else if (type == 1) {
+			return texture(u_ground_normal_roughness_1, uv);
+		} else if (type == 2) {
+			return texture(u_ground_normal_roughness_2, uv);
+		} else {
+			return texture(u_ground_normal_roughness_3, uv);
+		}
+	} else {
+		return texture(gu_ground_normal_roughness_array, vec3(uv, layer));
+	}
+}
+
+vec4 texture_albedo_bump(int type,
+	bool north_border_pixel, 
+	bool south_border_pixel, 
+	bool west_border_pixel, 
+	bool east_border_pixel, 
+	vec2 uv)
+{
+	if (type == 0) {
+		if (north_border_pixel && u_north_ground_layers.x >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.x));
+		//} else if (south_border_pixel && u_south_ground_layers.x >= 0.0) {
+		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.x));
+		} else if (west_border_pixel && u_west_ground_layers.x >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.x));
+		//} else if (east_border_pixel && u_east_ground_layers.x >= 0.0) {
+		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.x));
+		} else if (u_ground_layers.x >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.x));
+		} else {
+			return texture(u_ground_albedo_bump_0, uv);
+		}
+	} else if (type == 1) {
+		if (north_border_pixel && u_north_ground_layers.y >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.y));
+		//} else if (south_border_pixel && u_south_ground_layers.y >= 0.0) {
+		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.y));
+		} else if (west_border_pixel && u_west_ground_layers.y >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.y));
+		//} else if (east_border_pixel && u_east_ground_layers.y >= 0.0) {
+		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.y));
+		} else if (u_ground_layers.y >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.y));
+		} else {
+			return texture(u_ground_albedo_bump_1, uv);
+		}
+	} else if (type == 2) {
+		if (north_border_pixel && u_north_ground_layers.z >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.z));
+		//} else if (south_border_pixel && u_south_ground_layers.z >= 0.0) {
+		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.z));
+		} else if (west_border_pixel && u_west_ground_layers.z >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.z));
+		//} else if (east_border_pixel && u_east_ground_layers.z >= 0.0) {
+		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.z));
+		} else if (u_ground_layers.z >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.z));
+		} else {
+			return texture(u_ground_albedo_bump_2, uv);
+		}
+	} else {
+		if (north_border_pixel && u_north_ground_layers.a >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_north_ground_layers.a));
+		//} else if (south_border_pixel && u_south_ground_layers.a >= 0.0) {
+		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_south_ground_layers.a));
+		} else if (west_border_pixel && u_west_ground_layers.a >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_west_ground_layers.a));
+		//} else if (east_border_pixel && u_east_ground_layers.a >= 0.0) {
+		//	return texture(gu_ground_albedo_bump_array, vec3(uv, u_east_ground_layers.a));
+		} else if (u_ground_layers.a >= 0.0) {
+			return texture(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.a));
+		} else {
+			return texture(u_ground_albedo_bump_3, uv);
+		}
+	}
+}
+
+vec4 texture_normal_roughness(int type,
+	bool north_border_pixel, 
+	bool south_border_pixel, 
+	bool west_border_pixel, 
+	bool east_border_pixel, 
+	vec2 uv)
+{
+	if (type == 0) {
+		if (north_border_pixel && u_north_ground_layers.x >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.x));
+		//} else if (south_border_pixel && u_south_ground_layers.x >= 0.0) {
+		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.x));
+		} else if (west_border_pixel && u_west_ground_layers.x >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.x));
+		//} else if (east_border_pixel && u_east_ground_layers.x >= 0.0) {
+		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.x));
+		} else if (u_ground_layers.x >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.x));
+		} else {
+			return texture(u_ground_normal_roughness_0, uv);
+		}
+	} else if (type == 1) {
+		if (north_border_pixel && u_north_ground_layers.y >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.y));
+		//} else if (south_border_pixel && u_south_ground_layers.y >= 0.0) {
+		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.y));
+		} else if (west_border_pixel && u_west_ground_layers.y >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.y));
+		//} else if (east_border_pixel && u_east_ground_layers.y >= 0.0) {
+		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.y));
+		} else if (u_ground_layers.y >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.y));
+		} else {
+			return texture(u_ground_normal_roughness_1, uv);
+		}
+	} else if (type == 2) {
+		if (north_border_pixel && u_north_ground_layers.z >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.z));
+		//} else if (south_border_pixel && u_south_ground_layers.z >= 0.0) {
+		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.z));
+		} else if (west_border_pixel && u_west_ground_layers.z >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.z));
+		//} else if (east_border_pixel && u_east_ground_layers.z >= 0.0) {
+		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.z));
+		} else if (u_ground_layers.z >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.z));
+		} else {
+			return texture(u_ground_normal_roughness_2, uv);
+		}
+	} else {
+		if (north_border_pixel && u_north_ground_layers.a >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_north_ground_layers.a));
+		//} else if (south_border_pixel && u_south_ground_layers.a >= 0.0) {
+		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_south_ground_layers.a));
+		} else if (west_border_pixel && u_west_ground_layers.a >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_west_ground_layers.a));
+		//} else if (east_border_pixel && u_east_ground_layers.a >= 0.0) {
+		//	return texture(gu_ground_normal_roughness_array, vec3(uv, u_east_ground_layers.a));
+		} else if (u_ground_layers.a >= 0.0) {
+			return texture(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.a));
+		} else {
+			return texture(u_ground_normal_roughness_3, uv);
+		}
+	}
+}"
+nodes/fragment/46/node = SubResource("VisualShaderNodeGlobalExpression_ebbh8")
+nodes/fragment/46/position = Vector2(-4640, 520)
+nodes/fragment/46/size = Vector2(1080, 2080)
+nodes/fragment/46/input_ports = ""
+nodes/fragment/46/output_ports = ""
+nodes/fragment/46/expression = "vec4 depth_blend2(vec4 a_value, float a_bump, vec4 b_value, float b_bump, float t) {
+	// https://www.gamasutra.com
+	// /blogs/AndreyMishkinis/20130716/196339/Advanced_Terrain_Texture_Splatting.php
+	float d = 0.1;
+	float ma = max(a_bump + (1.0 - t), b_bump + t) - d;
+	float ba = max(a_bump + (1.0 - t) - ma, 0.0);
+	float bb = max(b_bump + t - ma, 0.0);
+	return (a_value * ba + b_value * bb) / (ba + bb);
+}
+
+vec2 rotate(vec2 v, float cosa, float sina) {
+	return vec2(cosa * v.x - sina * v.y, sina * v.x + cosa * v.y);
+}
+
+vec4 texture_antitile_dismiss(sampler2D albedo_tex, sampler2D normal_tex, vec2 uv, out vec4 out_normal) {
+	float frequency = 2.0;
+	float scale = 1.3;
+	float sharpness = 0.7;
+	
+	// Rotate and scale UV
+	float rot = 3.14 * 0.6;
+	float cosa = cos(rot);
+	float sina = sin(rot);
+	vec2 uv2 = rotate(uv, cosa, sina) * scale;
+	
+	vec4 col0 = texture(albedo_tex, uv);
+	vec4 col1 = texture(albedo_tex, uv2);
+	vec4 nrm0 = texture(normal_tex, uv);
+	vec4 nrm1 = texture(normal_tex, uv2);
+	//col0 = vec4(0.0, 0.5, 0.5, 1.0); // Highlights variations
+
+	// Normals have to be rotated too since we are rotating the texture...
+	// TODO Probably not the most efficient but understandable for now
+	vec3 n = unpack_normal(nrm1);
+	// Had to negate the Y axis for some reason. I never remember the myriad of conventions around
+	n.xz = rotate(n.xz, cosa, -sina);
+	nrm1 = pack_normal(n, nrm1.a);
+	
+	// Periodically alternate between the two versions using a warped checker pattern
+	float t = 1.2 + 
+		  sin(uv2.x * frequency + sin(uv.x) * 2.0) 
+		* cos(uv2.y * frequency + sin(uv.y) * 2.0); // Result in [0..2]
+	t = smoothstep(sharpness, 2.0 - sharpness, t);
+
+	// Using depth blend because classic alpha blending smoothes out details.
+	out_normal = depth_blend2(nrm0, col0.a, nrm1, col1.a, t);
+	return depth_blend2(col0, col0.a, col1, col1.a, t);
+}
+
+vec4 texture_antitile_layers(int type, 
+	bool north_border_pixel, 
+	bool south_border_pixel, 
+	bool west_border_pixel, 
+	bool east_border_pixel, 
+	vec2 uv, out vec4 out_normal)
+{
+	float frequency = 2.0;
+	float scale = 1.3;
+	float sharpness = 0.7;
+	
+	// Rotate and scale UV
+	float rot = 3.14 * 0.6;
+	float cosa = cos(rot);
+	float sina = sin(rot);
+	vec2 uv2 = rotate(uv, cosa, sina) * scale;
+	
+	vec4 col0 = texture_albedo_bump(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, uv);
+	vec4 col1 = texture_albedo_bump(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, uv2);
+	vec4 nrm0 = texture_normal_roughness(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, uv);
+	vec4 nrm1 = texture_normal_roughness(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, uv2);
+	//col0 = vec4(0.0, 0.5, 0.5, 1.0); // Highlights variations
+
+	// Normals have to be rotated too since we are rotating the texture...
+	// TODO Probably not the most efficient but understandable for now
+	vec3 n = unpack_normal(nrm1);
+	// Had to negate the Y axis for some reason. I never remember the myriad of conventions around
+	n.xz = rotate(n.xz, cosa, -sina);
+	nrm1 = pack_normal(n, nrm1.a);
+	
+	// Periodically alternate between the two versions using a warped checker pattern
+	float t = 1.2 + 
+		  sin(uv2.x * frequency + sin(uv.x) * 2.0) 
+		* cos(uv2.y * frequency + sin(uv.y) * 2.0); // Result in [0..2]
+	t = smoothstep(sharpness, 2.0 - sharpness, t);
+
+	// Using depth blend because classic alpha blending smoothes out details.
+	out_normal = depth_blend2(nrm0, col0.a, nrm1, col1.a, t);
+	return depth_blend2(col0, col0.a, col1, col1.a, t);
+}
+"
+nodes/fragment/47/node = SubResource("VisualShaderNodeGlobalExpression_3i73b")
+nodes/fragment/47/position = Vector2(-4640, -360)
+nodes/fragment/47/size = Vector2(1160, 860)
+nodes/fragment/47/input_ports = ""
+nodes/fragment/47/output_ports = ""
+nodes/fragment/47/expression = "vec4 texture_triplanar_dismiss(sampler2D tex, vec3 world_pos, vec3 blend) {
+	vec4 xaxis = texture(tex, world_pos.yz);
+	vec4 yaxis = texture(tex, world_pos.xz);
+	vec4 zaxis = texture(tex, world_pos.xy);
+	// blend the results of the 3 planar projections.
+	return xaxis * blend.x + yaxis * blend.y + zaxis * blend.z;
+}
+
+vec4 texture_triplanar_ab_layers(int type, 
+	bool north_border_pixel, 
+	bool south_border_pixel, 
+	bool west_border_pixel, 
+	bool east_border_pixel, 
+	vec3 world_pos, vec3 blend)
+{
+	vec4 xaxis = texture_albedo_bump(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, world_pos.yz);
+	vec4 yaxis = texture_albedo_bump(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, world_pos.xz);
+	vec4 zaxis = texture_albedo_bump(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, world_pos.xy);
+	// blend the results of the 3 planar projections.
+	return xaxis * blend.x + yaxis * blend.y + zaxis * blend.z;
+}
+
+vec4 texture_triplanar_nr_layers(int type, 
+	bool north_border_pixel, 
+	bool south_border_pixel, 
+	bool west_border_pixel, 
+	bool east_border_pixel, 
+	vec3 world_pos, vec3 blend)
+{
+	vec4 xaxis = texture_normal_roughness(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, world_pos.yz);
+	vec4 yaxis = texture_normal_roughness(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, world_pos.xz);
+	vec4 zaxis = texture_normal_roughness(type, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, world_pos.xy);
+	// blend the results of the 3 planar projections.
+	return xaxis * blend.x + yaxis * blend.y + zaxis * blend.z;
+}"
+nodes/fragment/49/node = SubResource("VisualShaderNodeParameterRef_3ox3m")
+nodes/fragment/49/position = Vector2(-3500, 1180)
+nodes/fragment/50/node = SubResource("VisualShaderNodeParameterRef_wt5ws")
+nodes/fragment/50/position = Vector2(-3500, 1260)
+nodes/fragment/51/node = SubResource("VisualShaderNodeParameterRef_wkfnv")
+nodes/fragment/51/position = Vector2(-3500, 1340)
+nodes/fragment/52/node = SubResource("VisualShaderNodeParameterRef_30hul")
+nodes/fragment/52/position = Vector2(-3500, 1420)
+nodes/fragment/53/node = SubResource("VisualShaderNodeParameterRef_5y5gl")
+nodes/fragment/53/position = Vector2(-3500, 1500)
+nodes/fragment/54/node = SubResource("VisualShaderNodeParameterRef_sjeeh")
+nodes/fragment/54/position = Vector2(-3500, 1580)
+nodes/fragment/55/node = SubResource("VisualShaderNodeParameterRef_0u6ja")
+nodes/fragment/55/position = Vector2(-3500, 1660)
+nodes/fragment/56/node = SubResource("VisualShaderNodeExpression_bq5dl")
+nodes/fragment/56/position = Vector2(4620, 200)
+nodes/fragment/56/size = Vector2(960, 2860)
+nodes/fragment/56/input_ports = "0,4,albedo_in;1,0,roughness_in;2,0,globalmap_factor;3,4,normal_in;4,6,editmode_pixel;5,6,globalmap_pixel;6,4,tint0;7,4,tint1;8,4,tint2;9,4,tint3;10,5,splat;11,6,depth_blending;12,5,ab0;13,5,ab1;14,5,ab2;15,5,ab3;16,5,nr0;17,5,nr1;18,5,nr2;19,5,nr3;"
+nodes/fragment/56/output_ports = "0,4,albedo_out;1,0,roughness_out;2,4,normal_out;"
+nodes/fragment/56/expression = "if (editmode_pixel || globalmap_pixel) {
+	roughness_out = roughness_in;
+	albedo_out = albedo_in;
+	normal_out = normal_in;
+} else {
+	// col(0-3) is the result of the pixel fetched from u_ground_albedo_bump_(0-3) modified
+	// by the value fetched from u_terrain_colormap and relative to the vertex corresponding
+	// to current pixel
+	// the value fetched from u_terrain_colormap if modified to the white according to the
+	// vector u_colormap_opacity_per_texture (default value don't modify the color)
+	vec3 col0 = ab0.rgb * tint0;	
+	vec3 col1 = ab1.rgb * tint1;	
+	vec3 col2 = ab2.rgb * tint2;
+	vec3 col3 = ab3.rgb * tint3;
+	//col0 = ab0.rgb;
+	//col1 = ab1.rgb;
+	//col2 = ab2.rgb;
+	//col3 = ab3.rgb;
+
+	vec4 rough = vec4(nr0.a, nr1.a, nr2.a, nr3.a);
+
+	//vec3 normal0 = unpack_normal(nr0);
+	//vec3 normal1 = unpack_normal(nr1);
+	//vec3 normal2 = unpack_normal(nr2);
+	//vec3 normal3 = unpack_normal(nr3);
+	vec3 normal0 = nr0.rgb;
+	vec3 normal1 = nr1.rgb;
+	vec3 normal2 = nr2.rgb;
+	vec3 normal3 = nr3.rgb;
+
+	vec4 w;
+	// TODO An #ifdef macro would be nice! Or copy/paste everything in a different shader...
+	if (depth_blending) {
+		w = get_depth_blended_weights(splat, vec4(ab0.a, ab1.a, ab2.a, ab3.a));
+	} else {
+		w = splat.rgba;
+	}
+
+	float w_sum = (w.r + w.g + w.b + w.a);
+
+	albedo_out = (
+		w.r * col0.rgb +
+		w.g * col1.rgb +
+		w.b * col2.rgb +
+		w.a * col3.rgb) / w_sum;
+
+	roughness_out = (
+		w.r * rough.r +
+		w.g * rough.g +
+		w.b * rough.b +
+		w.a * rough.a) / w_sum;
+
+	vec3 ground_normal = /*u_terrain_normal_basis **/ (
+		w.r * normal0 +
+		w.g * normal1 +
+		w.b * normal2 +
+		w.a * normal3) / w_sum;
+	// If no splat textures are defined, normal vectors will default to (1,1,1),
+	// which is incorrect, and causes the terrain to be shaded wrongly in some directions.
+	// However, this should not be a problem to fix in the shader,
+	// because there MUST be at least one splat texture set.
+	//ground_normal = normalize(ground_normal);
+	// TODO Make the plugin insert a default normalmap if it's empty
+
+	// Combine terrain normals with detail normals (not sure if correct but looks ok)
+	normal_out = normalize(vec3(normal_in.x + ground_normal.x, normal_in.y, normal_in.z + ground_normal.z));
+	normal_out = mix(normal_out, normal_in, globalmap_factor);
+	albedo_out = mix(albedo_out, albedo_in, globalmap_factor);
+	roughness_out = mix(roughness_out, 1.0, globalmap_factor);
+	AO = (w.r * ab0.a +	w.g * ab1.a + w.b * ab2.a +	w.a * ab3.a) / w_sum;
+	AO_LIGHT_AFFECT = 0.1;
+	
+	/*vec3 red = vec3(1.0, 0.0, 0.0);
+	vec3 green = vec3(0.0, 1.0, 0.0);
+	vec3 blue = vec3(0.0, 0.0, 1.0);
+	vec3 yellow = vec3(1.0, 0.749, 0.0);
+	if (splat.x < 0.0)	{
+		albedo_out = red;
+	}
+	if (splat.y < 0.0)	{
+		albedo_out = green;
+	}
+	if (splat.z < 0.0)	{
+		albedo_out = blue;
+	}
+	if (splat.a < 0.0)	{
+		albedo_out = yellow;
+	}*/
+}"
+nodes/fragment/57/node = SubResource("VisualShaderNodeTexture_ep3ip")
+nodes/fragment/57/position = Vector2(-660, 4000)
+nodes/fragment/58/node = SubResource("VisualShaderNodeVectorDecompose_1lmha")
+nodes/fragment/58/position = Vector2(-1040, 4020)
+nodes/fragment/59/node = SubResource("VisualShaderNodeVectorCompose_tdm5f")
+nodes/fragment/59/position = Vector2(-320, 3800)
+nodes/fragment/60/node = SubResource("VisualShaderNodeVectorCompose_rba8r")
+nodes/fragment/60/position = Vector2(-840, 3900)
+nodes/fragment/61/node = SubResource("VisualShaderNodeMix_ledrt")
+nodes/fragment/61/position = Vector2(-680, 3760)
+nodes/fragment/62/node = SubResource("VisualShaderNodeTexture_b2thk")
+nodes/fragment/62/position = Vector2(600, 1920)
+nodes/fragment/63/node = SubResource("VisualShaderNodeExpression_2wp3x")
+nodes/fragment/63/position = Vector2(-1880, 3860)
+nodes/fragment/63/size = Vector2(760, 3480)
+nodes/fragment/63/input_ports = "0,4,albedo_in;1,0,roughness_in;2,4,normal_in;3,6,editmode_pixel;4,6,globalmap_pixel;5,3,uv;6,5,ab0_in;7,5,ab1_in;8,5,ab2_in;9,5,ab3_in;10,5,nr0_in;11,5,nr1_in;12,5,nr2_in;13,5,nr3_in;14,0,distance_from_border;15,5,weight;"
+nodes/fragment/63/output_ports = "0,4,albedo_out;1,0,roughness_out;2,4,normal_out;3,5,ab0_out;4,5,ab1_out;5,5,ab2_out;6,5,ab3_out;7,5,nr0_out;8,5,nr1_out;9,5,nr2_out;10,5,nr3_out;"
+nodes/fragment/63/expression = "roughness_out = roughness_in;
+albedo_out = albedo_in;
+normal_out = normal_in;
+ab0_out = ab0_in;
+ab1_out = ab1_in;
+ab2_out = ab2_in;
+ab3_out = ab3_in;
+nr0_out = nr0_in;
+nr1_out = nr1_in;
+nr2_out = nr2_in;
+nr3_out = nr3_in;
+
+if (!editmode_pixel && !globalmap_pixel) {
+	if (is_on_upper_border(uv, distance_from_border)) {
+		if (u_north_ground_layers.x >= 0.0) {
+			vec4 ab0_north = texture_albedo_bump(0, u_north_ground_layers.x, uv);
+			ab0_out = mix(ab0_out, ab0_north, weight);
+			vec4 nr0_north = texture_normal_roughness(0, u_north_ground_layers.x, uv);
+			nr0_out = mix(nr0_out, nr0_north, weight);
+			//ab0_out = texture_albedo_bump(0, u_north_ground_layers.x, uv);
+			//nr0_out = texture_normal_roughness(0, u_north_ground_layers.x, uv);
+		}
+		if (u_north_ground_layers.y >= 0.0) {
+			vec4 ab1_north = texture_albedo_bump(1, u_north_ground_layers.y, uv);
+			ab1_out = mix(ab1_out, ab1_north, weight);
+			vec4 nr1_north = texture_normal_roughness(1, u_north_ground_layers.y, uv);
+			nr1_out = mix(nr1_out, nr1_north, weight);
+			//ab1_out = texture_albedo_bump(1, u_north_ground_layers.y, uv);
+			//nr1_out = texture_normal_roughness(1, u_north_ground_layers.y, uv);
+		}
+		if (u_north_ground_layers.z >= 0.0) {
+			vec4 ab2_north = texture_albedo_bump(2, u_north_ground_layers.z, uv);
+			ab2_out = mix(ab2_out, ab2_north, weight);
+			vec4 nr2_north = texture_normal_roughness(2, u_north_ground_layers.z, uv);
+			nr2_out = mix(nr2_out, nr2_north, weight);
+			//ab2_out = texture_albedo_bump(2, u_north_ground_layers.z, uv);
+			//nr2_out = texture_normal_roughness(2, u_north_ground_layers.z, uv);
+		}
+		if (u_north_ground_layers.a >= 0.0) {
+			vec4 ab3_north = texture_albedo_bump(3, u_north_ground_layers.a, uv);
+			ab3_out = mix(ab3_out, ab3_north, weight);
+			vec4 nr3_north = texture_normal_roughness(3, u_north_ground_layers.a, uv);
+			nr3_out = mix(nr3_out, nr3_north, weight);
+			//ab3_out = texture_albedo_bump(3, u_north_ground_layers.a, uv);
+			//nr3_out = texture_normal_roughness(3, u_north_ground_layers.a, uv);
+		}
+		//ab0_out = vec4(0.0, 1.0, 0.0, 1.0);
+		//ab1_out = vec4(1.0, 0.0, 0.0, 1.0);
+	}
+	if (is_on_lower_border(uv, distance_from_border)) {
+		if (u_south_ground_layers.x >= 0.0) {
+			vec4 ab0_south = texture_albedo_bump(0, u_south_ground_layers.x, uv);
+			ab0_out = mix(ab0_out, ab0_south, weight);
+			vec4 nr0_south = texture_normal_roughness(0, u_south_ground_layers.x, uv);
+			nr0_out = mix(nr0_out, nr0_south, weight);
+			//ab0_out = texture_albedo_bump(0, u_south_ground_layers.x, uv);
+			//nr0_out = texture_normal_roughness(0, u_south_ground_layers.x, uv);
+		}
+		if (u_south_ground_layers.y >= 0.0) {
+			vec4 ab1_south = texture_albedo_bump(1, u_south_ground_layers.y, uv);
+			ab1_out = mix(ab1_out, ab1_south, weight);
+			vec4 nr1_south = texture_normal_roughness(1, u_south_ground_layers.y, uv);
+			nr1_out = mix(nr1_out, nr1_south, weight);
+			//ab1_out = texture_albedo_bump(1, u_south_ground_layers.y, uv);
+			//nr1_out = texture_normal_roughness(1, u_south_ground_layers.y, uv);
+		}
+		if (u_south_ground_layers.z >= 0.0) {
+			vec4 ab2_south = texture_albedo_bump(2, u_south_ground_layers.z, uv);
+			ab2_out = mix(ab2_out, ab2_south, weight);
+			vec4 nr2_south = texture_normal_roughness(2, u_south_ground_layers.z, uv);
+			nr2_out = mix(nr2_out, nr2_south, weight);
+			//ab2_out = texture_albedo_bump(2, u_south_ground_layers.z, uv);
+			//nr2_out = texture_normal_roughness(2, u_south_ground_layers.z, uv);
+		}
+		if (u_south_ground_layers.a >= 0.0) {
+			vec4 ab3_south = texture_albedo_bump(3, u_south_ground_layers.a, uv);
+			ab3_out = mix(ab3_out, ab3_south, weight);
+			vec4 nr3_south = texture_normal_roughness(3, u_south_ground_layers.a, uv);
+			nr3_out = mix(nr3_out, nr3_south, weight);
+			//ab3_out = texture_albedo_bump(3, u_south_ground_layers.a, uv);
+			//nr3_out = texture_normal_roughness(3, u_south_ground_layers.a, uv);
+		}
+		//ab0_out = vec4(0.0, 1.0, 0.0, 1.0);
+		//ab1_out = vec4(1.0, 0.0, 0.0, 1.0);
+	}
+	if (is_on_left_border(uv, distance_from_border)) {
+		if (u_west_ground_layers.x >= 0.0) {
+			vec4 ab0_west = texture_albedo_bump(0, u_west_ground_layers.x, uv);
+			ab0_out = mix(ab0_out, ab0_west, weight);
+			vec4 nr0_west = texture_normal_roughness(0, u_west_ground_layers.x, uv);
+			nr0_out = mix(nr0_out, nr0_west, weight);
+			//ab0_out = texture_albedo_bump(0, u_west_ground_layers.x, uv);
+			//nr0_out = texture_normal_roughness(0, u_west_ground_layers.x, uv);
+		}
+		if (u_west_ground_layers.y >= 0.0) {
+			vec4 ab1_west = texture_albedo_bump(1, u_west_ground_layers.y, uv);
+			ab1_out = mix(ab1_out, ab1_west, weight);
+			vec4 nr1_west = texture_normal_roughness(1, u_west_ground_layers.y, uv);
+			nr1_out = mix(nr1_out, nr1_west, weight);
+			//ab1_out = texture_albedo_bump(1, u_west_ground_layers.y, uv);
+			//nr1_out = texture_normal_roughness(1, u_west_ground_layers.y, uv);
+		}
+		if (u_west_ground_layers.z >= 0.0) {
+			vec4 ab2_west = texture_albedo_bump(2, u_west_ground_layers.z, uv);
+			ab2_out = mix(ab2_out, ab2_west, weight);
+			vec4 nr2_west = texture_normal_roughness(2, u_west_ground_layers.z, uv);
+			nr2_out = mix(nr2_out, nr2_west, weight);
+			//ab2_out = texture_albedo_bump(2, u_west_ground_layers.z, uv);
+			//nr2_out = texture_normal_roughness(2, u_west_ground_layers.z, uv);
+		}
+		if (u_west_ground_layers.a >= 0.0) {
+			vec4 ab3_west = texture_albedo_bump(3, u_west_ground_layers.a, uv);
+			ab3_out = mix(ab3_out, ab3_west, weight);
+			vec4 nr3_west = texture_normal_roughness(3, u_west_ground_layers.a, uv);
+			nr3_out = mix(nr3_out, nr3_west, weight);
+			//ab3_out = texture_albedo_bump(3, u_west_ground_layers.a, uv);
+			//nr3_out = texture_normal_roughness(3, u_west_ground_layers.a, uv);
+		}
+		//ab0_out = vec4(0.0, 1.0, 0.0, 1.0);
+		//ab1_out = vec4(1.0, 0.0, 0.0, 1.0);
+	}
+	if (is_on_right_border(uv, distance_from_border)) {
+		if (u_east_ground_layers.x >= 0.0) {
+			vec4 ab0_east = texture_albedo_bump(0, u_east_ground_layers.x, uv);
+			ab0_out = mix(ab0_out, ab0_east, weight);
+			vec4 nr0_east = texture_normal_roughness(0, u_east_ground_layers.x, uv);
+			nr0_out = mix(nr0_out, nr0_east, weight);
+			//ab0_out = texture_albedo_bump(0, u_east_ground_layers.x, uv);
+			//nr0_out = texture_normal_roughness(0, u_east_ground_layers.x, uv);
+		}
+		if (u_east_ground_layers.y >= 0.0) {
+			vec4 ab1_east = texture_albedo_bump(1, u_east_ground_layers.y, uv);
+			ab1_out = mix(ab1_out, ab1_east, weight);
+			vec4 nr1_east = texture_normal_roughness(1, u_east_ground_layers.y, uv);
+			nr1_out = mix(nr1_out, nr1_east, weight);
+			//ab1_out = texture_albedo_bump(1, u_east_ground_layers.y, uv);
+			//nr1_out = texture_normal_roughness(1, u_east_ground_layers.y, uv);
+		}
+		if (u_east_ground_layers.z >= 0.0) {
+			vec4 ab2_east = texture_albedo_bump(2, u_east_ground_layers.z, uv);
+			ab2_out = mix(ab2_out, ab2_east, weight);
+			vec4 nr2_east = texture_normal_roughness(2, u_east_ground_layers.z, uv);
+			nr2_out = mix(nr2_out, nr2_east, weight);
+			//ab2_out = texture_albedo_bump(2, u_east_ground_layers.z, uv);
+			//nr2_out = texture_normal_roughness(2, u_east_ground_layers.z, uv);
+		}
+		if (u_east_ground_layers.a >= 0.0) {
+			vec4 ab3_east = texture_albedo_bump(3, u_east_ground_layers.a, uv);
+			ab3_out = mix(ab3_out, ab3_east, weight);
+			vec4 nr3_east = texture_normal_roughness(3, u_east_ground_layers.a, uv);
+			nr3_out = mix(nr3_out, nr3_east, weight);
+			//ab3_out = texture_albedo_bump(3, u_east_ground_layers.a, uv);
+			//nr3_out = texture_normal_roughness(3, u_east_ground_layers.a, uv);
+		}
+		//ab0_out = vec4(0.0, 1.0, 0.0, 1.0);
+		//ab1_out = vec4(1.0, 0.0, 0.0, 1.0);
+	}
+}"
+nodes/fragment/65/node = SubResource("VisualShaderNodeVec4Constant_g0f2n")
+nodes/fragment/65/position = Vector2(-2320, 4440)
+nodes/fragment/66/node = SubResource("VisualShaderNodeExpression_45ek4")
+nodes/fragment/66/position = Vector2(4980, -780)
+nodes/fragment/66/size = Vector2(760, 300)
+nodes/fragment/66/input_ports = "0,3,uv;"
+nodes/fragment/66/output_ports = "0,4,albedo_out;"
+nodes/fragment/66/expression = "albedo_out = vec3(0.0, 0.0, 0.0);
+if (uv.x >= 0.0 && uv.x <= 1.0) {
+	albedo_out = vec3(1.0, 0.0, 0.0);
+}
+if (uv.y >= 0.0 && uv.y <= 1.0) {
+	albedo_out = mix(albedo_out, vec3(0.0, 1.0, 0.0), vec3(0.5, 0.5, 0.5));
+}"
+nodes/fragment/69/node = SubResource("VisualShaderNodeVectorOp_2h4ao")
+nodes/fragment/69/position = Vector2(1400, 2000)
+nodes/fragment/70/node = SubResource("VisualShaderNodeVectorOp_igkdc")
+nodes/fragment/70/position = Vector2(2840, 4320)
+nodes/fragment/71/node = SubResource("VisualShaderNodeFloatConstant_b0bam")
+nodes/fragment/71/position = Vector2(2820, 4540)
+nodes/fragment/72/node = SubResource("VisualShaderNodeVectorCompose_dtdk1")
+nodes/fragment/72/position = Vector2(3060, 4300)
+nodes/fragment/73/node = SubResource("VisualShaderNodeExpression_cue6k")
+nodes/fragment/73/position = Vector2(1640, 1460)
+nodes/fragment/73/size = Vector2(500, 880)
+nodes/fragment/73/input_ports = "0,6,editmode_pixel;1,6,globalmap_pixel;2,3,uv;3,5,splat_in;4,5,noise_color;5,0,distance_from_border;"
+nodes/fragment/73/output_ports = "0,6,north_border_pixel;1,6,south_border_pixel;2,6,west_border_pixel;3,6,east_border_pixel;4,5,splat_out;"
+nodes/fragment/73/expression = "north_border_pixel = false;
+south_border_pixel = false;
+west_border_pixel = false;
+east_border_pixel = false;
+splat_out = splat_in;
+
+if (!editmode_pixel && !globalmap_pixel) {
+	if (is_on_upper_border(uv, distance_from_border)) {
+		north_border_pixel = true;
+		//splat_out = splat_out + noise_color;
+	}
+	if (is_on_lower_border(uv, distance_from_border)) {
+		south_border_pixel = true;
+		//splat_out = splat_out + noise_color;
+	}
+	if (is_on_left_border(uv, distance_from_border)) {
+		west_border_pixel = true;
+		//splat_out = splat_out + noise_color;
+	}
+	if (is_on_right_border(uv, distance_from_border)) {
+		east_border_pixel = true;
+		//splat_out = splat_out + noise_color;
+	}
+
+	/*if (is_on_upper_border(uv, distance_from_border)) {
+		splat_out = vec4(-1.0, 0.0, 0.0, 0.0);
+	}
+	if (is_on_lower_border(uv, distance_from_border)) {
+		splat_out = vec4(0.0, -1.0, 0.0, 0.0);
+	}
+	if (is_on_left_border(uv, distance_from_border)) {
+		splat_out = vec4(0.0, 0.0, -1.0, 0.0);
+	}
+	if (is_on_right_border(uv, distance_from_border)) {
+		splat_out = vec4(0.0, 0.0, 0.0, -1.0);
+	}*/
+}
+//splat_out = splat_in;"
+nodes/fragment/74/node = SubResource("VisualShaderNodeParameterRef_g4tok")
+nodes/fragment/74/position = Vector2(-2980, 1740)
+nodes/fragment/75/node = SubResource("VisualShaderNodeFloatConstant_m7n1d")
+nodes/fragment/75/position = Vector2(1020, 2080)
+nodes/fragment/76/node = SubResource("VisualShaderNodeIf_djiwm")
+nodes/fragment/76/position = Vector2(1240, 2120)
+nodes/fragment/77/node = SubResource("VisualShaderNodeVectorOp_nygba")
+nodes/fragment/77/position = Vector2(960, 3560)
+nodes/fragment/78/node = SubResource("VisualShaderNodeFloatConstant_mqt22")
+nodes/fragment/78/position = Vector2(660, 3600)
+nodes/fragment/79/node = SubResource("VisualShaderNodeVectorOp_xgxso")
+nodes/fragment/79/position = Vector2(740, 3700)
+nodes/fragment/80/node = SubResource("VisualShaderNodeParameterRef_xo7o0")
+nodes/fragment/80/position = Vector2(-2980, 860)
+nodes/fragment/81/node = SubResource("VisualShaderNodeParameterRef_tfuts")
+nodes/fragment/81/position = Vector2(-2680, -1760)
+nodes/fragment/82/node = SubResource("VisualShaderNodeParameterRef_cahgs")
+nodes/fragment/82/position = Vector2(-2720, -660)
+nodes/fragment/83/node = SubResource("VisualShaderNodeParameterRef_r28t2")
+nodes/fragment/83/position = Vector2(-2680, -1840)
+nodes/fragment/84/node = SubResource("VisualShaderNodeVaryingGetter_ucse7")
+nodes/fragment/84/position = Vector2(-2720, -820)
+nodes/fragment/connections = PackedInt32Array(8, 0, 4, 1, 4, 0, 10, 2, 12, 0, 10, 1, 11, 0, 10, 0, 13, 0, 14, 0, 16, 0, 14, 1, 17, 0, 4, 2, 18, 0, 4, 3, 19, 0, 4, 4, 20, 0, 4, 5, 26, 0, 25, 0, 13, 0, 25, 1, 21, 0, 25, 2, 29, 0, 33, 3, 13, 0, 33, 4, 24, 0, 33, 2, 23, 0, 33, 1, 3, 0, 33, 0, 25, 0, 33, 5, 25, 1, 33, 6, 27, 0, 31, 1, 28, 0, 31, 2, 33, 0, 30, 0, 33, 1, 30, 1, 56, 0, 31, 0, 56, 1, 31, 4, 56, 2, 31, 3, 25, 0, 56, 4, 25, 1, 56, 5, 36, 0, 56, 11, 38, 0, 56, 6, 39, 0, 56, 7, 40, 0, 56, 8, 41, 0, 56, 9, 33, 2, 56, 2, 10, 0, 30, 6, 10, 1, 30, 7, 10, 2, 30, 8, 10, 3, 30, 9, 14, 0, 30, 3, 34, 0, 30, 2, 25, 1, 30, 5, 35, 0, 30, 10, 31, 1, 0, 3, 31, 2, 0, 8, 58, 3, 59, 3, 58, 0, 60, 0, 58, 1, 60, 1, 58, 2, 60, 2, 60, 0, 61, 0, 61, 1, 59, 0, 61, 2, 59, 1, 61, 3, 59, 2, 57, 0, 61, 1, 13, 0, 31, 5, 63, 4, 58, 0, 25, 0, 30, 4, 13, 0, 66, 0, 31, 0, 0, 0, 62, 0, 69, 0, 71, 0, 70, 1, 70, 1, 72, 0, 70, 2, 72, 1, 70, 3, 72, 2, 65, 0, 63, 15, 30, 0, 56, 0, 30, 1, 56, 1, 30, 2, 56, 3, 30, 3, 56, 12, 30, 4, 56, 13, 30, 5, 56, 14, 30, 6, 56, 15, 30, 7, 56, 16, 30, 8, 56, 17, 30, 9, 56, 18, 30, 10, 56, 19, 13, 0, 73, 2, 25, 1, 73, 1, 25, 0, 73, 0, 73, 0, 30, 11, 73, 1, 30, 12, 73, 2, 30, 13, 73, 3, 30, 14, 75, 0, 76, 0, 74, 0, 76, 3, 75, 0, 76, 4, 75, 0, 76, 5, 76, 0, 69, 1, 69, 0, 73, 5, 37, 0, 73, 3, 78, 0, 77, 0, 62, 0, 79, 0, 79, 0, 77, 1, 73, 4, 56, 10, 73, 0, 10, 3, 73, 1, 10, 4, 73, 2, 10, 5, 73, 3, 10, 6, 80, 0, 10, 7, 10, 0, 31, 6, 10, 1, 31, 7, 10, 2, 31, 8, 10, 3, 31, 9, 81, 0, 31, 10, 13, 0, 10, 8, 4, 1, 10, 9, 4, 2, 31, 11, 82, 0, 4, 6, 84, 0, 4, 0)

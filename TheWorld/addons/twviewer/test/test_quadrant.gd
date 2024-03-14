@@ -164,7 +164,7 @@ func render():
 	_pos = gdn_viewer.get_quadrant_pos()
 	_pos_index = gdn_viewer.get_quadrant_pos_index()
 	
-	_logger.debug(str("size=", size, " points_per_size=", points_per_size))
+	_logger.debug(str("pos=",_pos_index.x, ",", _pos_index.y, "(", _pos.x, ",", _pos.y, ")", " size=", size, " points_per_size=", points_per_size))
 	_plane_mesh = PlaneMesh.new()
 	_plane_mesh.size = Vector2(size, size)
 	_plane_mesh.subdivide_depth = points_per_size - 1
@@ -241,7 +241,7 @@ func render():
 		_logger.debug(str("u_terrain_normal_basis = ", normal_basis))
 
 		mat.set_shader_parameter("u_grid_step", step)
-		#RenderingServer.global_shader_parameter_set("gu_grid_step", step)
+		RenderingServer.global_shader_parameter_set("gu_grid_step", step)
 		_logger.debug(str("u_grid_step = ", step))
 
 		# low
@@ -300,6 +300,7 @@ func render():
 		
 		gdn_viewer.clear_quadrant_data()
 		
+		#return
 		if name == "TWTestQuadrant1":
 			v4 = Vector4(1, 1, 9, 10)
 			mat.set_shader_parameter("u_south_ground_layers", v4)
