@@ -5,6 +5,8 @@ var _world_camera : Camera3D = null
 var _back_camera : Camera3D = null
 var _back_camera_container : SubViewportContainer = null
 
+var tw_const = preload("res://addons/twviewer/tw_const.gd")
+
 @export var gravity = -9.8
 @export var acceleration_speed = 20
 @export var inertia_factor = 10
@@ -53,8 +55,8 @@ func _physics_process(_delta):
 	#if _player_in_world:
 	if _camera_tracking_player:
 		move_player(_delta)
-		RenderingServer.global_shader_parameter_set("gu_player_altitude_from_terrain", _player_dist_from_terrain)
-		RenderingServer.global_shader_parameter_set("gu_player_pos", global_position)
+		RenderingServer.global_shader_parameter_set(tw_const.global_shader_param_player_altitude_from_terrain, _player_dist_from_terrain)
+		RenderingServer.global_shader_parameter_set(tw_const.global_shader_param_player_pos, global_position)
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):

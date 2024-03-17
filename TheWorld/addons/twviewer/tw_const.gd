@@ -33,7 +33,13 @@ const param_key_player_pos := "initial_position"
 const param_key_player_basis := "initial_basis"
 
 const custom_cameras_group := "TheWorldViewerCustomCameras"
+const global_shader_param_grid_step := "gu_grid_step"
 const global_shader_param_camera_altitude_from_terrain := "gu_camera_altitude_from_terrain"
+const global_shader_param_camera_pos := "gu_camera_pos"
+const global_shader_param_player_pos := "gu_player_pos"
+const global_shader_param_player_altitude_from_terrain := "gu_player_altitude_from_terrain"
+const global_shader_param_player_texture_blending_size := "gu_texture_blending_size"
+const global_shader_param_player_splatmap_blending_size := "gu_splatmap_blending_size"
 
 static func status_to_string(status : int) -> String:
 	if status == clientstatus_error:

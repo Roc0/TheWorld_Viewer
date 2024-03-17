@@ -308,7 +308,7 @@ script = ExtResource("1_760ml")
 
 [node name="TWViewer" type="Node3D" parent="TheWorld_Main/Landscape"]
 script = ExtResource("3_yxvy6")
-_world_param_depth_quad = 1
+_world_param_depth_quad = 6
 _world_param_info_panel_visible = true
 _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 1
@@ -340,7 +340,7 @@ metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(0.797411, -0.407322, 0.445224, 0, 0.737814, 0.675004, -0.603436, -0.538256, 0.588341, 411357, 1605.79, 408086)
+transform = Transform3D(-0.999279, -0.000942854, 0.0379575, 0, 0.999692, 0.0248321, -0.0379692, 0.0248142, -0.998971, 411354, 1611.35, 408083)
 far = 30000.0
 
 [node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main/Landscape/TWViewer"]

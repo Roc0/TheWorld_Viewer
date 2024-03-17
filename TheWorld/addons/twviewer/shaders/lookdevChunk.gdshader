@@ -21,6 +21,8 @@ uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
 uniform bool u_force_height_0 = false;
 uniform uint u_optimization_level = 0;
 
+global uniform vec3 gu_camera_pos;
+
 //uniform int u_scale_change_num_steps = 1;
 uniform float u_piece_size = 200.0;
 uniform int u_piecing_threshold = 3;
@@ -45,7 +47,7 @@ void vertex() {
 	vec2 vertex_cell_coords_in_textures = vertex_local_to_quadrant_pos.xz / vec2(u_grid_step * pow(2.0, float(u_optimization_level)));	// to get correct value from the textures (in the range 0 / max size in local coord) we need to consider the step (dividing by it): in the textures heigths/normals are adjacent but in global/local coords are separated by the step
 	vertex_cell_coords_in_textures += vec2(0.5);		// Moreover must add a half-offset so that we sample the center of pixels, otherwise bilinear filtering of the textures will give us mixed results (#183)
 	UV = vertex_cell_coords_in_textures / vec2(textureSize(u_terrain_heightmap, 0));	// Normalized UV to be in the range 0/1
-	
+
 	//vec2 uv = (VERTEX.xz / vec2(u_grid_step)) / vec2(textureSize(u_terrain_heightmap, 0));							// DEBUG: check uv
 	//vec2 uv = (vertex_local_to_quadrant_pos.xz / vec2(u_grid_step)) / vec2(textureSize(u_terrain_heightmap, 0));		// DEBUG: check uv
 	//vec2 uv = (vertex_local_to_quadrant_pos.xz / vec2(u_grid_step)) / vec2(textureSize(u_terrain_heightmap, 0));		// DEBUG: check uv
@@ -61,14 +63,17 @@ void vertex() {
 	}
 
 	NORMAL = get_normal(u_terrain_normalmap, u_terrain_normal_basis, UV);	// Need to use u_terrain_normal_basis to handle scaling.
-	
-	v_distance_from_camera = distance(vertex_world_pos.xyz, INV_VIEW_MATRIX[3].xyz);
+
+	//v_distance_from_camera = distance(vertex_world_pos.xyz, INV_VIEW_MATRIX[3].xyz);
+	//v_distance_from_camera = distance(vertex_world_pos.xyz, CAMERA_POSITION_WORLD);
+	//v_distance_from_camera = distance(VERTEX, MODELVIEW_MATRIX[3].xyz);
+	v_distance_from_camera = distance(vertex_world_pos.xyz, gu_camera_pos);
 }
 
 void fragment() {
 	vec3 normal = get_normal(u_terrain_normalmap, u_terrain_normal_basis, UV);
 	vec4 value = texture(u_map, UV);
-	
+
 	if (u_editmode_selected > 0.0 && is_on_the_border(UV, u_quad_border_line_thickness)) {
 		ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 	} else {
@@ -78,9 +83,9 @@ void fragment() {
 			ALBEDO = value.rgb;
 		}
 	}
-	
+
 	// DEBUG pieces near cam at higher resolution
-	if (/*v_distance_from_camera_y < 50.0 &&*/ v_distance_from_camera < (u_piece_size * float(u_piecing_threshold)))
+	if (v_distance_from_camera < (u_piece_size * float(u_piecing_threshold)))
 	{
 		vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 		int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / u_piece_size));
@@ -111,7 +116,11 @@ void fragment() {
 	//ALBEDO = vec3(UV.x, UV.y, 1.0);	// DEBUG: check uv
 	//ALBEDO = vec3(1.0, 0.0, 0.0); 	// DEBUG: use red for material albedo
 	// DEBUG
-	
+
 	//ROUGHNESS = 0.5;
 	NORMAL = (VIEW_MATRIX * (vec4(normal, 0.0))).xyz;
+
+	//if (v_distance_from_camera < 2000.0) {
+	//	ALBEDO = vec3(0.0, 0.0, 1.0);
+	//}
 }

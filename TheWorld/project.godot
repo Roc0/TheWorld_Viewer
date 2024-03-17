@@ -245,3 +245,7 @@ gu_splatmap_blending_size={
 "type": "float",
 "value": 0.2
 }
+gu_camera_pos={
+"type": "vec3",
+"value": Vector3(0, 0, 0)
+}

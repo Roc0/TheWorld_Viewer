@@ -241,7 +241,7 @@ func render():
 		_logger.debug(str("u_terrain_normal_basis = ", normal_basis))
 
 		mat.set_shader_parameter("u_grid_step", step)
-		RenderingServer.global_shader_parameter_set("gu_grid_step", step)
+		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_grid_step, step)
 		_logger.debug(str("u_grid_step = ", step))
 
 		# low

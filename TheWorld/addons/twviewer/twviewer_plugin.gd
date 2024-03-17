@@ -26,6 +26,7 @@ var _viewer_init_done : bool = false
 
 var _camera : Camera3D = null
 var _camera_altitude_from_terrain : Variant = null
+var _camera_pos : Variant = null
 
 var _alt_pressed : bool = false
 var _ctrl_pressed : bool = false
@@ -148,6 +149,10 @@ func _process(delta: float):
 			if _camera_altitude_from_terrain != camera_altitude_from_terrain:
 				_camera_altitude_from_terrain = camera_altitude_from_terrain
 				RenderingServer.global_shader_parameter_set(tw_const.global_shader_param_camera_altitude_from_terrain, _camera_altitude_from_terrain)
+			var camera_pos : Vector3 = n.global_position
+			if _camera_pos != camera_pos:
+				_camera_pos = camera_pos
+				RenderingServer.global_shader_parameter_set(tw_const.global_shader_param_camera_pos, _camera_pos)
 			#print(str(n))
 			#print(typeof(n))
 

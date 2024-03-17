@@ -457,12 +457,12 @@ func _process(delta):
 	var gdn_globals = GDN_globals()
 
 	if _shader_param_texture_blending_size_changed && gdn_globals != null:
-		RenderingServer.global_shader_parameter_set("gu_texture_blending_size", _shader_param_texture_blending_size)
+		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_player_texture_blending_size, _shader_param_texture_blending_size)
 		gdn_globals.set_texture_blending_size(_shader_param_texture_blending_size)
 		_shader_param_texture_blending_size_changed = false
 
 	if _shader_param_splatmap_blending_size_changed && gdn_globals != null:
-		RenderingServer.global_shader_parameter_set("gu_splatmap_blending_size", _shader_param_splatmap_blending_size)
+		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_player_splatmap_blending_size, _shader_param_splatmap_blending_size)
 		gdn_globals.set_splatmap_blending_size(_shader_param_splatmap_blending_size)
 		_shader_param_splatmap_blending_size_changed = false
 
