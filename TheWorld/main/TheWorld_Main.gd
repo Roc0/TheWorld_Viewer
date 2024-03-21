@@ -1,7 +1,7 @@
 extends Node3D
 
-var debug_window_active : bool = false
-var world_entered : bool = false
+var _debug_window_active : bool = false
+var _world_entered : bool = false
 
 var tw_const = preload("res://addons/twviewer/tw_const.gd")
 
@@ -14,11 +14,11 @@ var _config := ConfigFile.new()
 var _viewpoint_to_save : int = 0
 var _viewpoint_to_load : int = 0
 
-var initialCameraDistanceFromTerrain : float = 300
+var _initialCameraDistanceFromTerrain : float = 300
 
-var initial_player_pos_global_coord : Variant = null
-var initial_player_basis_global_coord : Variant = null
-var initial_camera_position_in_map : Variant = null
+var _initial_player_pos_in_map : Variant = null
+var _initial_player_basis_in_map : Variant = null
+var _initial_camera_position_in_map : Variant = null
 #var initialViewerPoFs := Vector3(0, 2200, 0)ww
 #var initialCameraAltitudeForced = 0
 #var initialYawPitchRoll := Vector3(-139, -7, 0)
@@ -137,17 +137,13 @@ func init():
 	_config_file_name = TWViewer().GDN_globals().get_config_filename(0)
 	#var config = ConfigFile.new()
 	var _err = _config.load(_config_file_name)
-	initial_camera_position_in_map = _config.get_value(tw_const.param_group_camera, tw_const.param_key_initial_camera_pos)
+	_initial_camera_position_in_map = _config.get_value(tw_const.param_group_camera, tw_const.param_key_initial_camera_pos)
 	var initial_camera_ypr : Variant = _config.get_value(tw_const.param_group_camera, tw_const.param_key_initial_camera_ypr)
-	if initial_camera_position_in_map != null and initial_camera_ypr != null:
-		TWViewer()._set_camera_param_initial_pos(initial_camera_position_in_map)
+	if _initial_camera_position_in_map != null and initial_camera_ypr != null:
+		TWViewer()._set_camera_param_initial_pos(_initial_camera_position_in_map)
 		TWViewer()._set_camera_param_initial_yaw_pitch_roll(initial_camera_ypr)
-	var initial_player_pos_in_map = _config.get_value(tw_const.param_group_player, tw_const.param_key_player_pos)
-	var initial_player_basis_in_map = _config.get_value(tw_const.param_group_player, tw_const.param_key_player_basis)
-	var player_initial_map_transform : Transform3D = Transform3D(initial_player_basis_in_map, initial_player_pos_in_map)
-	var player_initial_global_transform : Transform3D = TWViewer().GDN_viewer().map_transform_to_global_transform(player_initial_map_transform)
-	initial_player_pos_global_coord = player_initial_global_transform.origin
-	initial_player_basis_global_coord = player_initial_global_transform.basis
+	_initial_player_pos_in_map = _config.get_value(tw_const.param_group_player, tw_const.param_key_player_pos)
+	_initial_player_basis_in_map = _config.get_value(tw_const.param_group_player, tw_const.param_key_player_basis)
 		
 	var result = TWViewer().GDN_globals().connect("tw_status_changed", Callable(self, "_on_tw_status_changed")) == 0
 	log_debug(str("signal tw_status_changed connected (result=", result, ")"))
@@ -184,7 +180,7 @@ func _input(event):
 		_viewpoint_to_load = dict['viewpoint_to_load']
 
 		if event.is_action_pressed("ui_toggle_debug_stats"):
-			if debug_window_active:
+			if _debug_window_active:
 				set_debug_window(false)
 			else:
 				set_debug_window(true)
@@ -305,7 +301,7 @@ func _process(_delta):
 	#if init_world_thread.is_active():
 	#	init_world_thread.wait_to_finish()
 	
-	if not world_entered:
+	if not _world_entered:
 		return
 		
 	if not gdn_viewer.initial_world_viewer_pos_set():
@@ -315,7 +311,7 @@ func _process(_delta):
 	
 	#if not scene_initialized:
 		#current_camera.global_transform.origin = Vector3(current_camera.global_transform.origin.x, initialCameraAltitudeForced, current_camera.global_transform.origin.z)
-		#if (initialCameraDistanceFromTerrain == 0):
+		#if (_initialCameraDistanceFromTerrain == 0):
 		#	current_camera.global_transform.origin.y = initialCameraAltitudeForced
 
 		#current_camera.look_at(initialViewerPos, Vector3(0, 1, 0))
@@ -338,18 +334,22 @@ func _process(_delta):
 	#if scene_initialized && !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 	if !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 		
-		if initial_camera_position_in_map != null:
+		if _initial_camera_position_in_map != null:
 			var space_state = get_world_3d().direct_space_state
-			var query = PhysicsRayQueryParameters3D.create(Vector3(initial_camera_position_in_map.x, 10000, initial_camera_position_in_map.z), Vector3(initial_camera_position_in_map.x, -10000, initial_camera_position_in_map.z))
+			var query = PhysicsRayQueryParameters3D.create(Vector3(_initial_camera_position_in_map.x, 10000, _initial_camera_position_in_map.z), Vector3(_initial_camera_position_in_map.x, -10000, _initial_camera_position_in_map.z))
 			var result = space_state.intersect_ray(query)
 			if result:
-				$Test/TestBall.global_transform.origin = Vector3(initial_camera_position_in_map.x + 10, result.position.y + 50, initial_camera_position_in_map.z + 10)
-				$Player/Player.global_transform.origin = Vector3(initial_camera_position_in_map.x, result.position.y + 50, initial_camera_position_in_map.z)
-			if initial_player_pos_global_coord != null && initial_player_basis_global_coord != null:
+				$Test/TestBall.global_transform.origin = Vector3(_initial_camera_position_in_map.x + 10, result.position.y + 50, _initial_camera_position_in_map.z + 10)
+				$Player/Player.global_transform.origin = Vector3(_initial_camera_position_in_map.x, result.position.y + 50, _initial_camera_position_in_map.z)
+			if _initial_player_pos_in_map != null && _initial_player_basis_in_map != null:
+				var player_initial_map_transform : Transform3D = Transform3D(_initial_player_basis_in_map, _initial_player_pos_in_map)
+				var player_initial_global_transform : Transform3D = TWViewer().GDN_viewer().map_transform_to_global_transform(player_initial_map_transform)
+				var initial_player_pos_global_coord := player_initial_global_transform.origin
+				var initial_player_basis_global_coord := player_initial_global_transform.basis
 				$Player/Player.global_transform.origin = initial_player_pos_global_coord #+  Vector3(10, 5000, 10)
 				$Player/Player.global_transform.basis = initial_player_basis_global_coord
 				$Test/TestBall.global_transform.origin = initial_player_pos_global_coord + Vector3(10, 50, 10)
-			#$Test/TestBall.global_transform.origin = Vector3(initial_camera_position_in_map.x + 10, 500, initial_camera_position_in_map.z + 10)
+			#$Test/TestBall.global_transform.origin = Vector3(_initial_camera_position_in_map.x + 10, 500, _initial_camera_position_in_map.z + 10)
 			$Test/TestBall.visible = true
 			#$Player/Player.visible = true
 			$Player/Player.set_player_in_world(true)
@@ -362,9 +362,9 @@ func _process(_delta):
 	
 	#if scene_initialized && post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 	if post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
-		ball_pos = $Test/TestBall.global_transform.origin
+		ball_pos = TWViewer().GDN_viewer().global_pos_to_map_transform($Test/TestBall.global_transform.origin).origin
 		tw_viewer.set_info_panel_external_value("Ball pos: (" + str(snapped(ball_pos.x, 0.01)) + ", " + str(snapped(ball_pos.y, 0.01)) + ", " + str(snapped(ball_pos.z, 0.01)) + ")", _ball_pos_info_line_index)
-		_player_pos = $Player/Player.global_transform.origin
+		_player_pos = TWViewer().GDN_viewer().global_pos_to_map_transform($Player/Player.global_transform.origin).origin
 		_player_velocity = $Player/Player.velocity
 		var velocity : float = _player_velocity.length()
 		var player_dist_from_terrain := ""
@@ -387,7 +387,7 @@ func _process(_delta):
 				_saved_time_to_fade_message = Time.get_ticks_msec()
 			_viewpoint_to_load = 0
 			
-	if debug_window_active:
+	if _debug_window_active:
 		fps = Engine.get_frames_per_second()
 		var _chunk_debug_mode : String = gdn_viewer.get_chunk_debug_mode()
 		var _cam_chunk_pos = gdn_viewer.get_camera_quadrant_name() + " " + gdn_viewer.get_camera_chunk_id()
@@ -524,10 +524,10 @@ func enter_world():
 	#if err:
 	#	log_debug("Start _init_world failure!")
 	log_debug("World entered...")
-	world_entered = true
+	_world_entered = true
 	
 func exit_world():
-	if world_entered:
+	if _world_entered:
 		log_debug("Exiting world...")
 		$UI/DebugStats.remove_property(self, "_client_status")
 		$UI/DebugStats.remove_property(self, "fps")
@@ -580,20 +580,20 @@ func exit_world():
 		#if init_world_thread.is_active():
 		#	init_world_thread.wait_to_finish()
 		log_debug("World exited...")
-		world_entered = false
+		_world_entered = false
 	
 func set_debug_window(active : bool) -> void:
 	if active:
-		debug_window_active = true
+		_debug_window_active = true
 		$UI/DebugStats.visible = true
 	else:
-		debug_window_active = false
+		_debug_window_active = false
 		$UI/DebugStats.visible = false
 		
 #func _init_world() -> void:
 #	log_debug("Initializing world...")
 #	initialViewerPos = TWViewer()._get_initial_viewer_pos()
-#	initialCameraDistanceFromTerrain = TWViewer()._get_dist_from_terr()
+#	_initialCameraDistanceFromTerrain = TWViewer()._get_dist_from_terr()
 #	initialCameraAltitudeForced = initialViewerPos.y
 #	TWViewer().GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
 #	log_debug("World initialization completed...")
@@ -703,7 +703,8 @@ func save_current_position(viewpoint : int) -> void:
 		var param_key_camera_pos := ""
 		var param_key_camera_ypr := ""
 		if viewpoint == 0:
-			var player_map_transform : Transform3D = gdn_viewer.global_transform_to_map_transform($Player/Player.global_transform)
+			var player_global_transform = $Player/Player.global_transform 
+			var player_map_transform : Transform3D = gdn_viewer.global_transform_to_map_transform(player_global_transform)
 			_config.set_value(tw_const.param_group_player, tw_const.param_key_player_pos, player_map_transform.origin)
 			_config.set_value(tw_const.param_group_player, tw_const.param_key_player_basis, player_map_transform.basis)
 			param_key_camera_pos = tw_const.param_key_initial_camera_pos

@@ -93,12 +93,23 @@ func get_input(delta) -> bool:
 		
 	var dot = transform.basis.z.dot(_target_velocity)	# velocity on forward/backward direction 
 
+	var velocity_boost : int = 1
+	var acceleration_speed_boost : int = 1
+	if (Input.is_key_pressed(KEY_CTRL)):
+		velocity_boost = 5
+		acceleration_speed_boost = 2
+		if _world_camera != null:
+			_world_camera.set_camera_tracking_speed(20 * velocity_boost)
+	else:
+		if _world_camera != null:
+			_world_camera.set_camera_tracking_speed(20)
+
 	var accelerating := false
 	if Input.is_action_pressed("ui_forward"):
 		var change_dir_increment := 1.0
 		if dot > 0:		# going backward
 			change_dir_increment = 3.0
-		_target_velocity += -transform.basis.z * acceleration_speed * change_dir_increment * delta
+		_target_velocity += -transform.basis.z * (acceleration_speed * acceleration_speed_boost) * change_dir_increment * delta
 		accelerating = true
 		input_received = true
 		#print("ui_forward pressed ... velocity = " + str(_target_velocity) + " length = " + str(_target_velocity.length()))
@@ -106,7 +117,7 @@ func get_input(delta) -> bool:
 		var change_dir_increment := 1.0
 		if dot < 0:		# going forward
 			change_dir_increment = 3.0
-		_target_velocity += transform.basis.z * acceleration_speed * change_dir_increment * delta
+		_target_velocity += transform.basis.z * (acceleration_speed * acceleration_speed_boost) * change_dir_increment * delta
 		accelerating = true
 		input_received = true
 		#print("ui_backward pressed ... velocity = " + str(_target_velocity) + " length = " + str(_target_velocity.length()))
@@ -126,7 +137,7 @@ func get_input(delta) -> bool:
 	if not accelerating:
 		velocity_length -= inertia_factor * 100 * delta
 	
-	velocity_length = clamp(velocity_length, 0, max_velocity)
+	velocity_length = clamp(velocity_length, 0, max_velocity * velocity_boost)
 	
 	dot = transform.basis.z.dot(_target_velocity)	# velocity on forward/backward direction 
 	if dot < 0:		# going forward
