@@ -1,4 +1,4 @@
-[gd_resource type="VisualShader" load_steps=132 format=3 uid="uid://cux0qnf6ydgr2"]
+[gd_resource type="VisualShader" load_steps=133 format=3 uid="uid://cux0qnf6ydgr2"]
 
 [ext_resource type="Texture2D" uid="uid://bllki0xhd1pqa" path="res://assets/textures/ground/Grass004_1K-PNG_albedo_bump.ground.png" id="1_oimdd"]
 
@@ -1142,7 +1142,7 @@ expression = "/*float get_height(sampler2D tex, float terrain_height, vec2 uv)
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_ytuk2"]
 size = Vector2(1240, 420)
-expression = "vec3 camera_pos = INV_VIEW_MATRIX[3].xyz;
+expression = "//vec3 camera_pos = INV_VIEW_MATRIX[3].xyz;
 distance_from_camera = distance(vertex_world_pos.xyz, camera_pos);
 distance_from_camera_on_terrain = distance(vertex_world_pos.xyz, vec3(camera_pos.x, camera_pos.y - gu_camera_altitude_from_terrain, camera_pos.z));
 if (new) {
@@ -1453,6 +1453,11 @@ varying_name = "v_close_mask"
 [sub_resource type="VisualShaderNodeVaryingSetter" id="VisualShaderNodeVaryingSetter_ot70l"]
 varying_name = "v_middle_mask"
 
+[sub_resource type="VisualShaderNodeVec3Parameter" id="VisualShaderNodeVec3Parameter_df7bi"]
+parameter_name = "gu_camera_pos"
+qualifier = 1
+default_value_enabled = true
+
 [sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_m8jdv"]
 size = Vector2(700, 1000)
 expression = "#include \"res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc\"
@@ -1544,6 +1549,7 @@ varying float v_middle_mask;
 uniform mat4 u_terrain_inverse_transform;
 uniform float u_grid_step = 2;
 uniform uint u_optimization_level = 0;
+global uniform vec3 gu_camera_pos = vec3(0.000000, 0.000000, 0.000000);
 uniform sampler2D u_terrain_splatmap;
 uniform sampler2D u_terrain_colormap;
 uniform sampler2D tex_frg_62;
@@ -2078,6 +2084,10 @@ void vertex() {
 	v_vertex_cell_coords_in_textures = n_out12p0;
 
 
+// Vector3Parameter:71
+	vec3 n_out71p0 = gu_camera_pos;
+
+
 	float n_out18p0;
 	float n_out18p1;
 	float n_out18p2;
@@ -2088,9 +2098,9 @@ void vertex() {
 	n_out18p2 = 0.0;
 	n_out18p3 = 0.0;
 	{
-		vec3 camera_pos = INV_VIEW_MATRIX[3].xyz;
-		n_out18p0 = distance(n_out13p1.xyz, camera_pos);
-		n_out18p1 = distance(n_out13p1.xyz, vec3(camera_pos.x, camera_pos.y - gu_camera_altitude_from_terrain, camera_pos.z));
+		//vec3 n_out71p0 = INV_VIEW_MATRIX[3].xyz;
+		n_out18p0 = distance(n_out13p1.xyz, n_out71p0);
+		n_out18p1 = distance(n_out13p1.xyz, vec3(n_out71p0.x, n_out71p0.y - gu_camera_altitude_from_terrain, n_out71p0.z));
 		if (new) {
 			n_out18p2 = smoothstep(close_distance + close_blend_amount, close_distance, n_out18p0);
 			n_out18p3 = smoothstep(middle_distance + middle_blend_amount, middle_distance, n_out18p0);
@@ -2946,9 +2956,9 @@ nodes/vertex/17/expression = "/*float get_height(sampler2D tex, float terrain_he
 nodes/vertex/18/node = SubResource("VisualShaderNodeExpression_ytuk2")
 nodes/vertex/18/position = Vector2(2160, -120)
 nodes/vertex/18/size = Vector2(1240, 420)
-nodes/vertex/18/input_ports = "0,5,vertex_world_pos;"
+nodes/vertex/18/input_ports = "0,5,vertex_world_pos;1,4,camera_pos;"
 nodes/vertex/18/output_ports = "0,0,distance_from_camera;1,0,distance_from_camera_on_terrain;2,0,close_mask;3,0,middle_mask;"
-nodes/vertex/18/expression = "vec3 camera_pos = INV_VIEW_MATRIX[3].xyz;
+nodes/vertex/18/expression = "//vec3 camera_pos = INV_VIEW_MATRIX[3].xyz;
 distance_from_camera = distance(vertex_world_pos.xyz, camera_pos);
 distance_from_camera_on_terrain = distance(vertex_world_pos.xyz, vec3(camera_pos.x, camera_pos.y - gu_camera_altitude_from_terrain, camera_pos.z));
 if (new) {
@@ -3184,7 +3194,9 @@ nodes/vertex/69/node = SubResource("VisualShaderNodeVaryingSetter_l7c6t")
 nodes/vertex/69/position = Vector2(3500, 40)
 nodes/vertex/70/node = SubResource("VisualShaderNodeVaryingSetter_ot70l")
 nodes/vertex/70/position = Vector2(3500, 120)
-nodes/vertex/connections = PackedInt32Array(12, 1, 0, 4, 11, 0, 12, 0, 12, 1, 13, 0, 13, 0, 0, 0, 11, 0, 13, 1, 13, 1, 14, 0, 15, 0, 13, 2, 12, 0, 16, 0, 15, 0, 11, 0, 13, 1, 18, 0, 18, 0, 19, 0, 12, 1, 20, 0, 20, 0, 0, 1, 23, 0, 24, 0, 12, 1, 23, 0, 25, 0, 26, 0, 25, 1, 27, 0, 25, 2, 28, 0, 25, 3, 29, 0, 12, 1, 25, 0, 35, 0, 12, 1, 30, 0, 12, 2, 37, 0, 12, 3, 36, 0, 12, 4, 34, 0, 25, 1, 31, 0, 20, 1, 32, 0, 23, 1, 38, 0, 23, 2, 30, 0, 13, 3, 18, 1, 68, 0, 18, 2, 69, 0, 18, 3, 70, 0)
+nodes/vertex/71/node = SubResource("VisualShaderNodeVec3Parameter_df7bi")
+nodes/vertex/71/position = Vector2(-800, -1980)
+nodes/vertex/connections = PackedInt32Array(12, 1, 0, 4, 11, 0, 12, 0, 12, 1, 13, 0, 13, 0, 0, 0, 11, 0, 13, 1, 13, 1, 14, 0, 15, 0, 13, 2, 12, 0, 16, 0, 15, 0, 11, 0, 13, 1, 18, 0, 18, 0, 19, 0, 12, 1, 20, 0, 20, 0, 0, 1, 23, 0, 24, 0, 12, 1, 23, 0, 25, 0, 26, 0, 25, 1, 27, 0, 25, 2, 28, 0, 25, 3, 29, 0, 12, 1, 25, 0, 35, 0, 12, 1, 30, 0, 12, 2, 37, 0, 12, 3, 36, 0, 12, 4, 34, 0, 25, 1, 31, 0, 20, 1, 32, 0, 23, 1, 38, 0, 23, 2, 30, 0, 13, 3, 18, 1, 68, 0, 18, 2, 69, 0, 18, 3, 70, 0, 71, 0, 18, 1)
 nodes/fragment/0/position = Vector2(7200, -520)
 nodes/fragment/3/node = SubResource("VisualShaderNodeVaryingGetter_pe6em")
 nodes/fragment/3/position = Vector2(-2720, -740)

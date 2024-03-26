@@ -1,4 +1,4 @@
-[gd_scene load_steps=48 format=3 uid="uid://c4ukh1kw4impi"]
+[gd_scene load_steps=51 format=3 uid="uid://c4ukh1kw4impi"]
 
 [ext_resource type="Script" path="res://main/TheWorld_Main.gd" id="1_760ml"]
 [ext_resource type="Script" path="res://addons/twviewer/tw_viewer.gd" id="3_yxvy6"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://cdlipa2pmvrju" path="res://components/world_environment.tscn" id="4_gxev0"]
 [ext_resource type="Material" uid="uid://b7mgxyjtil11g" path="res://addons/twviewer/test/m_test_quadrant.tres" id="4_svbuk"]
 [ext_resource type="PackedScene" uid="uid://bi138l8muok7h" path="res://components/test.tscn" id="5_kid0l"]
+[ext_resource type="Material" uid="uid://dee4mdtcckm70" path="res://addons/twviewer/test/m_sea.tres" id="6_32vc6"]
 [ext_resource type="PackedScene" uid="uid://v6sfi8k7dr7o" path="res://player.tscn" id="6_wlxwp"]
 [ext_resource type="Script" path="res://addons/twviewer/test/test_quadrant.gd" id="7_7uq48"]
 [ext_resource type="Shader" path="res://utils/GreyScalePostProcess.gdshader" id="8_4i1hi"]
@@ -290,6 +291,17 @@ material = SubResource("StandardMaterial3D_l5mjy")
 radius = 100.0
 height = 200.0
 
+[sub_resource type="PlaneMesh" id="PlaneMesh_60os2"]
+material = ExtResource("6_32vc6")
+size = Vector2(4096, 4096)
+subdivide_width = 511
+subdivide_depth = 511
+
+[sub_resource type="QuadMesh" id="QuadMesh_st0eb"]
+subdivide_width = 2048
+subdivide_depth = 2048
+orientation = 1
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_epqem"]
 shader = ExtResource("8_4i1hi")
 shader_parameter/greyScale = Vector3(0.5, 0.5, 0.5)
@@ -340,7 +352,7 @@ metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(-0.999279, -0.000942854, 0.0379575, 0, 0.999692, 0.0248321, -0.0379692, 0.0248142, -0.998971, 411354, 1611.35, 408083)
+transform = Transform3D(0.994283, 0.0386212, -0.0995485, 0, 0.932296, 0.361697, 0.106778, -0.359629, 0.926966, 407552, 0.289069, 411649)
 far = 30000.0
 
 [node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main/Landscape/TWViewer"]
@@ -416,6 +428,18 @@ script = ExtResource("7_7uq48")
 _pos = Vector2(409600, 405504)
 _pos_index = Vector2(100, 99)
 _points_per_size = 513
+
+[node name="_Sea-99-100" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 407552, 0, 411648)
+visible = false
+mesh = SubResource("PlaneMesh_60os2")
+
+[node name="Sea-99-100" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
+transform = Transform3D(4096, 0, 0, 0, 40, 0, 0, 0, 4096, 407552, 0, 411648)
+visible = false
+cast_shadow = 0
+mesh = SubResource("QuadMesh_st0eb")
+surface_material_override/0 = ExtResource("6_32vc6")
 
 [node name="Test" parent="TheWorld_Main" instance=ExtResource("5_kid0l")]
 
