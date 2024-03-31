@@ -21,5 +21,5 @@ rem CUSTOM BUILD DEBUG double 		==> scons platform=windows bits=64 -j10 vsproj=y
 rem set executable=..\..\Prove\godot\bin\godot.windows.editor.dev.double.x86_64.exe
 
 dir %executable%
-call %executable% -v --path %curpath%TheWorld -e 1>log.txt
+call %executable% -v --path %curpath%TheWorld -e 2>&1 1>log.txt
 

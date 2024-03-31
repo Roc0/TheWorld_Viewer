@@ -65,15 +65,16 @@ func set_plugin(plugin_ : EditorPlugin) -> void:
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	_material = ShaderMaterial.new()
-	#var shader : Shader = load("res://addons/twviewer/test/regularChunk.gdshader")
-	var shader : Shader = load("res://addons/twviewer/test/test_quadrant.tres")
-	_material.shader = shader
-
+	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	if not _initialized and not _close_requested:
+		_material = ShaderMaterial.new()
+		#var shader : Shader = load("res://addons/twviewer/test/regularChunk.gdshader")
+		var shader : Shader = load("res://addons/twviewer/test/test_quadrant.tres")
+		_material.shader = shader
+
 		_viewer = find_node_by_name(tw_constants.tw_viewer_node_name)
 		if _viewer != null and _viewer.has_method("is_ready") and _viewer.is_ready() and _viewer.is_really_ready():
 			_initialized = true

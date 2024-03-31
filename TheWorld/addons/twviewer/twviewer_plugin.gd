@@ -56,7 +56,7 @@ func _enter_tree():
 	#set_input_event_forwarding_always_enabled()
 	
 	#add_autoload_singleton(AUTOLOAD_NAME, AUTOLOAD_SCRIPT)
-	
+
 func _exit_tree():
 	if not quitting:
 		_logger.debug("_exit_tree")
@@ -182,7 +182,7 @@ func _make_visible(visible: bool):
 	#		_edit(_viewer)
 	
 func _edit(object):
-	#_logger.debug(str("_edit ", object))
+	_logger.debug(str("_edit ", object))
 	
 	if object is TWTestQuadrant:
 		add_test_quadrant_to_array(object)

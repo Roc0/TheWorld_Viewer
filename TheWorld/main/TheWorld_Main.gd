@@ -14,7 +14,7 @@ var _config := ConfigFile.new()
 var _viewpoint_to_save : int = 0
 var _viewpoint_to_load : int = 0
 
-var _initialCameraDistanceFromTerrain : float = 300
+#var _initialCameraDistanceFromTerrain : float = 300
 
 var _initial_player_pos_in_map : Variant = null
 var _initial_player_basis_in_map : Variant = null
@@ -102,7 +102,9 @@ var _player_info_line_1_index : int = 0
 var _player_info_line_2_index : int = 0
 
 var prev_hit : Vector3 = Vector3(0, 0, 0)
-		
+
+var debug_running_game_global_exist := false
+
 func _ready():
 	get_tree().set_auto_accept_quit(false)
 
@@ -119,7 +121,12 @@ func _ready():
 	#set_notify_transform(true)
 	#TWViewer().global_transform = global_transform
 	
-	get_window().mode = _window_mode
+	#if get_tree() != null:
+	#	if get_tree().root.has_node("debug_running_game_global"):
+	#		debug_running_game_global_exist = true
+	
+	#if not debug_running_game_global.get_game_anchored_in_editor():
+	#	get_window().mode = _window_mode
 
 func resizing():
 	log_debug(str("Resizing: ", get_viewport().size))
@@ -281,7 +288,8 @@ func _process(_delta):
 	#client_status = Globals.Constants.status_to_string(clientstatus)
 	
 	if not world_initialized && get_clientstatus() >= tw_const.clientstatus_session_initialized:
-		get_window().mode = _window_mode
+		if not debug_running_game_global.get_game_anchored_in_editor():
+			get_window().mode = _window_mode
 		enter_world()
 		world_initialized = true
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=51 format=3 uid="uid://c4ukh1kw4impi"]
+[gd_scene load_steps=52 format=3 uid="uid://c4ukh1kw4impi"]
 
 [ext_resource type="Script" path="res://main/TheWorld_Main.gd" id="1_760ml"]
 [ext_resource type="Script" path="res://addons/twviewer/tw_viewer.gd" id="3_yxvy6"]
@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://bltmr2xgs8nq1" path="res://assets/scenes/small_rock.tscn" id="12_ffcy8"]
 [ext_resource type="PackedScene" uid="uid://8ay5rlrutcmx" path="res://assets/scenes/large_rock.tscn" id="13_tf3dr"]
 [ext_resource type="PackedScene" uid="uid://dlay76hdi56fd" path="res://assets/scenes/godot_ball.tscn" id="14_4otfj"]
+[ext_resource type="Script" path="res://addons/debug_running_game/debug_running_game_node.gd" id="15_6btyd"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xl13w"]
 shading_mode = 0
@@ -314,13 +315,16 @@ shader = ExtResource("9_2dtkh")
 [node name="TheWorld_Main" type="Node3D" parent="."]
 script = ExtResource("1_760ml")
 
+[node name="debug_running_game_node" type="Node" parent="TheWorld_Main"]
+script = ExtResource("15_6btyd")
+
 [node name="WorldEnvironment" parent="TheWorld_Main" instance=ExtResource("4_gxev0")]
 
 [node name="Landscape" type="Node3D" parent="TheWorld_Main"]
 
 [node name="TWViewer" type="Node3D" parent="TheWorld_Main/Landscape"]
 script = ExtResource("3_yxvy6")
-_world_param_depth_quad = 6
+_world_param_depth_quad = 1
 _world_param_info_panel_visible = true
 _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 1
@@ -352,7 +356,7 @@ metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(0.994283, 0.0386212, -0.0995485, 0, 0.932296, 0.361697, 0.106778, -0.359629, 0.926966, 407552, 0.289069, 411649)
+transform = Transform3D(0.994283, 0.0386212, -0.0995485, 0, 0.932296, 0.361697, 0.106778, -0.359629, 0.926966, -0.0795596, 0.289069, 0.740835)
 far = 30000.0
 
 [node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main/Landscape/TWViewer"]

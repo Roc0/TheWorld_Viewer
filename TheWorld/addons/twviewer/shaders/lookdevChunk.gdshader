@@ -123,4 +123,6 @@ void fragment() {
 	//if (v_distance_from_camera < 2000.0) {
 	//	ALBEDO = vec3(0.0, 0.0, 1.0);
 	//}
+	
+	//ALBEDO = vec3(UV.x, 0.0, UV.y);
 }
