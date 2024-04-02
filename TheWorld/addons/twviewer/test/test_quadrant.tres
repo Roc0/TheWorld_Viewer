@@ -1,4 +1,4 @@
-[gd_resource type="VisualShader" load_steps=133 format=3 uid="uid://cux0qnf6ydgr2"]
+[gd_resource type="VisualShader" load_steps=142 format=3 uid="uid://cux0qnf6ydgr2"]
 
 [ext_resource type="Texture2D" uid="uid://bllki0xhd1pqa" path="res://assets/textures/ground/Grass004_1K-PNG_albedo_bump.ground.png" id="1_oimdd"]
 
@@ -181,12 +181,12 @@ if (!editmode_pixel && !globalmap_pixel) {
 }"
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_mc40n"]
-size = Vector2(1040, 2080)
+size = Vector2(1040, 2180)
 expression = "albedo_out = albedo_in;
 normal_out = (VIEW_MATRIX * (vec4(normal_in, 0.0))).xyz;
 roughness_out = roughness_in;
 
-float grid_line_thickness = 0.05;
+quad_line_thickness = 0.05;
 
 // DEBUG: wisualize pieces
 /*if (pieces_from_camera_piece == 0) {
@@ -208,10 +208,10 @@ if (grid_on) {
 	vec2 uv_begin_texel = uv - vec2(half_texel_size);
 	vec2 distance_from_vertex = 
 		fract(vec2(uv_begin_texel.x / (half_texel_size * 2.0), uv_begin_texel.y / (half_texel_size * 2.0)));
-	if (distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness
-		|| distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness) {
-		if ((distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness)
-			&& (distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness)) {
+	if (distance_from_vertex.x < quad_line_thickness || (1.0 - distance_from_vertex.x) < quad_line_thickness
+		|| distance_from_vertex.y < quad_line_thickness || (1.0 - distance_from_vertex.y) < quad_line_thickness) {
+		if ((distance_from_vertex.x < quad_line_thickness || (1.0 - distance_from_vertex.x) < quad_line_thickness)
+			&& (distance_from_vertex.y < quad_line_thickness || (1.0 - distance_from_vertex.y) < quad_line_thickness)) {
 			//albedo_out = mix(albedo_out, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
 			albedo_out = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
 		} else {
@@ -220,7 +220,7 @@ if (grid_on) {
 		}
 	}
 	vec2 g_uv0 = fract(ground_uv0);
-	float uv_line_thickness = grid_line_thickness / 10.0;
+	float uv_line_thickness = quad_line_thickness / 10.0;
 	if (g_uv0.x < uv_line_thickness || (1.0 - g_uv0.x) < uv_line_thickness
 		|| g_uv0.y < uv_line_thickness || (1.0 - g_uv0.y) < uv_line_thickness) {
 		albedo_out = mix(albedo_out, vec3(0.0, 0.0, 1.0), 0.3);		// GDN_TheWorld_Globals::g_color_blue;
@@ -235,10 +235,10 @@ if (mouse_hit != vec2(-1)) {
 	float grid_radius = mouse_hit_radius * 5.0;
 	if (grid_radius != 0.0 && distance(mouse_hit, uv) < grid_radius)
 	{
-		if (distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness
-			|| distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness) {
-			if ((distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness)
-				&& (distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness)) {
+		if (distance_from_vertex.x < quad_line_thickness || (1.0 - distance_from_vertex.x) < quad_line_thickness
+			|| distance_from_vertex.y < quad_line_thickness || (1.0 - distance_from_vertex.y) < quad_line_thickness) {
+			if ((distance_from_vertex.x < quad_line_thickness || (1.0 - distance_from_vertex.x) < quad_line_thickness)
+				&& (distance_from_vertex.y < quad_line_thickness || (1.0 - distance_from_vertex.y) < quad_line_thickness)) {
 				//albedo_out = mix(albedo_out, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
 				albedo_out = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
 			} else {
@@ -1079,6 +1079,85 @@ varying_name = "v_close_mask"
 [sub_resource type="VisualShaderNodeVaryingGetter" id="VisualShaderNodeVaryingGetter_ufhs2"]
 varying_name = "v_middle_mask"
 
+[sub_resource type="VisualShaderNodeParameterRef" id="VisualShaderNodeParameterRef_woqli"]
+parameter_name = "gu_show_chunks"
+param_type = 3
+
+[sub_resource type="VisualShaderNodeVaryingGetter" id="VisualShaderNodeVaryingGetter_q8fya"]
+varying_name = "v_lod"
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_woddh"]
+size = Vector2(1200, 1600)
+expression = "albedo_out = albedo_in;
+normal_out = normal_in;
+roughness_out = roughness_in;
+if (lod >= 0.0) {
+	float chunk_border_line_thickness = 0.002;
+	
+	if (u_editmode_selected > 0.0 && is_on_the_border(UV, quad_line_thickness)) {
+		ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+	} else {
+		if (u_mouse_hit != vec2(-1) && distance(u_mouse_hit, UV) < u_mouse_hit_radius) {
+			ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+		} else {
+			if (is_on_the_border(UV, chunk_border_line_thickness) || is_on_the_border(UV2, chunk_border_line_thickness)) {
+				ALBEDO = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
+			} else {
+				if (lod == 0.0) {
+					ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+				} else {
+					if (lod == 1.0) {
+						ALBEDO = vec3(0.498, 1.0, 0.831);		// GDN_TheWorld_Globals::g_color_aquamarine_green
+					} else {
+						if (lod == 2.0) {
+							ALBEDO = vec3(0.0, 1.0, 0.0);		// GDN_TheWorld_Globals::g_color_green
+						} else {
+							if (lod == 3.0) {
+								ALBEDO = vec3(0.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_cyan
+							} else {
+								if (lod == 4.0) {
+									//ALBEDO = vec3(1.0, 0.753, 0.796);		// GDN_TheWorld_Globals::g_color_pink
+									//ALBEDO = vec3(0.870, 0.192, 0.388);		// GDN_TheWorld_Globals::g_color_pink_cerise
+									ALBEDO = vec3(0.980, 0.592, 0.447);		// GDN_TheWorld_Globals::g_color_red_salmon
+								} else {
+									if (lod == 5.0) {
+										ALBEDO = vec3(0.0, 0.0, 1.0);		// GDN_TheWorld_Globals::g_color_blue
+									} else {
+										if (lod == 6.0) {
+											ALBEDO = vec3(0.623, 0.168, 0.408);		// GDN_TheWorld_Globals::g_color_pink_amaranth
+										} else {
+											if (lod == 7.0) {
+												ALBEDO = vec3(0.561, 0.737, 0.561);		// GDN_TheWorld_Globals::g_color_darksea_green
+											} else {	// u_lod == 8.0 and greater
+												if (lod == 8.0) {
+													ALBEDO = vec3(1.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_red
+												} else {
+													ALBEDO = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}"
+
+[sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_5n7rv"]
+size = Vector2(1040, 260)
+expression = "bool is_on_the_border_of_the_chunk(vec2 uv, float line_thickness) {
+	//float line_thickness = 0.01;
+	if (uv.x > line_thickness && uv.x < (1.0 - line_thickness) && uv.y > line_thickness && uv.y < (1.0 - line_thickness)) {
+		return false;
+	} else {
+		return true;
+	}
+}"
+
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_28flk"]
 size = Vector2(620, 200)
 expression = "// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need to trasform in world coord to abstract from chunk
@@ -1458,6 +1537,31 @@ parameter_name = "gu_camera_pos"
 qualifier = 1
 default_value_enabled = true
 
+[sub_resource type="VisualShaderNodeBooleanParameter" id="VisualShaderNodeBooleanParameter_gn40w"]
+parameter_name = "gu_show_chunks"
+qualifier = 1
+default_value_enabled = true
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_bwf2l"]
+input_name = "vertex_id"
+
+[sub_resource type="VisualShaderNodeUIntParameter" id="VisualShaderNodeUIntParameter_duht7"]
+parameter_name = "u_num_vertices_per_chunk"
+
+[sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_jjdj2"]
+size = Vector2(860, 440)
+expression = "lod = -1.0;
+if (show_chunks) {
+	int vertex_col = int(mod(float(v_id), float(num_vertices_per_chunk))) + 1;
+	float step_between_vertices_in_current_mesh = floor(vertex.x / float(vertex_col));
+	lod = floor(log2(step_between_vertices_in_current_mesh)) + 1.0;
+	float lod_chunk_size = step_between_vertices_in_current_mesh * float(num_vertices_per_chunk - uint(1));
+	UV2 = vertex.xz / vec2(lod_chunk_size);
+}"
+
+[sub_resource type="VisualShaderNodeVaryingSetter" id="VisualShaderNodeVaryingSetter_b8jto"]
+varying_name = "v_lod"
+
 [sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_m8jdv"]
 size = Vector2(700, 1000)
 expression = "#include \"res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc\"
@@ -1532,6 +1636,7 @@ global uniform float gu_texture_blending_size = 0.40000000596046;
 uniform bool u_grid_on = false;
 global uniform float gu_grid_step;
 global uniform float gu_camera_altitude_from_terrain = -1;
+global uniform bool gu_show_chunks = false;
 
 // Varyings
 varying vec4 v_vertex_world_pos;
@@ -1545,10 +1650,12 @@ varying vec3 v_tint3;
 varying float v_distance_from_camera_on_terrain;
 varying float v_close_mask;
 varying float v_middle_mask;
+varying float v_lod;
 
 uniform mat4 u_terrain_inverse_transform;
 uniform float u_grid_step = 2;
 uniform uint u_optimization_level = 0;
+uniform uint u_num_vertices_per_chunk;
 global uniform vec3 gu_camera_pos = vec3(0.000000, 0.000000, 0.000000);
 uniform sampler2D u_terrain_splatmap;
 uniform sampler2D u_terrain_colormap;
@@ -1985,6 +2092,15 @@ uniform sampler2D tex_frg_62;
 		// blend the results of the 3 planar projections.
 		return xaxis * blend.x + yaxis * blend.y + zaxis * blend.z;
 	}
+// GlobalExpression:10
+	bool is_on_the_border_of_the_chunk(vec2 uv, float line_thickness) {
+		//float line_thickness = 0.01;
+		if (uv.x > line_thickness && uv.x < (1.0 - line_thickness) && uv.y > line_thickness && uv.y < (1.0 - line_thickness)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 
 void vertex() {
 // Input:15
@@ -2070,10 +2186,40 @@ void vertex() {
 	}
 
 
+// BooleanParameter:72
+	bool n_out72p0 = gu_show_chunks;
+
+
+// UIntParameter:75
+	uint n_out75p0 = u_num_vertices_per_chunk;
+
+
+// Input:74
+	int n_out74p0 = VERTEX_ID;
+
+
+	float n_out76p0;
+	vec2 n_out76p1;
+// Expression:76
+	n_out76p0 = 0.0;
+	n_out76p1 = vec2(0.0, 0.0);
+	{
+		n_out76p0 = -1.0;
+		if (n_out72p0) {
+			int vertex_col = int(mod(float(n_out74p0), float(n_out75p0))) + 1;
+			float step_between_vertices_in_current_mesh = floor(n_out15p0.x / float(vertex_col));
+			n_out76p0 = floor(log2(step_between_vertices_in_current_mesh)) + 1.0;
+			float lod_chunk_size = step_between_vertices_in_current_mesh * float(n_out75p0 - uint(1));
+			UV2 = n_out15p0.xz / vec2(lod_chunk_size);
+		}
+	}
+
+
 // Output:0
 	VERTEX = n_out13p0;
 	NORMAL = n_out20p0;
 	UV = n_out12p1;
+	UV2 = n_out76p1;
 
 
 // VaryingSetter:14
@@ -2174,6 +2320,10 @@ void vertex() {
 
 // VaryingSetter:70
 	v_middle_mask = n_out18p3;
+
+
+// VaryingSetter:77
+	v_lod = n_out76p0;
 
 
 }
@@ -2742,16 +2892,18 @@ void fragment() {
 	vec3 n_out31p0;
 	float n_out31p1;
 	vec3 n_out31p2;
+	float n_out31p3;
 // Expression:31
 	n_out31p0 = vec3(0.0, 0.0, 0.0);
 	n_out31p1 = 0.0;
 	n_out31p2 = vec3(0.0, 0.0, 0.0);
+	n_out31p3 = 0.0;
 	{
 		n_out31p0 = n_out56p0;
 		n_out31p2 = (VIEW_MATRIX * (vec4(n_out56p2, 0.0))).xyz;
 		n_out31p1 = n_out56p1;
 		
-		float grid_line_thickness = 0.05;
+		n_out31p3 = 0.05;
 		
 		// DEBUG: wisualize pieces
 		/*if (n_out4p1 == 0) {
@@ -2773,10 +2925,10 @@ void fragment() {
 			vec2 uv_begin_texel = n_out13p0 - vec2(half_texel_size);
 			vec2 distance_from_vertex = 
 				fract(vec2(uv_begin_texel.x / (half_texel_size * 2.0), uv_begin_texel.y / (half_texel_size * 2.0)));
-			if (distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness
-				|| distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness) {
-				if ((distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness)
-					&& (distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness)) {
+			if (distance_from_vertex.x < n_out31p3 || (1.0 - distance_from_vertex.x) < n_out31p3
+				|| distance_from_vertex.y < n_out31p3 || (1.0 - distance_from_vertex.y) < n_out31p3) {
+				if ((distance_from_vertex.x < n_out31p3 || (1.0 - distance_from_vertex.x) < n_out31p3)
+					&& (distance_from_vertex.y < n_out31p3 || (1.0 - distance_from_vertex.y) < n_out31p3)) {
 					//n_out31p0 = mix(n_out31p0, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
 					n_out31p0 = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
 				} else {
@@ -2785,7 +2937,7 @@ void fragment() {
 				}
 			}
 			vec2 g_uv0 = fract(n_out10p0);
-			float uv_line_thickness = grid_line_thickness / 10.0;
+			float uv_line_thickness = n_out31p3 / 10.0;
 			if (g_uv0.x < uv_line_thickness || (1.0 - g_uv0.x) < uv_line_thickness
 				|| g_uv0.y < uv_line_thickness || (1.0 - g_uv0.y) < uv_line_thickness) {
 				n_out31p0 = mix(n_out31p0, vec3(0.0, 0.0, 1.0), 0.3);		// GDN_TheWorld_Globals::g_color_blue;
@@ -2800,10 +2952,10 @@ void fragment() {
 			float grid_radius = n_out28p0 * 5.0;
 			if (grid_radius != 0.0 && distance(n_out27p0, n_out13p0) < grid_radius)
 			{
-				if (distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness
-					|| distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness) {
-					if ((distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness)
-						&& (distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness)) {
+				if (distance_from_vertex.x < n_out31p3 || (1.0 - distance_from_vertex.x) < n_out31p3
+					|| distance_from_vertex.y < n_out31p3 || (1.0 - distance_from_vertex.y) < n_out31p3) {
+					if ((distance_from_vertex.x < n_out31p3 || (1.0 - distance_from_vertex.x) < n_out31p3)
+						&& (distance_from_vertex.y < n_out31p3 || (1.0 - distance_from_vertex.y) < n_out31p3)) {
 						//n_out31p0 = mix(n_out31p0, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
 						n_out31p0 = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
 					} else {
@@ -2821,12 +2973,85 @@ void fragment() {
 	}
 
 
+// VaryingGetter:88
+	float n_out88p0 = v_lod;
+
+
+	vec3 n_out89p0;
+	float n_out89p1;
+	vec3 n_out89p2;
+// Expression:89
+	n_out89p0 = vec3(0.0, 0.0, 0.0);
+	n_out89p1 = 0.0;
+	n_out89p2 = vec3(0.0, 0.0, 0.0);
+	{
+		n_out89p0 = n_out31p0;
+		n_out89p2 = n_out31p2;
+		n_out89p1 = n_out31p1;
+		if (n_out88p0 >= 0.0) {
+			float chunk_border_line_thickness = 0.002;
+			
+			if (u_editmode_selected > 0.0 && is_on_the_border(UV, n_out31p3)) {
+				ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+			} else {
+				if (u_mouse_hit != vec2(-1) && distance(u_mouse_hit, UV) < u_mouse_hit_radius) {
+					ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+				} else {
+					if (is_on_the_border(UV, chunk_border_line_thickness) || is_on_the_border(UV2, chunk_border_line_thickness)) {
+						ALBEDO = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
+					} else {
+						if (n_out88p0 == 0.0) {
+							ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+						} else {
+							if (n_out88p0 == 1.0) {
+								ALBEDO = vec3(0.498, 1.0, 0.831);		// GDN_TheWorld_Globals::g_color_aquamarine_green
+							} else {
+								if (n_out88p0 == 2.0) {
+									ALBEDO = vec3(0.0, 1.0, 0.0);		// GDN_TheWorld_Globals::g_color_green
+								} else {
+									if (n_out88p0 == 3.0) {
+										ALBEDO = vec3(0.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_cyan
+									} else {
+										if (n_out88p0 == 4.0) {
+											//ALBEDO = vec3(1.0, 0.753, 0.796);		// GDN_TheWorld_Globals::g_color_pink
+											//ALBEDO = vec3(0.870, 0.192, 0.388);		// GDN_TheWorld_Globals::g_color_pink_cerise
+											ALBEDO = vec3(0.980, 0.592, 0.447);		// GDN_TheWorld_Globals::g_color_red_salmon
+										} else {
+											if (n_out88p0 == 5.0) {
+												ALBEDO = vec3(0.0, 0.0, 1.0);		// GDN_TheWorld_Globals::g_color_blue
+											} else {
+												if (n_out88p0 == 6.0) {
+													ALBEDO = vec3(0.623, 0.168, 0.408);		// GDN_TheWorld_Globals::g_color_pink_amaranth
+												} else {
+													if (n_out88p0 == 7.0) {
+														ALBEDO = vec3(0.561, 0.737, 0.561);		// GDN_TheWorld_Globals::g_color_darksea_green
+													} else {	// u_lod == 8.0 and greater
+														if (n_out88p0 == 8.0) {
+															ALBEDO = vec3(1.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_red
+														} else {
+															ALBEDO = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+
 // Output:0
-	ALBEDO = n_out31p0;
-	ROUGHNESS = n_out31p1;
+	ALBEDO = n_out89p0;
+	ROUGHNESS = n_out89p1;
 	AO = n_out56p3;
 	AO_LIGHT_AFFECT = n_out56p4;
-	NORMAL = n_out31p2;
+	NORMAL = n_out89p2;
 
 
 }
@@ -2843,6 +3068,7 @@ varyings/v_tint3 = "0,4"
 varyings/v_distance_from_camera_on_terrain = "0,0"
 varyings/v_close_mask = "0,0"
 varyings/v_middle_mask = "0,0"
+varyings/v_lod = "0,0"
 nodes/vertex/0/position = Vector2(3240, -860)
 nodes/vertex/8/node = SubResource("VisualShaderNodeGlobalExpression_m8jdv")
 nodes/vertex/8/position = Vector2(-2720, -1840)
@@ -3196,8 +3422,29 @@ nodes/vertex/70/node = SubResource("VisualShaderNodeVaryingSetter_ot70l")
 nodes/vertex/70/position = Vector2(3500, 120)
 nodes/vertex/71/node = SubResource("VisualShaderNodeVec3Parameter_df7bi")
 nodes/vertex/71/position = Vector2(-800, -1980)
-nodes/vertex/connections = PackedInt32Array(12, 1, 0, 4, 11, 0, 12, 0, 12, 1, 13, 0, 13, 0, 0, 0, 11, 0, 13, 1, 13, 1, 14, 0, 15, 0, 13, 2, 12, 0, 16, 0, 15, 0, 11, 0, 13, 1, 18, 0, 18, 0, 19, 0, 12, 1, 20, 0, 20, 0, 0, 1, 23, 0, 24, 0, 12, 1, 23, 0, 25, 0, 26, 0, 25, 1, 27, 0, 25, 2, 28, 0, 25, 3, 29, 0, 12, 1, 25, 0, 35, 0, 12, 1, 30, 0, 12, 2, 37, 0, 12, 3, 36, 0, 12, 4, 34, 0, 25, 1, 31, 0, 20, 1, 32, 0, 23, 1, 38, 0, 23, 2, 30, 0, 13, 3, 18, 1, 68, 0, 18, 2, 69, 0, 18, 3, 70, 0, 71, 0, 18, 1)
-nodes/fragment/0/position = Vector2(7200, -520)
+nodes/vertex/72/node = SubResource("VisualShaderNodeBooleanParameter_gn40w")
+nodes/vertex/72/position = Vector2(-380, -1980)
+nodes/vertex/74/node = SubResource("VisualShaderNodeInput_bwf2l")
+nodes/vertex/74/position = Vector2(-320, -1600)
+nodes/vertex/75/node = SubResource("VisualShaderNodeUIntParameter_duht7")
+nodes/vertex/75/position = Vector2(-320, -1760)
+nodes/vertex/76/node = SubResource("VisualShaderNodeExpression_jjdj2")
+nodes/vertex/76/position = Vector2(120, -2220)
+nodes/vertex/76/size = Vector2(860, 440)
+nodes/vertex/76/input_ports = "0,6,show_chunks;1,2,num_vertices_per_chunk;2,1,v_id;3,4,vertex;"
+nodes/vertex/76/output_ports = "0,0,lod;1,3,uv2;"
+nodes/vertex/76/expression = "lod = -1.0;
+if (show_chunks) {
+	int vertex_col = int(mod(float(v_id), float(num_vertices_per_chunk))) + 1;
+	float step_between_vertices_in_current_mesh = floor(vertex.x / float(vertex_col));
+	lod = floor(log2(step_between_vertices_in_current_mesh)) + 1.0;
+	float lod_chunk_size = step_between_vertices_in_current_mesh * float(num_vertices_per_chunk - uint(1));
+	UV2 = vertex.xz / vec2(lod_chunk_size);
+}"
+nodes/vertex/77/node = SubResource("VisualShaderNodeVaryingSetter_b8jto")
+nodes/vertex/77/position = Vector2(1160, -2000)
+nodes/vertex/connections = PackedInt32Array(12, 1, 0, 4, 11, 0, 12, 0, 12, 1, 13, 0, 13, 0, 0, 0, 11, 0, 13, 1, 13, 1, 14, 0, 15, 0, 13, 2, 12, 0, 16, 0, 15, 0, 11, 0, 13, 1, 18, 0, 18, 0, 19, 0, 12, 1, 20, 0, 20, 0, 0, 1, 23, 0, 24, 0, 12, 1, 23, 0, 25, 0, 26, 0, 25, 1, 27, 0, 25, 2, 28, 0, 25, 3, 29, 0, 12, 1, 25, 0, 35, 0, 12, 1, 30, 0, 12, 2, 37, 0, 12, 3, 36, 0, 12, 4, 34, 0, 25, 1, 31, 0, 20, 1, 32, 0, 23, 1, 38, 0, 23, 2, 30, 0, 13, 3, 18, 1, 68, 0, 18, 2, 69, 0, 18, 3, 70, 0, 71, 0, 18, 1, 72, 0, 76, 0, 75, 0, 76, 1, 74, 0, 76, 2, 15, 0, 76, 3, 76, 0, 77, 0, 76, 1, 0, 5)
+nodes/fragment/0/position = Vector2(8600, -680)
 nodes/fragment/3/node = SubResource("VisualShaderNodeVaryingGetter_pe6em")
 nodes/fragment/3/position = Vector2(-2720, -740)
 nodes/fragment/4/node = SubResource("VisualShaderNodeExpression_yk7c6")
@@ -3291,7 +3538,7 @@ nodes/fragment/11/position = Vector2(-2720, -980)
 nodes/fragment/12/node = SubResource("VisualShaderNodeVaryingGetter_jtb7g")
 nodes/fragment/12/position = Vector2(-2720, -900)
 nodes/fragment/13/node = SubResource("VisualShaderNodeInput_u5d6r")
-nodes/fragment/13/position = Vector2(-2620, 800)
+nodes/fragment/13/position = Vector2(-2340, 940)
 nodes/fragment/14/node = SubResource("VisualShaderNodeExpression_aptmw")
 nodes/fragment/14/position = Vector2(-1300, 1240)
 nodes/fragment/14/size = Vector2(740, 220)
@@ -3333,9 +3580,9 @@ if (use_globalmap) {
 nodes/fragment/26/node = SubResource("VisualShaderNodeParameterRef_b5i76")
 nodes/fragment/26/position = Vector2(-2980, 1640)
 nodes/fragment/27/node = SubResource("VisualShaderNodeParameterRef_gapoe")
-nodes/fragment/27/position = Vector2(-2680, -1660)
+nodes/fragment/27/position = Vector2(-2680, -1680)
 nodes/fragment/28/node = SubResource("VisualShaderNodeParameterRef_hv2co")
-nodes/fragment/28/position = Vector2(-2680, -1540)
+nodes/fragment/28/position = Vector2(-2680, -1580)
 nodes/fragment/29/node = SubResource("VisualShaderNodeParameterRef_l5ham")
 nodes/fragment/29/position = Vector2(-2980, 1560)
 nodes/fragment/30/node = SubResource("VisualShaderNodeExpression_pjdvi")
@@ -3430,15 +3677,15 @@ if (!editmode_pixel && !globalmap_pixel) {
 	}*/
 }"
 nodes/fragment/31/node = SubResource("VisualShaderNodeExpression_mc40n")
-nodes/fragment/31/position = Vector2(6020, -480)
-nodes/fragment/31/size = Vector2(1040, 2080)
+nodes/fragment/31/position = Vector2(5900, -600)
+nodes/fragment/31/size = Vector2(1040, 2180)
 nodes/fragment/31/input_ports = "0,4,albedo_in;1,3,mouse_hit;2,0,mouse_hit_radius;3,4,normal_in;4,0,roughness_in;5,3,uv;6,3,ground_uv0;7,3,ground_uv1;8,3,ground_uv2;9,4,ground_uv3;10,6,grid_on;11,1,pieces_from_camera_piece;"
-nodes/fragment/31/output_ports = "0,4,albedo_out;1,0,roughness_out;2,4,normal_out;"
+nodes/fragment/31/output_ports = "0,4,albedo_out;1,0,roughness_out;2,4,normal_out;3,0,quad_line_thickness;"
 nodes/fragment/31/expression = "albedo_out = albedo_in;
 normal_out = (VIEW_MATRIX * (vec4(normal_in, 0.0))).xyz;
 roughness_out = roughness_in;
 
-float grid_line_thickness = 0.05;
+quad_line_thickness = 0.05;
 
 // DEBUG: wisualize pieces
 /*if (pieces_from_camera_piece == 0) {
@@ -3460,10 +3707,10 @@ if (grid_on) {
 	vec2 uv_begin_texel = uv - vec2(half_texel_size);
 	vec2 distance_from_vertex = 
 		fract(vec2(uv_begin_texel.x / (half_texel_size * 2.0), uv_begin_texel.y / (half_texel_size * 2.0)));
-	if (distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness
-		|| distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness) {
-		if ((distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness)
-			&& (distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness)) {
+	if (distance_from_vertex.x < quad_line_thickness || (1.0 - distance_from_vertex.x) < quad_line_thickness
+		|| distance_from_vertex.y < quad_line_thickness || (1.0 - distance_from_vertex.y) < quad_line_thickness) {
+		if ((distance_from_vertex.x < quad_line_thickness || (1.0 - distance_from_vertex.x) < quad_line_thickness)
+			&& (distance_from_vertex.y < quad_line_thickness || (1.0 - distance_from_vertex.y) < quad_line_thickness)) {
 			//albedo_out = mix(albedo_out, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
 			albedo_out = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
 		} else {
@@ -3472,7 +3719,7 @@ if (grid_on) {
 		}
 	}
 	vec2 g_uv0 = fract(ground_uv0);
-	float uv_line_thickness = grid_line_thickness / 10.0;
+	float uv_line_thickness = quad_line_thickness / 10.0;
 	if (g_uv0.x < uv_line_thickness || (1.0 - g_uv0.x) < uv_line_thickness
 		|| g_uv0.y < uv_line_thickness || (1.0 - g_uv0.y) < uv_line_thickness) {
 		albedo_out = mix(albedo_out, vec3(0.0, 0.0, 1.0), 0.3);		// GDN_TheWorld_Globals::g_color_blue;
@@ -3487,10 +3734,10 @@ if (mouse_hit != vec2(-1)) {
 	float grid_radius = mouse_hit_radius * 5.0;
 	if (grid_radius != 0.0 && distance(mouse_hit, uv) < grid_radius)
 	{
-		if (distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness
-			|| distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness) {
-			if ((distance_from_vertex.x < grid_line_thickness || (1.0 - distance_from_vertex.x) < grid_line_thickness)
-				&& (distance_from_vertex.y < grid_line_thickness || (1.0 - distance_from_vertex.y) < grid_line_thickness)) {
+		if (distance_from_vertex.x < quad_line_thickness || (1.0 - distance_from_vertex.x) < quad_line_thickness
+			|| distance_from_vertex.y < quad_line_thickness || (1.0 - distance_from_vertex.y) < quad_line_thickness) {
+			if ((distance_from_vertex.x < quad_line_thickness || (1.0 - distance_from_vertex.x) < quad_line_thickness)
+				&& (distance_from_vertex.y < quad_line_thickness || (1.0 - distance_from_vertex.y) < quad_line_thickness)) {
 				//albedo_out = mix(albedo_out, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
 				albedo_out = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
 			} else {
@@ -4120,7 +4367,7 @@ if (!editmode_pixel && !globalmap_pixel) {
 nodes/fragment/65/node = SubResource("VisualShaderNodeVec4Constant_g0f2n")
 nodes/fragment/65/position = Vector2(-2320, 4440)
 nodes/fragment/66/node = SubResource("VisualShaderNodeExpression_45ek4")
-nodes/fragment/66/position = Vector2(4980, -780)
+nodes/fragment/66/position = Vector2(3920, -1000)
 nodes/fragment/66/size = Vector2(760, 300)
 nodes/fragment/66/input_ports = "0,3,uv;"
 nodes/fragment/66/output_ports = "0,4,albedo_out;"
@@ -4197,15 +4444,95 @@ nodes/fragment/79/position = Vector2(740, 3700)
 nodes/fragment/80/node = SubResource("VisualShaderNodeParameterRef_xo7o0")
 nodes/fragment/80/position = Vector2(-2980, 860)
 nodes/fragment/81/node = SubResource("VisualShaderNodeParameterRef_tfuts")
-nodes/fragment/81/position = Vector2(-2680, -1760)
+nodes/fragment/81/position = Vector2(-2680, -1780)
 nodes/fragment/82/node = SubResource("VisualShaderNodeParameterRef_cahgs")
 nodes/fragment/82/position = Vector2(-2720, -660)
 nodes/fragment/83/node = SubResource("VisualShaderNodeParameterRef_r28t2")
-nodes/fragment/83/position = Vector2(-2680, -1840)
+nodes/fragment/83/position = Vector2(-2680, -1880)
 nodes/fragment/84/node = SubResource("VisualShaderNodeVaryingGetter_ucse7")
 nodes/fragment/84/position = Vector2(-2720, -820)
 nodes/fragment/85/node = SubResource("VisualShaderNodeVaryingGetter_bgqns")
 nodes/fragment/85/position = Vector2(-2720, -580)
 nodes/fragment/86/node = SubResource("VisualShaderNodeVaryingGetter_ufhs2")
 nodes/fragment/86/position = Vector2(-2720, -500)
-nodes/fragment/connections = PackedInt32Array(8, 0, 4, 1, 4, 0, 10, 2, 12, 0, 10, 1, 11, 0, 10, 0, 13, 0, 14, 0, 16, 0, 14, 1, 17, 0, 4, 2, 18, 0, 4, 3, 19, 0, 4, 4, 20, 0, 4, 5, 26, 0, 25, 0, 13, 0, 25, 1, 21, 0, 25, 2, 29, 0, 33, 3, 13, 0, 33, 4, 24, 0, 33, 2, 23, 0, 33, 1, 3, 0, 33, 0, 25, 0, 33, 5, 25, 1, 33, 6, 27, 0, 31, 1, 28, 0, 31, 2, 33, 0, 30, 0, 33, 1, 30, 1, 56, 0, 31, 0, 56, 1, 31, 4, 56, 2, 31, 3, 25, 0, 56, 4, 25, 1, 56, 5, 36, 0, 56, 11, 38, 0, 56, 6, 39, 0, 56, 7, 40, 0, 56, 8, 41, 0, 56, 9, 33, 2, 56, 2, 10, 0, 30, 6, 10, 1, 30, 7, 10, 2, 30, 8, 10, 3, 30, 9, 14, 0, 30, 3, 34, 0, 30, 2, 25, 1, 30, 5, 35, 0, 30, 10, 31, 1, 0, 3, 31, 2, 0, 8, 58, 3, 59, 3, 58, 0, 60, 0, 58, 1, 60, 1, 58, 2, 60, 2, 60, 0, 61, 0, 61, 1, 59, 0, 61, 2, 59, 1, 61, 3, 59, 2, 57, 0, 61, 1, 13, 0, 31, 5, 63, 4, 58, 0, 25, 0, 30, 4, 13, 0, 66, 0, 31, 0, 0, 0, 62, 0, 69, 0, 71, 0, 70, 1, 70, 1, 72, 0, 70, 2, 72, 1, 70, 3, 72, 2, 65, 0, 63, 15, 30, 0, 56, 0, 30, 1, 56, 1, 30, 2, 56, 3, 30, 3, 56, 12, 30, 4, 56, 13, 30, 5, 56, 14, 30, 6, 56, 15, 30, 7, 56, 16, 30, 8, 56, 17, 30, 9, 56, 18, 30, 10, 56, 19, 13, 0, 73, 2, 25, 1, 73, 1, 25, 0, 73, 0, 73, 0, 30, 11, 73, 1, 30, 12, 73, 2, 30, 13, 73, 3, 30, 14, 75, 0, 76, 0, 74, 0, 76, 3, 75, 0, 76, 4, 75, 0, 76, 5, 76, 0, 69, 1, 69, 0, 73, 5, 37, 0, 73, 3, 78, 0, 77, 0, 62, 0, 79, 0, 79, 0, 77, 1, 73, 4, 56, 10, 73, 0, 10, 3, 73, 1, 10, 4, 73, 2, 10, 5, 73, 3, 10, 6, 80, 0, 10, 7, 10, 0, 31, 6, 10, 1, 31, 7, 10, 2, 31, 8, 10, 3, 31, 9, 81, 0, 31, 10, 13, 0, 10, 8, 82, 0, 4, 6, 84, 0, 4, 0, 56, 3, 0, 6, 56, 4, 0, 7, 4, 1, 31, 11)
+nodes/fragment/87/node = SubResource("VisualShaderNodeParameterRef_woqli")
+nodes/fragment/87/position = Vector2(-2680, -1980)
+nodes/fragment/88/node = SubResource("VisualShaderNodeVaryingGetter_q8fya")
+nodes/fragment/88/position = Vector2(6580, -820)
+nodes/fragment/89/node = SubResource("VisualShaderNodeExpression_woddh")
+nodes/fragment/89/position = Vector2(7140, -1360)
+nodes/fragment/89/size = Vector2(1200, 1600)
+nodes/fragment/89/input_ports = "0,4,albedo_in;1,0,roughness_in;2,4,normal_in;3,0,lod;4,0,quad_line_thickness;5,3,uv;"
+nodes/fragment/89/output_ports = "0,4,albedo_out;1,0,roughness_out;2,4,normal_out;"
+nodes/fragment/89/expression = "albedo_out = albedo_in;
+normal_out = normal_in;
+roughness_out = roughness_in;
+if (lod >= 0.0) {
+	float chunk_border_line_thickness = 0.002;
+	
+	if (u_editmode_selected > 0.0 && is_on_the_border(UV, quad_line_thickness)) {
+		ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+	} else {
+		if (u_mouse_hit != vec2(-1) && distance(u_mouse_hit, UV) < u_mouse_hit_radius) {
+			ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+		} else {
+			if (is_on_the_border(UV, chunk_border_line_thickness) || is_on_the_border(UV2, chunk_border_line_thickness)) {
+				ALBEDO = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
+			} else {
+				if (lod == 0.0) {
+					ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+				} else {
+					if (lod == 1.0) {
+						ALBEDO = vec3(0.498, 1.0, 0.831);		// GDN_TheWorld_Globals::g_color_aquamarine_green
+					} else {
+						if (lod == 2.0) {
+							ALBEDO = vec3(0.0, 1.0, 0.0);		// GDN_TheWorld_Globals::g_color_green
+						} else {
+							if (lod == 3.0) {
+								ALBEDO = vec3(0.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_cyan
+							} else {
+								if (lod == 4.0) {
+									//ALBEDO = vec3(1.0, 0.753, 0.796);		// GDN_TheWorld_Globals::g_color_pink
+									//ALBEDO = vec3(0.870, 0.192, 0.388);		// GDN_TheWorld_Globals::g_color_pink_cerise
+									ALBEDO = vec3(0.980, 0.592, 0.447);		// GDN_TheWorld_Globals::g_color_red_salmon
+								} else {
+									if (lod == 5.0) {
+										ALBEDO = vec3(0.0, 0.0, 1.0);		// GDN_TheWorld_Globals::g_color_blue
+									} else {
+										if (lod == 6.0) {
+											ALBEDO = vec3(0.623, 0.168, 0.408);		// GDN_TheWorld_Globals::g_color_pink_amaranth
+										} else {
+											if (lod == 7.0) {
+												ALBEDO = vec3(0.561, 0.737, 0.561);		// GDN_TheWorld_Globals::g_color_darksea_green
+											} else {	// u_lod == 8.0 and greater
+												if (lod == 8.0) {
+													ALBEDO = vec3(1.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_red
+												} else {
+													ALBEDO = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}"
+nodes/fragment/90/node = SubResource("VisualShaderNodeGlobalExpression_5n7rv")
+nodes/fragment/90/position = Vector2(-4620, -800)
+nodes/fragment/90/size = Vector2(1040, 260)
+nodes/fragment/90/input_ports = ""
+nodes/fragment/90/output_ports = ""
+nodes/fragment/90/expression = "bool is_on_the_border_of_the_chunk(vec2 uv, float line_thickness) {
+	//float line_thickness = 0.01;
+	if (uv.x > line_thickness && uv.x < (1.0 - line_thickness) && uv.y > line_thickness && uv.y < (1.0 - line_thickness)) {
+		return false;
+	} else {
+		return true;
+	}
+}"
+nodes/fragment/connections = PackedInt32Array(8, 0, 4, 1, 4, 0, 10, 2, 12, 0, 10, 1, 11, 0, 10, 0, 13, 0, 14, 0, 16, 0, 14, 1, 17, 0, 4, 2, 18, 0, 4, 3, 19, 0, 4, 4, 20, 0, 4, 5, 26, 0, 25, 0, 13, 0, 25, 1, 21, 0, 25, 2, 29, 0, 33, 3, 13, 0, 33, 4, 24, 0, 33, 2, 23, 0, 33, 1, 3, 0, 33, 0, 25, 0, 33, 5, 25, 1, 33, 6, 27, 0, 31, 1, 28, 0, 31, 2, 33, 0, 30, 0, 33, 1, 30, 1, 56, 0, 31, 0, 56, 1, 31, 4, 56, 2, 31, 3, 25, 0, 56, 4, 25, 1, 56, 5, 36, 0, 56, 11, 38, 0, 56, 6, 39, 0, 56, 7, 40, 0, 56, 8, 41, 0, 56, 9, 33, 2, 56, 2, 10, 0, 30, 6, 10, 1, 30, 7, 10, 2, 30, 8, 10, 3, 30, 9, 14, 0, 30, 3, 34, 0, 30, 2, 25, 1, 30, 5, 35, 0, 30, 10, 58, 3, 59, 3, 58, 0, 60, 0, 58, 1, 60, 1, 58, 2, 60, 2, 60, 0, 61, 0, 61, 1, 59, 0, 61, 2, 59, 1, 61, 3, 59, 2, 57, 0, 61, 1, 13, 0, 31, 5, 63, 4, 58, 0, 25, 0, 30, 4, 13, 0, 66, 0, 62, 0, 69, 0, 71, 0, 70, 1, 70, 1, 72, 0, 70, 2, 72, 1, 70, 3, 72, 2, 65, 0, 63, 15, 30, 0, 56, 0, 30, 1, 56, 1, 30, 2, 56, 3, 30, 3, 56, 12, 30, 4, 56, 13, 30, 5, 56, 14, 30, 6, 56, 15, 30, 7, 56, 16, 30, 8, 56, 17, 30, 9, 56, 18, 30, 10, 56, 19, 13, 0, 73, 2, 25, 1, 73, 1, 25, 0, 73, 0, 73, 0, 30, 11, 73, 1, 30, 12, 73, 2, 30, 13, 73, 3, 30, 14, 75, 0, 76, 0, 74, 0, 76, 3, 75, 0, 76, 4, 75, 0, 76, 5, 76, 0, 69, 1, 69, 0, 73, 5, 37, 0, 73, 3, 78, 0, 77, 0, 62, 0, 79, 0, 79, 0, 77, 1, 73, 4, 56, 10, 73, 0, 10, 3, 73, 1, 10, 4, 73, 2, 10, 5, 73, 3, 10, 6, 80, 0, 10, 7, 10, 0, 31, 6, 10, 1, 31, 7, 10, 2, 31, 8, 10, 3, 31, 9, 81, 0, 31, 10, 13, 0, 10, 8, 82, 0, 4, 6, 84, 0, 4, 0, 56, 3, 0, 6, 56, 4, 0, 7, 4, 1, 31, 11, 88, 0, 89, 3, 31, 0, 89, 0, 89, 0, 0, 0, 31, 1, 89, 1, 89, 1, 0, 3, 31, 2, 89, 2, 89, 2, 0, 8, 31, 3, 89, 4, 13, 0, 89, 5)

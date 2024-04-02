@@ -14,6 +14,8 @@ var _init_done : bool = false
 const HT_Logger = preload("./util/logger.gd")
 var _logger = HT_Logger.get_for(self)
 
+var _overlay_3d : Control = null
+
 const _group_name := "debug_running_game_nodes"
 
 func _enter_tree():
@@ -37,7 +39,9 @@ func _process(delta: float):
 		_init_done = true
 
 func _forward_3d_draw_over_viewport(overlay : Control):
-	#log_debug(str("_forward_3d_draw_over_viewport control=", overlay))
+	if _overlay_3d == null:
+		log_debug(str("DEBUGEDIT _forward_3d_draw_over_viewport control=", overlay))
+		_overlay_3d = overlay
 	#_anchor_overlay = overlay
 	_debug_running_game_debuggerplugin.set_editor_overlay_3d(overlay)
 	#if not overlay.is_connected("size_changed", Callable(self, "resizing")):
@@ -51,6 +55,11 @@ func _forward_3d_draw_over_viewport(overlay : Control):
 #func resizing() -> void:
 #	log_debug(str("Resizing"))
 #	#send_viewport_info()
+
+func _notification(_what):
+#	log_debug(str("_notification ", _what))
+	if (_what == NOTIFICATION_WM_CLOSE_REQUEST):
+		_debug_running_game_debuggerplugin.quit_in_progress()
 
 func _handles(object) -> bool:
 	if object is _debug_running_game_node:

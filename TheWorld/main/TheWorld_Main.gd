@@ -16,6 +16,8 @@ var _viewpoint_to_load : int = 0
 
 #var _initialCameraDistanceFromTerrain : float = 300
 
+var _fullscreen := false
+
 var _initial_player_pos_in_map : Variant = null
 var _initial_player_basis_in_map : Variant = null
 var _initial_camera_position_in_map : Variant = null
@@ -180,6 +182,19 @@ func _input(event):
 	if _clientstatus < Globals.Constants.clientstatus_session_initialized:
 		pass
 		
+	if event is InputEventKey and event.is_action_pressed("ui_toggle_fullscreen"):
+		var w : Window = get_window()
+		if (_fullscreen):
+			w.always_on_top = false
+			w.borderless = false
+			w.mode = Window.MODE_MAXIMIZED
+			_fullscreen = false
+		else:
+			w.always_on_top = true
+			w.borderless = true
+			w.mode = Window.MODE_MAXIMIZED
+			_fullscreen = true
+
 	if event is InputEventKey && event.is_pressed():
 		var dict : Dictionary = {'viewpoint_to_save' : _viewpoint_to_save, "viewpoint_to_load" : _viewpoint_to_load}
 		tw_const.check_viewpoin_input(event, dict)

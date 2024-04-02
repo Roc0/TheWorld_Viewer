@@ -54,7 +54,7 @@ func _on_debug_running_game(message : String, data : Array) -> bool:
 			var pos : Vector2 = info.get("pos", -1)
 			var size : Vector2 = info.get("size", -1)
 			var visible_3d : bool = info.get("visible_3d", -1)
-			#log_debug(str("DEBUGEDIT Received message in game", message, ", pos=", pos, " size=", size, " visible_3d=", visible_3d))
+			#log_debug(str("Received message in game", message, ", pos=", pos, " size=", size, " visible_3d=", visible_3d))
 			adjust_pos_size(pos, size, visible_3d)
 			return true
 	return false
@@ -62,6 +62,7 @@ func _on_debug_running_game(message : String, data : Array) -> bool:
 func adjust_pos_size(pos : Vector2, size : Vector2, visible_3d : bool) -> void:
 	var w : Window = get_window()
 	if _anchor and visible_3d:
+		w.mode = Window.MODE_WINDOWED
 		w.always_on_top = true
 		w.borderless = true
 		#pos += Vector2(1, -14)
@@ -69,6 +70,7 @@ func adjust_pos_size(pos : Vector2, size : Vector2, visible_3d : bool) -> void:
 		w.position = pos
 		w.size = size
 	else:
+		w.mode = Window.MODE_WINDOWED
 		w.always_on_top = false
 		w.borderless = false
 
