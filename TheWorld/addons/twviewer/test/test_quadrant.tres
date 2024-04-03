@@ -1,4 +1,4 @@
-[gd_resource type="VisualShader" load_steps=142 format=3 uid="uid://cux0qnf6ydgr2"]
+[gd_resource type="VisualShader" load_steps=141 format=3 uid="uid://cux0qnf6ydgr2"]
 
 [ext_resource type="Texture2D" uid="uid://bllki0xhd1pqa" path="res://assets/textures/ground/Grass004_1K-PNG_albedo_bump.ground.png" id="1_oimdd"]
 
@@ -1087,52 +1087,62 @@ param_type = 3
 varying_name = "v_lod"
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_woddh"]
-size = Vector2(1200, 1600)
+size = Vector2(1320, 2700)
 expression = "albedo_out = albedo_in;
 normal_out = normal_in;
 roughness_out = roughness_in;
 if (lod >= 0.0) {
-	float chunk_border_line_thickness = 0.002;
+	//lod = floor(lod);
+	float f = floor(lod);
+	float c = ceil(lod);
+	if ((lod - f) > (c - lod) ) {
+		lod = c;
+	} else {
+		lod = f;
+	}
+
+	float chunk_border_line_thickness = 0.005;
 	
 	if (u_editmode_selected > 0.0 && is_on_the_border(UV, quad_line_thickness)) {
-		ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+		albedo_out = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 	} else {
 		if (u_mouse_hit != vec2(-1) && distance(u_mouse_hit, UV) < u_mouse_hit_radius) {
-			ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+			albedo_out = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 		} else {
 			if (is_on_the_border(UV, chunk_border_line_thickness) || is_on_the_border(UV2, chunk_border_line_thickness)) {
-				ALBEDO = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
+				//albedo_out = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
+				albedo_out = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
 			} else {
 				if (lod == 0.0) {
-					ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+					albedo_out = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 				} else {
 					if (lod == 1.0) {
-						ALBEDO = vec3(0.498, 1.0, 0.831);		// GDN_TheWorld_Globals::g_color_aquamarine_green
+						albedo_out = vec3(0.498, 1.0, 0.831);		// GDN_TheWorld_Globals::g_color_aquamarine_green
 					} else {
 						if (lod == 2.0) {
-							ALBEDO = vec3(0.0, 1.0, 0.0);		// GDN_TheWorld_Globals::g_color_green
+							albedo_out = vec3(0.0, 1.0, 0.0);		// GDN_TheWorld_Globals::g_color_green
 						} else {
 							if (lod == 3.0) {
-								ALBEDO = vec3(0.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_cyan
+								albedo_out = vec3(0.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_cyan
 							} else {
 								if (lod == 4.0) {
-									//ALBEDO = vec3(1.0, 0.753, 0.796);		// GDN_TheWorld_Globals::g_color_pink
-									//ALBEDO = vec3(0.870, 0.192, 0.388);		// GDN_TheWorld_Globals::g_color_pink_cerise
-									ALBEDO = vec3(0.980, 0.592, 0.447);		// GDN_TheWorld_Globals::g_color_red_salmon
+									////albedo_out = vec3(1.0, 0.753, 0.796);		// GDN_TheWorld_Globals::g_color_pink
+									////albedo_out = vec3(0.870, 0.192, 0.388);		// GDN_TheWorld_Globals::g_color_pink_cerise
+									albedo_out = vec3(0.980, 0.592, 0.447);		// GDN_TheWorld_Globals::g_color_red_salmon
 								} else {
 									if (lod == 5.0) {
-										ALBEDO = vec3(0.0, 0.0, 1.0);		// GDN_TheWorld_Globals::g_color_blue
+										albedo_out = vec3(0.0, 0.0, 1.0);		// GDN_TheWorld_Globals::g_color_blue
 									} else {
 										if (lod == 6.0) {
-											ALBEDO = vec3(0.623, 0.168, 0.408);		// GDN_TheWorld_Globals::g_color_pink_amaranth
+											albedo_out = vec3(0.623, 0.168, 0.408);		// GDN_TheWorld_Globals::g_color_pink_amaranth
 										} else {
 											if (lod == 7.0) {
-												ALBEDO = vec3(0.561, 0.737, 0.561);		// GDN_TheWorld_Globals::g_color_darksea_green
+												albedo_out = vec3(0.561, 0.737, 0.561);		// GDN_TheWorld_Globals::g_color_darksea_green
 											} else {	// u_lod == 8.0 and greater
 												if (lod == 8.0) {
-													ALBEDO = vec3(1.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_red
+													albedo_out = vec3(1.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_red
 												} else {
-													ALBEDO = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
+													albedo_out = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
 												}
 											}
 										}
@@ -1145,18 +1155,42 @@ if (lod >= 0.0) {
 			}
 		}
 	}
-}"
+}
 
-[sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_5n7rv"]
-size = Vector2(1040, 260)
-expression = "bool is_on_the_border_of_the_chunk(vec2 uv, float line_thickness) {
-	//float line_thickness = 0.01;
-	if (uv.x > line_thickness && uv.x < (1.0 - line_thickness) && uv.y > line_thickness && uv.y < (1.0 - line_thickness)) {
-		return false;
-	} else {
-		return true;
+//bool grid_on = !(mouse_hit == vec2(-1));
+if (grid_on) {
+	float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
+	vec2 uv_begin_texel = uv - vec2(half_texel_size);
+	vec2 distance_from_vertex = 
+		fract(vec2(uv_begin_texel.x / (half_texel_size * 2.0), uv_begin_texel.y / (half_texel_size * 2.0)));
+	if (distance_from_vertex.x < quad_line_thickness || (1.0 - distance_from_vertex.x) < quad_line_thickness
+		|| distance_from_vertex.y < quad_line_thickness || (1.0 - distance_from_vertex.y) < quad_line_thickness) {
+		if ((distance_from_vertex.x < quad_line_thickness || (1.0 - distance_from_vertex.x) < quad_line_thickness)
+			&& (distance_from_vertex.y < quad_line_thickness || (1.0 - distance_from_vertex.y) < quad_line_thickness)) {
+			//albedo_out = mix(albedo_out, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
+			albedo_out = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
+		} else {
+			//albedo_out = mix(albedo_out, vec3(1.0, 0.749, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+			albedo_out = vec3(1.0, 0.749, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+		}
 	}
-}"
+	vec2 g_uv0 = fract(ground_uv0);
+	float uv_line_thickness = quad_line_thickness / 10.0;
+	if (g_uv0.x < uv_line_thickness || (1.0 - g_uv0.x) < uv_line_thickness
+		|| g_uv0.y < uv_line_thickness || (1.0 - g_uv0.y) < uv_line_thickness) {
+		albedo_out = mix(albedo_out, vec3(0.0, 0.0, 1.0), 0.3);		// GDN_TheWorld_Globals::g_color_blue;
+	}
+}
+
+/*if (lod >= 0.0 && lod <= 511.0) {
+	albedo_out = vec3(1.0);	// white
+} else {
+	albedo_out = vec3(0.0);	// black
+}*/
+/*if (UV2.x >= 0.0 && UV2.x <= 1.0 && UV2.y >= 0.0 && UV2.y <= 1.0) {
+	albedo_out = vec3(1.0);	// white
+}*/
+//albedo_out = vec3(UV2.x, UV2.y, 1.0);"
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_28flk"]
 size = Vector2(620, 200)
@@ -1549,14 +1583,32 @@ input_name = "vertex_id"
 parameter_name = "u_num_vertices_per_chunk"
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_jjdj2"]
-size = Vector2(860, 440)
+size = Vector2(1620, 900)
 expression = "lod = -1.0;
 if (show_chunks) {
-	int vertex_col = int(mod(float(v_id), float(num_vertices_per_chunk))) + 1;
-	float step_between_vertices_in_current_mesh = floor(vertex.x / float(vertex_col));
-	lod = floor(log2(step_between_vertices_in_current_mesh)) + 1.0;
-	float lod_chunk_size = step_between_vertices_in_current_mesh * float(num_vertices_per_chunk - uint(1));
-	UV2 = vertex.xz / vec2(lod_chunk_size);
+	int vertex_col = int(floor(mod(float(v_id), float(num_vertices_per_chunk))));		// from 0 to num_vertices_per_chunk - 1
+	int vertex_row = int(floor(float(v_id) / float(num_vertices_per_chunk)));	// from 0 to num_vertices_per_chunk - 1
+	float step_between_vertices_in_current_mesh = -1.0;
+	if ((vertex_col == 0 && vertex_row == 0) || (vertex_col == 0 && vertex_row == int(num_vertices_per_chunk - uint(1)))
+		|| (vertex_col == int(num_vertices_per_chunk - uint(1)) && vertex_row == 0) || (vertex_col == int(num_vertices_per_chunk - uint(1)) && vertex_row == int(num_vertices_per_chunk - uint(1)))) {
+	} else {
+		if (vertex_col == 0) {	// vertex_row is > 0
+			step_between_vertices_in_current_mesh = floor(vertex.z / float(vertex_row));
+		} else {
+			step_between_vertices_in_current_mesh = floor(vertex.x / float(vertex_col));
+		}
+	}
+	if (step_between_vertices_in_current_mesh == -1.0) {
+		uv2 = vec2(0.0, 0.0);
+		lod = 99.0;
+	} else {
+		float chunk_size = step_between_vertices_in_current_mesh * float(num_vertices_per_chunk - uint(1));
+		uv2 = vertex.xz / vec2(chunk_size);
+		//uv2 = vec2(float(vertex_col) / float(num_vertices_per_chunk), float(vertex_row) / float(num_vertices_per_chunk));
+		//lod = log2(step_between_vertices_in_current_mesh);
+		lod = log2(step_between_vertices_in_current_mesh) - 1.0;
+		//lod = float(step_between_vertices_in_current_mesh);
+	}
 }"
 
 [sub_resource type="VisualShaderNodeVaryingSetter" id="VisualShaderNodeVaryingSetter_b8jto"]
@@ -2092,15 +2144,6 @@ uniform sampler2D tex_frg_62;
 		// blend the results of the 3 planar projections.
 		return xaxis * blend.x + yaxis * blend.y + zaxis * blend.z;
 	}
-// GlobalExpression:10
-	bool is_on_the_border_of_the_chunk(vec2 uv, float line_thickness) {
-		//float line_thickness = 0.01;
-		if (uv.x > line_thickness && uv.x < (1.0 - line_thickness) && uv.y > line_thickness && uv.y < (1.0 - line_thickness)) {
-			return false;
-		} else {
-			return true;
-		}
-	}
 
 void vertex() {
 // Input:15
@@ -2206,11 +2249,29 @@ void vertex() {
 	{
 		n_out76p0 = -1.0;
 		if (n_out72p0) {
-			int vertex_col = int(mod(float(n_out74p0), float(n_out75p0))) + 1;
-			float step_between_vertices_in_current_mesh = floor(n_out15p0.x / float(vertex_col));
-			n_out76p0 = floor(log2(step_between_vertices_in_current_mesh)) + 1.0;
-			float lod_chunk_size = step_between_vertices_in_current_mesh * float(n_out75p0 - uint(1));
-			UV2 = n_out15p0.xz / vec2(lod_chunk_size);
+			int vertex_col = int(floor(mod(float(n_out74p0), float(n_out75p0))));		// from 0 to n_out75p0 - 1
+			int vertex_row = int(floor(float(n_out74p0) / float(n_out75p0)));	// from 0 to n_out75p0 - 1
+			float step_between_vertices_in_current_mesh = -1.0;
+			if ((vertex_col == 0 && vertex_row == 0) || (vertex_col == 0 && vertex_row == int(n_out75p0 - uint(1)))
+				|| (vertex_col == int(n_out75p0 - uint(1)) && vertex_row == 0) || (vertex_col == int(n_out75p0 - uint(1)) && vertex_row == int(n_out75p0 - uint(1)))) {
+			} else {
+				if (vertex_col == 0) {	// vertex_row is > 0
+					step_between_vertices_in_current_mesh = floor(n_out15p0.z / float(vertex_row));
+				} else {
+					step_between_vertices_in_current_mesh = floor(n_out15p0.x / float(vertex_col));
+				}
+			}
+			if (step_between_vertices_in_current_mesh == -1.0) {
+				n_out76p1 = vec2(0.0, 0.0);
+				n_out76p0 = 99.0;
+			} else {
+				float chunk_size = step_between_vertices_in_current_mesh * float(n_out75p0 - uint(1));
+				n_out76p1 = n_out15p0.xz / vec2(chunk_size);
+				//n_out76p1 = vec2(float(vertex_col) / float(n_out75p0), float(vertex_row) / float(n_out75p0));
+				//n_out76p0 = log2(step_between_vertices_in_current_mesh);
+				n_out76p0 = log2(step_between_vertices_in_current_mesh) - 1.0;
+				//n_out76p0 = float(step_between_vertices_in_current_mesh);
+			}
 		}
 	}
 
@@ -2989,47 +3050,57 @@ void fragment() {
 		n_out89p2 = n_out31p2;
 		n_out89p1 = n_out31p1;
 		if (n_out88p0 >= 0.0) {
-			float chunk_border_line_thickness = 0.002;
+			//n_out88p0 = floor(n_out88p0);
+			float f = floor(n_out88p0);
+			float c = ceil(n_out88p0);
+			if ((n_out88p0 - f) > (c - n_out88p0) ) {
+				n_out88p0 = c;
+			} else {
+				n_out88p0 = f;
+			}
+		
+			float chunk_border_line_thickness = 0.005;
 			
 			if (u_editmode_selected > 0.0 && is_on_the_border(UV, n_out31p3)) {
-				ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+				n_out89p0 = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 			} else {
 				if (u_mouse_hit != vec2(-1) && distance(u_mouse_hit, UV) < u_mouse_hit_radius) {
-					ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+					n_out89p0 = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 				} else {
 					if (is_on_the_border(UV, chunk_border_line_thickness) || is_on_the_border(UV2, chunk_border_line_thickness)) {
-						ALBEDO = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
+						//n_out89p0 = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
+						n_out89p0 = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
 					} else {
 						if (n_out88p0 == 0.0) {
-							ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+							n_out89p0 = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 						} else {
 							if (n_out88p0 == 1.0) {
-								ALBEDO = vec3(0.498, 1.0, 0.831);		// GDN_TheWorld_Globals::g_color_aquamarine_green
+								n_out89p0 = vec3(0.498, 1.0, 0.831);		// GDN_TheWorld_Globals::g_color_aquamarine_green
 							} else {
 								if (n_out88p0 == 2.0) {
-									ALBEDO = vec3(0.0, 1.0, 0.0);		// GDN_TheWorld_Globals::g_color_green
+									n_out89p0 = vec3(0.0, 1.0, 0.0);		// GDN_TheWorld_Globals::g_color_green
 								} else {
 									if (n_out88p0 == 3.0) {
-										ALBEDO = vec3(0.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_cyan
+										n_out89p0 = vec3(0.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_cyan
 									} else {
 										if (n_out88p0 == 4.0) {
-											//ALBEDO = vec3(1.0, 0.753, 0.796);		// GDN_TheWorld_Globals::g_color_pink
-											//ALBEDO = vec3(0.870, 0.192, 0.388);		// GDN_TheWorld_Globals::g_color_pink_cerise
-											ALBEDO = vec3(0.980, 0.592, 0.447);		// GDN_TheWorld_Globals::g_color_red_salmon
+											////n_out89p0 = vec3(1.0, 0.753, 0.796);		// GDN_TheWorld_Globals::g_color_pink
+											////n_out89p0 = vec3(0.870, 0.192, 0.388);		// GDN_TheWorld_Globals::g_color_pink_cerise
+											n_out89p0 = vec3(0.980, 0.592, 0.447);		// GDN_TheWorld_Globals::g_color_red_salmon
 										} else {
 											if (n_out88p0 == 5.0) {
-												ALBEDO = vec3(0.0, 0.0, 1.0);		// GDN_TheWorld_Globals::g_color_blue
+												n_out89p0 = vec3(0.0, 0.0, 1.0);		// GDN_TheWorld_Globals::g_color_blue
 											} else {
 												if (n_out88p0 == 6.0) {
-													ALBEDO = vec3(0.623, 0.168, 0.408);		// GDN_TheWorld_Globals::g_color_pink_amaranth
+													n_out89p0 = vec3(0.623, 0.168, 0.408);		// GDN_TheWorld_Globals::g_color_pink_amaranth
 												} else {
 													if (n_out88p0 == 7.0) {
-														ALBEDO = vec3(0.561, 0.737, 0.561);		// GDN_TheWorld_Globals::g_color_darksea_green
+														n_out89p0 = vec3(0.561, 0.737, 0.561);		// GDN_TheWorld_Globals::g_color_darksea_green
 													} else {	// u_lod == 8.0 and greater
 														if (n_out88p0 == 8.0) {
-															ALBEDO = vec3(1.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_red
+															n_out89p0 = vec3(1.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_red
 														} else {
-															ALBEDO = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
+															n_out89p0 = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
 														}
 													}
 												}
@@ -3043,6 +3114,41 @@ void fragment() {
 				}
 			}
 		}
+		
+		//bool n_out81p0 = !(mouse_hit == vec2(-1));
+		if (n_out81p0) {
+			float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
+			vec2 uv_begin_texel = n_out13p0 - vec2(half_texel_size);
+			vec2 distance_from_vertex = 
+				fract(vec2(uv_begin_texel.x / (half_texel_size * 2.0), uv_begin_texel.y / (half_texel_size * 2.0)));
+			if (distance_from_vertex.x < n_out31p3 || (1.0 - distance_from_vertex.x) < n_out31p3
+				|| distance_from_vertex.y < n_out31p3 || (1.0 - distance_from_vertex.y) < n_out31p3) {
+				if ((distance_from_vertex.x < n_out31p3 || (1.0 - distance_from_vertex.x) < n_out31p3)
+					&& (distance_from_vertex.y < n_out31p3 || (1.0 - distance_from_vertex.y) < n_out31p3)) {
+					//n_out89p0 = mix(n_out89p0, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
+					n_out89p0 = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
+				} else {
+					//n_out89p0 = mix(n_out89p0, vec3(1.0, 0.749, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+					n_out89p0 = vec3(1.0, 0.749, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+				}
+			}
+			vec2 g_uv0 = fract(n_out10p0);
+			float uv_line_thickness = n_out31p3 / 10.0;
+			if (g_uv0.x < uv_line_thickness || (1.0 - g_uv0.x) < uv_line_thickness
+				|| g_uv0.y < uv_line_thickness || (1.0 - g_uv0.y) < uv_line_thickness) {
+				n_out89p0 = mix(n_out89p0, vec3(0.0, 0.0, 1.0), 0.3);		// GDN_TheWorld_Globals::g_color_blue;
+			}
+		}
+		
+		/*if (n_out88p0 >= 0.0 && n_out88p0 <= 511.0) {
+			n_out89p0 = vec3(1.0);	// white
+		} else {
+			n_out89p0 = vec3(0.0);	// black
+		}*/
+		/*if (UV2.x >= 0.0 && UV2.x <= 1.0 && UV2.y >= 0.0 && UV2.y <= 1.0) {
+			n_out89p0 = vec3(1.0);	// white
+		}*/
+		//n_out89p0 = vec3(UV2.x, UV2.y, 1.0);
 	}
 
 
@@ -3056,6 +3162,7 @@ void fragment() {
 
 }
 "
+graph_offset = Vector2(-23.7119, -154.945)
 modes/specular = 1
 varyings/v_vertex_world_pos = "0,5"
 varyings/v_vertex_cell_coords_in_textures = "0,3"
@@ -3256,7 +3363,7 @@ nodes/vertex/23/expression = "if (!use_globalmap) {
 nodes/vertex/24/node = SubResource("VisualShaderNodeVaryingSetter_pgyig")
 nodes/vertex/24/position = Vector2(3240, -1080)
 nodes/vertex/25/node = SubResource("VisualShaderNodeExpression_anper")
-nodes/vertex/25/position = Vector2(1180, -1900)
+nodes/vertex/25/position = Vector2(1660, -1940)
 nodes/vertex/25/size = Vector2(620, 380)
 nodes/vertex/25/input_ports = "0,3,uv;1,8,terrain_colormap;"
 nodes/vertex/25/output_ports = "0,4,tint0;1,4,tint1;2,4,tint2;3,4,tint3;"
@@ -3429,20 +3536,38 @@ nodes/vertex/74/position = Vector2(-320, -1600)
 nodes/vertex/75/node = SubResource("VisualShaderNodeUIntParameter_duht7")
 nodes/vertex/75/position = Vector2(-320, -1760)
 nodes/vertex/76/node = SubResource("VisualShaderNodeExpression_jjdj2")
-nodes/vertex/76/position = Vector2(120, -2220)
-nodes/vertex/76/size = Vector2(860, 440)
+nodes/vertex/76/position = Vector2(20, -2520)
+nodes/vertex/76/size = Vector2(1620, 900)
 nodes/vertex/76/input_ports = "0,6,show_chunks;1,2,num_vertices_per_chunk;2,1,v_id;3,4,vertex;"
 nodes/vertex/76/output_ports = "0,0,lod;1,3,uv2;"
 nodes/vertex/76/expression = "lod = -1.0;
 if (show_chunks) {
-	int vertex_col = int(mod(float(v_id), float(num_vertices_per_chunk))) + 1;
-	float step_between_vertices_in_current_mesh = floor(vertex.x / float(vertex_col));
-	lod = floor(log2(step_between_vertices_in_current_mesh)) + 1.0;
-	float lod_chunk_size = step_between_vertices_in_current_mesh * float(num_vertices_per_chunk - uint(1));
-	UV2 = vertex.xz / vec2(lod_chunk_size);
+	int vertex_col = int(floor(mod(float(v_id), float(num_vertices_per_chunk))));		// from 0 to num_vertices_per_chunk - 1
+	int vertex_row = int(floor(float(v_id) / float(num_vertices_per_chunk)));	// from 0 to num_vertices_per_chunk - 1
+	float step_between_vertices_in_current_mesh = -1.0;
+	if ((vertex_col == 0 && vertex_row == 0) || (vertex_col == 0 && vertex_row == int(num_vertices_per_chunk - uint(1)))
+		|| (vertex_col == int(num_vertices_per_chunk - uint(1)) && vertex_row == 0) || (vertex_col == int(num_vertices_per_chunk - uint(1)) && vertex_row == int(num_vertices_per_chunk - uint(1)))) {
+	} else {
+		if (vertex_col == 0) {	// vertex_row is > 0
+			step_between_vertices_in_current_mesh = floor(vertex.z / float(vertex_row));
+		} else {
+			step_between_vertices_in_current_mesh = floor(vertex.x / float(vertex_col));
+		}
+	}
+	if (step_between_vertices_in_current_mesh == -1.0) {
+		uv2 = vec2(0.0, 0.0);
+		lod = 99.0;
+	} else {
+		float chunk_size = step_between_vertices_in_current_mesh * float(num_vertices_per_chunk - uint(1));
+		uv2 = vertex.xz / vec2(chunk_size);
+		//uv2 = vec2(float(vertex_col) / float(num_vertices_per_chunk), float(vertex_row) / float(num_vertices_per_chunk));
+		//lod = log2(step_between_vertices_in_current_mesh);
+		lod = log2(step_between_vertices_in_current_mesh) - 1.0;
+		//lod = float(step_between_vertices_in_current_mesh);
+	}
 }"
 nodes/vertex/77/node = SubResource("VisualShaderNodeVaryingSetter_b8jto")
-nodes/vertex/77/position = Vector2(1160, -2000)
+nodes/vertex/77/position = Vector2(2320, -2360)
 nodes/vertex/connections = PackedInt32Array(12, 1, 0, 4, 11, 0, 12, 0, 12, 1, 13, 0, 13, 0, 0, 0, 11, 0, 13, 1, 13, 1, 14, 0, 15, 0, 13, 2, 12, 0, 16, 0, 15, 0, 11, 0, 13, 1, 18, 0, 18, 0, 19, 0, 12, 1, 20, 0, 20, 0, 0, 1, 23, 0, 24, 0, 12, 1, 23, 0, 25, 0, 26, 0, 25, 1, 27, 0, 25, 2, 28, 0, 25, 3, 29, 0, 12, 1, 25, 0, 35, 0, 12, 1, 30, 0, 12, 2, 37, 0, 12, 3, 36, 0, 12, 4, 34, 0, 25, 1, 31, 0, 20, 1, 32, 0, 23, 1, 38, 0, 23, 2, 30, 0, 13, 3, 18, 1, 68, 0, 18, 2, 69, 0, 18, 3, 70, 0, 71, 0, 18, 1, 72, 0, 76, 0, 75, 0, 76, 1, 74, 0, 76, 2, 15, 0, 76, 3, 76, 0, 77, 0, 76, 1, 0, 5)
 nodes/fragment/0/position = Vector2(8600, -680)
 nodes/fragment/3/node = SubResource("VisualShaderNodeVaryingGetter_pe6em")
@@ -3517,7 +3642,7 @@ else
 nodes/fragment/8/node = SubResource("VisualShaderNodeInput_sy0wq")
 nodes/fragment/8/position = Vector2(-2620, -40)
 nodes/fragment/10/node = SubResource("VisualShaderNodeExpression_elcve")
-nodes/fragment/10/position = Vector2(140, -520)
+nodes/fragment/10/position = Vector2(400, 160)
 nodes/fragment/10/size = Vector2(1380, 1180)
 nodes/fragment/10/input_ports = "0,3,vertex_cell_coords_in_textures;1,5,vertex_world_pos;2,5,ground_uv_scale_per_texture;3,6,north_border_pixel;4,6,south_border_pixel;5,6,west_border_pixel;6,6,east_border_pixel;7,8,terrain_heightmap;8,3,uv;"
 nodes/fragment/10/output_ports = "0,3,ground_uv0;1,3,ground_uv1;2,3,ground_uv2;3,4,ground_uv3;"
@@ -4460,55 +4585,65 @@ nodes/fragment/87/position = Vector2(-2680, -1980)
 nodes/fragment/88/node = SubResource("VisualShaderNodeVaryingGetter_q8fya")
 nodes/fragment/88/position = Vector2(6580, -820)
 nodes/fragment/89/node = SubResource("VisualShaderNodeExpression_woddh")
-nodes/fragment/89/position = Vector2(7140, -1360)
-nodes/fragment/89/size = Vector2(1200, 1600)
-nodes/fragment/89/input_ports = "0,4,albedo_in;1,0,roughness_in;2,4,normal_in;3,0,lod;4,0,quad_line_thickness;5,3,uv;"
+nodes/fragment/89/position = Vector2(7100, -2280)
+nodes/fragment/89/size = Vector2(1320, 2700)
+nodes/fragment/89/input_ports = "0,4,albedo_in;1,0,roughness_in;2,4,normal_in;3,0,lod;4,0,quad_line_thickness;5,3,uv;6,6,grid_on;7,3,ground_uv0;"
 nodes/fragment/89/output_ports = "0,4,albedo_out;1,0,roughness_out;2,4,normal_out;"
 nodes/fragment/89/expression = "albedo_out = albedo_in;
 normal_out = normal_in;
 roughness_out = roughness_in;
 if (lod >= 0.0) {
-	float chunk_border_line_thickness = 0.002;
+	//lod = floor(lod);
+	float f = floor(lod);
+	float c = ceil(lod);
+	if ((lod - f) > (c - lod) ) {
+		lod = c;
+	} else {
+		lod = f;
+	}
+
+	float chunk_border_line_thickness = 0.005;
 	
 	if (u_editmode_selected > 0.0 && is_on_the_border(UV, quad_line_thickness)) {
-		ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+		albedo_out = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 	} else {
 		if (u_mouse_hit != vec2(-1) && distance(u_mouse_hit, UV) < u_mouse_hit_radius) {
-			ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+			albedo_out = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 		} else {
 			if (is_on_the_border(UV, chunk_border_line_thickness) || is_on_the_border(UV2, chunk_border_line_thickness)) {
-				ALBEDO = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
+				//albedo_out = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
+				albedo_out = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
 			} else {
 				if (lod == 0.0) {
-					ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+					albedo_out = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 				} else {
 					if (lod == 1.0) {
-						ALBEDO = vec3(0.498, 1.0, 0.831);		// GDN_TheWorld_Globals::g_color_aquamarine_green
+						albedo_out = vec3(0.498, 1.0, 0.831);		// GDN_TheWorld_Globals::g_color_aquamarine_green
 					} else {
 						if (lod == 2.0) {
-							ALBEDO = vec3(0.0, 1.0, 0.0);		// GDN_TheWorld_Globals::g_color_green
+							albedo_out = vec3(0.0, 1.0, 0.0);		// GDN_TheWorld_Globals::g_color_green
 						} else {
 							if (lod == 3.0) {
-								ALBEDO = vec3(0.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_cyan
+								albedo_out = vec3(0.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_cyan
 							} else {
 								if (lod == 4.0) {
-									//ALBEDO = vec3(1.0, 0.753, 0.796);		// GDN_TheWorld_Globals::g_color_pink
-									//ALBEDO = vec3(0.870, 0.192, 0.388);		// GDN_TheWorld_Globals::g_color_pink_cerise
-									ALBEDO = vec3(0.980, 0.592, 0.447);		// GDN_TheWorld_Globals::g_color_red_salmon
+									////albedo_out = vec3(1.0, 0.753, 0.796);		// GDN_TheWorld_Globals::g_color_pink
+									////albedo_out = vec3(0.870, 0.192, 0.388);		// GDN_TheWorld_Globals::g_color_pink_cerise
+									albedo_out = vec3(0.980, 0.592, 0.447);		// GDN_TheWorld_Globals::g_color_red_salmon
 								} else {
 									if (lod == 5.0) {
-										ALBEDO = vec3(0.0, 0.0, 1.0);		// GDN_TheWorld_Globals::g_color_blue
+										albedo_out = vec3(0.0, 0.0, 1.0);		// GDN_TheWorld_Globals::g_color_blue
 									} else {
 										if (lod == 6.0) {
-											ALBEDO = vec3(0.623, 0.168, 0.408);		// GDN_TheWorld_Globals::g_color_pink_amaranth
+											albedo_out = vec3(0.623, 0.168, 0.408);		// GDN_TheWorld_Globals::g_color_pink_amaranth
 										} else {
 											if (lod == 7.0) {
-												ALBEDO = vec3(0.561, 0.737, 0.561);		// GDN_TheWorld_Globals::g_color_darksea_green
+												albedo_out = vec3(0.561, 0.737, 0.561);		// GDN_TheWorld_Globals::g_color_darksea_green
 											} else {	// u_lod == 8.0 and greater
 												if (lod == 8.0) {
-													ALBEDO = vec3(1.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_red
+													albedo_out = vec3(1.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_red
 												} else {
-													ALBEDO = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
+													albedo_out = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
 												}
 											}
 										}
@@ -4521,18 +4656,40 @@ if (lod >= 0.0) {
 			}
 		}
 	}
-}"
-nodes/fragment/90/node = SubResource("VisualShaderNodeGlobalExpression_5n7rv")
-nodes/fragment/90/position = Vector2(-4620, -800)
-nodes/fragment/90/size = Vector2(1040, 260)
-nodes/fragment/90/input_ports = ""
-nodes/fragment/90/output_ports = ""
-nodes/fragment/90/expression = "bool is_on_the_border_of_the_chunk(vec2 uv, float line_thickness) {
-	//float line_thickness = 0.01;
-	if (uv.x > line_thickness && uv.x < (1.0 - line_thickness) && uv.y > line_thickness && uv.y < (1.0 - line_thickness)) {
-		return false;
-	} else {
-		return true;
+}
+
+//bool grid_on = !(mouse_hit == vec2(-1));
+if (grid_on) {
+	float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
+	vec2 uv_begin_texel = uv - vec2(half_texel_size);
+	vec2 distance_from_vertex = 
+		fract(vec2(uv_begin_texel.x / (half_texel_size * 2.0), uv_begin_texel.y / (half_texel_size * 2.0)));
+	if (distance_from_vertex.x < quad_line_thickness || (1.0 - distance_from_vertex.x) < quad_line_thickness
+		|| distance_from_vertex.y < quad_line_thickness || (1.0 - distance_from_vertex.y) < quad_line_thickness) {
+		if ((distance_from_vertex.x < quad_line_thickness || (1.0 - distance_from_vertex.x) < quad_line_thickness)
+			&& (distance_from_vertex.y < quad_line_thickness || (1.0 - distance_from_vertex.y) < quad_line_thickness)) {
+			//albedo_out = mix(albedo_out, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
+			albedo_out = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
+		} else {
+			//albedo_out = mix(albedo_out, vec3(1.0, 0.749, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+			albedo_out = vec3(1.0, 0.749, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+		}
 	}
-}"
-nodes/fragment/connections = PackedInt32Array(8, 0, 4, 1, 4, 0, 10, 2, 12, 0, 10, 1, 11, 0, 10, 0, 13, 0, 14, 0, 16, 0, 14, 1, 17, 0, 4, 2, 18, 0, 4, 3, 19, 0, 4, 4, 20, 0, 4, 5, 26, 0, 25, 0, 13, 0, 25, 1, 21, 0, 25, 2, 29, 0, 33, 3, 13, 0, 33, 4, 24, 0, 33, 2, 23, 0, 33, 1, 3, 0, 33, 0, 25, 0, 33, 5, 25, 1, 33, 6, 27, 0, 31, 1, 28, 0, 31, 2, 33, 0, 30, 0, 33, 1, 30, 1, 56, 0, 31, 0, 56, 1, 31, 4, 56, 2, 31, 3, 25, 0, 56, 4, 25, 1, 56, 5, 36, 0, 56, 11, 38, 0, 56, 6, 39, 0, 56, 7, 40, 0, 56, 8, 41, 0, 56, 9, 33, 2, 56, 2, 10, 0, 30, 6, 10, 1, 30, 7, 10, 2, 30, 8, 10, 3, 30, 9, 14, 0, 30, 3, 34, 0, 30, 2, 25, 1, 30, 5, 35, 0, 30, 10, 58, 3, 59, 3, 58, 0, 60, 0, 58, 1, 60, 1, 58, 2, 60, 2, 60, 0, 61, 0, 61, 1, 59, 0, 61, 2, 59, 1, 61, 3, 59, 2, 57, 0, 61, 1, 13, 0, 31, 5, 63, 4, 58, 0, 25, 0, 30, 4, 13, 0, 66, 0, 62, 0, 69, 0, 71, 0, 70, 1, 70, 1, 72, 0, 70, 2, 72, 1, 70, 3, 72, 2, 65, 0, 63, 15, 30, 0, 56, 0, 30, 1, 56, 1, 30, 2, 56, 3, 30, 3, 56, 12, 30, 4, 56, 13, 30, 5, 56, 14, 30, 6, 56, 15, 30, 7, 56, 16, 30, 8, 56, 17, 30, 9, 56, 18, 30, 10, 56, 19, 13, 0, 73, 2, 25, 1, 73, 1, 25, 0, 73, 0, 73, 0, 30, 11, 73, 1, 30, 12, 73, 2, 30, 13, 73, 3, 30, 14, 75, 0, 76, 0, 74, 0, 76, 3, 75, 0, 76, 4, 75, 0, 76, 5, 76, 0, 69, 1, 69, 0, 73, 5, 37, 0, 73, 3, 78, 0, 77, 0, 62, 0, 79, 0, 79, 0, 77, 1, 73, 4, 56, 10, 73, 0, 10, 3, 73, 1, 10, 4, 73, 2, 10, 5, 73, 3, 10, 6, 80, 0, 10, 7, 10, 0, 31, 6, 10, 1, 31, 7, 10, 2, 31, 8, 10, 3, 31, 9, 81, 0, 31, 10, 13, 0, 10, 8, 82, 0, 4, 6, 84, 0, 4, 0, 56, 3, 0, 6, 56, 4, 0, 7, 4, 1, 31, 11, 88, 0, 89, 3, 31, 0, 89, 0, 89, 0, 0, 0, 31, 1, 89, 1, 89, 1, 0, 3, 31, 2, 89, 2, 89, 2, 0, 8, 31, 3, 89, 4, 13, 0, 89, 5)
+	vec2 g_uv0 = fract(ground_uv0);
+	float uv_line_thickness = quad_line_thickness / 10.0;
+	if (g_uv0.x < uv_line_thickness || (1.0 - g_uv0.x) < uv_line_thickness
+		|| g_uv0.y < uv_line_thickness || (1.0 - g_uv0.y) < uv_line_thickness) {
+		albedo_out = mix(albedo_out, vec3(0.0, 0.0, 1.0), 0.3);		// GDN_TheWorld_Globals::g_color_blue;
+	}
+}
+
+/*if (lod >= 0.0 && lod <= 511.0) {
+	albedo_out = vec3(1.0);	// white
+} else {
+	albedo_out = vec3(0.0);	// black
+}*/
+/*if (UV2.x >= 0.0 && UV2.x <= 1.0 && UV2.y >= 0.0 && UV2.y <= 1.0) {
+	albedo_out = vec3(1.0);	// white
+}*/
+//albedo_out = vec3(UV2.x, UV2.y, 1.0);"
+nodes/fragment/connections = PackedInt32Array(8, 0, 4, 1, 4, 0, 10, 2, 12, 0, 10, 1, 11, 0, 10, 0, 13, 0, 14, 0, 16, 0, 14, 1, 17, 0, 4, 2, 18, 0, 4, 3, 19, 0, 4, 4, 20, 0, 4, 5, 26, 0, 25, 0, 13, 0, 25, 1, 21, 0, 25, 2, 29, 0, 33, 3, 13, 0, 33, 4, 24, 0, 33, 2, 23, 0, 33, 1, 3, 0, 33, 0, 25, 0, 33, 5, 25, 1, 33, 6, 27, 0, 31, 1, 28, 0, 31, 2, 33, 0, 30, 0, 33, 1, 30, 1, 56, 0, 31, 0, 56, 1, 31, 4, 56, 2, 31, 3, 25, 0, 56, 4, 25, 1, 56, 5, 36, 0, 56, 11, 38, 0, 56, 6, 39, 0, 56, 7, 40, 0, 56, 8, 41, 0, 56, 9, 33, 2, 56, 2, 10, 0, 30, 6, 10, 1, 30, 7, 10, 2, 30, 8, 10, 3, 30, 9, 14, 0, 30, 3, 34, 0, 30, 2, 25, 1, 30, 5, 35, 0, 30, 10, 58, 3, 59, 3, 58, 0, 60, 0, 58, 1, 60, 1, 58, 2, 60, 2, 60, 0, 61, 0, 61, 1, 59, 0, 61, 2, 59, 1, 61, 3, 59, 2, 57, 0, 61, 1, 13, 0, 31, 5, 63, 4, 58, 0, 25, 0, 30, 4, 13, 0, 66, 0, 62, 0, 69, 0, 71, 0, 70, 1, 70, 1, 72, 0, 70, 2, 72, 1, 70, 3, 72, 2, 65, 0, 63, 15, 30, 0, 56, 0, 30, 1, 56, 1, 30, 2, 56, 3, 30, 3, 56, 12, 30, 4, 56, 13, 30, 5, 56, 14, 30, 6, 56, 15, 30, 7, 56, 16, 30, 8, 56, 17, 30, 9, 56, 18, 30, 10, 56, 19, 13, 0, 73, 2, 25, 1, 73, 1, 25, 0, 73, 0, 73, 0, 30, 11, 73, 1, 30, 12, 73, 2, 30, 13, 73, 3, 30, 14, 75, 0, 76, 0, 74, 0, 76, 3, 75, 0, 76, 4, 75, 0, 76, 5, 76, 0, 69, 1, 69, 0, 73, 5, 37, 0, 73, 3, 78, 0, 77, 0, 62, 0, 79, 0, 79, 0, 77, 1, 73, 4, 56, 10, 73, 0, 10, 3, 73, 1, 10, 4, 73, 2, 10, 5, 73, 3, 10, 6, 80, 0, 10, 7, 10, 0, 31, 6, 10, 1, 31, 7, 10, 2, 31, 8, 10, 3, 31, 9, 81, 0, 31, 10, 13, 0, 10, 8, 82, 0, 4, 6, 84, 0, 4, 0, 56, 3, 0, 6, 56, 4, 0, 7, 4, 1, 31, 11, 88, 0, 89, 3, 31, 0, 89, 0, 89, 0, 0, 0, 31, 1, 89, 1, 89, 1, 0, 3, 31, 2, 89, 2, 89, 2, 0, 8, 31, 3, 89, 4, 13, 0, 89, 5, 81, 0, 89, 6, 10, 0, 89, 7)
