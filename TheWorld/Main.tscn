@@ -1,14 +1,14 @@
-[gd_scene load_steps=51 format=3 uid="uid://c4ukh1kw4impi"]
+[gd_scene load_steps=53 format=3 uid="uid://c4ukh1kw4impi"]
 
 [ext_resource type="Script" path="res://main/TheWorld_Main.gd" id="1_760ml"]
 [ext_resource type="Script" path="res://addons/twviewer/tw_viewer.gd" id="3_yxvy6"]
 [ext_resource type="PackedScene" uid="uid://djjd1xm5iotj1" path="res://components/UI.tscn" id="4_cjpoh"]
 [ext_resource type="PackedScene" uid="uid://cdlipa2pmvrju" path="res://components/world_environment.tscn" id="4_gxev0"]
+[ext_resource type="Shader" path="res://addons/twviewer/test/outline.gdshader" id="5_1tfji"]
 [ext_resource type="PackedScene" uid="uid://bi138l8muok7h" path="res://components/test.tscn" id="5_kid0l"]
 [ext_resource type="Material" uid="uid://dee4mdtcckm70" path="res://addons/twviewer/test/m_sea.tres" id="6_32vc6"]
 [ext_resource type="PackedScene" uid="uid://v6sfi8k7dr7o" path="res://player.tscn" id="6_wlxwp"]
 [ext_resource type="Script" path="res://addons/twviewer/test/test_quadrant.gd" id="7_7uq48"]
-[ext_resource type="Shader" path="res://utils/GreyScalePostProcess.gdshader" id="8_4i1hi"]
 [ext_resource type="Shader" path="res://utils/GaussianBlurEffectPostProcess.gdshader" id="9_2dtkh"]
 [ext_resource type="PackedScene" uid="uid://caqxfqurbp3ku" path="res://assets/scenes/pine_tree.tscn" id="11_fbf05"]
 [ext_resource type="PackedScene" uid="uid://dvnha0bqryjll" path="res://assets/scenes/maple_tree.tscn" id="11_kq4xa"]
@@ -283,6 +283,22 @@ _surfaces = [{
 "vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63)
 }]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b5d8y"]
+render_priority = 0
+shader = ExtResource("5_1tfji")
+shader_parameter/depth_threshold = 0.05
+shader_parameter/reverse_depth_threshold = 0.25
+shader_parameter/normal_threshold = 0.6
+shader_parameter/darken_amount = 0.3
+shader_parameter/lighten_amount = 1.5
+shader_parameter/normal_edge_bias = Vector3(1, 1, 1)
+shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
+
+[sub_resource type="QuadMesh" id="QuadMesh_fq383"]
+material = SubResource("ShaderMaterial_b5d8y")
+flip_faces = true
+size = Vector2(2, 2)
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l5mjy"]
 albedo_color = Color(1, 0.0431373, 0.00784314, 1)
 
@@ -303,8 +319,6 @@ subdivide_depth = 2048
 orientation = 1
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_epqem"]
-shader = ExtResource("8_4i1hi")
-shader_parameter/greyScale = Vector3(0.5, 0.5, 0.5)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6wri7"]
 shader = ExtResource("9_2dtkh")
@@ -316,6 +330,7 @@ script = ExtResource("1_760ml")
 
 [node name="debug_running_game_node" type="Node" parent="TheWorld_Main"]
 script = ExtResource("15_6btyd")
+_anchor = true
 
 [node name="WorldEnvironment" parent="TheWorld_Main" instance=ExtResource("4_gxev0")]
 
@@ -323,7 +338,7 @@ script = ExtResource("15_6btyd")
 
 [node name="TWViewer" type="Node3D" parent="TheWorld_Main/Landscape"]
 script = ExtResource("3_yxvy6")
-_world_param_depth_quad = 1
+_world_param_depth_quad = 6
 _world_param_info_panel_visible = true
 _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 1
@@ -336,7 +351,6 @@ _shader_param_texture_blending_size = 0.33
 
 [node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main/Landscape/TWViewer"]
 perfparam_threshold_cache_heights = 15000.0
-viewparam_show_chunks = true
 
 [node name="GDN_TW_Viewer" type="GDN_TheWorld_Viewer" parent="TheWorld_Main/Landscape/TWViewer"]
 metadata/debug_wirecube_mesh_lod_5 = SubResource("ArrayMesh_kfft6")
@@ -356,8 +370,14 @@ metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(0.994283, 0.0386212, -0.0995485, 0, 0.932296, 0.361697, 0.106778, -0.359629, 0.926966, -0.0795596, 0.289069, 0.740835)
+transform = Transform3D(0.0589657, 0.0486876, 0.997072, 0, 0.99881, -0.0487725, -0.99826, 0.0028759, 0.0588955, -885.796, 1144.46, -1700.31)
 far = 30000.0
+
+[node name="PostProcessingOutLine" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
+transform = Transform3D(0.582015, 0.000569433, -0.813178, -0.303312, 0.927985, -0.21644, 0.754493, 0.372618, 0.540274, 0, 0, -11.381)
+visible = false
+extra_cull_margin = 16384.0
+mesh = SubResource("QuadMesh_fq383")
 
 [node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main/Landscape/TWViewer"]
 

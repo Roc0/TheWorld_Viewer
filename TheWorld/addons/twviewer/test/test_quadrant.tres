@@ -1,4 +1,4 @@
-[gd_resource type="VisualShader" load_steps=141 format=3 uid="uid://cux0qnf6ydgr2"]
+[gd_resource type="VisualShader" load_steps=142 format=3 uid="uid://cux0qnf6ydgr2"]
 
 [ext_resource type="Texture2D" uid="uid://bllki0xhd1pqa" path="res://assets/textures/ground/Grass004_1K-PNG_albedo_bump.ground.png" id="1_oimdd"]
 
@@ -203,7 +203,7 @@ quad_line_thickness = 0.05;
 //albedo_out = vec3(v_middle_mask);	// DEBUG
 
 //bool grid_on = !(mouse_hit == vec2(-1));
-if (grid_on) {
+/*if (grid_on) {
 	float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
 	vec2 uv_begin_texel = uv - vec2(half_texel_size);
 	vec2 distance_from_vertex = 
@@ -225,7 +225,7 @@ if (grid_on) {
 		|| g_uv0.y < uv_line_thickness || (1.0 - g_uv0.y) < uv_line_thickness) {
 		albedo_out = mix(albedo_out, vec3(0.0, 0.0, 1.0), 0.3);		// GDN_TheWorld_Globals::g_color_blue;
 	}
-}
+}*/
 
 if (mouse_hit != vec2(-1)) {
 	float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
@@ -1110,47 +1110,12 @@ if (lod >= 0.0) {
 			albedo_out = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 		} else {
 			if (is_on_the_border(UV, chunk_border_line_thickness) || is_on_the_border(UV2, chunk_border_line_thickness)) {
-				//albedo_out = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
 				albedo_out = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
 			} else {
-				if (lod == 0.0) {
-					albedo_out = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+				if (lod >= 0.0 && lod <= 8.0) {
+					albedo_out = lod_colors[int(lod)];
 				} else {
-					if (lod == 1.0) {
-						albedo_out = vec3(0.498, 1.0, 0.831);		// GDN_TheWorld_Globals::g_color_aquamarine_green
-					} else {
-						if (lod == 2.0) {
-							albedo_out = vec3(0.0, 1.0, 0.0);		// GDN_TheWorld_Globals::g_color_green
-						} else {
-							if (lod == 3.0) {
-								albedo_out = vec3(0.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_cyan
-							} else {
-								if (lod == 4.0) {
-									////albedo_out = vec3(1.0, 0.753, 0.796);		// GDN_TheWorld_Globals::g_color_pink
-									////albedo_out = vec3(0.870, 0.192, 0.388);		// GDN_TheWorld_Globals::g_color_pink_cerise
-									albedo_out = vec3(0.980, 0.592, 0.447);		// GDN_TheWorld_Globals::g_color_red_salmon
-								} else {
-									if (lod == 5.0) {
-										albedo_out = vec3(0.0, 0.0, 1.0);		// GDN_TheWorld_Globals::g_color_blue
-									} else {
-										if (lod == 6.0) {
-											albedo_out = vec3(0.623, 0.168, 0.408);		// GDN_TheWorld_Globals::g_color_pink_amaranth
-										} else {
-											if (lod == 7.0) {
-												albedo_out = vec3(0.561, 0.737, 0.561);		// GDN_TheWorld_Globals::g_color_darksea_green
-											} else {	// u_lod == 8.0 and greater
-												if (lod == 8.0) {
-													albedo_out = vec3(1.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_red
-												} else {
-													albedo_out = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
+					albedo_out = lod_colors[9];
 				}
 			}
 		}
@@ -1191,6 +1156,21 @@ if (grid_on) {
 	albedo_out = vec3(1.0);	// white
 }*/
 //albedo_out = vec3(UV2.x, UV2.y, 1.0);"
+
+[sub_resource type="VisualShaderNodeGlobalExpression" id="VisualShaderNodeGlobalExpression_pwrs1"]
+size = Vector2(740, 360)
+expression = "const vec3 lod_colors[10] = {
+	vec3(1.0, 0.749, 0.0),		// GDN_TheWorld_Globals::g_color_yellow_apricot
+	vec3(0.498, 1.0, 0.831),	// GDN_TheWorld_Globals::g_color_aquamarine_green
+	vec3(0.0, 1.0, 0.0),		// GDN_TheWorld_Globals::g_color_green
+	vec3(0.0, 1.0, 1.0),		// GDN_TheWorld_Globals::g_color_cyan
+	vec3(0.980, 0.592, 0.447),	// GDN_TheWorld_Globals::g_color_red_salmon
+	vec3(0.0, 0.0, 1.0),		// GDN_TheWorld_Globals::g_color_blue
+	vec3(0.623, 0.168, 0.408),	// GDN_TheWorld_Globals::g_color_pink_amaranth
+	vec3(0.561, 0.737, 0.561),	// GDN_TheWorld_Globals::g_color_darksea_green
+	vec3(1.0, 0.0, 0.0),		// GDN_TheWorld_Globals::g_color_red
+	vec3(0.0, 0.0, 0.0)		// GDN_TheWorld_Globals::g_color_black
+};"
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_28flk"]
 size = Vector2(620, 200)
@@ -2144,6 +2124,19 @@ uniform sampler2D tex_frg_62;
 		// blend the results of the 3 planar projections.
 		return xaxis * blend.x + yaxis * blend.y + zaxis * blend.z;
 	}
+// GlobalExpression:10
+	const vec3 lod_colors[10] = {
+		vec3(1.0, 0.749, 0.0),		// GDN_TheWorld_Globals::g_color_yellow_apricot
+		vec3(0.498, 1.0, 0.831),	// GDN_TheWorld_Globals::g_color_aquamarine_green
+		vec3(0.0, 1.0, 0.0),		// GDN_TheWorld_Globals::g_color_green
+		vec3(0.0, 1.0, 1.0),		// GDN_TheWorld_Globals::g_color_cyan
+		vec3(0.980, 0.592, 0.447),	// GDN_TheWorld_Globals::g_color_red_salmon
+		vec3(0.0, 0.0, 1.0),		// GDN_TheWorld_Globals::g_color_blue
+		vec3(0.623, 0.168, 0.408),	// GDN_TheWorld_Globals::g_color_pink_amaranth
+		vec3(0.561, 0.737, 0.561),	// GDN_TheWorld_Globals::g_color_darksea_green
+		vec3(1.0, 0.0, 0.0),		// GDN_TheWorld_Globals::g_color_red
+		vec3(0.0, 0.0, 0.0)		// GDN_TheWorld_Globals::g_color_black
+	};
 
 void vertex() {
 // Input:15
@@ -2981,7 +2974,7 @@ void fragment() {
 		//n_out31p0 = vec3(v_middle_mask);	// DEBUG
 		
 		//bool n_out81p0 = !(n_out27p0 == vec2(-1));
-		if (n_out81p0) {
+		/*if (n_out81p0) {
 			float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
 			vec2 uv_begin_texel = n_out13p0 - vec2(half_texel_size);
 			vec2 distance_from_vertex = 
@@ -3003,7 +2996,7 @@ void fragment() {
 				|| g_uv0.y < uv_line_thickness || (1.0 - g_uv0.y) < uv_line_thickness) {
 				n_out31p0 = mix(n_out31p0, vec3(0.0, 0.0, 1.0), 0.3);		// GDN_TheWorld_Globals::g_color_blue;
 			}
-		}
+		}*/
 		
 		if (n_out27p0 != vec2(-1)) {
 			float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
@@ -3068,47 +3061,12 @@ void fragment() {
 					n_out89p0 = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 				} else {
 					if (is_on_the_border(UV, chunk_border_line_thickness) || is_on_the_border(UV2, chunk_border_line_thickness)) {
-						//n_out89p0 = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
 						n_out89p0 = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
 					} else {
-						if (n_out88p0 == 0.0) {
-							n_out89p0 = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+						if (n_out88p0 >= 0.0 && n_out88p0 <= 8.0) {
+							n_out89p0 = lod_colors[int(n_out88p0)];
 						} else {
-							if (n_out88p0 == 1.0) {
-								n_out89p0 = vec3(0.498, 1.0, 0.831);		// GDN_TheWorld_Globals::g_color_aquamarine_green
-							} else {
-								if (n_out88p0 == 2.0) {
-									n_out89p0 = vec3(0.0, 1.0, 0.0);		// GDN_TheWorld_Globals::g_color_green
-								} else {
-									if (n_out88p0 == 3.0) {
-										n_out89p0 = vec3(0.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_cyan
-									} else {
-										if (n_out88p0 == 4.0) {
-											////n_out89p0 = vec3(1.0, 0.753, 0.796);		// GDN_TheWorld_Globals::g_color_pink
-											////n_out89p0 = vec3(0.870, 0.192, 0.388);		// GDN_TheWorld_Globals::g_color_pink_cerise
-											n_out89p0 = vec3(0.980, 0.592, 0.447);		// GDN_TheWorld_Globals::g_color_red_salmon
-										} else {
-											if (n_out88p0 == 5.0) {
-												n_out89p0 = vec3(0.0, 0.0, 1.0);		// GDN_TheWorld_Globals::g_color_blue
-											} else {
-												if (n_out88p0 == 6.0) {
-													n_out89p0 = vec3(0.623, 0.168, 0.408);		// GDN_TheWorld_Globals::g_color_pink_amaranth
-												} else {
-													if (n_out88p0 == 7.0) {
-														n_out89p0 = vec3(0.561, 0.737, 0.561);		// GDN_TheWorld_Globals::g_color_darksea_green
-													} else {	// u_lod == 8.0 and greater
-														if (n_out88p0 == 8.0) {
-															n_out89p0 = vec3(1.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_red
-														} else {
-															n_out89p0 = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
-														}
-													}
-												}
-											}
-										}
-									}
-								}
-							}
+							n_out89p0 = lod_colors[9];
 						}
 					}
 				}
@@ -3162,7 +3120,7 @@ void fragment() {
 
 }
 "
-graph_offset = Vector2(-23.7119, -154.945)
+graph_offset = Vector2(5412.53, -1771.28)
 modes/specular = 1
 varyings/v_vertex_world_pos = "0,5"
 varyings/v_vertex_cell_coords_in_textures = "0,3"
@@ -3827,7 +3785,7 @@ quad_line_thickness = 0.05;
 //albedo_out = vec3(v_middle_mask);	// DEBUG
 
 //bool grid_on = !(mouse_hit == vec2(-1));
-if (grid_on) {
+/*if (grid_on) {
 	float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
 	vec2 uv_begin_texel = uv - vec2(half_texel_size);
 	vec2 distance_from_vertex = 
@@ -3849,7 +3807,7 @@ if (grid_on) {
 		|| g_uv0.y < uv_line_thickness || (1.0 - g_uv0.y) < uv_line_thickness) {
 		albedo_out = mix(albedo_out, vec3(0.0, 0.0, 1.0), 0.3);		// GDN_TheWorld_Globals::g_color_blue;
 	}
-}
+}*/
 
 if (mouse_hit != vec2(-1)) {
 	float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
@@ -4611,47 +4569,12 @@ if (lod >= 0.0) {
 			albedo_out = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 		} else {
 			if (is_on_the_border(UV, chunk_border_line_thickness) || is_on_the_border(UV2, chunk_border_line_thickness)) {
-				//albedo_out = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
 				albedo_out = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
 			} else {
-				if (lod == 0.0) {
-					albedo_out = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+				if (lod >= 0.0 && lod <= 8.0) {
+					albedo_out = lod_colors[int(lod)];
 				} else {
-					if (lod == 1.0) {
-						albedo_out = vec3(0.498, 1.0, 0.831);		// GDN_TheWorld_Globals::g_color_aquamarine_green
-					} else {
-						if (lod == 2.0) {
-							albedo_out = vec3(0.0, 1.0, 0.0);		// GDN_TheWorld_Globals::g_color_green
-						} else {
-							if (lod == 3.0) {
-								albedo_out = vec3(0.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_cyan
-							} else {
-								if (lod == 4.0) {
-									////albedo_out = vec3(1.0, 0.753, 0.796);		// GDN_TheWorld_Globals::g_color_pink
-									////albedo_out = vec3(0.870, 0.192, 0.388);		// GDN_TheWorld_Globals::g_color_pink_cerise
-									albedo_out = vec3(0.980, 0.592, 0.447);		// GDN_TheWorld_Globals::g_color_red_salmon
-								} else {
-									if (lod == 5.0) {
-										albedo_out = vec3(0.0, 0.0, 1.0);		// GDN_TheWorld_Globals::g_color_blue
-									} else {
-										if (lod == 6.0) {
-											albedo_out = vec3(0.623, 0.168, 0.408);		// GDN_TheWorld_Globals::g_color_pink_amaranth
-										} else {
-											if (lod == 7.0) {
-												albedo_out = vec3(0.561, 0.737, 0.561);		// GDN_TheWorld_Globals::g_color_darksea_green
-											} else {	// u_lod == 8.0 and greater
-												if (lod == 8.0) {
-													albedo_out = vec3(1.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_red
-												} else {
-													albedo_out = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
-												}
-											}
-										}
-									}
-								}
-							}
-						}
-					}
+					albedo_out = lod_colors[9];
 				}
 			}
 		}
@@ -4692,4 +4615,21 @@ if (grid_on) {
 	albedo_out = vec3(1.0);	// white
 }*/
 //albedo_out = vec3(UV2.x, UV2.y, 1.0);"
+nodes/fragment/90/node = SubResource("VisualShaderNodeGlobalExpression_pwrs1")
+nodes/fragment/90/position = Vector2(6160, -1980)
+nodes/fragment/90/size = Vector2(740, 360)
+nodes/fragment/90/input_ports = ""
+nodes/fragment/90/output_ports = ""
+nodes/fragment/90/expression = "const vec3 lod_colors[10] = {
+	vec3(1.0, 0.749, 0.0),		// GDN_TheWorld_Globals::g_color_yellow_apricot
+	vec3(0.498, 1.0, 0.831),	// GDN_TheWorld_Globals::g_color_aquamarine_green
+	vec3(0.0, 1.0, 0.0),		// GDN_TheWorld_Globals::g_color_green
+	vec3(0.0, 1.0, 1.0),		// GDN_TheWorld_Globals::g_color_cyan
+	vec3(0.980, 0.592, 0.447),	// GDN_TheWorld_Globals::g_color_red_salmon
+	vec3(0.0, 0.0, 1.0),		// GDN_TheWorld_Globals::g_color_blue
+	vec3(0.623, 0.168, 0.408),	// GDN_TheWorld_Globals::g_color_pink_amaranth
+	vec3(0.561, 0.737, 0.561),	// GDN_TheWorld_Globals::g_color_darksea_green
+	vec3(1.0, 0.0, 0.0),		// GDN_TheWorld_Globals::g_color_red
+	vec3(0.0, 0.0, 0.0)		// GDN_TheWorld_Globals::g_color_black
+};"
 nodes/fragment/connections = PackedInt32Array(8, 0, 4, 1, 4, 0, 10, 2, 12, 0, 10, 1, 11, 0, 10, 0, 13, 0, 14, 0, 16, 0, 14, 1, 17, 0, 4, 2, 18, 0, 4, 3, 19, 0, 4, 4, 20, 0, 4, 5, 26, 0, 25, 0, 13, 0, 25, 1, 21, 0, 25, 2, 29, 0, 33, 3, 13, 0, 33, 4, 24, 0, 33, 2, 23, 0, 33, 1, 3, 0, 33, 0, 25, 0, 33, 5, 25, 1, 33, 6, 27, 0, 31, 1, 28, 0, 31, 2, 33, 0, 30, 0, 33, 1, 30, 1, 56, 0, 31, 0, 56, 1, 31, 4, 56, 2, 31, 3, 25, 0, 56, 4, 25, 1, 56, 5, 36, 0, 56, 11, 38, 0, 56, 6, 39, 0, 56, 7, 40, 0, 56, 8, 41, 0, 56, 9, 33, 2, 56, 2, 10, 0, 30, 6, 10, 1, 30, 7, 10, 2, 30, 8, 10, 3, 30, 9, 14, 0, 30, 3, 34, 0, 30, 2, 25, 1, 30, 5, 35, 0, 30, 10, 58, 3, 59, 3, 58, 0, 60, 0, 58, 1, 60, 1, 58, 2, 60, 2, 60, 0, 61, 0, 61, 1, 59, 0, 61, 2, 59, 1, 61, 3, 59, 2, 57, 0, 61, 1, 13, 0, 31, 5, 63, 4, 58, 0, 25, 0, 30, 4, 13, 0, 66, 0, 62, 0, 69, 0, 71, 0, 70, 1, 70, 1, 72, 0, 70, 2, 72, 1, 70, 3, 72, 2, 65, 0, 63, 15, 30, 0, 56, 0, 30, 1, 56, 1, 30, 2, 56, 3, 30, 3, 56, 12, 30, 4, 56, 13, 30, 5, 56, 14, 30, 6, 56, 15, 30, 7, 56, 16, 30, 8, 56, 17, 30, 9, 56, 18, 30, 10, 56, 19, 13, 0, 73, 2, 25, 1, 73, 1, 25, 0, 73, 0, 73, 0, 30, 11, 73, 1, 30, 12, 73, 2, 30, 13, 73, 3, 30, 14, 75, 0, 76, 0, 74, 0, 76, 3, 75, 0, 76, 4, 75, 0, 76, 5, 76, 0, 69, 1, 69, 0, 73, 5, 37, 0, 73, 3, 78, 0, 77, 0, 62, 0, 79, 0, 79, 0, 77, 1, 73, 4, 56, 10, 73, 0, 10, 3, 73, 1, 10, 4, 73, 2, 10, 5, 73, 3, 10, 6, 80, 0, 10, 7, 10, 0, 31, 6, 10, 1, 31, 7, 10, 2, 31, 8, 10, 3, 31, 9, 81, 0, 31, 10, 13, 0, 10, 8, 82, 0, 4, 6, 84, 0, 4, 0, 56, 3, 0, 6, 56, 4, 0, 7, 4, 1, 31, 11, 88, 0, 89, 3, 31, 0, 89, 0, 89, 0, 0, 0, 31, 1, 89, 1, 89, 1, 0, 3, 31, 2, 89, 2, 89, 2, 0, 8, 31, 3, 89, 4, 13, 0, 89, 5, 81, 0, 89, 6, 10, 0, 89, 7)

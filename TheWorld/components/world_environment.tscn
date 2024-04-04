@@ -17,9 +17,20 @@ ambient_light_color = Color(1, 1, 1, 1)
 ambient_light_sky_contribution = 0.5
 ambient_light_energy = 0.5
 tonemap_mode = 3
-fog_light_color = Color(0.517647, 0.552941, 0.607843, 1)
-fog_density = 0.002
-volumetric_fog_density = 0.0147
+fog_enabled = true
+fog_mode = 1
+fog_density = 0.1468
+fog_aerial_perspective = 0.64
+fog_sky_affect = 0.533
+fog_depth_curve = 3.86376
+fog_depth_begin = 0.0
+fog_depth_end = 0.0
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.004
+volumetric_fog_emission = Color(0.756078, 0.624246, 0.769531, 1)
+volumetric_fog_length = 54.61
+volumetric_fog_ambient_inject = 0.65
+volumetric_fog_sky_affect = 0.0
 
 [node name="World" type="Node3D"]
 
