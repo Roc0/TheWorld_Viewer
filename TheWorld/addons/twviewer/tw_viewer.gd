@@ -320,8 +320,8 @@ func custom_ready():
 		_set_world_editor_param_deploy_world(false)
 		#_depth_quad = 1
 		#_cache_quad = 0
-		##_depth_quad = 0
-		##_cache_quad = 0
+		# #_depth_quad = 0
+		# #_cache_quad = 0
 		#_debug_mode = 0
 		#_camera_param_initial_pos = Vector3(0, 2200, 0)
 		#_camera_param_initial_alt_forced = 0
@@ -348,13 +348,13 @@ func custom_ready():
 		add_child(gdn_main)
 
 	create_info_panel()
-	
+
 	init_gdn_viewer()
 	if !get_tree().get_root().is_connected("size_changed", Callable(self, "resizing")):
 		var e := get_tree().get_root().connect("size_changed", Callable(self, "resizing"))
 		log_debug(str("connect 'size_changed' result=", e))
 	set_notify_transform(true)
-	
+
 	_client_status = get_clientstatus()
 	
 	log_debug("custom_ready done")
@@ -386,12 +386,12 @@ func _exit_tree():
 			_info_panel.queue_free()
 			_info_panel = null
 
-		var gdn_main : Node = GDN_main()
-		if gdn_main != null:
-			#var parent = gdn_main.get_parent()
-			#if parent != null:
-			#	parent.remove_child(gdn_main)
-			gdn_main.queue_free()
+		#var gdn_main : Node = GDN_main()
+		#if gdn_main != null:
+		#	#var parent = gdn_main.get_parent()
+		#	#if parent != null:
+		#	#	parent.remove_child(gdn_main)
+		#	gdn_main.queue_free()
 		
 		#_gdn_main_instance = null
 		
