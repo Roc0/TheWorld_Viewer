@@ -3120,7 +3120,6 @@ void fragment() {
 
 }
 "
-graph_offset = Vector2(5412.53, -1771.28)
 modes/specular = 1
 varyings/v_vertex_world_pos = "0,5"
 varyings/v_vertex_cell_coords_in_textures = "0,3"
