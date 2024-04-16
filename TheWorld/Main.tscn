@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://addons/twviewer/tw_viewer.gd" id="3_yxvy6"]
 [ext_resource type="PackedScene" uid="uid://djjd1xm5iotj1" path="res://components/UI.tscn" id="4_cjpoh"]
 [ext_resource type="PackedScene" uid="uid://cdlipa2pmvrju" path="res://components/world_environment.tscn" id="4_gxev0"]
-[ext_resource type="Shader" path="res://addons/twviewer/test/outline.gdshader" id="5_1tfji"]
+[ext_resource type="Shader" path="res://addons/twviewer/test/outline.gdshader" id="5_drrbh"]
 [ext_resource type="PackedScene" uid="uid://bi138l8muok7h" path="res://components/test.tscn" id="5_kid0l"]
 [ext_resource type="Material" uid="uid://dee4mdtcckm70" path="res://addons/twviewer/test/m_sea.tres" id="6_32vc6"]
 [ext_resource type="PackedScene" uid="uid://v6sfi8k7dr7o" path="res://player.tscn" id="6_wlxwp"]
@@ -283,9 +283,9 @@ _surfaces = [{
 "vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63)
 }]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_b5d8y"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1vmfp"]
 render_priority = 0
-shader = ExtResource("5_1tfji")
+shader = ExtResource("5_drrbh")
 shader_parameter/depth_threshold = 0.05
 shader_parameter/reverse_depth_threshold = 0.25
 shader_parameter/normal_threshold = 0.6
@@ -295,7 +295,7 @@ shader_parameter/normal_edge_bias = Vector3(1, 1, 1)
 shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
 
 [sub_resource type="QuadMesh" id="QuadMesh_fq383"]
-material = SubResource("ShaderMaterial_b5d8y")
+material = SubResource("ShaderMaterial_1vmfp")
 flip_faces = true
 size = Vector2(2, 2)
 
@@ -369,7 +369,7 @@ metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(0.860207, -0.168007, 0.481475, 0, 0.944169, 0.329462, -0.509946, -0.283405, 0.812181, -699.175, 3573.03, 20737.1)
+transform = Transform3D(0.844474, 0.0439272, -0.533793, 0, 0.996631, 0.0820155, 0.535597, -0.0692599, 0.841629, 407751, 61.365, 410708)
 far = 30000.0
 
 [node name="PostProcessingOutLine" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
@@ -509,3 +509,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="PostProcessingOutLine" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.582015, 0.000569433, -0.813178, -0.303312, 0.927985, -0.21644, 0.754493, 0.372618, 0.540274, 0, 0, -11.381)
+visible = false
+extra_cull_margin = 16384.0
+mesh = SubResource("QuadMesh_fq383")

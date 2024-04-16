@@ -21,12 +21,12 @@ const _group_name := "debug_running_game_nodes"
 func _enter_tree():
 	add_debugger_plugin(_debug_running_game_debuggerplugin)
 	add_custom_type("debug_running_game_node", "Node", _debug_running_game_node, preload("./Node.svg"))
-	add_autoload_singleton(AUTOLOAD_NAME, AUTOLOAD_SCRIPT)
+	#add_autoload_singleton(AUTOLOAD_NAME, AUTOLOAD_SCRIPT)
 
 func _exit_tree():
 	remove_autoload_singleton(AUTOLOAD_NAME)
 	remove_custom_type("debug_running_game_node")
-	remove_debugger_plugin(_debug_running_game_debuggerplugin)
+	#remove_debugger_plugin(_debug_running_game_debuggerplugin)
 
 func _process(delta: float):
 	if not _init_done:

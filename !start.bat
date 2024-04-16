@@ -14,12 +14,13 @@ set executable=..\..\Prove\godot\bin\godot.windows.editor.x86_64.exe
 rem CUSTOM BUILD DEBUG single		==> scons platform=windows bits=64 -j10 vsproj=yes target=editor dev_build=yes
 rem set executable=..\..\Prove\godot\bin\godot.windows.editor.dev.x86_64.exe
 
-rem CUSTOM BUILD RELEASE double		==> scons platform=windows bits=64 -j10 vsproj=yes target=editor precision=double
-rem set executable=..\..\Prove\godot\bin\godot.windows.editor.double.x86_64.exe
+				rem rem rem rem rem rem rem CUSTOM BUILD RELEASE double		==> scons platform=windows bits=64 -j10 vsproj=yes target=editor precision=double
+				rem rem rem rem rem rem rem set executable=..\..\Prove\godot\bin\godot.windows.editor.double.x86_64.exe
 
-rem CUSTOM BUILD DEBUG double 		==> scons platform=windows bits=64 -j10 vsproj=yes target=editor dev_build=yes precision=double
-rem set executable=..\..\Prove\godot\bin\godot.windows.editor.dev.double.x86_64.exe
+				rem rem rem rem rem rem rem CUSTOM BUILD DEBUG double 		==> scons platform=windows bits=64 -j10 vsproj=yes target=editor dev_build=yes precision=double
+				rem rem rem rem rem rem rem set executable=..\..\Prove\godot\bin\godot.windows.editor.dev.double.x86_64.exe
 
 dir %executable%
 call %executable% -v --path %curpath%TheWorld -e 2>&1 1>log.txt
+rem pause
 

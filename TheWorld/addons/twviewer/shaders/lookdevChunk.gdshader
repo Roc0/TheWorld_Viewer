@@ -85,7 +85,7 @@ void fragment() {
 	}
 
 	// DEBUG pieces near cam at higher resolution
-	if (v_distance_from_camera < (u_piece_size * float(u_piecing_threshold)))
+	/*if (v_distance_from_camera < (u_piece_size * float(u_piecing_threshold)))
 	{
 		vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
 		int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / u_piece_size));
@@ -105,7 +105,7 @@ void fragment() {
 		{
 			ALBEDO = vec3(0.0, 0.0, 1.0);
 		}
-	}
+	}*/
 	// DEBUG pieces near cam at higher resolution
 
 	// DEBUG
