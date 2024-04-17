@@ -59,7 +59,7 @@ func _forward_3d_draw_over_viewport(overlay : Control):
 func _notification(_what):
 #	log_debug(str("_notification ", _what))
 	if (_what == NOTIFICATION_WM_CLOSE_REQUEST):
-		_debug_running_game_debuggerplugin.quit_in_progress()
+		_debug_running_game_debuggerplugin.quit_in_progress(true)
 
 func _handles(object) -> bool:
 	if object is _debug_running_game_node:

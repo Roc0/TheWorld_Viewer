@@ -23,6 +23,7 @@ func _has_capture(prefix : String) -> bool:
 func _capture(message : String, data : Array, session_id : int) -> bool:
 	match message:
 		"%s:get_id" % PREFIX:
+			_quit_in_progress = false
 			var all = []
 			var sessions = get_sessions()
 			for i in sessions.size():
@@ -51,9 +52,9 @@ func _capture(message : String, data : Array, session_id : int) -> bool:
 			
 	return false
 	
-func quit_in_progress():
+func quit_in_progress(quit : bool):
 	#_editor_overlay_3d_visible = false
-	_quit_in_progress = true
+	_quit_in_progress = quit
 	send_viewport_info()
 
 func set_editor_overlay_3d(editor_overlay : Control) -> void:
@@ -93,6 +94,7 @@ func send_viewport_info() -> void:
 		var t : Transform2D =  _editor_overlay_3d.get_screen_transform()
 		var viewport_pos : Vector2 = t.origin
 		var viewport_size : Vector2 = _editor_overlay_3d.size
+		log_debug(str("DEBUGEDIT _quit_in_progress=", _quit_in_progress))
 		if _quit_in_progress:
 			_editor_overlay_3d_visible = false
 		else:

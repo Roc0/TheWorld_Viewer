@@ -1110,7 +1110,8 @@ if (lod >= 0.0) {
 			albedo_out = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 		} else {
 			if (is_on_the_border(UV, chunk_border_line_thickness) || is_on_the_border(UV2, chunk_border_line_thickness)) {
-				albedo_out = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
+				//albedo_out = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
+				albedo_out = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
 			} else {
 				if (lod >= 0.0 && lod <= 8.0) {
 					albedo_out = lod_colors[int(lod)];
@@ -3061,7 +3062,8 @@ void fragment() {
 					n_out89p0 = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 				} else {
 					if (is_on_the_border(UV, chunk_border_line_thickness) || is_on_the_border(UV2, chunk_border_line_thickness)) {
-						n_out89p0 = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
+						//n_out89p0 = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
+						n_out89p0 = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
 					} else {
 						if (n_out88p0 >= 0.0 && n_out88p0 <= 8.0) {
 							n_out89p0 = lod_colors[int(n_out88p0)];
@@ -4568,7 +4570,8 @@ if (lod >= 0.0) {
 			albedo_out = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 		} else {
 			if (is_on_the_border(UV, chunk_border_line_thickness) || is_on_the_border(UV2, chunk_border_line_thickness)) {
-				albedo_out = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
+				//albedo_out = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
+				albedo_out = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
 			} else {
 				if (lod >= 0.0 && lod <= 8.0) {
 					albedo_out = lod_colors[int(lod)];
