@@ -121,13 +121,21 @@ func _set_world_param_depth_quad(depth_quad : int):
 		_world_param_depth_quad_changed = true
 
 var _world_param_cache_quad_changed := true
-const MAX_CACHE_QUAD=4
+const MAX_CACHE_QUAD=2
 @export var _world_param_cache_quad : int = 1:		# 1
 	set = _set_world_param_cache_quad
 func _set_world_param_cache_quad(cache_quad : int):
 	if cache_quad >= 0 && cache_quad <= MAX_CACHE_QUAD:
 		_world_param_cache_quad = cache_quad
 		_world_param_cache_quad_changed = true
+
+var _world_param_max_depth_quad_changed := true
+@export var _world_param_max_depth_quad : int = MAX_DEPTH_QUAD:		# 3
+	set = _set_world_param_max_depth_quad
+func _set_world_param_max_depth_quad(depth_quad : int):
+	if depth_quad >= 0 && depth_quad <= MAX_DEPTH_QUAD:
+		_world_param_max_depth_quad = depth_quad
+		_world_param_max_depth_quad_changed = true
 
 var _world_param_info_panel_visibility_changed := true
 @export var _world_param_info_panel_visible : bool = false:
@@ -167,6 +175,14 @@ func _set_world_editor_param_cache_quad(cache_quad : int):
 	if cache_quad >= 0 && cache_quad <= MAX_CACHE_QUAD:
 		_world_editor_param_cache_quad = cache_quad
 		_world_editor_param_cache_quad_changed = true
+
+var _world_editor_param_max_depth_quad_changed := true
+@export var _world_editor_param_max_depth_quad : int = MAX_DEPTH_QUAD:		# 3
+	set = _set_world_editor_param_max_depth_quad
+func _set_world_editor_param_max_depth_quad(depth_quad : int):
+	if depth_quad >= 0 && depth_quad <= MAX_DEPTH_QUAD:
+		_world_editor_param_max_depth_quad = depth_quad
+		_world_editor_param_max_depth_quad_changed = true
 
 var _world_editor_param_info_panel_visibility_changed := true
 @export var _world_editor_param_info_panel_visible : bool = false:
