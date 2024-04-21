@@ -330,7 +330,6 @@ script = ExtResource("1_760ml")
 
 [node name="debug_running_game_node" type="Node" parent="TheWorld_Main"]
 script = ExtResource("15_6btyd")
-_anchor = true
 
 [node name="WorldEnvironment" parent="TheWorld_Main" instance=ExtResource("4_gxev0")]
 
@@ -338,8 +337,8 @@ _anchor = true
 
 [node name="TWViewer" type="Node3D" parent="TheWorld_Main/Landscape"]
 script = ExtResource("3_yxvy6")
-_world_param_depth_quad = 1
-_world_param_cache_quad = 0
+_world_param_depth_quad = 2
+_world_param_cache_quad = 2
 _world_param_info_panel_visible = true
 _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 1
@@ -348,7 +347,6 @@ _camera_param_initial_pos = Vector3(9420.22, 3019.62, 28709.9)
 _camera_param_initial_yaw_pitch_roll = Vector3(30.6602, -19.2361, 0)
 _shader_param_ground_uv_scale = 6.0
 _shader_param_globalmap_blend_start = 10000.0
-_shader_param_texture_blending_size = 0.33
 
 [node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main/Landscape/TWViewer"]
 perfparam_threshold_cache_heights = 15000.0

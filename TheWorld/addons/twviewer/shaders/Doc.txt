@@ -1,3 +1,8 @@
+https://www.youtube.com/watch?v=DxfEbulyFcY			Coding Adventure: Atmosphere	(Procedural Planet Generation)
+https://godotengine.org/asset-library/asset/1866	ProtonScatter
+https://godotengine.org/asset-library/asset/2228	NV File System
+https://twitter.com/FR3NKD/status/1777271999988908073?t=BRieDuiqa4bYB0rqVzzu5A&s=09		Demo with terrain3D by FR3NKD
+
 *** Albedo/Color Map ***
 
 

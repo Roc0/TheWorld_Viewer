@@ -105,7 +105,7 @@ var _player_info_line_2_index : int = 0
 
 var prev_hit : Vector3 = Vector3(0, 0, 0)
 
-var debug_running_game_global_exist := false
+#var debug_running_game_global_exist := false
 
 func _ready():
 	get_tree().set_auto_accept_quit(false)
@@ -183,17 +183,18 @@ func _input(event):
 		pass
 		
 	if event is InputEventKey and event.is_action_pressed("ui_toggle_fullscreen"):
-		var w : Window = get_window()
-		if (_fullscreen):
-			w.always_on_top = false
-			w.borderless = false
-			w.mode = Window.MODE_MAXIMIZED
-			_fullscreen = false
-		else:
-			w.always_on_top = true
-			w.borderless = true
-			w.mode = Window.MODE_MAXIMIZED
-			_fullscreen = true
+		if not debug_running_game_global.get_game_anchored_in_editor():
+			var w : Window = get_window()
+			if (_fullscreen):
+				w.always_on_top = false
+				w.borderless = false
+				w.mode = Window.MODE_MAXIMIZED
+				_fullscreen = false
+			else:
+				w.always_on_top = true
+				w.borderless = true
+				w.mode = Window.MODE_MAXIMIZED
+				_fullscreen = true
 
 	if event is InputEventKey && event.is_pressed():
 		var dict : Dictionary = {'viewpoint_to_save' : _viewpoint_to_save, "viewpoint_to_load" : _viewpoint_to_load}

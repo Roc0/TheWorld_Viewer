@@ -2,6 +2,7 @@
 # it is executed both in editor and game
 
 @tool
+class_name DebugRunningGame
 extends Node
 
 const HT_Logger = preload("./util/logger.gd")
@@ -11,7 +12,7 @@ var _editor_debugger_session_id : Variant = null
 
 const PREFIX = 'debug_running_game'
 
-@export_category("debug_running_game")
+#@export_category("debug_running_game")
 var _anchor_changed := true
 @export var _anchor : bool = false:
 	set = _set_anchor
