@@ -11,8 +11,8 @@ var _logger = HT_Logger.get_for(self)
 var _config_file_name : String = ""
 var _config := ConfigFile.new()
 
-var _viewpoint_to_save : int = 0
-var _viewpoint_to_load : int = 0
+var _viewpoint_to_save : int = -1
+var _viewpoint_to_load : int = -1
 
 #var _initialCameraDistanceFromTerrain : float = 300
 
@@ -168,7 +168,7 @@ func deinit():
 
 func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> void:
 	if new_client_status == tw_const.clientstatus_world_undeploy_in_progress:
-		save_current_position(0)
+		save_current_position(-1)
 		$UI/MessageContainer/Message.text = "Undeploying world ..."
 			
 	_clientstatus = new_client_status
@@ -398,18 +398,18 @@ func _process(_delta):
 		#tw_viewer.set_info_panel_external_value("Speed: " + str(snapped(velocity, 0.01)) + " m/s " +  str(int((velocity * 60 * 60)) / 1000) + " km/h  H: " + player_dist_from_terrain, _player_info_2_line_index) 
 		tw_viewer.set_info_panel_external_value("Player speed: " + str(snapped(velocity, 0.01)) + " m/s " +  str(floor((velocity * 60 * 60) / 1000)) + " km/h  alt: " + player_dist_from_terrain, _player_info_line_2_index) 
 		
-		if _viewpoint_to_save > 0:
+		if _viewpoint_to_save >= 0:
 			save_current_position(_viewpoint_to_save)
 			$UI/MessageContainer/Message.text = "Viewpoint " + str(_viewpoint_to_save) + " saved!"
 			_saved_time_to_fade_message = Time.get_ticks_msec()
-			_viewpoint_to_save = 0
+			_viewpoint_to_save = -1
 		
-		if _viewpoint_to_load > 0:			
+		if _viewpoint_to_load >= 0:			
 			if not $Player/Player.camera_tracking_player():
 				load_position(_viewpoint_to_load)
 				$UI/MessageContainer/Message.text = "Viewpoint " + str(_viewpoint_to_load) + " loaded!"
 				_saved_time_to_fade_message = Time.get_ticks_msec()
-			_viewpoint_to_load = 0
+			_viewpoint_to_load = -1
 			
 	if _debug_window_active:
 		fps = Engine.get_frames_per_second()
@@ -726,7 +726,7 @@ func save_current_position(viewpoint : int) -> void:
 		camera_pos = camera.get_camera_map_transform().origin
 		var param_key_camera_pos := ""
 		var param_key_camera_ypr := ""
-		if viewpoint == 0:
+		if viewpoint == -1:
 			var player_global_transform = $Player/Player.global_transform 
 			var player_map_transform : Transform3D = gdn_viewer.global_transform_to_map_transform(player_global_transform)
 			_config.set_value(tw_const.param_group_player, tw_const.param_key_player_pos, player_map_transform.origin)
@@ -743,7 +743,7 @@ func save_current_position(viewpoint : int) -> void:
 func load_position(viewpoint : int) -> void:
 	var param_key_camera_pos := ""
 	var param_key_camera_ypr := ""
-	if viewpoint == 0:
+	if viewpoint == -1:
 		param_key_camera_pos = tw_const.param_key_initial_camera_pos
 		param_key_camera_ypr = tw_const.param_key_initial_camera_ypr
 	else:

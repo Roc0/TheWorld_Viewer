@@ -86,6 +86,7 @@ var _info_panel_num_active_chunks := ""
 var _info_panel_num_chunk_splits := ""
 var _info_panel_num_chunk_joins := ""
 var _info_panel_hit_pos := ""
+var _info_panel_hit_pos_in_map := ""
 var _info_panel_hit_distance_from_camera := ""
 var _info_panel_delta_pos := ""
 var _info_panel_quad_hit_name := ""
@@ -803,11 +804,12 @@ func _process(delta):
 		_info_label_num_empty_quadrants = "  Empty: " + str(gdn_viewer.get_num_empty_quadrant())
 		_info_label_num_flushed_quadrants = "  Flushed: " + str(gdn_viewer.get_num_flushed_quadrant())
 		_info_label_num_reloading_quadrants = "  Reloading: " + str(gdn_viewer.get_num_reloading_quadrant()) + "\n"
-		_info_label_num_with_collider = "  Collider: " + str(gdn_viewer.get_num_quadrant_with_collider()) + " (H " + str(gdn_viewer.get_num_quadrant_with_hires_collider()) + " / L " + str(gdn_viewer.get_num_quadrant_with_lowres_collider()) + ")"
+		_info_label_num_with_collider = "  Collider: " + str(gdn_viewer.get_num_quadrant_with_enabled_collider()) + "/" + str(gdn_viewer.get_num_quadrant_with_collider()) + " (H " + str(gdn_viewer.get_num_quadrant_with_hires_collider()) + " / L " + str(gdn_viewer.get_num_quadrant_with_lowres_collider()) + ")"
 		_info_panel_num_active_chunks = "  Active: " + str(gdn_viewer.get_num_active_chunks()) + "\n"
 		_info_panel_num_chunk_splits = "  Splits: " + str(gdn_viewer.get_num_splits()) + "\n"
 		_info_panel_num_chunk_joins = "  Joins: " + str(gdn_viewer.get_num_joins())
-		_info_panel_hit_pos = "  Hit pos: " + str(gdn_viewer.get_mouse_hit_in_map()) + "\n"
+		_info_panel_hit_pos = "  Hit pos: " + str(gdn_viewer.get_mouse_hit_global()) + "\n"
+		_info_panel_hit_pos_in_map = "  Hit pos in map: " + str(gdn_viewer.get_mouse_hit_in_map()) + "\n"
 		_info_panel_hit_distance_from_camera = "  Hit pos dist from camera: " + str(gdn_viewer.get_mouse_hit_distance_from_camera()) + "\n"
 		_info_panel_delta_pos = "  Delta pos: " + str(_delta_pos) + "\n"
 		_info_panel_quad_hit_name = "  Quad name: " + gdn_viewer.get_mouse_quadrant_hit_name() + " " + gdn_viewer.get_mouse_quadrant_hit_tag() + "\n"
@@ -876,6 +878,7 @@ func _process(delta):
 		
 		_info_panel_mouse_tracking_label.text = "Mouse tracking: " + _info_panel_track_mouse_state + "\n" \
 		+ _info_panel_hit_pos \
+		+ _info_panel_hit_pos_in_map \
 		+ _info_panel_hit_distance_from_camera \
 		+ _info_panel_delta_pos \
 		+ _info_panel_quad_hit_name \
