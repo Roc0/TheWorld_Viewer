@@ -552,6 +552,12 @@ func _process(delta):
 				log_debug(str("cache quad: ", _world_editor_param_cache_quad))
 			_world_editor_param_cache_quad_changed = false
 
+		if _world_editor_param_max_depth_quad_changed:
+			if gdn_viewer.has_method("set_max_depth_quad"):
+				gdn_viewer.set_max_depth_quad(_world_editor_param_max_depth_quad)
+				log_debug(str("max depth quad: ", _world_editor_param_max_depth_quad))
+			_world_editor_param_max_depth_quad_changed = false
+
 		if _world_editor_param_info_panel_visibility_changed:
 			#print(str("DEBUG _info_panel=", _info_panel, " visible=", _world_editor_param_info_visible))
 			if _info_panel != null:
@@ -580,6 +586,12 @@ func _process(delta):
 				gdn_viewer.set_cache_quad(_world_param_cache_quad)
 				log_debug(str("cache quad: ", _world_param_cache_quad))
 			_world_param_cache_quad_changed = false
+
+		if _world_param_max_depth_quad_changed:
+			if gdn_viewer.has_method("set_max_depth_quad"):
+				gdn_viewer.set_max_depth_quad(_world_param_max_depth_quad)
+				log_debug(str("max depth quad: ", _world_param_max_depth_quad))
+			_world_param_max_depth_quad_changed = false
 
 		if _world_param_info_panel_visibility_changed:
 			if _info_panel != null:
@@ -772,7 +784,7 @@ func _process(delta):
 			_last_check_delta_pos = Time.get_ticks_msec()
 		if !Engine.is_editor_hint() or Engine.is_editor_hint():
 			_info_panel_draw_mode = "Draw mode: " +  gdn_viewer.get_debug_draw_mode() + "\n"
-			_info_panel_num_locks = "Locks: " + str(gdn_viewer.get_num_process_not_owns_lock()) + "\n"
+			_info_panel_num_locks = "Locks: " + str(gdn_viewer.get_num_process_not_owns_lock()) + " debug: " + str(gdn_viewer.get_debug_visibility()) + "\n"
 			if viewer_custom_camera != null && viewer_custom_camera.has_method("get_yaw"):
 				_info_panel_camera_degree_from_north = "  Deg. north: " + str(snapped(viewer_custom_camera.get_angle_from_north_degree(), 0.01)) + " Alt: " + str(snapped(viewer_custom_camera.get_camera_altitude_from_terrain(), 0.01)) + "\n"
 				_info_panel_camera_yaw = "  Yaw: " + str(snapped(viewer_custom_camera.get_yaw(false), 0.01)) 
