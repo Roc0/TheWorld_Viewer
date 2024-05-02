@@ -9,6 +9,7 @@
 [node name="godot_ball" instance=ExtResource("1_1g156")]
 
 [node name="OBJ_GodotBall" parent="." index="0"]
+layers = 4
 surface_material_override/0 = ExtResource("2_y64op")
 surface_material_override/1 = ExtResource("3_gcekp")
 surface_material_override/2 = ExtResource("4_clmil")

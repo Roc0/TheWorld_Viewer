@@ -1002,7 +1002,7 @@ default_input_values = [0, 0.0, 1, 0.0, 2, 0.0, 3, 0.0]
 op_type = 2
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_cue6k"]
-size = Vector2(580, 1180)
+size = Vector2(580, 1480)
 expression = "north_border_pixel = false;
 south_border_pixel = false;
 west_border_pixel = false;
@@ -1026,19 +1026,6 @@ if (!editmode_pixel && !globalmap_pixel) {
 		east_border_pixel = true;
 		//splat_out = splat_out + noise_color;
 	}
-
-	/*if (is_on_upper_border(uv, distance_from_border)) {
-		splat_out = vec4(-1.0, 0.0, 0.0, 0.0);
-	}
-	if (is_on_lower_border(uv, distance_from_border)) {
-		splat_out = vec4(0.0, -1.0, 0.0, 0.0);
-	}
-	if (is_on_left_border(uv, distance_from_border)) {
-		splat_out = vec4(0.0, 0.0, -1.0, 0.0);
-	}
-	if (is_on_right_border(uv, distance_from_border)) {
-		splat_out = vec4(0.0, 0.0, 0.0, -1.0);
-	}*/
 }
 //splat_out = splat_in;"
 
@@ -1302,7 +1289,7 @@ expression = "/*vec3 get_normal(sampler2D tex, mat3 terrain_normal_basis, vec2 u
 }*/"
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_dks25"]
-size = Vector2(500, 280)
+size = Vector2(540, 320)
 expression = "if (!use_globalmap) {
 		splat = texture(terrain_splatmap, uv);
 }"
@@ -2654,19 +2641,6 @@ void fragment() {
 				n_out73p3 = true;
 				//n_out73p4 = n_out73p4 + ;
 			}
-		
-			/*if (is_on_upper_border(n_out13p0, n_out69p0.x)) {
-				n_out73p4 = vec4(-1.0, 0.0, 0.0, 0.0);
-			}
-			if (is_on_lower_border(n_out13p0, n_out69p0.x)) {
-				n_out73p4 = vec4(0.0, -1.0, 0.0, 0.0);
-			}
-			if (is_on_left_border(n_out13p0, n_out69p0.x)) {
-				n_out73p4 = vec4(0.0, 0.0, -1.0, 0.0);
-			}
-			if (is_on_right_border(n_out13p0, n_out69p0.x)) {
-				n_out73p4 = vec4(0.0, 0.0, 0.0, -1.0);
-			}*/
 		}
 		//n_out73p4 = n_out37p0;
 	}
@@ -3328,8 +3302,8 @@ nodes/vertex/22/expression = "/*vec3 get_normal(sampler2D tex, mat3 terrain_norm
 	return normalize(n);
 }*/"
 nodes/vertex/23/node = SubResource("VisualShaderNodeExpression_dks25")
-nodes/vertex/23/position = Vector2(1200, -1480)
-nodes/vertex/23/size = Vector2(500, 280)
+nodes/vertex/23/position = Vector2(1200, -1500)
+nodes/vertex/23/size = Vector2(540, 320)
 nodes/vertex/23/input_ports = "0,3,uv;1,8,terrain_splatmap;2,6,use_globalmap;"
 nodes/vertex/23/output_ports = "0,5,splat;"
 nodes/vertex/23/expression = "if (!use_globalmap) {
@@ -4487,7 +4461,7 @@ if (uv.y >= 0.0 && uv.y <= 1.0) {
 	albedo_out = mix(albedo_out, vec3(0.0, 1.0, 0.0), vec3(0.5, 0.5, 0.5));
 }"
 nodes/fragment/69/node = SubResource("VisualShaderNodeVectorOp_2h4ao")
-nodes/fragment/69/position = Vector2(1400, 2000)
+nodes/fragment/69/position = Vector2(1320, 1900)
 nodes/fragment/70/node = SubResource("VisualShaderNodeVectorOp_igkdc")
 nodes/fragment/70/position = Vector2(2840, 4320)
 nodes/fragment/71/node = SubResource("VisualShaderNodeFloatConstant_b0bam")
@@ -4496,7 +4470,7 @@ nodes/fragment/72/node = SubResource("VisualShaderNodeVectorCompose_dtdk1")
 nodes/fragment/72/position = Vector2(3060, 4300)
 nodes/fragment/73/node = SubResource("VisualShaderNodeExpression_cue6k")
 nodes/fragment/73/position = Vector2(1640, 1460)
-nodes/fragment/73/size = Vector2(580, 1180)
+nodes/fragment/73/size = Vector2(580, 1480)
 nodes/fragment/73/input_ports = "0,6,editmode_pixel;1,6,globalmap_pixel;2,3,uv;3,5,splat_in;4,5,noise_color;5,0,distance_from_border;"
 nodes/fragment/73/output_ports = "0,6,north_border_pixel;1,6,south_border_pixel;2,6,west_border_pixel;3,6,east_border_pixel;4,5,splat_out;"
 nodes/fragment/73/expression = "north_border_pixel = false;
@@ -4522,27 +4496,14 @@ if (!editmode_pixel && !globalmap_pixel) {
 		east_border_pixel = true;
 		//splat_out = splat_out + noise_color;
 	}
-
-	/*if (is_on_upper_border(uv, distance_from_border)) {
-		splat_out = vec4(-1.0, 0.0, 0.0, 0.0);
-	}
-	if (is_on_lower_border(uv, distance_from_border)) {
-		splat_out = vec4(0.0, -1.0, 0.0, 0.0);
-	}
-	if (is_on_left_border(uv, distance_from_border)) {
-		splat_out = vec4(0.0, 0.0, -1.0, 0.0);
-	}
-	if (is_on_right_border(uv, distance_from_border)) {
-		splat_out = vec4(0.0, 0.0, 0.0, -1.0);
-	}*/
 }
 //splat_out = splat_in;"
 nodes/fragment/74/node = SubResource("VisualShaderNodeParameterRef_g4tok")
 nodes/fragment/74/position = Vector2(-2980, 1740)
 nodes/fragment/75/node = SubResource("VisualShaderNodeFloatConstant_m7n1d")
-nodes/fragment/75/position = Vector2(1020, 2080)
+nodes/fragment/75/position = Vector2(840, 2280)
 nodes/fragment/76/node = SubResource("VisualShaderNodeIf_djiwm")
-nodes/fragment/76/position = Vector2(1240, 2120)
+nodes/fragment/76/position = Vector2(1100, 2080)
 nodes/fragment/77/node = SubResource("VisualShaderNodeVectorOp_nygba")
 nodes/fragment/77/position = Vector2(960, 3560)
 nodes/fragment/78/node = SubResource("VisualShaderNodeFloatConstant_mqt22")

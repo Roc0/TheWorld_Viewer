@@ -9,9 +9,12 @@ data = PackedVector3Array(0.0629, 0.1755, -1.8335, -0.0082, 0.0041, -1.6822, 0.2
 [node name="large_rock" instance=ExtResource("1_etns1")]
 
 [node name="LargeRock" parent="." index="0"]
+layers = 4
 surface_material_override/0 = ExtResource("2_8nayy")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="LargeRock" index="0"]
+collision_layer = 4
+collision_mask = 4294967295
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="LargeRock/StaticBody3D" index="0"]
 shape = SubResource("ConcavePolygonShape3D_6ssqc")

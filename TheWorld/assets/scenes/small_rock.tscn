@@ -1,9 +1,10 @@
 [gd_scene load_steps=3 format=3 uid="uid://bltmr2xgs8nq1"]
 
 [ext_resource type="PackedScene" uid="uid://dhlugudmxc2ge" path="res://assets/models/small_rock.glb" id="1_e2qk6"]
-[ext_resource type="Material" path="res://assets/materials/m_rock.tres" id="2_clsfy"]
+[ext_resource type="Material" uid="uid://b7alfr4qyfn8b" path="res://assets/materials/m_rock.tres" id="2_clsfy"]
 
 [node name="small_rock" instance=ExtResource("1_e2qk6")]
 
 [node name="SmallRock" parent="." index="0"]
+layers = 4
 surface_material_override/0 = ExtResource("2_clsfy")

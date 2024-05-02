@@ -28,27 +28,34 @@ height = 4.0
 script = ExtResource("1_8qray")
 
 [node name="Player" type="CharacterBody3D" parent="."]
+collision_layer = 2
+collision_mask = 4294967295
 script = ExtResource("1_qy5qg")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
 transform = Transform3D(1.91069e-15, 4.37114e-08, -1, 1, -4.37114e-08, 0, -4.37114e-08, -1, -4.37114e-08, 0, 0, 0)
+layers = 2
 mesh = SubResource("CapsuleMesh_8ytoo")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Player/MeshInstance3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, -0.8, 0)
+layers = 2
 mesh = SubResource("SphereMesh_sefpy")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="Player/MeshInstance3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1, -0.8, 0)
 visible = false
+layers = 2
 mesh = SubResource("SphereMesh_sefpy")
 
 [node name="MeshInstance3D3" type="MeshInstance3D" parent="Player/MeshInstance3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.8, -1)
+layers = 2
 mesh = SubResource("SphereMesh_sefpy")
 
 [node name="MeshInstance3D4" type="MeshInstance3D" parent="Player/MeshInstance3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.8, 1)
+layers = 2
 mesh = SubResource("SphereMesh_sefpy")
 skeleton = NodePath("../MeshInstance3D3")
 
@@ -58,7 +65,7 @@ shape = SubResource("CapsuleShape3D_3xj2k")
 
 [node name="RayCast3DVert" type="RayCast3D" parent="Player"]
 target_position = Vector3(0, -5, 0)
-collision_mask = 3
+collision_mask = 4294967295
 
 [node name="BackMirror" type="Node3D" parent="."]
 
