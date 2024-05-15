@@ -34,6 +34,16 @@ noise = SubResource("FastNoiseLite_y2ugm")
 [resource]
 render_priority = 0
 shader = ExtResource("1_dasuk")
+shader_parameter/u_optimization_level = 0
+shader_parameter/u_editmode_selected = 0.0
+shader_parameter/u_grid_on = false
+shader_parameter/u_quad_border_line_thickness = 0.005
+shader_parameter/u_mouse_hit_radius = 0.001
+shader_parameter/u_num_vertices_per_chunk = null
+shader_parameter/u_mouse_hit = Vector2(-1, -1)
+shader_parameter/u_terrain_inverse_transform = null
+shader_parameter/u_grid_step = 2.0
+shader_parameter/u_quadrant_size = 4096.0
 shader_parameter/albedo = Color(0, 0.321569, 0.431373, 1)
 shader_parameter/albedo2 = Color(1, 1, 1, 1)
 shader_parameter/metallic = 0.0
