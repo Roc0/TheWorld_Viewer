@@ -272,3 +272,15 @@ gu_show_chunks={
 "type": "bool",
 "value": false
 }
+gu_sea_wave={
+"type": "sampler2D",
+"value": "res://addons/twviewer/shaders/tex_sea_wave.tres"
+}
+gu_sea_texture_normal={
+"type": "sampler2D",
+"value": "res://addons/twviewer/shaders/tex_sea_normal2.tres"
+}
+gu_sea_texture_normal2={
+"type": "sampler2D",
+"value": "res://addons/twviewer/shaders/tex_sea_normal.tres"
+}

@@ -28,32 +28,35 @@ const vec3 lod_colors[10] = {
 uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
 uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 
-uniform vec3 albedo : source_color;
-uniform vec3 albedo2 : source_color;
+uniform vec3 albedo : source_color = vec3(0.0, 0.32, 0.43);
+uniform vec3 albedo2 : source_color = vec3(1.0, 1.0, 1.0);
 uniform float metallic : hint_range(0.0, 1.0) = 0;
 uniform float roughness : hint_range(0.0, 1.0) = 0.02;
-uniform sampler2D wave;
-uniform sampler2D texture_normal;
-uniform sampler2D texture_normal2;
+global uniform sampler2D gu_sea_wave;
+global uniform sampler2D gu_sea_texture_normal;
+global uniform sampler2D gu_sea_texture_normal2;
+//uniform sampler2D wave;
+//uniform sampler2D texture_normal;
+//uniform sampler2D texture_normal2;
 uniform vec2 wave_direction = vec2(2.0,0.0); // Direction of wave 1
 uniform vec2 wave_direction2 = vec2(0.0,1.0); // Direction of wave 2
-uniform float time_scale : hint_range(0.0, 0.2, 0.005) = 0.025; // Rate of movement multiplied by TIME
-uniform float noise_scale = 10.0;
-uniform float height_scale = 0.15;
+uniform float time_scale : hint_range(0.0, 0.2, 0.005) = 0.005; // *** Rate of movement multiplied by TIME
+uniform float noise_scale = 1000.0;		// ***
+uniform float height_scale = 30.0;		// *** -15 / +15
 
-uniform vec4 color_deep : source_color; // Deep depth color
-uniform vec4 color_shallow : source_color; // Shallow depth color
+uniform vec4 color_deep : source_color = vec4(0.10, 0.29, 0.32, 1.0); // Deep depth color
+uniform vec4 color_shallow : source_color = vec4(0.0, 0.55, 0.65, 1.0); // Shallow depth color
 uniform float beers_law = 2.0; // Beer's law application
 uniform float depth_offset = -0.75; // Offset
 
 uniform float edge_scale = 0.1;
 uniform float near = 1.0;
-uniform float far = 100.0;
-uniform vec3 edge_color : source_color;
+uniform float far = 20000.0;
+uniform vec3 edge_color : source_color = vec3(1.0, 1.0, 1.0);
 
 // Varying variables
-varying float height;
-varying vec3 world_pos;
+//varying float v_height;
+varying vec3 v_world_pos;
 varying float v_lod;
 
 #include "res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc"
@@ -69,18 +72,25 @@ float edge(float depth){
 }
 
 void vertex() {
-	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
-	height = texture(wave, world_pos.xz / noise_scale + TIME * time_scale).r;
+	// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need
+	// to trasform them in world coord to abstract from chunk
+	v_world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	float height = texture(gu_sea_wave, v_world_pos.xz / noise_scale + TIME * time_scale).r;
+	//v_height = height;
 	VERTEX.y += height * height_scale;
+
+	//VERTEX.y = 0.0;		// DEBUG
+	//VERTEX.y = 1000.0;	// DEBUG
+
+	// SETTING UV (mapping of the VERTEX in current quadrant)
+	//vec4 vertex_world_pos = MODEL_MATRIX * vec4(VERTEX, 1);
+	vec4 vertex_world_pos = vec4(v_world_pos, 1.0);
+	// to calculate coords of the vertex local to the quadrant we use affine inverse matrix of the global trasform of the quadtree
+	vec4 vertex_local_to_quadrant_pos = u_terrain_inverse_transform * vertex_world_pos;
+	UV = vertex_local_to_quadrant_pos.xz / vec2(u_quadrant_size);		// mapping of vertex_local_to_quadrant_pos in current quadrant from 0.0 (start of the quadrant) to 1.0 (end of the quadrant)
 
 	float lod = -1.0;
 	if (gu_show_chunks) {
-		// SETTING UV (mapping of the VERTEX in current quadrant)
-		// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need to trasform in world coord to abstract from chunk
-		vec4 vertex_world_pos = MODEL_MATRIX * vec4(VERTEX, 1);// to calculate coords of the vertex local to the quadrant we use affine inverse matrix of the global trasform of the quadtree
-		vec4 vertex_local_to_quadrant_pos = u_terrain_inverse_transform * vertex_world_pos;
-		UV = vertex_local_to_quadrant_pos.xz / vec2(u_quadrant_size);		// mapping of vertex_local_to_quadrant_pos in current quadrant from 0.0 (start of the quadrant) to 1.0 (end of the quadrant)
-
 		// SETTING UV2 (mapping of the VERTEX in current chunk) and lod of current chunk
 		int vertex_col = int(floor(mod(float(VERTEX_ID), float(u_num_vertices_per_chunk))));		// vertex_col ranges from 0 to u_num_vertices_per_chunk - 1
 		int vertex_row = int(floor(float(VERTEX_ID) / float(u_num_vertices_per_chunk)));			// vertex_row ranges from 0 to u_num_vertices_per_chunk - 1
@@ -95,7 +105,7 @@ void vertex() {
 				step_between_vertices_in_current_mesh = floor(VERTEX.x / float(vertex_col));	// in world units
 			}
 		}
-		if (step_between_vertices_in_current_mesh == -1.0) {
+		if (abs(step_between_vertices_in_current_mesh + 1.0) < 0.0001) {
 			UV2 = vec2(0.0, 0.0);
 			lod = 99.0;
 		} else {
@@ -133,7 +143,7 @@ void fragment() {
 	vec2 time2 = (TIME * wave_direction2) * time_scale; // Movement rate of second wave
 
 	// Blend normal maps into one
-	vec3 normal_blend = mix(texture(texture_normal,world_pos.xz + time).rgb, texture(texture_normal2,world_pos.xz + time2).rgb, 0.5);
+	vec3 normal_blend = mix(texture(gu_sea_texture_normal, v_world_pos.xz + time).rgb, texture(gu_sea_texture_normal2, v_world_pos.xz + time2).rgb, 0.5);
 
 	// Calculate Fresnel
 	float fresnel = fresnel(5.0, NORMAL, VIEW);
