@@ -351,7 +351,6 @@ _shader_param_globalmap_blend_start = 10000.0
 
 [node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main/Landscape/TWViewer"]
 perfparam_threshold_cache_heights = 15000.0
-viewparam_show_chunks = true
 
 [node name="GDN_TW_Viewer" type="GDN_TheWorld_Viewer" parent="TheWorld_Main/Landscape/TWViewer"]
 metadata/debug_wirecube_mesh_lod_5 = SubResource("ArrayMesh_kfft6")
@@ -371,7 +370,7 @@ metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(0.0281241, 0.138331, -0.989987, 0, 0.990378, 0.138386, 0.999604, -0.00389198, 0.0278535, 5517.73, 1.36341, 25651)
+transform = Transform3D(-0.205426, -0.181781, 0.961642, 0, 0.982599, 0.185742, -0.978673, 0.0381562, -0.201851, 5528.51, 17.413, 25653.6)
 far = 12288.0
 
 [node name="PostProcessingOutLine" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
@@ -383,6 +382,7 @@ mesh = SubResource("QuadMesh_fq383")
 [node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main/Landscape/TWViewer"]
 
 [node name="TestQuadrants" type="Node3D" parent="TheWorld_Main/Landscape"]
+visible = false
 
 [node name="Origin" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
 visible = false
@@ -460,6 +460,7 @@ mesh = SubResource("PlaneMesh_60os2")
 
 [node name="Sea-99-100" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
 transform = Transform3D(4096, 0, 0, 0, 40, 0, 0, 0, 4096, 407552, 0, 411648)
+visible = false
 cast_shadow = 0
 mesh = SubResource("QuadMesh_st0eb")
 surface_material_override/0 = ExtResource("6_32vc6")
