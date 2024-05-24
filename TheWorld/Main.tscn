@@ -1,4 +1,4 @@
-[gd_scene load_steps=53 format=3 uid="uid://c4ukh1kw4impi"]
+[gd_scene load_steps=55 format=3 uid="uid://c4ukh1kw4impi"]
 
 [ext_resource type="Script" path="res://main/TheWorld_Main.gd" id="1_760ml"]
 [ext_resource type="Script" path="res://addons/twviewer/tw_viewer.gd" id="3_yxvy6"]
@@ -318,6 +318,14 @@ subdivide_width = 2048
 subdivide_depth = 2048
 orientation = 1
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fq04k"]
+albedo_color = Color(1, 0.145861, 0.273205, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_uaxsv"]
+size = Vector2(4096, 4096)
+subdivide_width = 512
+subdivide_depth = 512
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_epqem"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6wri7"]
@@ -344,6 +352,7 @@ _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 1
 _world_editor_param_max_depth_quad = 2
 _world_editor_param_info_panel_visible = true
+_world_editor_param_edit_panel_visible = true
 _camera_param_initial_pos = Vector3(9420.22, 3019.62, 28709.9)
 _camera_param_initial_yaw_pitch_roll = Vector3(30.6602, -19.2361, 0)
 _shader_param_ground_uv_scale = 6.0
@@ -370,8 +379,8 @@ metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(-0.205426, -0.181781, 0.961642, 0, 0.982599, 0.185742, -0.978673, 0.0381562, -0.201851, 5528.51, 17.413, 25653.6)
-far = 12288.0
+transform = Transform3D(0.00337778, -0.999994, 0.00079627, 0, 0.000796274, 1, -0.999994, -0.00337778, 2.68964e-06, 415085, 8009.38, 428754)
+far = 6144.0
 
 [node name="PostProcessingOutLine" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
 transform = Transform3D(0.582015, 0.000569433, -0.813178, -0.303312, 0.927985, -0.21644, 0.754493, 0.372618, 0.540274, 0, 0, -11.381)
@@ -389,8 +398,15 @@ visible = false
 mesh = SubResource("SphereMesh_812q2")
 skeleton = NodePath("../../../..")
 
+[node name="Flag" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 415085, 8000, 428754)
+visible = false
+mesh = SubResource("SphereMesh_812q2")
+skeleton = NodePath("../../../..")
+
 [node name="TWTestQuadrant1" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6144, 0, 26624)
+visible = false
 skeleton = NodePath("../../../..")
 script = ExtResource("7_7uq48")
 _pos = Vector2(4096, 24576)
@@ -399,6 +415,7 @@ _points_per_size = 513
 
 [node name="TWTestQuadrant2" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6144, 0, 30720)
+visible = false
 skeleton = NodePath("../../../..")
 script = ExtResource("7_7uq48")
 _pos = Vector2(4096, 28672)
@@ -407,6 +424,7 @@ _points_per_size = 513
 
 [node name="TWTestQuadrant3" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2048, 0, 26624)
+visible = false
 skeleton = NodePath("../../../..")
 script = ExtResource("7_7uq48")
 _pos = Vector2(0, 24576)
@@ -415,6 +433,7 @@ _points_per_size = 513
 
 [node name="TWTestQuadrant4" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2048, 0, 30720)
+visible = false
 skeleton = NodePath("../../../..")
 script = ExtResource("7_7uq48")
 _pos = Vector2(0, 28672)
@@ -423,6 +442,7 @@ _points_per_size = 513
 
 [node name="TWTestQuadrant-100-100" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 411648, 0, 411648)
+visible = false
 skeleton = NodePath("../../../..")
 script = ExtResource("7_7uq48")
 _pos = Vector2(409600, 409600)
@@ -431,6 +451,7 @@ _points_per_size = 513
 
 [node name="TWTestQuadrant-99-100" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 407552, 0, 411648)
+visible = false
 skeleton = NodePath("../../../..")
 script = ExtResource("7_7uq48")
 _pos = Vector2(405504, 409600)
@@ -439,6 +460,7 @@ _points_per_size = 513
 
 [node name="TWTestQuadrant-99-99" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 407552, 0, 407552)
+visible = false
 skeleton = NodePath("../../../..")
 script = ExtResource("7_7uq48")
 _pos = Vector2(405504, 405504)
@@ -447,6 +469,7 @@ _points_per_size = 513
 
 [node name="TWTestQuadrant-100-99" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 411648, 0, 407552)
+visible = false
 skeleton = NodePath("../../../..")
 script = ExtResource("7_7uq48")
 _pos = Vector2(409600, 405504)
@@ -464,6 +487,12 @@ visible = false
 cast_shadow = 0
 mesh = SubResource("QuadMesh_st0eb")
 surface_material_override/0 = ExtResource("6_32vc6")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 418000, 951.253, 418000)
+visible = false
+material_overlay = SubResource("StandardMaterial3D_fq04k")
+mesh = SubResource("PlaneMesh_uaxsv")
 
 [node name="Test" parent="TheWorld_Main" instance=ExtResource("5_kid0l")]
 

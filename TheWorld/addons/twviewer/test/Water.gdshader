@@ -1,6 +1,8 @@
 shader_type spatial;
 
 global uniform bool gu_show_chunks = false;
+global uniform float gu_camera_altitude_from_terrain;
+
 uniform uint u_optimization_level = 0;
 uniform float u_editmode_selected = 0;
 uniform bool u_grid_on = false;
@@ -30,7 +32,7 @@ uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 
 uniform vec3 albedo : source_color = vec3(0.0, 0.03, 0.34);		// vec3(0.0, 0.19, 0.46);		// vec3(0.0, 0.32, 0.43);
 uniform vec3 albedo2 : source_color = vec3(0.25, 0.32, 0.43);	// vec3(1.0, 1.0, 1.0);
-uniform float metallic : hint_range(0.0, 1.0) = 0;
+uniform float metallic : hint_range(0.0, 1.0) = 0.8;
 uniform float roughness : hint_range(0.0, 1.0) = 0.02;
 global uniform sampler2D gu_sea_wave;
 global uniform sampler2D gu_sea_texture_normal;
@@ -43,7 +45,7 @@ uniform vec2 wave_direction2 = vec2(0.0,1.0); // Direction of wave 2
 uniform float time_scale : hint_range(0.0, 0.2, 0.0005) = 0.0005; // *** Rate of movement multiplied by TIME
 uniform float rough_sea_factor : hint_range(0.0, 20.0, 1.0) = 10.0;	// ***
 uniform float noise_scale = 1000.0;		// ***
-uniform float height_scale = 3.0;		// *** -15 / +15
+uniform float height_scale = 4.0;		// *** -15 / +15
 
 uniform vec4 color_deep : source_color = vec4(0.10, 0.29, 0.32, 1.0); // Deep depth color
 uniform vec4 color_shallow : source_color = vec4(0.0, 0.55, 0.65, 1.0); // Shallow depth color
@@ -67,7 +69,8 @@ float fresnel(float amount, vec3 normal, vec3 view)
 	return pow((1.0 - clamp(dot(normalize(normal), normalize(view)), 0.0, 1.0 )), amount);
 }
 
-float edge(float depth){
+float edge(float depth)
+{
 	depth = 2.0 * depth - 1.0;
 	return near * far / (far + depth * (near - far));
 }
@@ -76,9 +79,15 @@ void vertex() {
 	// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need
 	// to trasform them in world coord to abstract from chunk
 	v_world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
-	float height = texture(gu_sea_wave, v_world_pos.xz / noise_scale + TIME * time_scale * rough_sea_factor).r;
-	float scale = height_scale * rough_sea_factor;
-	VERTEX.y += (height * scale) - scale / 3.0;
+	if (CAMERA_POSITION_WORLD.y < 500.0) {
+		float height = texture(gu_sea_wave, v_world_pos.xz / noise_scale + TIME * time_scale * rough_sea_factor).r;
+		float scale = height_scale * rough_sea_factor;
+		if (CAMERA_POSITION_WORLD.y > 200.0) {
+			scale = scale - (scale * (CAMERA_POSITION_WORLD.y - 200.0) / (500.0 - 200.0));
+			//scale = 40.0;
+		}
+		VERTEX.y += (height * scale) - (scale / 3.0);
+	}
 	//VERTEX.y = 0.0;		// DEBUG
 	//VERTEX.y = 1000.0;	// DEBUG
 
@@ -124,8 +133,8 @@ void vertex() {
 
 void fragment() {
 	// Time calculations for wave (normal map) movement
-	vec2 time = (TIME * wave_direction) * time_scale / 20.0; // Movement rate of first wave
-	vec2 time2 = (TIME * wave_direction2) * time_scale / 20.0; // Movement rate of second wave
+	vec2 time = (TIME * wave_direction) * time_scale * (rough_sea_factor / 6.0) /*/ 0.5*/; // Movement rate of first wave
+	vec2 time2 = (TIME * wave_direction2) * time_scale * (rough_sea_factor / 6.0) /*/ 0.5*/; // Movement rate of second wave
 
 	// Blend normal maps into one
 	//vec3 normal_blend = mix(texture(gu_sea_texture_normal, v_world_pos.xz + time).rgb, texture(gu_sea_texture_normal2, v_world_pos.xz + time2).rgb, 0.5);
