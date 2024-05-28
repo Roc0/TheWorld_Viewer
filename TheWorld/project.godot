@@ -254,7 +254,7 @@ gu_player_altitude_from_terrain={
 }
 gu_player_pos={
 "type": "vec3",
-"value": Vector3(0, 0, 0)
+"value": Vector3(0, 0.03, 0.34)
 }
 gu_splatmap_blending_size={
 "type": "float",

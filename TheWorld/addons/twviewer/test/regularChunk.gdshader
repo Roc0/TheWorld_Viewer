@@ -123,13 +123,13 @@ vec4 texture_antitile(sampler2D albedo_tex, sampler2D normal_tex, vec2 uv, out v
 	float frequency = 2.0;
 	float scale = 1.3;
 	float sharpness = 0.7;
-	
+
 	// Rotate and scale UV
 	float rot = 3.14 * 0.6;
 	float cosa = cos(rot);
 	float sina = sin(rot);
 	vec2 uv2 = rotate(uv, cosa, sina) * scale;
-	
+
 	vec4 col0 = texture(albedo_tex, uv);
 	vec4 col1 = texture(albedo_tex, uv2);
 	vec4 nrm0 = texture(normal_tex, uv);
@@ -142,10 +142,10 @@ vec4 texture_antitile(sampler2D albedo_tex, sampler2D normal_tex, vec2 uv, out v
 	// Had to negate the Y axis for some reason. I never remember the myriad of conventions around
 	n.xz = rotate(n.xz, cosa, -sina);
 	nrm1 = pack_normal(n, nrm1.a);
-	
+
 	// Periodically alternate between the two versions using a warped checker pattern
-	float t = 1.2 + 
-		  sin(uv2.x * frequency + sin(uv.x) * 2.0) 
+	float t = 1.2 +
+		  sin(uv2.x * frequency + sin(uv.x) * 2.0)
 		* cos(uv2.y * frequency + sin(uv.y) * 2.0); // Result in [0..2]
 	t = smoothstep(sharpness, 2.0 - sharpness, t);
 
@@ -166,7 +166,7 @@ void vertex() {
 	//} else {															// DEBUG: check UV
 	//	UV = vec2(1.0, 1.0);											// DEBUG: check UV	sotto
 	//}																	// DEBUG: check UV
-	
+
 	float h = get_height(u_terrain_heightmap, u_terrain_height, UV);		// Height displacement from heigthmap
 	if (u_force_height_0) {													// Needed to bake globalmap
 		VERTEX.y = 0.0;
@@ -175,10 +175,10 @@ void vertex() {
 		VERTEX.y = h;
 		vertex_world_pos.y = h;
 	}
-	
+
 	v_vertex_world_pos = vertex_world_pos;
 	v_vertex_cell_coords_in_textures = vertex_cell_coords_in_textures;
-	
+
 	v_distance_from_camera = distance(vertex_world_pos.xyz, INV_VIEW_MATRIX[3].xyz);
 
 	// Putting this in vertex saves 2 fetches from the fragment shader,
@@ -188,10 +188,10 @@ void vertex() {
 	vec4 tint = texture(u_terrain_colormap, UV);
 	//v_hole = tint.a;
 	v_tint0 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.x);	// decreasing u_colormap_opacity_per_texture dimensions approximates vector tint (u_terrain_colormap texel) to white: each dimnesion (1-4) acts
-	v_tint1 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.y);	// on the corresponding bump_map (1-4). More precisely u_colormap_opacity_per_texture.(x-w) must be in the interval 0-1, if 0 the function returns 
+	v_tint1 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.y);	// on the corresponding bump_map (1-4). More precisely u_colormap_opacity_per_texture.(x-w) must be in the interval 0-1, if 0 the function returns
 	v_tint2 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.z);	// vec3(1.0) if 1 (default value) the function returns tint.rgb
 	v_tint3 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.w);
-	
+
 	if (!u_use_globalmap) {
 		v_splat = texture(u_terrain_splatmap, UV);
 	}
@@ -241,12 +241,12 @@ void fragment() {
 	//		{
 	//			ground_uv_scale_per_texture /= (u_scale_per_texture_factor / pow(2.0, float(i)));
 	//		}
-	//	} 
+	//	}
 	//}
-	
+
 	vec3 base_ground_uv = vec3(v_vertex_cell_coords_in_textures.x, v_vertex_world_pos.y * MODEL_MATRIX[1][1], v_vertex_cell_coords_in_textures.y);
 	vec2 ground_uv0 = base_ground_uv.xz / ground_uv_scale_per_texture.x;		// 2-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor
-	vec2 ground_uv1 = base_ground_uv.xz / ground_uv_scale_per_texture.y;		// these coordinates are used to fetch u_ground_albedo_bump_0 and u_ground_normal_roughness_0 
+	vec2 ground_uv1 = base_ground_uv.xz / ground_uv_scale_per_texture.y;		// these coordinates are used to fetch u_ground_albedo_bump_0 and u_ground_normal_roughness_0
 	vec2 ground_uv2 = base_ground_uv.xz / ground_uv_scale_per_texture.z;
 	vec3 ground_uv3 = base_ground_uv / ground_uv_scale_per_texture.w;		// 3-dimension vertex ccordinates in vertex textures (height, normal, splat, color, global) divided by a scale factor (y coord is height in world coord)
 
@@ -273,7 +273,7 @@ void fragment() {
 		globalmap_factor = clamp((v_distance_from_camera - u_globalmap_blend_start) * u_globalmap_blend_distance, 0.0, 1.0);
 		globalmap_factor *= globalmap_factor; // slower start, faster transition but far away
 	}
-	
+
 	vec3 global_albedo = texture(u_terrain_globalmap, UV).rgb;
 	ALBEDO = global_albedo;
 
@@ -393,7 +393,7 @@ void fragment() {
 
 			// Show splatmap weights
 			//ALBEDO = w.rgb;
-		} 
+		}
 		// Highlight all pixels undergoing no splatmap at all
 		//	else {
 		//		ALBEDO = vec3(1.0, 0.0, 0.0);

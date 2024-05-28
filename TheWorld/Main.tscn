@@ -299,14 +299,6 @@ material = SubResource("ShaderMaterial_1vmfp")
 flip_faces = true
 size = Vector2(2, 2)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l5mjy"]
-albedo_color = Color(1, 0.0431373, 0.00784314, 1)
-
-[sub_resource type="SphereMesh" id="SphereMesh_812q2"]
-material = SubResource("StandardMaterial3D_l5mjy")
-radius = 100.0
-height = 200.0
-
 [sub_resource type="PlaneMesh" id="PlaneMesh_60os2"]
 material = ExtResource("6_32vc6")
 size = Vector2(4096, 4096)
@@ -314,8 +306,8 @@ subdivide_width = 511
 subdivide_depth = 511
 
 [sub_resource type="QuadMesh" id="QuadMesh_st0eb"]
-subdivide_width = 2048
-subdivide_depth = 2048
+subdivide_width = 2049
+subdivide_depth = 2049
 orientation = 1
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fq04k"]
@@ -325,6 +317,14 @@ albedo_color = Color(1, 0.145861, 0.273205, 1)
 size = Vector2(4096, 4096)
 subdivide_width = 512
 subdivide_depth = 512
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_l5mjy"]
+albedo_color = Color(1, 0.0431373, 0.00784314, 1)
+
+[sub_resource type="SphereMesh" id="SphereMesh_812q2"]
+material = SubResource("StandardMaterial3D_l5mjy")
+radius = 100.0
+height = 200.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_epqem"]
 
@@ -352,7 +352,7 @@ _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 1
 _world_editor_param_max_depth_quad = 2
 _world_editor_param_info_panel_visible = true
-_world_editor_param_edit_panel_visible = true
+_world_editor_param_deploy_world = true
 _camera_param_initial_pos = Vector3(9420.22, 3019.62, 28709.9)
 _camera_param_initial_yaw_pitch_roll = Vector3(30.6602, -19.2361, 0)
 _shader_param_ground_uv_scale = 6.0
@@ -379,8 +379,8 @@ metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(0.00337778, -0.999994, 0.00079627, 0, 0.000796274, 1, -0.999994, -0.00337778, 2.68964e-06, 415085, 8009.38, 428754)
-far = 6144.0
+transform = Transform3D(0.977898, -0.130027, 0.163734, 0, 0.783104, 0.621891, -0.209083, -0.608146, 0.765795, 408255, 921.265, 410719)
+far = 12288.0
 
 [node name="PostProcessingOutLine" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
 transform = Transform3D(0.582015, 0.000569433, -0.813178, -0.303312, 0.927985, -0.21644, 0.754493, 0.372618, 0.540274, 0, 0, -11.381)
@@ -392,17 +392,6 @@ mesh = SubResource("QuadMesh_fq383")
 
 [node name="TestQuadrants" type="Node3D" parent="TheWorld_Main/Landscape"]
 visible = false
-
-[node name="Origin" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
-visible = false
-mesh = SubResource("SphereMesh_812q2")
-skeleton = NodePath("../../../..")
-
-[node name="Flag" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 415085, 8000, 428754)
-visible = false
-mesh = SubResource("SphereMesh_812q2")
-skeleton = NodePath("../../../..")
 
 [node name="TWTestQuadrant1" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6144, 0, 26624)
@@ -493,6 +482,25 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 418000, 951.253, 418000)
 visible = false
 material_overlay = SubResource("StandardMaterial3D_fq04k")
 mesh = SubResource("PlaneMesh_uaxsv")
+
+[node name="Node3D" type="Node3D" parent="TheWorld_Main/Landscape"]
+
+[node name="Origin" type="MeshInstance3D" parent="TheWorld_Main/Landscape/Node3D"]
+visible = false
+mesh = SubResource("SphereMesh_812q2")
+skeleton = NodePath("../../../..")
+
+[node name="WayPoint1" type="MeshInstance3D" parent="TheWorld_Main/Landscape/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5500, 5000, 25500)
+visible = false
+mesh = SubResource("SphereMesh_812q2")
+skeleton = NodePath("../../../..")
+
+[node name="WayPoint2" type="MeshInstance3D" parent="TheWorld_Main/Landscape/Node3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200000, 50, 200000)
+visible = false
+mesh = SubResource("SphereMesh_812q2")
+skeleton = NodePath("../../../..")
 
 [node name="Test" parent="TheWorld_Main" instance=ExtResource("5_kid0l")]
 

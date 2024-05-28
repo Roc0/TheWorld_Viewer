@@ -1594,12 +1594,6 @@ varying_name = "v_lod"
 size = Vector2(700, 1000)
 expression = "#include \"res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc\"
 
-//vec3 model_world_space = MODEL_MATRIX[3].xyz; // Object's world space position. This is the equivalent to global_transform.origin in GDScript.
-//mat3 model_transform_basis = mat3(MODEL_MATRIX); // Object's world space transform basis. This is the equivalent to global_transform.basis in GDScript.
-//vec3 camera_world_space = INV_VIEW_MATRIX[3].xyz; // Camera's world space position. This is the equivalent to camera.global_transform.origin in GDScript.
-//vec3 camera_eye_world_space = VIEW_MATRIX[3].xyz; // Camera eye vector in world space direction of the camera.
-//vec3 camera_to_object_world_space = normalize(MODEL_MATRIX[3].xyz - INV_VIEW_MATRIX[3].xyz); // Camera's direction to the object in world space.
-
 uniform mat3 u_terrain_normal_basis;
 uniform float u_terrain_height = 1.0;	// NOTSET
 uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
@@ -1692,12 +1686,6 @@ uniform sampler2D tex_frg_62;
 
 // GlobalExpression:0
 	#include \"res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc\"
-	
-	//vec3 model_world_space = MODEL_MATRIX[3].xyz; // Object's world space position. This is the equivalent to global_transform.origin in GDScript.
-	//mat3 model_transform_basis = mat3(MODEL_MATRIX); // Object's world space transform basis. This is the equivalent to global_transform.basis in GDScript.
-	//vec3 camera_world_space = INV_VIEW_MATRIX[3].xyz; // Camera's world space position. This is the equivalent to camera.global_transform.origin in GDScript.
-	//vec3 camera_eye_world_space = VIEW_MATRIX[3].xyz; // Camera eye vector in world space direction of the camera.
-	//vec3 camera_to_object_world_space = normalize(MODEL_MATRIX[3].xyz - INV_VIEW_MATRIX[3].xyz); // Camera's direction to the object in world space.
 	
 	uniform mat3 u_terrain_normal_basis;
 	uniform float u_terrain_height = 1.0;	// NOTSET
@@ -3132,12 +3120,6 @@ nodes/vertex/8/size = Vector2(700, 1000)
 nodes/vertex/8/input_ports = ""
 nodes/vertex/8/output_ports = ""
 nodes/vertex/8/expression = "#include \"res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc\"
-
-//vec3 model_world_space = MODEL_MATRIX[3].xyz; // Object's world space position. This is the equivalent to global_transform.origin in GDScript.
-//mat3 model_transform_basis = mat3(MODEL_MATRIX); // Object's world space transform basis. This is the equivalent to global_transform.basis in GDScript.
-//vec3 camera_world_space = INV_VIEW_MATRIX[3].xyz; // Camera's world space position. This is the equivalent to camera.global_transform.origin in GDScript.
-//vec3 camera_eye_world_space = VIEW_MATRIX[3].xyz; // Camera eye vector in world space direction of the camera.
-//vec3 camera_to_object_world_space = normalize(MODEL_MATRIX[3].xyz - INV_VIEW_MATRIX[3].xyz); // Camera's direction to the object in world space.
 
 uniform mat3 u_terrain_normal_basis;
 uniform float u_terrain_height = 1.0;	// NOTSET

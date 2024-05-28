@@ -31,7 +31,7 @@ uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
 uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 
 uniform vec3 albedo : source_color = vec3(0.0, 0.03, 0.34);		// vec3(0.0, 0.19, 0.46);		// vec3(0.0, 0.32, 0.43);
-uniform vec3 albedo2 : source_color = vec3(0.25, 0.32, 0.43);	// vec3(1.0, 1.0, 1.0);
+uniform vec3 albedo2 : source_color = vec3(0.25, 0.32, 0.43);	// vec3(0.25, 0.32, 0.43);	// vec3(1.0, 1.0, 1.0);
 uniform float metallic : hint_range(0.0, 1.0) = 0.8;
 uniform float roughness : hint_range(0.0, 1.0) = 0.02;
 global uniform sampler2D gu_sea_wave;
@@ -61,6 +61,7 @@ uniform vec3 edge_color : source_color = vec3(1.0, 1.0, 1.0);
 //varying float v_height;
 varying vec3 v_world_pos;
 varying float v_lod;
+//varying float v_fog_coord;
 
 #include "res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc"
 
@@ -90,6 +91,8 @@ void vertex() {
 	}
 	//VERTEX.y = 0.0;		// DEBUG
 	//VERTEX.y = 1000.0;	// DEBUG
+
+	//v_fog_coord = length(CAMERA_POSITION_WORLD - v_world_pos);
 
 	//v_height = height;
 
@@ -133,20 +136,22 @@ void vertex() {
 
 void fragment() {
 	// Time calculations for wave (normal map) movement
-	vec2 time = (TIME * wave_direction) * time_scale * (rough_sea_factor / 6.0) /*/ 0.5*/; // Movement rate of first wave
-	vec2 time2 = (TIME * wave_direction2) * time_scale * (rough_sea_factor / 6.0) /*/ 0.5*/; // Movement rate of second wave
+	float max_altitude_for_time_scale_factor = 5000.0;
+	float time_scale_factor = clamp(abs(CAMERA_POSITION_WORLD.y), 0.0, max_altitude_for_time_scale_factor) / max_altitude_for_time_scale_factor;	// normalized 0 on the surface to 1 at max_altitude_for_time_scale_factor
+	time_scale_factor = (time_scale_factor * 4.0) + 1.0;	// normalized 1 on the surface to 5 at max_altitude_for_time_scale_factor
+	vec2 time = (TIME * wave_direction) * time_scale * time_scale_factor * (rough_sea_factor / 6.0) /*/ 0.5*/; // Movement rate of first wave
+	vec2 time2 = (TIME * wave_direction2) * time_scale * time_scale_factor * (rough_sea_factor / 6.0) /*/ 0.5*/; // Movement rate of second wave
 
 	// Blend normal maps into one
-	//vec3 normal_blend = mix(texture(gu_sea_texture_normal, v_world_pos.xz + time).rgb, texture(gu_sea_texture_normal2, v_world_pos.xz + time2).rgb, 0.5);
 	vec3 normal_blend = mix(texture(gu_sea_texture_normal, (UV + time) * 10.0).rgb, texture(gu_sea_texture_normal2, (UV + time2) * 10.0).rgb, 0.5);
 
 	// Calculate Fresnel
 	float fresnel = fresnel(1.0, NORMAL, VIEW);
 	vec3 surface_color = mix(albedo, albedo2, fresnel / 5.0); // Interpolate albedo values by frensel
-	//ALBEDO = surface_color;
+	ALBEDO = surface_color;
 
 	// Depth variables and calc
-	float depth_texture = texture(DEPTH_TEXTURE, SCREEN_UV).r * 2.0 - 1.0;
+	float depth_texture = texture(DEPTH_TEXTURE, SCREEN_UV).r * 2.0 - 1.0;		// The values returned by depth_texture are between 0.0 (near camera) and 1.0 and are nonlinear. depth_texture now runs from -1 to 1.
 	float depth = PROJECTION_MATRIX[3][2] / (depth_texture + PROJECTION_MATRIX[2][2]);
 	float depth_blend = exp((depth+VERTEX.z + depth_offset) * -beers_law);
 	depth_blend = clamp(1.0 - depth_blend, 0.0, 1.0);
@@ -155,14 +160,30 @@ void fragment() {
 	vec3 screen_color = textureLod(SCREEN_TEXTURE, SCREEN_UV, depth_blend_power * 2.5).rgb;
 	vec3 depth_color = mix(color_shallow.rgb, color_deep.rgb, depth_blend_power);
 	vec3 color = mix(screen_color * depth_color, depth_color * 0.25, depth_blend_power * 0.5);
-	ALBEDO = mix(surface_color, color, 0.75);
+	//ALBEDO = mix(surface_color, color, 0.75);
 
 	// Getting edge depth calc
-	float z_depth = edge(texture(DEPTH_TEXTURE, SCREEN_UV).x);
-	float z_pos = edge(FRAGCOORD.z);
-	float z_dif = z_depth - z_pos;
-	vec3 depth_color_adj = mix(edge_color, color, step(edge_scale, z_dif));
+	//float z_depth = edge(texture(DEPTH_TEXTURE, SCREEN_UV).x);
+	//float z_pos = edge(FRAGCOORD.z);
+	//float z_dif = z_depth - z_pos;
+	//vec3 depth_color_adj = mix(edge_color, color, step(edge_scale, z_dif));
 	//ALBEDO = clamp(surface_color + depth_color_adj, vec3(0.0), vec3(1.0));
+
+	//float z_depth1 = texture(DEPTH_TEXTURE, SCREEN_UV).x;
+	//float z_pos1 = FRAGCOORD.z;
+	//float z_dif1 = z_depth1 - z_pos1;
+	//if (z_depth1 - z_pos1 > 0.0) {
+	//	ALBEDO = vec3(1.0, 0.0, 0.0);
+	//} else {
+	//	ALBEDO = vec3(1.0, 1.0, 1.0);
+	//}
+
+    //float u_water_fog_density = 1.0;
+	//float blend = u_water_fog_density * v_fog_coord;
+    //blend = 1.0 - exp2(-blend * blend);
+    // only apply fog when "under water"
+    //blend *= step(0.0, -v_world_pos.y);
+	//ALBEDO = vec3(blend);
 
 	METALLIC = metallic;
 	ROUGHNESS = roughness;
