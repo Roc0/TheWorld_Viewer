@@ -3,7 +3,11 @@ shader_type spatial;
 global uniform bool gu_show_chunks = false;
 global uniform float gu_camera_altitude_from_terrain;
 
+uniform float u_terrain_height = 1.0;	// NOTSET
+
+uniform sampler2D u_terrain_heightmap;
 uniform uint u_optimization_level = 0;
+uniform float u_grid_step = 2.0;
 uniform float u_editmode_selected = 0;
 uniform bool u_grid_on = false;
 uniform float u_quad_border_line_thickness = 0.005;
@@ -11,7 +15,6 @@ uniform float u_mouse_hit_radius = 0.0010000000475;
 uniform uint u_num_vertices_per_chunk;
 uniform vec2 u_mouse_hit = vec2(-1.000000, -1.000000);
 uniform mat4 u_terrain_inverse_transform;
-uniform float u_grid_step = 2.0;
 uniform float u_quadrant_size = 4096.0;
 
 const vec3 lod_colors[10] = {
@@ -30,7 +33,7 @@ const vec3 lod_colors[10] = {
 uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
 uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 
-uniform vec3 albedo : source_color = vec3(0.0, 0.03, 0.34);		// vec3(0.0, 0.19, 0.46);		// vec3(0.0, 0.32, 0.43);
+uniform vec3 albedo : source_color = vec3(0.10, 0.19, 0.32);	// vec3(0.0, 0.03, 0.34);		// vec3(0.0, 0.19, 0.46);		// vec3(0.0, 0.32, 0.43);
 uniform vec3 albedo2 : source_color = vec3(0.25, 0.32, 0.43);	// vec3(0.25, 0.32, 0.43);	// vec3(1.0, 1.0, 1.0);
 uniform float metallic : hint_range(0.0, 1.0) = 0.8;
 uniform float roughness : hint_range(0.0, 1.0) = 0.02;
@@ -48,7 +51,7 @@ uniform float noise_scale = 1000.0;		// ***
 uniform float height_scale = 4.0;		// *** -15 / +15
 
 uniform vec4 color_deep : source_color = vec4(0.10, 0.29, 0.32, 1.0); // Deep depth color
-uniform vec4 color_shallow : source_color = vec4(0.0, 0.55, 0.65, 1.0); // Shallow depth color
+uniform vec4 color_shallow : source_color = vec4(1.0, 1.0, 1.0, 1.0); // Shallow depth color
 uniform float beers_law = 2.0; // Beer's law application
 uniform float depth_offset = -0.75; // Offset
 
@@ -58,7 +61,6 @@ uniform float far = 20000.0;
 uniform vec3 edge_color : source_color = vec3(1.0, 1.0, 1.0);
 
 // Varying variables
-//varying float v_height;
 varying vec3 v_world_pos;
 varying float v_lod;
 //varying float v_fog_coord;
@@ -94,14 +96,19 @@ void vertex() {
 
 	//v_fog_coord = length(CAMERA_POSITION_WORLD - v_world_pos);
 
-	//v_height = height;
-
 	// SETTING UV (mapping of the VERTEX in current quadrant)
 	//vec4 vertex_world_pos = MODEL_MATRIX * vec4(VERTEX, 1);
 	vec4 vertex_world_pos = vec4(v_world_pos, 1.0);
 	// to calculate coords of the vertex local to the quadrant we use affine inverse matrix of the global trasform of the quadtree
 	vec4 vertex_local_to_quadrant_pos = u_terrain_inverse_transform * vertex_world_pos;
 	UV = vertex_local_to_quadrant_pos.xz / vec2(u_quadrant_size);		// mapping of vertex_local_to_quadrant_pos in current quadrant from 0.0 (start of the quadrant) to 1.0 (end of the quadrant)
+
+	// check u_grid_step, u_optimization_level, u_terrain_heightmap
+	vec2 vertex_cell_coords_in_textures = vertex_local_to_quadrant_pos.xz / vec2(u_grid_step * pow(2.0, float(u_optimization_level)));
+	vertex_cell_coords_in_textures += vec2(0.5);	// IMPORTANT: now vertex_cell_coords_in_textures ranges from 0.5
+													// to (heightmap size - 1) + 0.5 with increment of 1.0 between each coord
+	vec2 terrain_uv = vertex_cell_coords_in_textures / vec2(textureSize(u_terrain_heightmap, 0));
+	float terrain_hight = get_height(u_terrain_heightmap, u_terrain_height, terrain_uv);		// Height displacement from heigthmap
 
 	float lod = -1.0;
 	if (gu_show_chunks) {
@@ -150,7 +157,24 @@ void fragment() {
 	vec3 surface_color = mix(albedo, albedo2, fresnel / 5.0); // Interpolate albedo values by frensel
 	ALBEDO = surface_color;
 
+// ProximityFade:2
+	float depth;
+	float test_distance = 10.00000;
+	{
+		float __depth_tex = texture(DEPTH_TEXTURE, SCREEN_UV).r;
+		vec4 __depth_world_pos = INV_PROJECTION_MATRIX * vec4(SCREEN_UV * 2.0 - 1.0, __depth_tex, 1.0);
+		__depth_world_pos.xyz /= __depth_world_pos.w;
+		depth = clamp(1.0 - smoothstep(__depth_world_pos.z + test_distance, __depth_world_pos.z, VERTEX.z), 0.0, 1.0);
+	}
+	//depth = 1.0 - depth;		// DEBUG
+	//ALBEDO = vec3(depth);		// DEBUG
+	if (depth < 0.2) {
+		ALBEDO = color_shallow.rgb;
+	}
+
+
 	// Depth variables and calc
+	/*
 	float depth_texture = texture(DEPTH_TEXTURE, SCREEN_UV).r * 2.0 - 1.0;		// The values returned by depth_texture are between 0.0 (near camera) and 1.0 and are nonlinear. depth_texture now runs from -1 to 1.
 	float depth = PROJECTION_MATRIX[3][2] / (depth_texture + PROJECTION_MATRIX[2][2]);
 	float depth_blend = exp((depth+VERTEX.z + depth_offset) * -beers_law);
@@ -160,7 +184,7 @@ void fragment() {
 	vec3 screen_color = textureLod(SCREEN_TEXTURE, SCREEN_UV, depth_blend_power * 2.5).rgb;
 	vec3 depth_color = mix(color_shallow.rgb, color_deep.rgb, depth_blend_power);
 	vec3 color = mix(screen_color * depth_color, depth_color * 0.25, depth_blend_power * 0.5);
-	//ALBEDO = mix(surface_color, color, 0.75);
+	ALBEDO = mix(surface_color, color, 0.75);*/
 
 	// Getting edge depth calc
 	//float z_depth = edge(texture(DEPTH_TEXTURE, SCREEN_UV).x);

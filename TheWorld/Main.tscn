@@ -352,7 +352,7 @@ _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 1
 _world_editor_param_max_depth_quad = 2
 _world_editor_param_info_panel_visible = true
-_world_editor_param_deploy_world = true
+_world_editor_param_edit_panel_visible = true
 _camera_param_initial_pos = Vector3(9420.22, 3019.62, 28709.9)
 _camera_param_initial_yaw_pitch_roll = Vector3(30.6602, -19.2361, 0)
 _shader_param_ground_uv_scale = 6.0
@@ -379,7 +379,7 @@ metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(0.977898, -0.130027, 0.163734, 0, 0.783104, 0.621891, -0.209083, -0.608146, 0.765795, 408255, 921.265, 410719)
+transform = Transform3D(-0.995298, 0.0608956, -0.0753228, 0, 0.777648, 0.628699, 0.0968597, 0.625743, -0.773992, 26578.7, 165.304, 26833.6)
 far = 12288.0
 
 [node name="PostProcessingOutLine" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
@@ -472,7 +472,6 @@ mesh = SubResource("PlaneMesh_60os2")
 
 [node name="Sea-99-100" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
 transform = Transform3D(4096, 0, 0, 0, 40, 0, 0, 0, 4096, 407552, 0, 411648)
-visible = false
 cast_shadow = 0
 mesh = SubResource("QuadMesh_st0eb")
 surface_material_override/0 = ExtResource("6_32vc6")
