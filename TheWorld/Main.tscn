@@ -360,6 +360,8 @@ _shader_param_globalmap_blend_start = 10000.0
 
 [node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main/Landscape/TWViewer"]
 perfparam_threshold_cache_heights = 15000.0
+viewparam_show_terrain = false
+viewparam_show_chunks = true
 
 [node name="GDN_TW_Viewer" type="GDN_TheWorld_Viewer" parent="TheWorld_Main/Landscape/TWViewer"]
 metadata/debug_wirecube_mesh_lod_5 = SubResource("ArrayMesh_kfft6")
@@ -379,7 +381,7 @@ metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(-0.995298, 0.0608956, -0.0753228, 0, 0.777648, 0.628699, 0.0968597, 0.625743, -0.773992, 26578.7, 165.304, 26833.6)
+transform = Transform3D(-0.447335, -0.617952, 0.64655, 0, 0.722914, 0.690938, -0.894367, 0.30908, -0.323384, 27382.1, 28.0334, 24478.9)
 far = 12288.0
 
 [node name="PostProcessingOutLine" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]

@@ -82,17 +82,6 @@ void vertex() {
 	// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need
 	// to trasform them in world coord to abstract from chunk
 	v_world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
-	if (CAMERA_POSITION_WORLD.y < 500.0) {
-		float height = texture(gu_sea_wave, v_world_pos.xz / noise_scale + TIME * time_scale * rough_sea_factor).r;
-		float scale = height_scale * rough_sea_factor;
-		if (CAMERA_POSITION_WORLD.y > 200.0) {
-			scale = scale - (scale * (CAMERA_POSITION_WORLD.y - 200.0) / (500.0 - 200.0));
-			//scale = 40.0;
-		}
-		VERTEX.y += (height * scale) - (scale / 3.0);
-	}
-	//VERTEX.y = 0.0;		// DEBUG
-	//VERTEX.y = 1000.0;	// DEBUG
 
 	//v_fog_coord = length(CAMERA_POSITION_WORLD - v_world_pos);
 
@@ -109,6 +98,22 @@ void vertex() {
 													// to (heightmap size - 1) + 0.5 with increment of 1.0 between each coord
 	vec2 terrain_uv = vertex_cell_coords_in_textures / vec2(textureSize(u_terrain_heightmap, 0));
 	float terrain_hight = get_height(u_terrain_heightmap, u_terrain_height, terrain_uv);		// Height displacement from heigthmap
+
+	if (CAMERA_POSITION_WORLD.y < 500.0) {
+		float height = texture(gu_sea_wave, v_world_pos.xz / noise_scale + TIME * time_scale * rough_sea_factor).r;
+		float scale = height_scale * rough_sea_factor;
+		if (CAMERA_POSITION_WORLD.y > 200.0) {
+			scale = scale - (scale * (CAMERA_POSITION_WORLD.y - 200.0) / (500.0 - 200.0));
+			//scale = 40.0;
+		}
+		//if (terrain_hight > -50.0) {
+		//	scale = 20.0;
+		//}
+		VERTEX.y += (height * scale) - (scale / 3.0);
+	}
+
+	//VERTEX.y = 0.0;		// DEBUG
+	//VERTEX.y = 1000.0;	// DEBUG
 
 	float lod = -1.0;
 	if (gu_show_chunks) {
