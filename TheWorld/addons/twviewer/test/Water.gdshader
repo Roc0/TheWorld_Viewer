@@ -50,19 +50,20 @@ uniform float rough_sea_factor : hint_range(0.0, 20.0, 1.0) = 10.0;	// ***
 uniform float noise_scale = 1000.0;		// ***
 uniform float height_scale = 4.0;		// *** -15 / +15
 
-uniform vec4 color_deep : source_color = vec4(0.10, 0.29, 0.32, 1.0); // Deep depth color
-uniform vec4 color_shallow : source_color = vec4(1.0, 1.0, 1.0, 1.0); // Shallow depth color
-uniform float beers_law = 2.0; // Beer's law application
-uniform float depth_offset = -0.75; // Offset
+//uniform vec4 color_deep : source_color = vec4(0.10, 0.29, 0.32, 1.0); // Deep depth color
+uniform vec4 color_shallow : source_color = vec4(0.55, 0.55, 0.55, 1.0); // Shallow depth color
+//uniform float beers_law = 2.0; // Beer's law application
+//uniform float depth_offset = -0.75; // Offset
 
-uniform float edge_scale = 0.1;
-uniform float near = 1.0;
-uniform float far = 20000.0;
-uniform vec3 edge_color : source_color = vec3(1.0, 1.0, 1.0);
+//uniform float edge_scale = 0.1;
+//uniform float near = 1.0;
+//uniform float far = 20000.0;
+//uniform vec3 edge_color : source_color = vec3(1.0, 1.0, 1.0);
 
 // Varying variables
 varying vec3 v_world_pos;
 varying float v_lod;
+varying float v_sea_depth;
 //varying float v_fog_coord;
 
 #include "res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc"
@@ -72,11 +73,11 @@ float fresnel(float amount, vec3 normal, vec3 view)
 	return pow((1.0 - clamp(dot(normalize(normal), normalize(view)), 0.0, 1.0 )), amount);
 }
 
-float edge(float depth)
+/*float edge(float depth)
 {
 	depth = 2.0 * depth - 1.0;
 	return near * far / (far + depth * (near - far));
-}
+}*/
 
 void vertex() {
 	// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need
@@ -92,7 +93,6 @@ void vertex() {
 	vec4 vertex_local_to_quadrant_pos = u_terrain_inverse_transform * vertex_world_pos;
 	UV = vertex_local_to_quadrant_pos.xz / vec2(u_quadrant_size);		// mapping of vertex_local_to_quadrant_pos in current quadrant from 0.0 (start of the quadrant) to 1.0 (end of the quadrant)
 
-	// check u_grid_step, u_optimization_level, u_terrain_heightmap
 	vec2 vertex_cell_coords_in_textures = vertex_local_to_quadrant_pos.xz / vec2(u_grid_step * pow(2.0, float(u_optimization_level)));
 	vertex_cell_coords_in_textures += vec2(0.5);	// IMPORTANT: now vertex_cell_coords_in_textures ranges from 0.5
 													// to (heightmap size - 1) + 0.5 with increment of 1.0 between each coord
@@ -111,6 +111,8 @@ void vertex() {
 		//}
 		VERTEX.y += (height * scale) - (scale / 3.0);
 	}
+
+	v_sea_depth = VERTEX.y - terrain_hight;
 
 	//VERTEX.y = 0.0;		// DEBUG
 	//VERTEX.y = 1000.0;	// DEBUG
@@ -163,20 +165,26 @@ void fragment() {
 	ALBEDO = surface_color;
 
 // ProximityFade:2
-	float depth;
+	float camera_depth;
 	float test_distance = 10.00000;
 	{
 		float __depth_tex = texture(DEPTH_TEXTURE, SCREEN_UV).r;
 		vec4 __depth_world_pos = INV_PROJECTION_MATRIX * vec4(SCREEN_UV * 2.0 - 1.0, __depth_tex, 1.0);
 		__depth_world_pos.xyz /= __depth_world_pos.w;
-		depth = clamp(1.0 - smoothstep(__depth_world_pos.z + test_distance, __depth_world_pos.z, VERTEX.z), 0.0, 1.0);
+		camera_depth = clamp(1.0 - smoothstep(__depth_world_pos.z + test_distance, __depth_world_pos.z, VERTEX.z), 0.0, 1.0);
 	}
-	//depth = 1.0 - depth;		// DEBUG
-	//ALBEDO = vec3(depth);		// DEBUG
-	if (depth < 0.2) {
+	//camera_depth = 1.0 - camera_depth;		// DEBUG
+	//ALBEDO = vec3(camera_depth);		// DEBUG
+	if (camera_depth < 0.4) {
 		ALBEDO = color_shallow.rgb;
 	}
 
+	//ALBEDO = vec3(v_sea_depth);
+	float start_transparent_sea_depth = 10.0;
+	float transparent_sea_depth = clamp(v_sea_depth, 0, start_transparent_sea_depth);
+	float shallow_sea_alpha = 0.5;
+	float deep_sea_alpha = 0.9;
+	float alpha = shallow_sea_alpha + ((deep_sea_alpha - shallow_sea_alpha) / start_transparent_sea_depth) * transparent_sea_depth;
 
 	// Depth variables and calc
 	/*
@@ -207,7 +215,10 @@ void fragment() {
 	//	ALBEDO = vec3(1.0, 1.0, 1.0);
 	//}
 
-    //float u_water_fog_density = 1.0;
+    //vec3 u_water_fog_color = vec3(0.188, 0.172, 0.758);
+	//FOG.rgb = u_water_fog_color;
+	//FOG.a = 1.0;
+	//float u_water_fog_density = 1.0;
 	//float blend = u_water_fog_density * v_fog_coord;
     //blend = 1.0 - exp2(-blend * blend);
     // only apply fog when "under water"
@@ -217,6 +228,7 @@ void fragment() {
 	METALLIC = metallic;
 	ROUGHNESS = roughness;
 	NORMAL_MAP = normal_blend;
+	ALPHA = alpha;
 
 	float lod = v_lod;
 	if (lod >= 0.0) {
