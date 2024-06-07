@@ -2,9 +2,13 @@ shader_type spatial;
 
 global uniform bool gu_show_chunks = false;
 global uniform float gu_camera_altitude_from_terrain;
+global uniform sampler2D gu_sea_wave;
+global uniform sampler2D gu_sea_texture_normal;
+global uniform sampler2D gu_sea_texture_normal2;
+global uniform sampler2D gu_water_foam;
+global uniform sampler2D gu_water_foam_1;
 
 uniform float u_terrain_height = 1.0;	// NOTSET
-
 uniform sampler2D u_terrain_heightmap;
 uniform uint u_optimization_level = 0;
 uniform float u_grid_step = 2.0;
@@ -16,6 +20,12 @@ uniform uint u_num_vertices_per_chunk;
 uniform vec2 u_mouse_hit = vec2(-1.000000, -1.000000);
 uniform mat4 u_terrain_inverse_transform;
 uniform float u_quadrant_size = 4096.0;
+
+uniform float u_max_altitude_for_time_scale_factor = 5000.0;	// NOTSET
+
+uniform float u_foam_test_distance = 10.00000;	// NOTSET
+uniform float u_foam_camera_depth_threshold = 1.0;	// 0.4;
+uniform float u_foam_edge_pattern_scale = 1.0;
 
 const vec3 lod_colors[10] = {
 	vec3(1.0, 0.749, 0.0),		// GDN_TheWorld_Globals::g_color_yellow_apricot
@@ -33,13 +43,10 @@ const vec3 lod_colors[10] = {
 uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
 uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 
-uniform vec3 albedo : source_color = vec3(0.10, 0.19, 0.32);	// vec3(0.0, 0.03, 0.34);		// vec3(0.0, 0.19, 0.46);		// vec3(0.0, 0.32, 0.43);
-uniform vec3 albedo2 : source_color = vec3(0.25, 0.32, 0.43);	// vec3(0.25, 0.32, 0.43);	// vec3(1.0, 1.0, 1.0);
+uniform vec3 sea_color : source_color = vec3(0.10, 0.19, 0.32);	// vec3(0.0, 0.03, 0.34);		// vec3(0.0, 0.19, 0.46);		// vec3(0.0, 0.32, 0.43);
+uniform vec3 sea_color2 : source_color = vec3(0.25, 0.32, 0.43);	// vec3(0.25, 0.32, 0.43);	// vec3(1.0, 1.0, 1.0);
 uniform float metallic : hint_range(0.0, 1.0) = 0.8;
 uniform float roughness : hint_range(0.0, 1.0) = 0.02;
-global uniform sampler2D gu_sea_wave;
-global uniform sampler2D gu_sea_texture_normal;
-global uniform sampler2D gu_sea_texture_normal2;
 //uniform sampler2D wave;
 //uniform sampler2D texture_normal;
 //uniform sampler2D texture_normal2;
@@ -51,7 +58,7 @@ uniform float noise_scale = 1000.0;		// ***
 uniform float height_scale = 4.0;		// *** -15 / +15
 
 //uniform vec4 color_deep : source_color = vec4(0.10, 0.29, 0.32, 1.0); // Deep depth color
-uniform vec4 color_shallow : source_color = vec4(0.55, 0.55, 0.55, 1.0); // Shallow depth color
+uniform vec4 color_shallow : source_color = vec4(1.0, 1.0, 1.0, 1.0);	// vec4(0.55, 0.55, 0.55, 1.0); // Shallow depth color
 //uniform float beers_law = 2.0; // Beer's law application
 //uniform float depth_offset = -0.75; // Offset
 
@@ -99,16 +106,33 @@ void vertex() {
 	vec2 terrain_uv = vertex_cell_coords_in_textures / vec2(textureSize(u_terrain_heightmap, 0));
 	float terrain_hight = get_height(u_terrain_heightmap, u_terrain_height, terrain_uv);		// Height displacement from heigthmap
 
-	if (CAMERA_POSITION_WORLD.y < 500.0) {
+	float end_camera_altitude_for_waves = 500.0;
+	float start_camera_altitude_for_waves_attenuation = 200.0;
+	float start_terrain_depth_for_waves_attenuation = 50.0;
+
+	// heigth of waves only if camera is below end_camera_altitude_for_waves
+	if (CAMERA_POSITION_WORLD.y < end_camera_altitude_for_waves) {
 		float height = texture(gu_sea_wave, v_world_pos.xz / noise_scale + TIME * time_scale * rough_sea_factor).r;
+
+		// Attenuation of waves height when camera is between start_camera_altitude_for_waves_attenuation (max waves height) and end_camera_altitude_for_waves (null waves height)
 		float scale = height_scale * rough_sea_factor;
-		if (CAMERA_POSITION_WORLD.y > 200.0) {
-			scale = scale - (scale * (CAMERA_POSITION_WORLD.y - 200.0) / (500.0 - 200.0));
+		if (CAMERA_POSITION_WORLD.y > start_camera_altitude_for_waves_attenuation) {
+			scale = scale - (scale * (CAMERA_POSITION_WORLD.y - start_camera_altitude_for_waves_attenuation) / (end_camera_altitude_for_waves - start_camera_altitude_for_waves_attenuation));
 			//scale = 40.0;
 		}
-		//if (terrain_hight > -50.0) {
-		//	scale = 20.0;
-		//}
+
+		// Attenuation of height waves at lower depth (near the coast)
+		if (terrain_hight > -start_terrain_depth_for_waves_attenuation) {
+			scale *= -clamp(terrain_hight, -start_terrain_depth_for_waves_attenuation, 0) / start_terrain_depth_for_waves_attenuation;
+			//scale += 20.0;
+		}
+
+		float scale_offset_threshold = 20.0;
+		if (terrain_hight >= -scale_offset_threshold) {
+			float scale_offset = clamp(scale_offset_threshold + terrain_hight, 0, scale_offset_threshold);
+			scale += scale_offset;
+		}
+
 		VERTEX.y += (height * scale) - (scale / 3.0);
 	}
 
@@ -150,81 +174,69 @@ void vertex() {
 
 void fragment() {
 	// Time calculations for wave (normal map) movement
-	float max_altitude_for_time_scale_factor = 5000.0;
-	float time_scale_factor = clamp(abs(CAMERA_POSITION_WORLD.y), 0.0, max_altitude_for_time_scale_factor) / max_altitude_for_time_scale_factor;	// normalized 0 on the surface to 1 at max_altitude_for_time_scale_factor
+	float time_scale_factor = clamp(abs(CAMERA_POSITION_WORLD.y), 0.0, u_max_altitude_for_time_scale_factor) / u_max_altitude_for_time_scale_factor;	// normalized 0 on the surface to 1 at max_altitude_for_time_scale_factor
 	time_scale_factor = (time_scale_factor * 4.0) + 1.0;	// normalized 1 on the surface to 5 at max_altitude_for_time_scale_factor
 	vec2 time = (TIME * wave_direction) * time_scale * time_scale_factor * (rough_sea_factor / 6.0) /*/ 0.5*/; // Movement rate of first wave
 	vec2 time2 = (TIME * wave_direction2) * time_scale * time_scale_factor * (rough_sea_factor / 6.0) /*/ 0.5*/; // Movement rate of second wave
 
 	// Blend normal maps into one
-	vec3 normal_blend = mix(texture(gu_sea_texture_normal, (UV + time) * 10.0).rgb, texture(gu_sea_texture_normal2, (UV + time2) * 10.0).rgb, 0.5);
+	vec3 normal_blend = mix(texture(gu_sea_texture_normal, (UV + time) * 10.0 ).rgb, texture(gu_sea_texture_normal2, (UV + time2) * 10.0).rgb, 0.5);
 
+	vec3 surface_color = sea_color;
+	float alpha = 1.0;
+	
 	// Calculate Fresnel
-	float fresnel = fresnel(1.0, NORMAL, VIEW);
-	vec3 surface_color = mix(albedo, albedo2, fresnel / 5.0); // Interpolate albedo values by frensel
-	ALBEDO = surface_color;
-
-// ProximityFade:2
-	float camera_depth;
-	float test_distance = 10.00000;
 	{
+		float fresnel = fresnel(1.0, NORMAL, VIEW);
+		surface_color = mix(sea_color, sea_color2, fresnel / 5.0); // Interpolate albedo values by frensel
+	}
+
+	// Calculate Transparency
+	{
+		float start_transparent_sea_depth = 30.0;
+		float transparent_sea_depth = clamp(v_sea_depth, 0, start_transparent_sea_depth);
+		float shallow_sea_alpha = 0.4;
+		float deep_sea_alpha = 0.9;
+		// alpha runs from shallow_sea_alpha to deep_sea_alpha: deep_sea_alpha when v_sea_depth is greater than start_transparent_sea_depth, shallow_sea_alpha when v_sea_depth is 0 or less (terrain above sea)
+		alpha = shallow_sea_alpha + ((deep_sea_alpha - shallow_sea_alpha) / start_transparent_sea_depth) * transparent_sea_depth;
+	}
+
+	// Foam
+	float camera_depth;
+	{
+		float foam_test_distance = u_foam_test_distance;
+		foam_test_distance = 20.00000;
 		float __depth_tex = texture(DEPTH_TEXTURE, SCREEN_UV).r;
-		vec4 __depth_world_pos = INV_PROJECTION_MATRIX * vec4(SCREEN_UV * 2.0 - 1.0, __depth_tex, 1.0);
-		__depth_world_pos.xyz /= __depth_world_pos.w;
-		camera_depth = clamp(1.0 - smoothstep(__depth_world_pos.z + test_distance, __depth_world_pos.z, VERTEX.z), 0.0, 1.0);
+		// NDC = normalized device coordinates
+		vec4 __depth_world_pos_ndc = INV_PROJECTION_MATRIX * vec4(SCREEN_UV * 2.0 - 1.0, __depth_tex, 1.0);
+		__depth_world_pos_ndc.xyz /= __depth_world_pos_ndc.w;
+		camera_depth = clamp(1.0 - smoothstep(__depth_world_pos_ndc.z + foam_test_distance, __depth_world_pos_ndc.z, VERTEX.z), 0.0, 1.0);
+
+		//camera_depth = 1.0 - camera_depth;		// DEBUG
+		float foam_camera_depth_threshold = u_foam_camera_depth_threshold;
+		//foam_camera_depth_threshold = 1.0;
+		if (camera_depth < foam_camera_depth_threshold) {
+			float foam_alpha = 0.9;
+			//normal_blend = mix(texture(gu_sea_texture_normal, (UV + time) * 100.0 ).rgb, texture(gu_sea_texture_normal2, (UV + time2) * 100.0).rgb, 0.5);
+
+			//float water_foam_mask = mix(texture(gu_water_foam, water_foam_uv).r, texture(gu_water_foam, water_foam_uv).b, 0.95);
+			//surface_color = mix(surface_color, color_shallow.rgb, water_foam_mask);
+
+			vec2 water_foam_uv = (UV + time / 5.0) * vec2(100);
+			vec4 foam_tex = texture(gu_water_foam, water_foam_uv);
+			float foam_fade_alpha = 1.0;
+			foam_alpha = foam_alpha * foam_tex.a * foam_fade_alpha;
+			vec3 foam_surface_color = mix(surface_color, foam_tex.rgb, foam_alpha);
+			//foam_surface_color = foam_tex.rgb;
+			//surface_color = foam_surface_color;
+			foam_alpha = alpha + foam_alpha;
+			//alpha = foam_alpha;
+			surface_color = mix(foam_surface_color, surface_color, camera_depth);
+			alpha = mix(foam_alpha, alpha, camera_depth);
+		}
 	}
-	//camera_depth = 1.0 - camera_depth;		// DEBUG
-	//ALBEDO = vec3(camera_depth);		// DEBUG
-	if (camera_depth < 0.4) {
-		ALBEDO = color_shallow.rgb;
-	}
 
-	//ALBEDO = vec3(v_sea_depth);
-	float start_transparent_sea_depth = 10.0;
-	float transparent_sea_depth = clamp(v_sea_depth, 0, start_transparent_sea_depth);
-	float shallow_sea_alpha = 0.5;
-	float deep_sea_alpha = 0.9;
-	float alpha = shallow_sea_alpha + ((deep_sea_alpha - shallow_sea_alpha) / start_transparent_sea_depth) * transparent_sea_depth;
-
-	// Depth variables and calc
-	/*
-	float depth_texture = texture(DEPTH_TEXTURE, SCREEN_UV).r * 2.0 - 1.0;		// The values returned by depth_texture are between 0.0 (near camera) and 1.0 and are nonlinear. depth_texture now runs from -1 to 1.
-	float depth = PROJECTION_MATRIX[3][2] / (depth_texture + PROJECTION_MATRIX[2][2]);
-	float depth_blend = exp((depth+VERTEX.z + depth_offset) * -beers_law);
-	depth_blend = clamp(1.0 - depth_blend, 0.0, 1.0);
-	float depth_blend_power = clamp(pow(depth_blend, 2.5), 0.0, 1.0);
-	// Retrieving depth color and applying the deep and shallow colors
-	vec3 screen_color = textureLod(SCREEN_TEXTURE, SCREEN_UV, depth_blend_power * 2.5).rgb;
-	vec3 depth_color = mix(color_shallow.rgb, color_deep.rgb, depth_blend_power);
-	vec3 color = mix(screen_color * depth_color, depth_color * 0.25, depth_blend_power * 0.5);
-	ALBEDO = mix(surface_color, color, 0.75);*/
-
-	// Getting edge depth calc
-	//float z_depth = edge(texture(DEPTH_TEXTURE, SCREEN_UV).x);
-	//float z_pos = edge(FRAGCOORD.z);
-	//float z_dif = z_depth - z_pos;
-	//vec3 depth_color_adj = mix(edge_color, color, step(edge_scale, z_dif));
-	//ALBEDO = clamp(surface_color + depth_color_adj, vec3(0.0), vec3(1.0));
-
-	//float z_depth1 = texture(DEPTH_TEXTURE, SCREEN_UV).x;
-	//float z_pos1 = FRAGCOORD.z;
-	//float z_dif1 = z_depth1 - z_pos1;
-	//if (z_depth1 - z_pos1 > 0.0) {
-	//	ALBEDO = vec3(1.0, 0.0, 0.0);
-	//} else {
-	//	ALBEDO = vec3(1.0, 1.0, 1.0);
-	//}
-
-    //vec3 u_water_fog_color = vec3(0.188, 0.172, 0.758);
-	//FOG.rgb = u_water_fog_color;
-	//FOG.a = 1.0;
-	//float u_water_fog_density = 1.0;
-	//float blend = u_water_fog_density * v_fog_coord;
-    //blend = 1.0 - exp2(-blend * blend);
-    // only apply fog when "under water"
-    //blend *= step(0.0, -v_world_pos.y);
-	//ALBEDO = vec3(blend);
-
+	ALBEDO = surface_color;
 	METALLIC = metallic;
 	ROUGHNESS = roughness;
 	NORMAL_MAP = normal_blend;

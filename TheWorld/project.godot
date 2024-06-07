@@ -284,3 +284,11 @@ gu_sea_texture_normal2={
 "type": "sampler2D",
 "value": "res://addons/twviewer/shaders/tex_sea_normal.tres"
 }
+gu_water_foam={
+"type": "sampler2D",
+"value": "res://addons/twviewer/shaders/water_foam.png"
+}
+gu_water_foam_1={
+"type": "sampler2D",
+"value": "res://addons/twviewer/shaders/water_foam_old.png"
+}
