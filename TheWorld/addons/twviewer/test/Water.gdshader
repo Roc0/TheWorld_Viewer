@@ -6,7 +6,7 @@ global uniform sampler2D gu_sea_wave;
 global uniform sampler2D gu_sea_texture_normal;
 global uniform sampler2D gu_sea_texture_normal2;
 global uniform sampler2D gu_water_foam;
-global uniform sampler2D gu_water_foam_1;
+//global uniform sampler2D gu_water_foam_1;
 
 uniform float u_terrain_height = 1.0;	// NOTSET
 uniform sampler2D u_terrain_heightmap;
@@ -23,7 +23,7 @@ uniform float u_quadrant_size = 4096.0;
 
 uniform float u_max_altitude_for_time_scale_factor = 5000.0;	// NOTSET
 
-uniform float u_foam_test_distance = 10.00000;	// NOTSET
+uniform float u_foam_test_distance = 30.00000;	// NOTSET
 uniform float u_foam_camera_depth_threshold = 1.0;	// 0.4;
 uniform float u_foam_edge_pattern_scale = 1.0;
 
@@ -41,7 +41,7 @@ const vec3 lod_colors[10] = {
 };
 
 uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
-uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
+//uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 
 uniform vec3 sea_color : source_color = vec3(0.10, 0.19, 0.32);	// vec3(0.0, 0.03, 0.34);		// vec3(0.0, 0.19, 0.46);		// vec3(0.0, 0.32, 0.43);
 uniform vec3 sea_color2 : source_color = vec3(0.25, 0.32, 0.43);	// vec3(0.25, 0.32, 0.43);	// vec3(1.0, 1.0, 1.0);
@@ -184,7 +184,7 @@ void fragment() {
 
 	vec3 surface_color = sea_color;
 	float alpha = 1.0;
-	
+
 	// Calculate Fresnel
 	{
 		float fresnel = fresnel(1.0, NORMAL, VIEW);
@@ -201,11 +201,12 @@ void fragment() {
 		alpha = shallow_sea_alpha + ((deep_sea_alpha - shallow_sea_alpha) / start_transparent_sea_depth) * transparent_sea_depth;
 	}
 
+	//vec3 save_surface_color = surface_color;
 	// Foam
 	float camera_depth;
 	{
 		float foam_test_distance = u_foam_test_distance;
-		foam_test_distance = 20.00000;
+		//foam_test_distance = 30.00000;
 		float __depth_tex = texture(DEPTH_TEXTURE, SCREEN_UV).r;
 		// NDC = normalized device coordinates
 		vec4 __depth_world_pos_ndc = INV_PROJECTION_MATRIX * vec4(SCREEN_UV * 2.0 - 1.0, __depth_tex, 1.0);
@@ -229,12 +230,13 @@ void fragment() {
 			vec3 foam_surface_color = mix(surface_color, foam_tex.rgb, foam_alpha);
 			//foam_surface_color = foam_tex.rgb;
 			//surface_color = foam_surface_color;
-			foam_alpha = alpha + foam_alpha;
+			foam_alpha = foam_alpha;
 			//alpha = foam_alpha;
 			surface_color = mix(foam_surface_color, surface_color, camera_depth);
 			alpha = mix(foam_alpha, alpha, camera_depth);
 		}
 	}
+	//surface_color = save_surface_color;
 
 	ALBEDO = surface_color;
 	METALLIC = metallic;
