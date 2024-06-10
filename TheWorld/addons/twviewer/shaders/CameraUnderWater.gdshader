@@ -4,6 +4,8 @@ render_mode unshaded;
 uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 uniform sampler2D NORMAL_ROUGHNESS_TEXTURE : hint_normal_roughness_texture, filter_linear_mipmap;
 
+uniform vec3 u_under_water_albedo : source_color = vec3(0.056, 0.119, 0.48);	// vec3(0.119, 0.109, 0.48);
+
 varying vec3 v_world_camera;
 
 void vertex() {
@@ -14,7 +16,7 @@ void vertex() {
 void fragment() {
 	if (v_world_camera.y < 0.0) {
 		//ALBEDO = vec3(0.188, 0.172, 0.758);
-		ALBEDO = vec3(0.119, 0.109, 0.48);
+		ALBEDO = u_under_water_albedo;
 		ALPHA = 0.8;
 	} else {
 		vec4 screen_color = texture(SCREEN_TEXTURE, SCREEN_UV);

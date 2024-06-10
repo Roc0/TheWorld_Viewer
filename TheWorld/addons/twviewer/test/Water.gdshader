@@ -43,19 +43,19 @@ const vec3 lod_colors[10] = {
 uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
 //uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 
-uniform vec3 sea_color : source_color = vec3(0.10, 0.19, 0.32);	// vec3(0.0, 0.03, 0.34);		// vec3(0.0, 0.19, 0.46);		// vec3(0.0, 0.32, 0.43);
-uniform vec3 sea_color2 : source_color = vec3(0.25, 0.32, 0.43);	// vec3(0.25, 0.32, 0.43);	// vec3(1.0, 1.0, 1.0);
-uniform float metallic : hint_range(0.0, 1.0) = 0.8;
-uniform float roughness : hint_range(0.0, 1.0) = 0.02;
-uniform vec2 wave_direction = vec2(2.0,0.0); // Direction of wave 1
-uniform vec2 wave_direction2 = vec2(0.0,1.0); // Direction of wave 2
-uniform float time_scale : hint_range(0.0, 0.2, 0.0005) = 0.0005; // *** Rate of movement multiplied by TIME
-uniform float rough_sea_factor : hint_range(0.0, 20.0, 1.0) = 10.0;	// ***
-uniform float noise_scale = 1000.0;		// ***
-uniform float height_scale = 4.0;		// *** -15 / +15
+uniform vec3 u_sea_color : source_color = vec3(0.10, 0.19, 0.32);	// vec3(0.0, 0.03, 0.34);		// vec3(0.0, 0.19, 0.46);		// vec3(0.0, 0.32, 0.43);
+uniform vec3 u_sea_color2 : source_color = vec3(0.25, 0.32, 0.43);	// vec3(0.25, 0.32, 0.43);	// vec3(1.0, 1.0, 1.0);
+uniform float u_metallic : hint_range(0.0, 1.0) = 0.8;
+uniform float u_roughness : hint_range(0.0, 1.0) = 0.02;
+uniform vec2 u_wave_direction = vec2(2.0,0.0); // Direction of wave 1
+uniform vec2 u_wave_direction2 = vec2(0.0,1.0); // Direction of wave 2
+uniform float u_time_scale : hint_range(0.0, 0.2, 0.0005) = 0.0005; // *** Rate of movement multiplied by TIME
+uniform float u_rough_sea_factor : hint_range(0.0, 20.0, 1.0) = 10.0;	// ***
+uniform float u_noise_scale = 1000.0;		// ***
+uniform float u_height_scale = 4.0;		// *** -15 / +15
 
-//uniform vec4 color_deep : source_color = vec4(0.10, 0.29, 0.32, 1.0); // Deep depth color
-uniform vec4 color_shallow : source_color = vec4(1.0, 1.0, 1.0, 1.0);	// vec4(0.55, 0.55, 0.55, 1.0); // Shallow depth color
+//uniform vec4 u_color_deep : source_color = vec4(0.10, 0.29, 0.32, 1.0); // Deep depth color
+uniform vec4 u_color_shallow : source_color = vec4(1.0, 1.0, 1.0, 1.0);	// vec4(0.55, 0.55, 0.55, 1.0); // Shallow depth color
 
 // Varying variables
 varying vec3 v_world_pos;
@@ -94,10 +94,10 @@ void vertex() {
 
 	// heigth of waves only if camera is below end_camera_altitude_for_waves
 	if (CAMERA_POSITION_WORLD.y < end_camera_altitude_for_waves) {
-		float height = texture(gu_sea_wave, v_world_pos.xz / noise_scale + TIME * time_scale * rough_sea_factor).r;
+		float height = texture(gu_sea_wave, v_world_pos.xz / u_noise_scale + TIME * u_time_scale * u_rough_sea_factor).r;
 
 		// Attenuation of waves height when camera is between start_camera_altitude_for_waves_attenuation (max waves height) and end_camera_altitude_for_waves (null waves height)
-		float scale = height_scale * rough_sea_factor;
+		float scale = u_height_scale * u_rough_sea_factor;
 		if (CAMERA_POSITION_WORLD.y > start_camera_altitude_for_waves_attenuation) {
 			scale = scale - (scale * (CAMERA_POSITION_WORLD.y - start_camera_altitude_for_waves_attenuation) / (end_camera_altitude_for_waves - start_camera_altitude_for_waves_attenuation));
 			//scale = 40.0;		// DEBUG
@@ -155,19 +155,19 @@ void fragment() {
 	// Time calculations for wave (normal map) movement
 	float time_scale_factor = clamp(abs(CAMERA_POSITION_WORLD.y), 0.0, u_max_altitude_for_time_scale_factor) / u_max_altitude_for_time_scale_factor;	// normalized 0 on the surface to 1 at max_altitude_for_time_scale_factor
 	time_scale_factor = (time_scale_factor * 4.0) + 1.0;	// normalized 1 on the surface to 5 at max_altitude_for_time_scale_factor
-	vec2 time = (TIME * wave_direction) * time_scale * time_scale_factor * (rough_sea_factor / 6.0) /*/ 0.5*/; // Movement rate of first wave
-	vec2 time2 = (TIME * wave_direction2) * time_scale * time_scale_factor * (rough_sea_factor / 6.0) /*/ 0.5*/; // Movement rate of second wave
+	vec2 time = (TIME * u_wave_direction) * u_time_scale * time_scale_factor * (u_rough_sea_factor / 6.0) /*/ 0.5*/; // Movement rate of first wave
+	vec2 time2 = (TIME * u_wave_direction2) * u_time_scale * time_scale_factor * (u_rough_sea_factor / 6.0) /*/ 0.5*/; // Movement rate of second wave
 
 	// Blend normal maps into one
 	vec3 normal_blend = mix(texture(gu_sea_texture_normal, (UV + time) * 10.0 ).rgb, texture(gu_sea_texture_normal2, (UV + time2) * 10.0).rgb, 0.5);
 
-	vec3 surface_color = sea_color;
+	vec3 surface_color = u_sea_color;
 	float alpha = 1.0;
 
 	// Calculate Fresnel
 	{
 		float fresnel = fresnel(1.0, NORMAL, VIEW);
-		surface_color = mix(sea_color, sea_color2, fresnel / 5.0); // Interpolate albedo values by frensel
+		surface_color = mix(u_sea_color, u_sea_color2, fresnel / 5.0); // Interpolate albedo values by frensel
 	}
 
 	// Calculate Transparency
@@ -199,7 +199,7 @@ void fragment() {
 			//normal_blend = mix(texture(gu_sea_texture_normal, (UV + time) * 100.0 ).rgb, texture(gu_sea_texture_normal2, (UV + time2) * 100.0).rgb, 0.5);
 
 			//float water_foam_mask = mix(texture(gu_water_foam, water_foam_uv).r, texture(gu_water_foam, water_foam_uv).b, 0.95);
-			//surface_color = mix(surface_color, color_shallow.rgb, water_foam_mask);
+			//surface_color = mix(surface_color, u_color_shallow.rgb, water_foam_mask);
 
 			vec2 water_foam_uv = (UV + time / 3.0) * vec2(40);
 			vec4 foam_tex = texture(gu_water_foam, water_foam_uv);
@@ -213,8 +213,8 @@ void fragment() {
 	}
 
 	ALBEDO = surface_color;
-	METALLIC = metallic;
-	ROUGHNESS = roughness;
+	METALLIC = u_metallic;
+	ROUGHNESS = u_roughness;
 	NORMAL_MAP = normal_blend;
 	ALPHA = alpha;
 
