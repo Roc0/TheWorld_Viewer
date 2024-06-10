@@ -366,6 +366,7 @@ _world_editor_param_cache_quad = 1
 _world_editor_param_max_depth_quad = 2
 _world_editor_param_info_panel_visible = true
 _world_editor_param_edit_panel_visible = true
+_world_editor_param_deploy_world = true
 _camera_param_initial_pos = Vector3(9420.22, 3019.62, 28709.9)
 _camera_param_initial_yaw_pitch_roll = Vector3(30.6602, -19.2361, 0)
 _shader_param_ground_uv_scale = 6.0
@@ -392,7 +393,7 @@ metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(0.626106, -0.487572, 0.608494, 0, 0.780383, 0.625302, -0.779738, -0.391506, 0.488603, 26556.8, 44.2471, 26820.7)
+transform = Transform3D(0.888936, 0.458031, -0.000364718, 0, 0.000796274, 1, 0.458031, -0.888936, 0.000707837, 26173.9, 4636.18, 26286.8)
 far = 12288.0
 
 [node name="PostProcessingOutLine" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]

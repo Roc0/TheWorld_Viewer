@@ -37,7 +37,7 @@ const vec3 lod_colors[10] = {
 	vec3(0.623, 0.168, 0.408),	// GDN_TheWorld_Globals::g_color_pink_amaranth
 	vec3(0.561, 0.737, 0.561),	// GDN_TheWorld_Globals::g_color_darksea_green
 	vec3(1.0, 0.0, 0.0),		// GDN_TheWorld_Globals::g_color_red
-	vec3(0.0, 0.0, 0.0)		// GDN_TheWorld_Globals::g_color_black
+	vec3(0.0, 0.0, 0.0)			// GDN_TheWorld_Globals::g_color_black
 };
 
 uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
@@ -47,9 +47,6 @@ uniform vec3 sea_color : source_color = vec3(0.10, 0.19, 0.32);	// vec3(0.0, 0.0
 uniform vec3 sea_color2 : source_color = vec3(0.25, 0.32, 0.43);	// vec3(0.25, 0.32, 0.43);	// vec3(1.0, 1.0, 1.0);
 uniform float metallic : hint_range(0.0, 1.0) = 0.8;
 uniform float roughness : hint_range(0.0, 1.0) = 0.02;
-//uniform sampler2D wave;
-//uniform sampler2D texture_normal;
-//uniform sampler2D texture_normal2;
 uniform vec2 wave_direction = vec2(2.0,0.0); // Direction of wave 1
 uniform vec2 wave_direction2 = vec2(0.0,1.0); // Direction of wave 2
 uniform float time_scale : hint_range(0.0, 0.2, 0.0005) = 0.0005; // *** Rate of movement multiplied by TIME
@@ -59,19 +56,11 @@ uniform float height_scale = 4.0;		// *** -15 / +15
 
 //uniform vec4 color_deep : source_color = vec4(0.10, 0.29, 0.32, 1.0); // Deep depth color
 uniform vec4 color_shallow : source_color = vec4(1.0, 1.0, 1.0, 1.0);	// vec4(0.55, 0.55, 0.55, 1.0); // Shallow depth color
-//uniform float beers_law = 2.0; // Beer's law application
-//uniform float depth_offset = -0.75; // Offset
-
-//uniform float edge_scale = 0.1;
-//uniform float near = 1.0;
-//uniform float far = 20000.0;
-//uniform vec3 edge_color : source_color = vec3(1.0, 1.0, 1.0);
 
 // Varying variables
 varying vec3 v_world_pos;
 varying float v_lod;
 varying float v_sea_depth;
-//varying float v_fog_coord;
 
 #include "res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc"
 
@@ -80,18 +69,11 @@ float fresnel(float amount, vec3 normal, vec3 view)
 	return pow((1.0 - clamp(dot(normalize(normal), normalize(view)), 0.0, 1.0 )), amount);
 }
 
-/*float edge(float depth)
-{
-	depth = 2.0 * depth - 1.0;
-	return near * far / (far + depth * (near - far));
-}*/
-
 void vertex() {
 	// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need
 	// to trasform them in world coord to abstract from chunk
 	v_world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 
-	//v_fog_coord = length(CAMERA_POSITION_WORLD - v_world_pos);
 
 	// SETTING UV (mapping of the VERTEX in current quadrant)
 	//vec4 vertex_world_pos = MODEL_MATRIX * vec4(VERTEX, 1);
@@ -106,7 +88,7 @@ void vertex() {
 	vec2 terrain_uv = vertex_cell_coords_in_textures / vec2(textureSize(u_terrain_heightmap, 0));
 	float terrain_hight = get_height(u_terrain_heightmap, u_terrain_height, terrain_uv);		// Height displacement from heigthmap
 
-	float end_camera_altitude_for_waves = 500.0;
+	float end_camera_altitude_for_waves = 1000.0;
 	float start_camera_altitude_for_waves_attenuation = 200.0;
 	float start_terrain_depth_for_waves_attenuation = 50.0;
 
@@ -118,13 +100,13 @@ void vertex() {
 		float scale = height_scale * rough_sea_factor;
 		if (CAMERA_POSITION_WORLD.y > start_camera_altitude_for_waves_attenuation) {
 			scale = scale - (scale * (CAMERA_POSITION_WORLD.y - start_camera_altitude_for_waves_attenuation) / (end_camera_altitude_for_waves - start_camera_altitude_for_waves_attenuation));
-			//scale = 40.0;
+			//scale = 40.0;		// DEBUG
 		}
 
 		// Attenuation of height waves at lower depth (near the coast)
 		if (terrain_hight > -start_terrain_depth_for_waves_attenuation) {
 			scale *= -clamp(terrain_hight, -start_terrain_depth_for_waves_attenuation, 0) / start_terrain_depth_for_waves_attenuation;
-			//scale += 20.0;
+			//scale += 20.0;	// DEBUG
 		}
 
 		float scale_offset_threshold = 20.0;
@@ -163,10 +145,7 @@ void vertex() {
 		} else {
 			float chunk_size = step_between_vertices_in_current_mesh * float(u_num_vertices_per_chunk - uint(1));	// in world units
 			UV2 = VERTEX.xz / vec2(chunk_size);		// mapping of the VERTEX in current chunk from 0.0 (start of the chunk) to 1.0 (end of the chunk)
-			//UV2 = vec2(float(vertex_col) / float(u_num_vertices_per_chunk), float(vertex_row) / float(u_num_vertices_per_chunk));
-			//lod = log2(step_between_vertices_in_current_mesh);
 			lod = log2(step_between_vertices_in_current_mesh) - 1.0;
-			//lod = float(step_between_vertices_in_current_mesh);
 		}
 	}
 	v_lod = lod;
@@ -201,7 +180,6 @@ void fragment() {
 		alpha = shallow_sea_alpha + ((deep_sea_alpha - shallow_sea_alpha) / start_transparent_sea_depth) * transparent_sea_depth;
 	}
 
-	//vec3 save_surface_color = surface_color;
 	// Foam
 	float camera_depth;
 	{
@@ -223,20 +201,16 @@ void fragment() {
 			//float water_foam_mask = mix(texture(gu_water_foam, water_foam_uv).r, texture(gu_water_foam, water_foam_uv).b, 0.95);
 			//surface_color = mix(surface_color, color_shallow.rgb, water_foam_mask);
 
-			vec2 water_foam_uv = (UV + time / 5.0) * vec2(100);
+			vec2 water_foam_uv = (UV + time / 3.0) * vec2(40);
 			vec4 foam_tex = texture(gu_water_foam, water_foam_uv);
 			float foam_fade_alpha = 1.0;
 			foam_alpha = foam_alpha * foam_tex.a * foam_fade_alpha;
 			vec3 foam_surface_color = mix(surface_color, foam_tex.rgb, foam_alpha);
-			//foam_surface_color = foam_tex.rgb;
-			//surface_color = foam_surface_color;
 			foam_alpha = foam_alpha;
-			//alpha = foam_alpha;
 			surface_color = mix(foam_surface_color, surface_color, camera_depth);
 			alpha = mix(foam_alpha, alpha, camera_depth);
 		}
 	}
-	//surface_color = save_surface_color;
 
 	ALBEDO = surface_color;
 	METALLIC = metallic;
