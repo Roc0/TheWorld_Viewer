@@ -1,4 +1,4 @@
-[gd_scene load_steps=59 format=3 uid="uid://c4ukh1kw4impi"]
+[gd_scene load_steps=60 format=3 uid="uid://c4ukh1kw4impi"]
 
 [ext_resource type="Script" path="res://main/TheWorld_Main.gd" id="1_760ml"]
 [ext_resource type="Script" path="res://addons/twviewer/tw_viewer.gd" id="3_yxvy6"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://v6sfi8k7dr7o" path="res://player.tscn" id="6_wlxwp"]
 [ext_resource type="Script" path="res://addons/twviewer/test/test_quadrant.gd" id="7_7uq48"]
 [ext_resource type="Shader" path="res://utils/GaussianBlurEffectPostProcess.gdshader" id="9_2dtkh"]
+[ext_resource type="Shader" uid="uid://h5kcbfu71fyx" path="res://addons/twviewer/test/test_shader_1.tres" id="9_hvx40"]
 [ext_resource type="PackedScene" uid="uid://caqxfqurbp3ku" path="res://assets/scenes/pine_tree.tscn" id="11_fbf05"]
 [ext_resource type="PackedScene" uid="uid://dvnha0bqryjll" path="res://assets/scenes/maple_tree.tscn" id="11_kq4xa"]
 [ext_resource type="PackedScene" uid="uid://bltmr2xgs8nq1" path="res://assets/scenes/small_rock.tscn" id="12_ffcy8"]
@@ -322,10 +323,22 @@ subdivide_width = 2049
 subdivide_depth = 2049
 orientation = 1
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fq04k"]
-albedo_color = Color(1, 0.145861, 0.273205, 1)
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wbvwi"]
+render_priority = 10
+shader = ExtResource("9_hvx40")
+shader_parameter/albedo = Color(1, 0.124442, 0.15429, 1)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_uaxsv"]
+material = SubResource("ShaderMaterial_wbvwi")
 size = Vector2(4096, 4096)
 subdivide_width = 512
 subdivide_depth = 512
@@ -366,7 +379,6 @@ _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 1
 _world_editor_param_info_panel_visible = true
 _world_editor_param_edit_panel_visible = true
-_world_editor_param_deploy_world = true
 _camera_param_initial_pos = Vector3(9420.22, 3019.62, 28709.9)
 _camera_param_initial_yaw_pitch_roll = Vector3(30.6602, -19.2361, 0)
 _shader_param_ground_uv_scale = 6.0
@@ -393,7 +405,7 @@ metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(0.998919, -0.0464847, 3.70146e-05, 0, 0.000796274, 1, -0.0464847, -0.998919, 0.000795414, 6754.03, 6975.57, 42073.8)
+transform = Transform3D(0.999638, 0.0269002, -2.142e-05, 0, 0.000796274, 1, 0.0269002, -0.999638, 0.000795986, 7112.89, 12206.1, 43227.1)
 far = 36864.0
 
 [node name="PostProcessingOutLine" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
@@ -491,14 +503,14 @@ mesh = SubResource("PlaneMesh_60os2")
 
 [node name="Sea-99-100" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
 transform = Transform3D(4096, 0, 0, 0, 40, 0, 0, 0, 4096, 407552, 0, 411648)
+visible = false
 cast_shadow = 0
 mesh = SubResource("QuadMesh_st0eb")
 surface_material_override/0 = ExtResource("6_32vc6")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TestQuadrants"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 418000, 951.253, 418000)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9300, 0, 41700)
 visible = false
-material_overlay = SubResource("StandardMaterial3D_fq04k")
 mesh = SubResource("PlaneMesh_uaxsv")
 
 [node name="WayPoints" type="Node3D" parent="TheWorld_Main/Landscape"]

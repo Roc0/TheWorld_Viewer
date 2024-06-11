@@ -1,4 +1,5 @@
 shader_type spatial;
+render_mode blend_mix, cull_back;
 
 global uniform bool gu_show_chunks = false;
 global uniform float gu_camera_altitude_from_terrain;
@@ -119,7 +120,7 @@ void vertex() {
 		VERTEX.y += (height * scale) - (scale / 3.0);
 	}
 
-	v_sea_depth = VERTEX.y - terrain_hight;
+	v_sea_depth = VERTEX.y - terrain_hight;		// positive values for terrain under water, negative for terrain over water
 
 	//VERTEX.y = 0.0;		// DEBUG
 	//VERTEX.y = 1000.0;	// DEBUG
@@ -219,6 +220,19 @@ void fragment() {
 			alpha = mix(foam_alpha, alpha, camera_depth);
 		}
 	}
+	
+	// contrast z-fighting or z-clipping
+	if (CAMERA_POSITION_WORLD.y <= foam_max_camera_heigth) {
+		DEPTH = FRAGCOORD.z;
+	} else {
+		if (v_sea_depth > 0.0) {
+			// terrain under water
+			DEPTH = FRAGCOORD.z - 0.1;
+		} else {
+			// terrain over water
+			DEPTH = FRAGCOORD.z + 0.1;
+		}
+	}
 
 	ALBEDO = surface_color;
 	METALLIC = u_metallic;
@@ -226,6 +240,7 @@ void fragment() {
 	NORMAL_MAP = normal_blend;
 	ALPHA = alpha;
 	//ALPHA = 1.0;
+	
 
 	float lod = v_lod;
 	if (lod >= 0.0) {
