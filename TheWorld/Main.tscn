@@ -364,9 +364,9 @@ _world_param_cache_quad = 2
 _world_param_info_panel_visible = true
 _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 1
-_world_editor_param_max_depth_quad = 2
 _world_editor_param_info_panel_visible = true
 _world_editor_param_edit_panel_visible = true
+_world_editor_param_deploy_world = true
 _camera_param_initial_pos = Vector3(9420.22, 3019.62, 28709.9)
 _camera_param_initial_yaw_pitch_roll = Vector3(30.6602, -19.2361, 0)
 _shader_param_ground_uv_scale = 6.0
@@ -393,8 +393,8 @@ metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(-0.597972, -0.801517, 0.000638228, 0, 0.000796274, 1, -0.801517, 0.597971, -0.000476149, 27793.9, 6257.66, 29785.9)
-far = 12288.0
+transform = Transform3D(0.998919, -0.0464847, 3.70146e-05, 0, 0.000796274, 1, -0.0464847, -0.998919, 0.000795414, 6754.03, 6975.57, 42073.8)
+far = 36864.0
 
 [node name="PostProcessingOutLine" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
 transform = Transform3D(0.582015, 0.000569433, -0.813178, -0.303312, 0.927985, -0.21644, 0.754493, 0.372618, 0.540274, 0, 0, -11.381)
@@ -403,7 +403,7 @@ extra_cull_margin = 16384.0
 mesh = SubResource("QuadMesh_fq383")
 
 [node name="PostProcessingUnderWater" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
-transform = Transform3D(0.582015, 0.000569433, -0.813178, -0.303312, 0.927985, -0.21644, 0.754493, 0.372618, 0.540274, 0, 0, -11.381)
+transform = Transform3D(0.582015, 0.000569433, -0.813178, -0.303312, 0.927985, -0.21644, 0.754493, 0.372618, 0.540274, 0, 0, -11.3809)
 extra_cull_margin = 16384.0
 mesh = SubResource("QuadMesh_emvfv")
 

@@ -6,7 +6,6 @@ global uniform sampler2D gu_sea_wave;
 global uniform sampler2D gu_sea_texture_normal;
 global uniform sampler2D gu_sea_texture_normal2;
 global uniform sampler2D gu_water_foam;
-//global uniform sampler2D gu_water_foam_1;
 
 uniform float u_terrain_height = 1.0;	// NOTSET
 uniform sampler2D u_terrain_heightmap;
@@ -23,7 +22,9 @@ uniform float u_quadrant_size = 4096.0;
 
 uniform float u_max_altitude_for_time_scale_factor = 5000.0;	// NOTSET
 
-uniform float u_foam_test_distance = 30.00000;	// NOTSET
+uniform float u_foam_max_test_distance_from_coast = 30.00000;	// NOTSET
+uniform float u_foam_min_test_distance_from_coast = 0.00000;	// NOTSET
+uniform float u_foam_max_camera_heigth = 1000.0;
 uniform float u_foam_camera_depth_threshold = 1.0;	// 0.4;
 uniform float u_foam_edge_pattern_scale = 1.0;
 
@@ -153,7 +154,8 @@ void vertex() {
 
 void fragment() {
 	// Time calculations for wave (normal map) movement
-	float time_scale_factor = clamp(abs(CAMERA_POSITION_WORLD.y), 0.0, u_max_altitude_for_time_scale_factor) / u_max_altitude_for_time_scale_factor;	// normalized 0 on the surface to 1 at max_altitude_for_time_scale_factor
+	//float time_scale_factor = clamp(abs(CAMERA_POSITION_WORLD.y), 0.0, u_max_altitude_for_time_scale_factor) / u_max_altitude_for_time_scale_factor;	// normalized 0 on the surface to 1 at max_altitude_for_time_scale_factor
+	float time_scale_factor = 0.00;
 	time_scale_factor = (time_scale_factor * 4.0) + 1.0;	// normalized 1 on the surface to 5 at max_altitude_for_time_scale_factor
 	vec2 time = (TIME * u_wave_direction) * u_time_scale * time_scale_factor * (u_rough_sea_factor / 6.0) /*/ 0.5*/; // Movement rate of first wave
 	vec2 time2 = (TIME * u_wave_direction2) * u_time_scale * time_scale_factor * (u_rough_sea_factor / 6.0) /*/ 0.5*/; // Movement rate of second wave
@@ -181,15 +183,21 @@ void fragment() {
 	}
 
 	// Foam
-	float camera_depth;
+	float foam_max_camera_heigth = u_foam_max_camera_heigth;
+	//foam_max_camera_heigth = 1000.0;	// DEBUG
+	if (CAMERA_POSITION_WORLD.y <= foam_max_camera_heigth)
 	{
-		float foam_test_distance = u_foam_test_distance;
-		//foam_test_distance = 30.00000;
+		float foam_max_test_distance_from_coast = u_foam_max_test_distance_from_coast;
+		float foam_min_test_distance_from_coast = u_foam_min_test_distance_from_coast;
+		//foam_min_test_distance_from_coast = 0.0;
+		// related to camera heigth: foam_min_test_distance_from_coast at foam_max_camera_heigth, foam_max_test_distance_from_coast at 0
+		float foam_test_distance_from_coast = foam_min_test_distance_from_coast + (foam_max_test_distance_from_coast - foam_min_test_distance_from_coast) * (1.0 - abs(CAMERA_POSITION_WORLD.y) / foam_max_camera_heigth);
+		//foam_test_distance_from_coast = 30.0;	// DEBUG
 		float __depth_tex = texture(DEPTH_TEXTURE, SCREEN_UV).r;
 		// NDC = normalized device coordinates
 		vec4 __depth_world_pos_ndc = INV_PROJECTION_MATRIX * vec4(SCREEN_UV * 2.0 - 1.0, __depth_tex, 1.0);
 		__depth_world_pos_ndc.xyz /= __depth_world_pos_ndc.w;
-		camera_depth = clamp(1.0 - smoothstep(__depth_world_pos_ndc.z + foam_test_distance, __depth_world_pos_ndc.z, VERTEX.z), 0.0, 1.0);
+		float camera_depth = clamp(1.0 - smoothstep(__depth_world_pos_ndc.z + foam_test_distance_from_coast, __depth_world_pos_ndc.z, VERTEX.z), 0.0, 1.0);
 
 		//camera_depth = 1.0 - camera_depth;		// DEBUG
 		float foam_camera_depth_threshold = u_foam_camera_depth_threshold;
@@ -217,6 +225,7 @@ void fragment() {
 	ROUGHNESS = u_roughness;
 	NORMAL_MAP = normal_blend;
 	ALPHA = alpha;
+	//ALPHA = 1.0;
 
 	float lod = v_lod;
 	if (lod >= 0.0) {
