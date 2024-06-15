@@ -1,4 +1,8 @@
 @echo off
+
+set edit=-e
+if b%1 == bnoedit set edit=
+
 set curpath=%~dp0
 cd /D %curpath%
 
@@ -21,6 +25,6 @@ rem set executable=..\..\Prove\godot\bin\godot.windows.editor.dev.x86_64.exe
 				rem rem rem rem rem rem rem set executable=..\..\Prove\godot\bin\godot.windows.editor.dev.double.x86_64.exe
 
 dir %executable%
-call %executable% -v --path %curpath%TheWorld -e 2>&1 1>log.txt
+call %executable% -v --path %curpath%TheWorld %edit% 2>&1 1>log.txt
 rem pause
 

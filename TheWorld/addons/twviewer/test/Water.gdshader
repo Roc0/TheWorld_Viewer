@@ -220,7 +220,7 @@ void fragment() {
 			alpha = mix(foam_alpha, alpha, camera_depth);
 		}
 	}
-	
+
 	// contrast z-fighting or z-clipping
 	if (CAMERA_POSITION_WORLD.y <= foam_max_camera_heigth) {
 		DEPTH = FRAGCOORD.z;
@@ -240,7 +240,7 @@ void fragment() {
 	NORMAL_MAP = normal_blend;
 	ALPHA = alpha;
 	//ALPHA = 1.0;
-	
+
 
 	float lod = v_lod;
 	if (lod >= 0.0) {

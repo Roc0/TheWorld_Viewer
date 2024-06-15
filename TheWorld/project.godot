@@ -288,3 +288,7 @@ gu_water_foam={
 "type": "sampler2D",
 "value": "res://addons/twviewer/shaders/water_foam.png"
 }
+gu_camera_on_sea={
+"type": "bool",
+"value": false
+}
