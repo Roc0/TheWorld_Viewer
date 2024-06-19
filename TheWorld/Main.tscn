@@ -378,7 +378,6 @@ _world_param_info_panel_visible = true
 _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 2
 _world_editor_param_info_panel_visible = true
-_world_editor_param_edit_panel_visible = true
 _camera_param_initial_pos = Vector3(9420.22, 3019.62, 28709.9)
 _camera_param_initial_yaw_pitch_roll = Vector3(30.6602, -19.2361, 0)
 _shader_param_ground_uv_scale = 6.0
@@ -405,8 +404,8 @@ metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(0.999638, 0.0269002, -2.142e-05, 0, 0.000796274, 1, 0.0269002, -0.999638, 0.000795986, 7112.89, 12206.1, 43227.1)
-far = 36864.0
+transform = Transform3D(0.999048, 0.00152232, 0.0435929, 0, 0.999391, -0.0348999, -0.0436195, 0.0348667, 0.99844, -426.075, 3045.43, -918.314)
+far = 18681.9
 
 [node name="PostProcessingOutLine" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
 transform = Transform3D(0.582015, 0.000569433, -0.813178, -0.303312, 0.927985, -0.21644, 0.754493, 0.372618, 0.540274, 0, 0, -11.381)
@@ -527,7 +526,7 @@ mesh = SubResource("SphereMesh_812q2")
 skeleton = NodePath("../../../..")
 
 [node name="WayPoint2" type="MeshInstance3D" parent="TheWorld_Main/Landscape/WayPoints"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 200000, 50, 200000)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 780, 5429, 3262)
 visible = false
 mesh = SubResource("SphereMesh_812q2")
 skeleton = NodePath("../../../..")

@@ -42,7 +42,8 @@ const vec3 lod_colors[10] = {
 	vec3(0.0, 0.0, 0.0)			// GDN_TheWorld_Globals::g_color_black
 };
 
-uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
+//uniform sampler2D DEPTH_TEXTURE : hint_depth_texture, filter_linear_mipmap;
+uniform sampler2D DEPTH_TEXTURE : hint_depth_texture;
 //uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 
 uniform vec3 u_sea_color : source_color = vec3(0.10, 0.19, 0.32);	// vec3(0.0, 0.03, 0.34);		// vec3(0.0, 0.19, 0.46);		// vec3(0.0, 0.32, 0.43);
@@ -154,6 +155,9 @@ void vertex() {
 }
 
 void fragment() {
+	float metallic = u_metallic;
+	float roughness = u_roughness;
+
 	// Time calculations for wave (normal map) movement
 	//float time_scale_factor = clamp(abs(CAMERA_POSITION_WORLD.y), 0.0, u_max_altitude_for_time_scale_factor) / u_max_altitude_for_time_scale_factor;	// normalized 0 on the surface to 1 at max_altitude_for_time_scale_factor
 	float time_scale_factor = 0.00;
@@ -183,6 +187,12 @@ void fragment() {
 		alpha = shallow_sea_alpha + ((deep_sea_alpha - shallow_sea_alpha) / start_transparent_sea_depth) * transparent_sea_depth;
 	}
 
+	float __depth_tex = texture(DEPTH_TEXTURE, SCREEN_UV).r;
+	// NDC = normalized device coordinates
+	vec4 __depth_world_pos_ndc = INV_PROJECTION_MATRIX * vec4(SCREEN_UV * 2.0 - 1.0, __depth_tex, 1.0);
+	__depth_world_pos_ndc.xyz /= __depth_world_pos_ndc.w;
+	float depth_positive_distance_from_camera = -(__depth_world_pos_ndc.z);
+
 	// Foam
 	float foam_max_camera_heigth = u_foam_max_camera_heigth;
 	//foam_max_camera_heigth = 1000.0;	// DEBUG
@@ -194,10 +204,6 @@ void fragment() {
 		// related to camera heigth: foam_min_test_distance_from_coast at foam_max_camera_heigth, foam_max_test_distance_from_coast at 0
 		float foam_test_distance_from_coast = foam_min_test_distance_from_coast + (foam_max_test_distance_from_coast - foam_min_test_distance_from_coast) * (1.0 - abs(CAMERA_POSITION_WORLD.y) / foam_max_camera_heigth);
 		//foam_test_distance_from_coast = 30.0;	// DEBUG
-		float __depth_tex = texture(DEPTH_TEXTURE, SCREEN_UV).r;
-		// NDC = normalized device coordinates
-		vec4 __depth_world_pos_ndc = INV_PROJECTION_MATRIX * vec4(SCREEN_UV * 2.0 - 1.0, __depth_tex, 1.0);
-		__depth_world_pos_ndc.xyz /= __depth_world_pos_ndc.w;
 		float camera_depth = clamp(1.0 - smoothstep(__depth_world_pos_ndc.z + foam_test_distance_from_coast, __depth_world_pos_ndc.z, VERTEX.z), 0.0, 1.0);
 
 		//camera_depth = 1.0 - camera_depth;		// DEBUG
@@ -221,26 +227,55 @@ void fragment() {
 		}
 	}
 
-	// contrast z-fighting or z-clipping
-	if (CAMERA_POSITION_WORLD.y <= foam_max_camera_heigth) {
+	{
+		// comment render_mode unshaded
+
+		//alpha = 1.0;
+		//metallic = 0.0;
+		//roughness = 1.0;
+
+		//vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
+		//float fragment_distance_from_camera = distance(CAMERA_POSITION_WORLD, fragment_world_pos);
+		//float fragment_distance_mask = smoothstep(00000.0, 60000.0, fragment_distance_from_camera);
+		////fragment_distance_mask = 0.08;
+		//surface_color = vec3(fragment_distance_mask);
+		//float depth_distance_mask = smoothstep(00000.0, 60000.0, depth_positive_distance_from_camera);
+		////depth_distance_mask = 0.01;
+		//surface_color = vec3(depth_distance_mask);
+		/*if (abs(fragment_distance_mask - depth_distance_mask) < 0.03) {
+			surface_color = vec3(1.0, 0.0, 0.0);
+		} else {
+			surface_color = vec3(0.0, 1.0, 0.0);
+		}*/
+	}
+
+	// contrast z-fighting or z-clipping: at great distance we need to force sea in front of terrain in the z-buffer to avoid flickering when camera moves
+	float z_fighting_max_camera_heigth = 10000.0;
+	if (CAMERA_POSITION_WORLD.y <= z_fighting_max_camera_heigth) {
+		// near terrain we assume not to have z-fighting
 		DEPTH = FRAGCOORD.z;
 	} else {
-		if (v_sea_depth > 0.0) {
-			// terrain under water
-			DEPTH = FRAGCOORD.z - 0.1;
-		} else {
-			// terrain over water
-			DEPTH = FRAGCOORD.z + 0.1;
-		}
+		//vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
+		//float fragment_distance_from_camera = distance(CAMERA_POSITION_WORLD, fragment_world_pos);
+		//float fragment_distance_mask = smoothstep(00000.0, 60000.0, fragment_distance_from_camera);
+		//float depth_distance_mask = smoothstep(00000.0, 60000.0, depth_positive_distance_from_camera);
+		//if(abs(fragment_distance_mask - depth_distance_mask) > 0.1) {
+		//	DEPTH = FRAGCOORD.z;
+		//} else
+			if (v_sea_depth > 0.0) {
+				// terrain under water
+				DEPTH = FRAGCOORD.z - 0.1;
+			} else {
+				// terrain over water
+				DEPTH = FRAGCOORD.z + 0.1;
+			}
 	}
 
 	ALBEDO = surface_color;
-	METALLIC = u_metallic;
-	ROUGHNESS = u_roughness;
+	METALLIC = metallic;
+	ROUGHNESS = roughness;
 	NORMAL_MAP = normal_blend;
 	ALPHA = alpha;
-	//ALPHA = 1.0;
-
 
 	float lod = v_lod;
 	if (lod >= 0.0) {
