@@ -404,8 +404,9 @@ metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(0.999048, 0.00152232, 0.0435929, 0, 0.999391, -0.0348999, -0.0436195, 0.0348667, 0.99844, -426.075, 3045.43, -918.314)
-far = 18681.9
+transform = Transform3D(0.860207, -0.168007, 0.481475, 0, 0.944169, 0.329462, -0.509946, -0.283405, 0.812181, -1706.16, 2504.69, -3647.34)
+near = 2.0
+far = 18601.4
 
 [node name="PostProcessingOutLine" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
 transform = Transform3D(0.582015, 0.000569433, -0.813178, -0.303312, 0.927985, -0.21644, 0.754493, 0.372618, 0.540274, 0, 0, -11.381)
