@@ -1199,11 +1199,18 @@ vertex_cell_coords_in_textures += vec2(0.5);	// IMPORTANT: now vertex_cell_coord
 uv = vertex_cell_coords_in_textures / vec2(textureSize(terrain_heightmap, 0));"
 
 [sub_resource type="VisualShaderNodeExpression" id="VisualShaderNodeExpression_64s2i"]
-size = Vector2(920, 500)
+size = Vector2(960, 580)
 expression = "vertex_with_h = vertex;
 vertex_world_pos_with_h = vertex_world_pos;
 float h = get_height(terrain_heightmap, u_terrain_height, uv);		// Height displacement from heigthmap
-if (u_force_height_0) {													// Needed to bake globalmap
+bool force_height_0 = u_force_height_0;
+if (!force_height_0) {
+	if (gu_force_height_0 > 0) {
+		force_height_0 = true;
+	}
+}
+//force_height_0 = true;		// DEBUG
+if (force_height_0) {													// Needed to bake globalmap
 	vertex_with_h.y = 0.0;
 	vertex_world_pos_with_h.y = 0.0;
 } else {
@@ -1598,6 +1605,7 @@ uniform mat3 u_terrain_normal_basis;
 uniform float u_terrain_height = 1.0;	// NOTSET
 uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
 uniform bool u_force_height_0 = false;
+global uniform int gu_force_height_0 = -1;
 uniform sampler2D u_ground_albedo_bump_0 : source_color;
 uniform sampler2D u_ground_albedo_bump_1 : source_color;
 uniform sampler2D u_ground_albedo_bump_2 : source_color;
@@ -1691,6 +1699,7 @@ uniform sampler2D tex_frg_62;
 	uniform float u_terrain_height = 1.0;	// NOTSET
 	uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
 	uniform bool u_force_height_0 = false;
+	global uniform int gu_force_height_0 = -1;
 	uniform sampler2D u_ground_albedo_bump_0 : source_color;
 	uniform sampler2D u_ground_albedo_bump_1 : source_color;
 	uniform sampler2D u_ground_albedo_bump_2 : source_color;
@@ -2188,7 +2197,14 @@ void vertex() {
 		n_out13p0 = n_out15p0;
 		n_out13p1 = n_out11p0;
 		float h = get_height(u_terrain_heightmap, u_terrain_height, n_out12p1);		// Height displacement from heigthmap
-		if (u_force_height_0) {													// Needed to bake globalmap
+		bool force_height_0 = u_force_height_0;
+		if (!force_height_0) {
+			if (gu_force_height_0 > 0) {
+				force_height_0 = true;
+			}
+		}
+		//force_height_0 = true;		// DEBUG
+		if (force_height_0) {													// Needed to bake globalmap
 			n_out13p0.y = 0.0;
 			n_out13p1.y = 0.0;
 		} else {
@@ -3125,6 +3141,7 @@ uniform mat3 u_terrain_normal_basis;
 uniform float u_terrain_height = 1.0;	// NOTSET
 uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
 uniform bool u_force_height_0 = false;
+global uniform int gu_force_height_0 = -1;
 uniform sampler2D u_ground_albedo_bump_0 : source_color;
 uniform sampler2D u_ground_albedo_bump_1 : source_color;
 uniform sampler2D u_ground_albedo_bump_2 : source_color;
@@ -3189,13 +3206,20 @@ vertex_cell_coords_in_textures += vec2(0.5);	// IMPORTANT: now vertex_cell_coord
 uv = vertex_cell_coords_in_textures / vec2(textureSize(terrain_heightmap, 0));"
 nodes/vertex/13/node = SubResource("VisualShaderNodeExpression_64s2i")
 nodes/vertex/13/position = Vector2(1000, -340)
-nodes/vertex/13/size = Vector2(920, 500)
+nodes/vertex/13/size = Vector2(960, 580)
 nodes/vertex/13/input_ports = "0,3,uv;1,5,vertex_world_pos;2,4,vertex;3,8,terrain_heightmap;"
 nodes/vertex/13/output_ports = "0,4,vertex_with_h;1,5,vertex_world_pos_with_h;"
 nodes/vertex/13/expression = "vertex_with_h = vertex;
 vertex_world_pos_with_h = vertex_world_pos;
 float h = get_height(terrain_heightmap, u_terrain_height, uv);		// Height displacement from heigthmap
-if (u_force_height_0) {													// Needed to bake globalmap
+bool force_height_0 = u_force_height_0;
+if (!force_height_0) {
+	if (gu_force_height_0 > 0) {
+		force_height_0 = true;
+	}
+}
+//force_height_0 = true;		// DEBUG
+if (force_height_0) {													// Needed to bake globalmap
 	vertex_with_h.y = 0.0;
 	vertex_world_pos_with_h.y = 0.0;
 } else {

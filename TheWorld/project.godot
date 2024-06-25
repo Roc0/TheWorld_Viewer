@@ -292,3 +292,7 @@ gu_camera_on_sea={
 "type": "bool",
 "value": false
 }
+gu_force_height_0={
+"type": "int",
+"value": -1
+}

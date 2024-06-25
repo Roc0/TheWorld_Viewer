@@ -7,6 +7,7 @@ global uniform sampler2D gu_sea_wave;
 global uniform sampler2D gu_sea_texture_normal;
 global uniform sampler2D gu_sea_texture_normal2;
 global uniform sampler2D gu_water_foam;
+global uniform int gu_force_height_0 = -1;
 
 uniform float u_terrain_height = 1.0;	// NOTSET
 uniform sampler2D u_terrain_heightmap;
@@ -20,7 +21,8 @@ uniform uint u_num_vertices_per_chunk;
 uniform vec2 u_mouse_hit = vec2(-1.000000, -1.000000);
 uniform mat4 u_terrain_inverse_transform;
 uniform float u_quadrant_size = 4096.0;
-
+uniform bool u_generate_global_map = false;
+uniform bool u_force_height_0 = false;
 uniform float u_max_altitude_for_time_scale_factor = 5000.0;	// NOTSET
 
 uniform float u_foam_max_test_distance_from_coast = 30.00000;	// NOTSET
@@ -89,14 +91,14 @@ void vertex() {
 	vertex_cell_coords_in_textures += vec2(0.5);	// IMPORTANT: now vertex_cell_coords_in_textures ranges from 0.5
 													// to (heightmap size - 1) + 0.5 with increment of 1.0 between each coord
 	vec2 terrain_uv = vertex_cell_coords_in_textures / vec2(textureSize(u_terrain_heightmap, 0));
-	float terrain_hight = get_height(u_terrain_heightmap, u_terrain_height, terrain_uv);		// Height displacement from heigthmap
+	float terrain_vertex_hight = get_height(u_terrain_heightmap, u_terrain_height, terrain_uv);		// Height displacement from heigthmap
 
 	float end_camera_altitude_for_waves = 1000.0;
 	float start_camera_altitude_for_waves_attenuation = 200.0;
 	float start_terrain_depth_for_waves_attenuation = 50.0;
 
 	// heigth of waves only if camera is below end_camera_altitude_for_waves
-	if (CAMERA_POSITION_WORLD.y < end_camera_altitude_for_waves) {
+	if (CAMERA_POSITION_WORLD.y < end_camera_altitude_for_waves || u_generate_global_map) {
 		float height = texture(gu_sea_wave, v_world_pos.xz / u_noise_scale + TIME * u_time_scale * u_rough_sea_factor).r;
 
 		// Attenuation of waves height when camera is between start_camera_altitude_for_waves_attenuation (max waves height) and end_camera_altitude_for_waves (null waves height)
@@ -107,27 +109,50 @@ void vertex() {
 		}
 
 		// Attenuation of height waves at lower depth (near the coast)
-		if (terrain_hight > -start_terrain_depth_for_waves_attenuation) {
-			scale *= -clamp(terrain_hight, -start_terrain_depth_for_waves_attenuation, 0) / start_terrain_depth_for_waves_attenuation;
+		if (terrain_vertex_hight > -start_terrain_depth_for_waves_attenuation) {
+			scale *= -clamp(terrain_vertex_hight, -start_terrain_depth_for_waves_attenuation, 0) / start_terrain_depth_for_waves_attenuation;
 			//scale += 20.0;	// DEBUG
 		}
 
 		float scale_offset_threshold = 20.0;
-		if (terrain_hight >= -scale_offset_threshold) {
-			float scale_offset = clamp(scale_offset_threshold + terrain_hight, 0, scale_offset_threshold);
+		if (terrain_vertex_hight >= -scale_offset_threshold) {
+			float scale_offset = clamp(scale_offset_threshold + terrain_vertex_hight, 0, scale_offset_threshold);
 			scale += scale_offset;
 		}
 
-		VERTEX.y += (height * scale) - (scale / 3.0);
+		float sea_vertex_height = VERTEX.y;
+		bool force_height_0 = u_force_height_0;
+		if (!force_height_0) {
+			if (gu_force_height_0 > 0) {
+				force_height_0 = true;
+			}
+		}
+		//force_height_0 = true;		// DEBUG
+		if (force_height_0) {
+			sea_vertex_height = 0.0;
+		} else {
+			sea_vertex_height += (height * scale) - (scale / 3.0);
+		}
+
+		if (u_generate_global_map) {
+			if (terrain_vertex_hight > sea_vertex_height) {
+				VERTEX.y = -1.0;
+				//VERTEX.y = 100.0;
+			} else {
+				VERTEX.y = 1.0;
+			}
+		} else {
+			VERTEX.y = sea_vertex_height;
+		}
 	}
 
-	v_sea_depth = VERTEX.y - terrain_hight;		// positive values for terrain under water, negative for terrain over water
+	v_sea_depth = VERTEX.y - terrain_vertex_hight;		// positive values for terrain under water, negative for terrain over water
 
 	//VERTEX.y = 0.0;		// DEBUG
 	//VERTEX.y = 1000.0;	// DEBUG
 
 	float lod = -1.0;
-	if (gu_show_chunks) {
+	if (gu_show_chunks && !u_generate_global_map) {
 		// SETTING UV2 (mapping of the VERTEX in current chunk) and lod of current chunk
 		int vertex_col = int(floor(mod(float(VERTEX_ID), float(u_num_vertices_per_chunk))));		// vertex_col ranges from 0 to u_num_vertices_per_chunk - 1
 		int vertex_row = int(floor(float(VERTEX_ID) / float(u_num_vertices_per_chunk)));			// vertex_row ranges from 0 to u_num_vertices_per_chunk - 1
@@ -269,6 +294,10 @@ void fragment() {
 				// terrain over water
 				DEPTH = FRAGCOORD.z + 0.1;
 			}
+	}
+
+	if (u_generate_global_map) {
+		alpha = 1.0;
 	}
 
 	ALBEDO = surface_color;
