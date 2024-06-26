@@ -1,56 +1,37 @@
-[gd_resource type="ShaderMaterial" load_steps=8 format=3 uid="uid://dee4mdtcckm70"]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dee4mdtcckm70"]
 
-[ext_resource type="Shader" path="res://addons/twviewer/test/Water.gdshader" id="1_dasuk"]
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_wpjyq"]
-noise_type = 3
-frequency = 0.011
-fractal_type = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ayvdf"]
-seamless = true
-as_normal_map = true
-bump_strength = 1.5
-noise = SubResource("FastNoiseLite_wpjyq")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_hajio"]
-noise_type = 3
-seed = 2
-frequency = 0.011
-fractal_type = 2
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_s2i16"]
-seamless = true
-as_normal_map = true
-bump_strength = 1.5
-noise = SubResource("FastNoiseLite_hajio")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_y2ugm"]
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_fq66o"]
-seamless = true
-noise = SubResource("FastNoiseLite_y2ugm")
+[ext_resource type="Shader" path="res://addons/twviewer/test/water.gdshader" id="1_dasuk"]
 
 [resource]
 render_priority = 0
 shader = ExtResource("1_dasuk")
-shader_parameter/albedo = Color(0, 0.321569, 0.431373, 1)
-shader_parameter/albedo2 = Color(1, 1, 1, 1)
-shader_parameter/metallic = 0.0
-shader_parameter/roughness = 0.02
-shader_parameter/wave_direction = Vector2(2, 0)
-shader_parameter/wave_direction2 = Vector2(0, 1)
-shader_parameter/time_scale = 0.035
-shader_parameter/noise_scale = 300.0
-shader_parameter/height_scale = 0.4
-shader_parameter/color_deep = Color(0.105882, 0.294118, 0.329412, 1)
-shader_parameter/color_shallow = Color(0, 0.552941, 0.65098, 1)
-shader_parameter/beers_law = 2.0
-shader_parameter/depth_offset = -0.75
-shader_parameter/edge_scale = 0.1
-shader_parameter/near = 1.0
-shader_parameter/far = 20000.0
-shader_parameter/edge_color = Color(1, 1, 1, 1)
-shader_parameter/wave = SubResource("NoiseTexture2D_fq66o")
-shader_parameter/texture_normal = SubResource("NoiseTexture2D_ayvdf")
-shader_parameter/texture_normal2 = SubResource("NoiseTexture2D_s2i16")
+shader_parameter/u_terrain_height = 1.0
+shader_parameter/u_optimization_level = 0
+shader_parameter/u_grid_step = 2.0
+shader_parameter/u_editmode_selected = 0.0
+shader_parameter/u_grid_on = false
+shader_parameter/u_quad_border_line_thickness = 0.005
+shader_parameter/u_mouse_hit_radius = 0.001
+shader_parameter/u_num_vertices_per_chunk = null
+shader_parameter/u_mouse_hit = Vector2(-1, -1)
+shader_parameter/u_terrain_inverse_transform = null
+shader_parameter/u_quadrant_size = 4096.0
+shader_parameter/u_generate_global_map = false
+shader_parameter/u_force_height_0 = false
+shader_parameter/u_max_altitude_for_time_scale_factor = 5000.0
+shader_parameter/u_foam_max_test_distance_from_coast = 30.0
+shader_parameter/u_foam_min_test_distance_from_coast = 0.0
+shader_parameter/u_foam_max_camera_heigth = 1000.0
+shader_parameter/u_foam_camera_depth_threshold = 1.0
+shader_parameter/u_foam_edge_pattern_scale = 1.0
+shader_parameter/u_sea_color = Color(0.1, 0.19, 0.32, 1)
+shader_parameter/u_sea_color2 = Color(0.25, 0.32, 0.43, 1)
+shader_parameter/u_metallic = 0.8
+shader_parameter/u_roughness = 0.02
+shader_parameter/u_wave_direction = Vector2(2, 0)
+shader_parameter/u_wave_direction2 = Vector2(0, 1)
+shader_parameter/u_time_scale = 0.0005
+shader_parameter/u_rough_sea_factor = 10.0
+shader_parameter/u_noise_scale = 1000.0
+shader_parameter/u_height_scale = 4.0
+shader_parameter/u_color_shallow = Color(1, 1, 1, 1)
