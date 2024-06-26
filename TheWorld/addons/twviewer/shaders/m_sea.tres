@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=8 format=3 uid="uid://capet47jqb3nh"]
 
-[ext_resource type="Shader" path="res://addons/twviewer/shaders/Water.gdshader" id="1_7gb5c"]
+[ext_resource type="Shader" path="res://addons/twviewer/shaders/water.gdshader" id="1_7gb5c"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_wpjyq"]
 noise_type = 3
