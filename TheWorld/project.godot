@@ -296,3 +296,7 @@ gu_force_height_0={
 "type": "int",
 "value": -1
 }
+gu_terrain_quad_border_distance={
+"type": "sampler2D",
+"value": "res://addons/twviewer/shaders/tex_terrain_quad_border_distance.tres"
+}
