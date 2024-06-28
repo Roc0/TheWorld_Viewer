@@ -267,7 +267,7 @@ size = Vector2(1000, 660)
 expression = "globalmap_factor = 1.0;
 roughness_out = 1.0;
 if (editmode_pixel) {
-	albedo_out = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+	albedo_computed_2 = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 } else {
 	albedo_out = texture(terrain_globalmap, uv).rgb;
 	if (globalmap_pixel) {
@@ -2437,7 +2437,7 @@ void fragment() {
 		n_out33p2 = 1.0;
 		n_out33p1 = 1.0;
 		if (n_out25p0) {
-			n_out33p0 = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+			albedo_computed_2 = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 		} else {
 			n_out33p0 = texture(u_terrain_globalmap, n_out13p0).rgb;
 			if (n_out25p1) {
@@ -3116,6 +3116,7 @@ void fragment() {
 
 }
 "
+graph_offset = Vector2(1389.53, 957.781)
 modes/specular = 1
 varyings/v_vertex_world_pos = "0,5"
 varyings/v_vertex_cell_coords_in_textures = "0,3"
@@ -3848,7 +3849,7 @@ nodes/fragment/33/output_ports = "0,4,albedo_out;1,0,roughness_out;2,0,globalmap
 nodes/fragment/33/expression = "globalmap_factor = 1.0;
 roughness_out = 1.0;
 if (editmode_pixel) {
-	albedo_out = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+	albedo_computed_2 = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 } else {
 	albedo_out = texture(terrain_globalmap, uv).rgb;
 	if (globalmap_pixel) {
