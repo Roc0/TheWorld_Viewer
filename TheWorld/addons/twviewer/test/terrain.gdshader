@@ -1171,32 +1171,18 @@ void fragment() {
 	}
 
 
-// VaryingGetter:38
 	vec3 tint0 = v_tint0;
-
-
-// VaryingGetter:39
 	vec3 tint1 = v_tint1;
-
-
-// VaryingGetter:40
 	vec3 tint2 = v_tint2;
-
-
-// VaryingGetter:41
 	vec3 tint3 = v_tint3;
 
-
-// ParameterRef:36
 	bool depth_blending = u_depth_blending;
-
 
 	vec3 albedo_computed_3;
 	float roughness_computed_3;
 	vec3 normal_computed_3;
 	float ao_computed_1;
 	float ao_light_affect_computed_1;
-// Expression:56
 	albedo_computed_3 = vec3(0.0, 0.0, 0.0);
 	roughness_computed_3 = 0.0;
 	normal_computed_3 = vec3(0.0, 0.0, 0.0);
@@ -1296,24 +1282,16 @@ void fragment() {
 		}
 	}
 
-
-// ParameterRef:27
 	vec2 mouse_hit = u_mouse_hit;
 
-
-// ParameterRef:28
 	float mouse_hit_radius = u_mouse_hit_radius;
 
-
-// ParameterRef:81
 	bool grid_on = u_grid_on;
-
 
 	vec3 albedo_computed_4;
 	float roughness_computed_4;
 	vec3 normal_computed_4;
 	float quad_line_thickness;
-// Expression:31
 	albedo_computed_4 = vec3(0.0, 0.0, 0.0);
 	roughness_computed_4 = 0.0;
 	normal_computed_4 = vec3(0.0, 0.0, 0.0);
@@ -1392,15 +1370,11 @@ void fragment() {
 		}
 	}
 
-
-// VaryingGetter:88
 	float quadrant_texture_lod = v_lod;
-
 
 	vec3 albedo_computed_5;
 	float roughness_computed_5;
 	vec3 normal_computed_5;
-// Expression:89
 	albedo_computed_5 = vec3(0.0, 0.0, 0.0);
 	roughness_computed_5 = 0.0;
 	normal_computed_5 = vec3(0.0, 0.0, 0.0);
@@ -1476,13 +1450,10 @@ void fragment() {
 		//albedo_computed_5 = vec3(UV2.x, UV2.y, 1.0);
 	}
 
-
-// Output:0
+// Output
 	ALBEDO = albedo_computed_5;
 	ROUGHNESS = roughness_computed_5;
 	AO = ao_computed_1;
 	AO_LIGHT_AFFECT = ao_light_affect_computed_1;
 	NORMAL = normal_computed_5;
-
-
 }

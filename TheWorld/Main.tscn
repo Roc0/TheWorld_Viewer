@@ -378,6 +378,7 @@ _world_param_info_panel_visible = true
 _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 2
 _world_editor_param_info_panel_visible = true
+_world_editor_param_deploy_world = true
 _camera_param_initial_pos = Vector3(9420.22, 3019.62, 28709.9)
 _camera_param_initial_yaw_pitch_roll = Vector3(30.6602, -19.2361, 0)
 _shader_param_ground_uv_scale = 6.0
@@ -404,9 +405,9 @@ metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(0.935135, -0.0630438, 0.348637, 0, 0.984041, 0.177943, -0.354291, -0.166401, 0.920211, -1706.16, 2504.69, -3647.34)
+transform = Transform3D(-0.995805, -0.0131292, 0.0905511, 0, 0.989651, 0.143492, -0.0914979, 0.14289, -0.9855, 5522.24, 34.5247, 25635)
 near = 0.5
-far = 18601.4
+far = 18432.1
 
 [node name="PostProcessingOutLine" type="MeshInstance3D" parent="TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
 transform = Transform3D(0.582015, 0.000569433, -0.813178, -0.303312, 0.927985, -0.21644, 0.754493, 0.372618, 0.540274, 0, 0, -11.381)
@@ -539,19 +540,19 @@ skeleton = NodePath("../../../..")
 [node name="TestModels" type="Node3D" parent="TheWorld_Main"]
 
 [node name="maple_tree" parent="TheWorld_Main/TestModels" instance=ExtResource("11_kq4xa")]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 5515.48, -0.028915, 25648.3)
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 5515.48, 31, 25648.3)
 
 [node name="pine_tree" parent="TheWorld_Main/TestModels" instance=ExtResource("11_fbf05")]
-transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 5518.08, 0.670128, 25645.5)
+transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 5518.08, 31, 25645.5)
 
 [node name="small_rock" parent="TheWorld_Main/TestModels" instance=ExtResource("12_ffcy8")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5514.62, 0, 25652.4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5514.62, 31, 25652.4)
 
 [node name="large_rock" parent="TheWorld_Main/TestModels" instance=ExtResource("13_tf3dr")]
-transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 5509.65, 0.982811, 25664.9)
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 5509.65, 31, 25664.9)
 
 [node name="godot_ball" parent="TheWorld_Main/TestModels" instance=ExtResource("14_4otfj")]
-transform = Transform3D(-0.947768, 0, -0.318959, 0, 1, 0, 0.318959, 0, -0.947768, 5526.69, -0.0518, 25651.1)
+transform = Transform3D(-0.947768, 0, -0.318959, 0, 1, 0, 0.318959, 0, -0.947768, 5526.69, 31, 25651.1)
 
 [node name="UI" parent="TheWorld_Main" instance=ExtResource("4_cjpoh")]
 
