@@ -63,7 +63,13 @@ func _process(_delta):
 	if _back_camera != null and _back_camera_container != null:
 		if _back_camera_container.visible:
 			_back_camera.global_transform = _world_camera.global_transform
-			_back_camera.rotate_y(PI)
+			_back_camera.far = _world_camera.far
+			_back_camera.near = _world_camera.near
+			if _camera_tracking_player:
+				_back_camera.rotate_y(PI)
+			else:
+				var world_camera_direction : Vector3 = -_world_camera.get_global_transform().basis.z
+				_back_camera.look_at(_back_camera.position - world_camera_direction)
 
 func toggle_back_camera_visibility() -> void:
 	if _back_camera_container != null:
