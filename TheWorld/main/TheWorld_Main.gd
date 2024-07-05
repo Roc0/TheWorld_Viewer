@@ -116,6 +116,7 @@ func _ready():
 	$Test/TestBall.visible = false
 	#$Player/Player.visible = false
 	$Player/Player.set_player_in_world(false)
+	#var cam : Camera3D = get_viewport().get_camera_3d()
 	$Player/Player.set_camera(get_viewport().get_camera_3d(), $Player/CameraContainer/SubViewport/BackCamera, $Player/CameraContainer)
 	var e := get_tree().get_root().connect("size_changed", Callable(self, "resizing"))
 	log_debug(str("connect size_changed result=", e))

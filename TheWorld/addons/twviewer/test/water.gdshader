@@ -1,12 +1,23 @@
 shader_type spatial;
 render_mode blend_mix, cull_back;
 
+global uniform float gu_time = 0;
 global uniform bool gu_show_chunks = false;
 global uniform float gu_camera_altitude_from_terrain;
 global uniform sampler2D gu_sea_wave;
 global uniform sampler2D gu_sea_texture_normal;
 global uniform sampler2D gu_sea_texture_normal2;
 global uniform sampler2D gu_water_foam;
+global uniform float gu_sea_flat_sea_height = 0;
+global uniform float gu_sea_time_scale : hint_range(0.0, 0.2, 0.0005) = 0.0005; // *** Rate of movement multiplied by shader_time
+global uniform float gu_sea_rough_factor : hint_range(0.0, 20.0, 1.0) = 10.0;	// ***
+global uniform float gu_sea_noise_scale = 1000.0;		// ***
+global uniform float gu_sea_height_scale = 4.0;		// *** -15 / +15
+global uniform float gu_sea_end_camera_altitude_for_waves = 1000.0;
+global uniform float gu_sea_start_camera_altitude_for_waves_attenuation = 200.0;
+global uniform float gu_sea_start_terrain_depth_for_waves_attenuation = 50.0;
+global uniform float gu_sea_scale_offset_threshold = 20.0;
+
 global uniform int gu_force_height_0 = -1;
 
 uniform float u_terrain_height = 1.0;	// NOTSET
@@ -25,11 +36,11 @@ uniform bool u_generate_global_map = false;
 uniform bool u_force_height_0 = false;
 uniform float u_max_altitude_for_time_scale_factor = 5000.0;	// NOTSET
 
-uniform float u_foam_max_test_distance_from_coast = 30.00000;	// NOTSET
-uniform float u_foam_min_test_distance_from_coast = 0.00000;	// NOTSET
-uniform float u_foam_max_camera_heigth = 1000.0;
-uniform float u_foam_camera_depth_threshold = 1.0;	// 0.4;
-uniform float u_foam_edge_pattern_scale = 1.0;
+uniform float u_sea_foam_max_test_distance_from_coast = 30.00000;	// NOTSET
+uniform float u_sea_foam_min_test_distance_from_coast = 0.00000;	// NOTSET
+uniform float u_sea_foam_max_camera_height = 1000.0;
+uniform float u_sea_foam_camera_depth_threshold = 1.0;	// 0.4;
+uniform float u_sea_foam_edge_pattern_scale = 1.0;
 
 const vec3 lod_colors[10] = {
 	vec3(1.0, 0.749, 0.0),		// GDN_TheWorld_Globals::g_color_yellow_apricot
@@ -54,10 +65,6 @@ uniform float u_metallic : hint_range(0.0, 1.0) = 0.8;
 uniform float u_roughness : hint_range(0.0, 1.0) = 0.02;
 uniform vec2 u_wave_direction = vec2(2.0,0.0); // Direction of wave 1
 uniform vec2 u_wave_direction2 = vec2(0.0,1.0); // Direction of wave 2
-uniform float u_time_scale : hint_range(0.0, 0.2, 0.0005) = 0.0005; // *** Rate of movement multiplied by TIME
-uniform float u_rough_sea_factor : hint_range(0.0, 20.0, 1.0) = 10.0;	// ***
-uniform float u_noise_scale = 1000.0;		// ***
-uniform float u_height_scale = 4.0;		// *** -15 / +15
 
 //uniform vec4 u_color_deep : source_color = vec4(0.10, 0.29, 0.32, 1.0); // Deep depth color
 uniform vec4 u_color_shallow : source_color = vec4(1.0, 1.0, 1.0, 1.0);	// vec4(0.55, 0.55, 0.55, 1.0); // Shallow depth color
@@ -75,10 +82,14 @@ float fresnel(float amount, vec3 normal, vec3 view)
 }
 
 void vertex() {
+	float shader_time = gu_time;	// TIME
+
 	// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need
 	// to trasform them in world coord to abstract from chunk
 	v_world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
 
+	float flat_sea_height = gu_sea_flat_sea_height;
+	VERTEX.y = flat_sea_height;
 
 	// SETTING UV (mapping of the VERTEX in current quadrant)
 	//vec4 vertex_world_pos = MODEL_MATRIX * vec4(VERTEX, 1);
@@ -93,34 +104,36 @@ void vertex() {
 	vec2 terrain_uv = vertex_cell_coords_in_textures / vec2(textureSize(u_terrain_heightmap, 0));
 	float terrain_vertex_hight = get_height(u_terrain_heightmap, u_terrain_height, terrain_uv);		// Height displacement from heigthmap
 
-	float end_camera_altitude_for_waves = 1000.0;
-	float start_camera_altitude_for_waves_attenuation = 200.0;
-	float start_terrain_depth_for_waves_attenuation = 50.0;
+	float end_camera_altitude_for_waves = gu_sea_end_camera_altitude_for_waves;
+	float start_camera_altitude_for_waves_attenuation = gu_sea_start_camera_altitude_for_waves_attenuation;
+	float start_terrain_depth_for_waves_attenuation = gu_sea_start_terrain_depth_for_waves_attenuation;
 
 	// heigth of waves only if camera is below end_camera_altitude_for_waves
-	if (CAMERA_POSITION_WORLD.y < end_camera_altitude_for_waves || u_generate_global_map) {
-		float height = texture(gu_sea_wave, v_world_pos.xz / u_noise_scale + TIME * u_time_scale * u_rough_sea_factor).r;
+	if (CAMERA_POSITION_WORLD.y - flat_sea_height < end_camera_altitude_for_waves || u_generate_global_map) {
+		// sea height in range 0.0 / 1.0 from noise texture moving uv with vertex global position and time
+		float height = texture(gu_sea_wave, (v_world_pos.xz / gu_sea_noise_scale) + (shader_time * gu_sea_time_scale * gu_sea_rough_factor)).r;
 
 		// Attenuation of waves height when camera is between start_camera_altitude_for_waves_attenuation (max waves height) and end_camera_altitude_for_waves (null waves height)
-		float scale = u_height_scale * u_rough_sea_factor;
-		if (CAMERA_POSITION_WORLD.y > start_camera_altitude_for_waves_attenuation) {
+		float scale = gu_sea_height_scale * gu_sea_rough_factor;
+		if (CAMERA_POSITION_WORLD.y > flat_sea_height + start_camera_altitude_for_waves_attenuation) {
 			scale = scale - (scale * (CAMERA_POSITION_WORLD.y - start_camera_altitude_for_waves_attenuation) / (end_camera_altitude_for_waves - start_camera_altitude_for_waves_attenuation));
 			//scale = 40.0;		// DEBUG
 		}
 
 		// Attenuation of height waves at lower depth (near the coast)
-		if (terrain_vertex_hight > -start_terrain_depth_for_waves_attenuation) {
+		if (terrain_vertex_hight > flat_sea_height - start_terrain_depth_for_waves_attenuation) {
 			scale *= -clamp(terrain_vertex_hight, -start_terrain_depth_for_waves_attenuation, 0) / start_terrain_depth_for_waves_attenuation;
 			//scale += 20.0;	// DEBUG
 		}
 
-		float scale_offset_threshold = 20.0;
-		if (terrain_vertex_hight >= -scale_offset_threshold) {
+		float scale_offset_threshold = gu_sea_scale_offset_threshold;
+		if (terrain_vertex_hight >= flat_sea_height - scale_offset_threshold) {
 			float scale_offset = clamp(scale_offset_threshold + terrain_vertex_hight, 0, scale_offset_threshold);
 			scale += scale_offset;
 		}
 
 		float sea_vertex_height = VERTEX.y;
+
 		bool force_height_0 = u_force_height_0;
 		if (!force_height_0) {
 			if (gu_force_height_0 > 0) {
@@ -136,10 +149,10 @@ void vertex() {
 
 		if (u_generate_global_map) {
 			if (terrain_vertex_hight > sea_vertex_height) {
-				VERTEX.y = -1.0;
+				VERTEX.y = flat_sea_height - 1.0;
 				//VERTEX.y = 100.0;
 			} else {
-				VERTEX.y = 1.0;
+				VERTEX.y = flat_sea_height + 1.0;
 			}
 		} else {
 			VERTEX.y = sea_vertex_height;
@@ -180,6 +193,8 @@ void vertex() {
 }
 
 void fragment() {
+	float shader_time = gu_time;	// TIME
+
 	float metallic = u_metallic;
 	float roughness = u_roughness;
 
@@ -187,8 +202,8 @@ void fragment() {
 	//float time_scale_factor = clamp(abs(CAMERA_POSITION_WORLD.y), 0.0, u_max_altitude_for_time_scale_factor) / u_max_altitude_for_time_scale_factor;	// normalized 0 on the surface to 1 at max_altitude_for_time_scale_factor
 	float time_scale_factor = 0.00;
 	time_scale_factor = (time_scale_factor * 4.0) + 1.0;	// normalized 1 on the surface to 5 at max_altitude_for_time_scale_factor
-	vec2 time = (TIME * u_wave_direction) * u_time_scale * time_scale_factor * (u_rough_sea_factor / 6.0) /*/ 0.5*/; // Movement rate of first wave
-	vec2 time2 = (TIME * u_wave_direction2) * u_time_scale * time_scale_factor * (u_rough_sea_factor / 6.0) /*/ 0.5*/; // Movement rate of second wave
+	vec2 time = (shader_time * u_wave_direction) * gu_sea_time_scale * time_scale_factor * (gu_sea_rough_factor / 6.0) /*/ 0.5*/; // Movement rate of first wave
+	vec2 time2 = (shader_time * u_wave_direction2) * gu_sea_time_scale * time_scale_factor * (gu_sea_rough_factor / 6.0) /*/ 0.5*/; // Movement rate of second wave
 
 	// Blend normal maps into one
 	vec3 normal_blend = mix(texture(gu_sea_texture_normal, (UV + time) * 10.0 ).rgb, texture(gu_sea_texture_normal2, (UV + time2) * 10.0).rgb, 0.5);
@@ -219,20 +234,20 @@ void fragment() {
 	float depth_positive_distance_from_camera = -(__depth_world_pos_ndc.z);
 
 	// Foam
-	float foam_max_camera_heigth = u_foam_max_camera_heigth;
-	//foam_max_camera_heigth = 1000.0;	// DEBUG
-	if (CAMERA_POSITION_WORLD.y <= foam_max_camera_heigth)
+	float foam_max_camera_height = u_sea_foam_max_camera_height;
+	//foam_max_camera_height = 1000.0;	// DEBUG
+	if (CAMERA_POSITION_WORLD.y <= foam_max_camera_height)
 	{
-		float foam_max_test_distance_from_coast = u_foam_max_test_distance_from_coast;
-		float foam_min_test_distance_from_coast = u_foam_min_test_distance_from_coast;
+		float foam_max_test_distance_from_coast = u_sea_foam_max_test_distance_from_coast;
+		float foam_min_test_distance_from_coast = u_sea_foam_min_test_distance_from_coast;
 		//foam_min_test_distance_from_coast = 0.0;
-		// related to camera heigth: foam_min_test_distance_from_coast at foam_max_camera_heigth, foam_max_test_distance_from_coast at 0
-		float foam_test_distance_from_coast = foam_min_test_distance_from_coast + (foam_max_test_distance_from_coast - foam_min_test_distance_from_coast) * (1.0 - abs(CAMERA_POSITION_WORLD.y) / foam_max_camera_heigth);
+		// related to camera heigth: foam_min_test_distance_from_coast at foam_max_camera_height, foam_max_test_distance_from_coast at 0
+		float foam_test_distance_from_coast = foam_min_test_distance_from_coast + (foam_max_test_distance_from_coast - foam_min_test_distance_from_coast) * (1.0 - abs(CAMERA_POSITION_WORLD.y) / foam_max_camera_height);
 		//foam_test_distance_from_coast = 30.0;	// DEBUG
 		float camera_depth = clamp(1.0 - smoothstep(__depth_world_pos_ndc.z + foam_test_distance_from_coast, __depth_world_pos_ndc.z, VERTEX.z), 0.0, 1.0);
 
 		//camera_depth = 1.0 - camera_depth;		// DEBUG
-		float foam_camera_depth_threshold = u_foam_camera_depth_threshold;
+		float foam_camera_depth_threshold = u_sea_foam_camera_depth_threshold;
 		//foam_camera_depth_threshold = 1.0;
 		if (camera_depth < foam_camera_depth_threshold) {
 			float foam_alpha = 0.9;

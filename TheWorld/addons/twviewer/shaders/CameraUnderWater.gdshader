@@ -2,6 +2,7 @@ shader_type spatial;
 render_mode unshaded;
 
 global uniform bool gu_camera_on_sea = false;
+global uniform float gu_camera_under_water = -1;
 
 uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
 uniform sampler2D NORMAL_ROUGHNESS_TEXTURE : hint_normal_roughness_texture, filter_linear_mipmap;
@@ -16,7 +17,21 @@ void vertex() {
 }
 
 void fragment() {
-	if (v_world_camera.y < 0.0 && gu_camera_on_sea) {
+	bool under_water = false;
+
+	if (gu_camera_on_sea) {
+		if (gu_camera_under_water < 0.0) {
+			if (v_world_camera.y < 0.0) {
+				under_water = true;
+			}
+		} else {
+			if (gu_camera_under_water > 0.0) {
+				under_water = true;
+			}
+		}
+	}
+
+	if (under_water) {
 		//ALBEDO = vec3(0.188, 0.172, 0.758);
 		ALBEDO = u_under_water_albedo;
 		ALPHA = 0.8;

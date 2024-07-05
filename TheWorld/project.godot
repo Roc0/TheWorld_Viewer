@@ -300,3 +300,47 @@ gu_terrain_quad_border_distance={
 "type": "sampler2D",
 "value": "res://addons/twviewer/shaders/tex_terrain_quad_border_distance.tres"
 }
+gu_time={
+"type": "float",
+"value": 0.0
+}
+gu_sea_noise_scale={
+"type": "float",
+"value": 1000.0
+}
+gu_sea_time_scale={
+"type": "float",
+"value": 0.001
+}
+gu_sea_rough_factor={
+"type": "float",
+"value": 10.0
+}
+gu_sea_height_scale={
+"type": "float",
+"value": 4.0
+}
+gu_sea_start_camera_altitude_for_waves_attenuation={
+"type": "float",
+"value": 200.0
+}
+gu_sea_end_camera_altitude_for_waves={
+"type": "float",
+"value": 1000.0
+}
+gu_sea_start_terrain_depth_for_waves_attenuation={
+"type": "float",
+"value": 50.0
+}
+gu_sea_flat_sea_height={
+"type": "float",
+"value": 0.0
+}
+gu_sea_scale_offset_threshold={
+"type": "float",
+"value": 20.0
+}
+gu_camera_under_water={
+"type": "float",
+"value": -1.0
+}
