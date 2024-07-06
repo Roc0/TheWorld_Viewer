@@ -117,7 +117,7 @@ func _ready():
 	#$Player/Player.visible = false
 	$Player/Player.set_player_in_world(false)
 	#var cam : Camera3D = get_viewport().get_camera_3d()
-	$Player/Player.set_camera(get_viewport().get_camera_3d(), $Player/CameraContainer/SubViewport/BackCamera, $Player/CameraContainer)
+	$Player/Player.set_camera(get_viewport().get_camera_3d(), $Player/BackCameraContainer/BackCameraSubViewport/BackCamera, $Player/BackCameraContainer, $Player/SatelliteCameraContainer/SatelliteCameraSubViewport/SatelliteCamera, $Player/SatelliteCameraContainer)
 	var e := get_tree().get_root().connect("size_changed", Callable(self, "resizing"))
 	log_debug(str("connect size_changed result=", e))
 	#get_tree().get_root().set_transparent_background(true)
@@ -257,6 +257,8 @@ func _input(event):
 				$Player/Player.set_player_in_world(true)
 		elif event.is_action_pressed("ui_toggle_back_mirror"):
 			$Player/Player.toggle_back_camera_visibility()
+		elif event.is_action_pressed("ui_toggle_satellite_view"):
+			$Player/Player.toggle_satellite_view_visibility()
 		#elif event.is_action_pressed("ui_dump"):
 		#	TWViewer().GDN_viewer().dump_required()
 

@@ -4,6 +4,8 @@ var _camera_tracking_player : bool = false
 var _world_camera : Camera3D = null
 var _back_camera : Camera3D = null
 var _back_camera_container : SubViewportContainer = null
+var _satellite_camera : Camera3D = null
+var _satellite_camera_container : SubViewportContainer = null
 
 var tw_const = preload("res://addons/twviewer/tw_const.gd")
 
@@ -71,15 +73,33 @@ func _process(_delta):
 				var world_camera_direction : Vector3 = -_world_camera.get_global_transform().basis.z
 				_back_camera.look_at(_back_camera.position - world_camera_direction)
 
+	if _satellite_camera != null and _satellite_camera_container != null:
+		if _satellite_camera_container.visible:
+			_satellite_camera.global_position = _world_camera.global_position
+			#if _camera_tracking_player:
+			_satellite_camera.global_position.y = 20000
+			var target : Vector3 = _satellite_camera.global_position
+			target += Vector3(1, 0, 1)
+			target.y = 0
+			_satellite_camera.look_at(target)
+			_satellite_camera.far = 40000
+
 func toggle_back_camera_visibility() -> void:
 	if _back_camera_container != null:
 		_back_camera_container.visible = !_back_camera_container.visible
 
-func set_camera(world_camera : Camera3D, back_camera : Camera3D, back_camera_container : SubViewportContainer) -> void:
+func toggle_satellite_view_visibility() -> void:
+	if _satellite_camera_container != null:
+		_satellite_camera_container.visible = !_satellite_camera_container.visible
+
+func set_camera(world_camera : Camera3D, back_camera : Camera3D, back_camera_container : SubViewportContainer, satellite_camera : Camera3D, satellite_camera_container : SubViewportContainer) -> void:
 	_world_camera = world_camera
 	_back_camera = back_camera
 	_back_camera_container = back_camera_container 
 	_back_camera_container.visible = false
+	_satellite_camera = satellite_camera
+	_satellite_camera_container = satellite_camera_container 
+	_satellite_camera_container.visible = false
 
 func set_player_in_world(value : bool) -> void:
 	_player_in_world = value
