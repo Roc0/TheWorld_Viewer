@@ -75,14 +75,10 @@ func _process(_delta):
 
 	if _satellite_camera != null and _satellite_camera_container != null:
 		if _satellite_camera_container.visible:
-			_satellite_camera.global_position = _world_camera.global_position
-			#if _camera_tracking_player:
-			_satellite_camera.global_position.y = 20000
-			var target : Vector3 = _satellite_camera.global_position
-			target += Vector3(1, 0, 1)
-			target.y = 0
-			_satellite_camera.look_at(target)
 			_satellite_camera.far = 40000
+			_satellite_camera.global_transform.origin = (_world_camera.global_position * Vector3(1, 0, 1)) + Vector3(0, 20000, 0)
+			_satellite_camera.global_transform.basis = Basis.IDENTITY.rotated(Vector3(1, 0, 0), -PI / 2)	# fixed pointing on north direction
+			_satellite_camera.global_transform.basis = _satellite_camera.global_transform.basis.rotated(Vector3(0, 1 ,0), deg_to_rad(-_world_camera.get_angle_from_north_degree()))
 
 func toggle_back_camera_visibility() -> void:
 	if _back_camera_container != null:
