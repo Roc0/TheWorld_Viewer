@@ -117,7 +117,7 @@ func _ready():
 	#$Player/Player.visible = false
 	$Player/Player.set_player_in_world(false)
 	#var cam : Camera3D = get_viewport().get_camera_3d()
-	$Player/Player.set_camera(get_viewport().get_camera_3d(), $Player/BackCameraContainer/BackCameraSubViewport/BackCamera, $Player/BackCameraContainer, $Player/SatelliteCameraContainer/SatelliteCameraSubViewport/SatelliteCamera, $Player/SatelliteCameraContainer)
+	$Player/Player.set_camera(get_viewport().get_camera_3d(), $Player/Control/BackCameraContainer/BackCameraSubViewport/BackCamera, $Player/Control/BackCameraContainer, $Player/Control/SatelliteCameraContainer/SatelliteCameraSubViewport/SatelliteCamera, $Player/Control/SatelliteCameraContainer)
 	var e := get_tree().get_root().connect("size_changed", Callable(self, "resizing"))
 	log_debug(str("connect size_changed result=", e))
 	#get_tree().get_root().set_transparent_background(true)

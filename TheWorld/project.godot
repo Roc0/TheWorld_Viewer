@@ -26,7 +26,7 @@ settings/stdout/verbose_stdout=true
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/debug_running_game/plugin.cfg", "res://addons/twviewer/plugin.cfg")
+enabled=PackedStringArray("res://addons/compass/plugin.cfg", "res://addons/debug_running_game/plugin.cfg", "res://addons/twviewer/plugin.cfg")
 
 [filesystem]
 

@@ -67,22 +67,17 @@ shape = SubResource("CapsuleShape3D_3xj2k")
 target_position = Vector3(0, -5, 0)
 collision_mask = 4294967295
 
-[node name="BackMirror" type="Node3D" parent="."]
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
-[node name="BackCameraContainer" type="SubViewportContainer" parent="."]
-offset_right = 512.0
-offset_bottom = 512.0
-
-[node name="BackCameraSubViewport" type="SubViewport" parent="BackCameraContainer"]
-handle_input_locally = false
-render_target_update_mode = 4
-
-[node name="BackCamera" type="Camera3D" parent="BackCameraContainer/BackCameraSubViewport"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.7456, 0.0351807, 0)
-current = true
-
-[node name="SatelliteCameraContainer" type="SubViewportContainer" parent="."]
+[node name="SatelliteCameraContainer" type="SubViewportContainer" parent="Control"]
 auto_translate_mode = 1
+layout_mode = 1
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
@@ -93,11 +88,25 @@ offset_top = -512.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="SatelliteCameraSubViewport" type="SubViewport" parent="SatelliteCameraContainer"]
+[node name="SatelliteCameraSubViewport" type="SubViewport" parent="Control/SatelliteCameraContainer"]
 handle_input_locally = false
 render_target_update_mode = 4
 
-[node name="SatelliteCamera" type="Camera3D" parent="SatelliteCameraContainer/SatelliteCameraSubViewport"]
+[node name="SatelliteCamera" type="Camera3D" parent="Control/SatelliteCameraContainer/SatelliteCameraSubViewport"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.7456, 0.0351807, 0)
 current = true
 far = 30000.0
+
+[node name="BackCameraContainer" type="SubViewportContainer" parent="Control"]
+layout_mode = 1
+offset_right = 512.0
+offset_bottom = 512.0
+
+[node name="BackCameraSubViewport" type="SubViewport" parent="Control/BackCameraContainer"]
+handle_input_locally = false
+size = Vector2i(400, 200)
+render_target_update_mode = 4
+
+[node name="BackCamera" type="Camera3D" parent="Control/BackCameraContainer/BackCameraSubViewport"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12.7456, 0.0351807, 0)
+current = true
