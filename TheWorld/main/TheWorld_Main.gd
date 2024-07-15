@@ -144,7 +144,10 @@ func init():
 	#visible = false
 	$UI/MessageContainer/Message.add_theme_color_override("font_color", Color(251.0 / 255.0, 206.0 / 255.0, 177.0 / 255.0))
 	$UI/MessageContainer/Message.text = "Deploying world ..."
-	_config_file_name = TWViewer().GDN_globals().get_config_filename(0)
+	_config_file_name = ""
+	while(_config_file_name == ""):
+		_config_file_name = TWViewer().GDN_globals().get_config_filename(0)
+	print(str("_config_file_name", "=", _config_file_name))
 	#var config = ConfigFile.new()
 	var _err = _config.load(_config_file_name)
 	_initial_camera_position_in_map = _config.get_value(tw_const.param_group_camera, tw_const.param_key_initial_camera_pos)
