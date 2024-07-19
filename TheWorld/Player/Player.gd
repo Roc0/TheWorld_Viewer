@@ -78,8 +78,8 @@ func _process(_delta):
 			_satellite_camera.far = 40000
 			_satellite_camera.global_transform.origin = (_world_camera.global_position * Vector3(1, 0, 1)) + Vector3(0, 15000, 0)
 			_satellite_camera.global_transform.basis = Basis.IDENTITY.rotated(Vector3(1, 0, 0), -PI / 2)	# fixed pointing on north direction
-			var b : Basis = _satellite_camera.global_transform.basis
-			b = Basis.IDENTITY.rotated(Vector3(1, 0, 0), -PI / 2)
+			var _b : Basis = _satellite_camera.global_transform.basis
+			_b = Basis.IDENTITY.rotated(Vector3(1, 0, 0), -PI / 2)
 			_satellite_camera.far = 40000
 			#_satellite_camera.global_transform.basis = _satellite_camera.global_transform.basis.rotated(Vector3(0, 1 ,0), deg_to_rad(-_world_camera.get_angle_from_north_degree()))
 

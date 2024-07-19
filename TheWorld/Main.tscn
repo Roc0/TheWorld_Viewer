@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=3 uid="uid://c4ukh1kw4impi"]
+[gd_scene load_steps=63 format=4 uid="uid://c4ukh1kw4impi"]
 
 [ext_resource type="Script" path="res://main/TheWorld_Main.gd" id="1_760ml"]
 [ext_resource type="Script" path="res://addons/twviewer/tw_viewer.gd" id="3_yxvy6"]
@@ -31,15 +31,15 @@ albedo_color = Color(1, 0, 0, 1)
 [sub_resource type="ArrayMesh" id="ArrayMesh_kfft6"]
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1, 1),
-"attribute_data": PackedByteArray(255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255),
+"attribute_data": PackedByteArray("/wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP8="),
 "format": 34359742473,
 "index_count": 28,
-"index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 4, 0, 5, 0, 5, 0, 6, 0, 6, 0, 7, 0, 7, 0, 4, 0, 0, 0, 4, 0, 1, 0, 5, 0, 2, 0, 6, 0, 3, 0, 7, 0, 0, 0, 2, 0, 1, 0, 3, 0),
+"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAQABQAFAAYABgAHAAcABAAAAAQAAQAFAAIABgADAAcAAAACAAEAAwA="),
 "material": SubResource("StandardMaterial3D_xl13w"),
 "primitive": 1,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 8,
-"vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63)
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPwAAgD8AAAAAAACAPwAAgD8AAIA/AAAAAAAAgD8AAIA/")
 }]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_brhhl"]
@@ -50,15 +50,15 @@ albedo_color = Color(1, 0, 0, 1)
 [sub_resource type="ArrayMesh" id="ArrayMesh_4lakm"]
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1, 1),
-"attribute_data": PackedByteArray(255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255),
+"attribute_data": PackedByteArray("/wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP8="),
 "format": 34359742473,
 "index_count": 28,
-"index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 4, 0, 5, 0, 5, 0, 6, 0, 6, 0, 7, 0, 7, 0, 4, 0, 0, 0, 4, 0, 1, 0, 5, 0, 2, 0, 6, 0, 3, 0, 7, 0, 0, 0, 2, 0, 1, 0, 3, 0),
+"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAQABQAFAAYABgAHAAcABAAAAAQAAQAFAAIABgADAAcAAAACAAEAAwA="),
 "material": SubResource("StandardMaterial3D_brhhl"),
 "primitive": 1,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 8,
-"vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63)
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPwAAgD8AAAAAAACAPwAAgD8AAIA/AAAAAAAAgD8AAIA/")
 }]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u8oof"]
@@ -69,15 +69,15 @@ albedo_color = Color(0, 1, 1, 1)
 [sub_resource type="ArrayMesh" id="ArrayMesh_inpye"]
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1, 1),
-"attribute_data": PackedByteArray(0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255),
+"attribute_data": PackedByteArray("AP///wD///8A////AP///wD///8A////AP///wD///8="),
 "format": 34359742473,
 "index_count": 28,
-"index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 4, 0, 5, 0, 5, 0, 6, 0, 6, 0, 7, 0, 7, 0, 4, 0, 0, 0, 4, 0, 1, 0, 5, 0, 2, 0, 6, 0, 3, 0, 7, 0, 0, 0, 2, 0, 1, 0, 3, 0),
+"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAQABQAFAAYABgAHAAcABAAAAAQAAQAFAAIABgADAAcAAAACAAEAAwA="),
 "material": SubResource("StandardMaterial3D_u8oof"),
 "primitive": 1,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 8,
-"vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63)
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPwAAgD8AAAAAAACAPwAAgD8AAIA/AAAAAAAAgD8AAIA/")
 }]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8rvpv"]
@@ -88,15 +88,15 @@ albedo_color = Color(1, 0.752941, 0.796078, 1)
 [sub_resource type="ArrayMesh" id="ArrayMesh_8ciaf"]
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1, 1),
-"attribute_data": PackedByteArray(255, 192, 203, 255, 255, 192, 203, 255, 255, 192, 203, 255, 255, 192, 203, 255, 255, 192, 203, 255, 255, 192, 203, 255, 255, 192, 203, 255, 255, 192, 203, 255),
+"attribute_data": PackedByteArray("/8DL///Ay///wMv//8DL///Ay///wMv//8DL///Ay/8="),
 "format": 34359742473,
 "index_count": 28,
-"index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 4, 0, 5, 0, 5, 0, 6, 0, 6, 0, 7, 0, 7, 0, 4, 0, 0, 0, 4, 0, 1, 0, 5, 0, 2, 0, 6, 0, 3, 0, 7, 0, 0, 0, 2, 0, 1, 0, 3, 0),
+"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAQABQAFAAYABgAHAAcABAAAAAQAAQAFAAIABgADAAcAAAACAAEAAwA="),
 "material": SubResource("StandardMaterial3D_8rvpv"),
 "primitive": 1,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 8,
-"vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63)
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPwAAgD8AAAAAAACAPwAAgD8AAIA/AAAAAAAAgD8AAIA/")
 }]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0cdsq"]
@@ -107,15 +107,15 @@ albedo_color = Color(0.984314, 0.807843, 0.694118, 1)
 [sub_resource type="ArrayMesh" id="ArrayMesh_2k8ve"]
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1, 1),
-"attribute_data": PackedByteArray(251, 206, 177, 255, 251, 206, 177, 255, 251, 206, 177, 255, 251, 206, 177, 255, 251, 206, 177, 255, 251, 206, 177, 255, 251, 206, 177, 255, 251, 206, 177, 255),
+"attribute_data": PackedByteArray("+86x//vOsf/7zrH/+86x//vOsf/7zrH/+86x//vOsf8="),
 "format": 34359742473,
 "index_count": 28,
-"index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 4, 0, 5, 0, 5, 0, 6, 0, 6, 0, 7, 0, 7, 0, 4, 0, 0, 0, 4, 0, 1, 0, 5, 0, 2, 0, 6, 0, 3, 0, 7, 0, 0, 0, 2, 0, 1, 0, 3, 0),
+"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAQABQAFAAYABgAHAAcABAAAAAQAAQAFAAIABgADAAcAAAACAAEAAwA="),
 "material": SubResource("StandardMaterial3D_0cdsq"),
 "primitive": 1,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 8,
-"vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63)
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPwAAgD8AAAAAAACAPwAAgD8AAIA/AAAAAAAAgD8AAIA/")
 }]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kwt8m"]
@@ -126,15 +126,15 @@ albedo_color = Color(0.498039, 1, 0.831373, 1)
 [sub_resource type="ArrayMesh" id="ArrayMesh_445ek"]
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1, 1),
-"attribute_data": PackedByteArray(127, 255, 212, 255, 127, 255, 212, 255, 127, 255, 212, 255, 127, 255, 212, 255, 127, 255, 212, 255, 127, 255, 212, 255, 127, 255, 212, 255, 127, 255, 212, 255),
+"attribute_data": PackedByteArray("f//U/3//1P9//9T/f//U/3//1P9//9T/f//U/3//1P8="),
 "format": 34359742473,
 "index_count": 28,
-"index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 4, 0, 5, 0, 5, 0, 6, 0, 6, 0, 7, 0, 7, 0, 4, 0, 0, 0, 4, 0, 1, 0, 5, 0, 2, 0, 6, 0, 3, 0, 7, 0, 0, 0, 2, 0, 1, 0, 3, 0),
+"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAQABQAFAAYABgAHAAcABAAAAAQAAQAFAAIABgADAAcAAAACAAEAAwA="),
 "material": SubResource("StandardMaterial3D_kwt8m"),
 "primitive": 1,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 8,
-"vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63)
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPwAAgD8AAAAAAACAPwAAgD8AAIA/AAAAAAAAgD8AAIA/")
 }]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xjvee"]
@@ -145,15 +145,15 @@ albedo_color = Color(0, 1, 0, 1)
 [sub_resource type="ArrayMesh" id="ArrayMesh_morco"]
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1, 1),
-"attribute_data": PackedByteArray(0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255),
+"attribute_data": PackedByteArray("AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8="),
 "format": 34359742473,
 "index_count": 28,
-"index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 4, 0, 5, 0, 5, 0, 6, 0, 6, 0, 7, 0, 7, 0, 4, 0, 0, 0, 4, 0, 1, 0, 5, 0, 2, 0, 6, 0, 3, 0, 7, 0, 0, 0, 2, 0, 1, 0, 3, 0),
+"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAQABQAFAAYABgAHAAcABAAAAAQAAQAFAAIABgADAAcAAAACAAEAAwA="),
 "material": SubResource("StandardMaterial3D_xjvee"),
 "primitive": 1,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 8,
-"vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 128, 63)
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPwAAgD8AAAAAAACAPwAAgD8AAIA/AAAAAAAAgD8AAIA/")
 }]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n17l1"]
@@ -164,15 +164,15 @@ albedo_color = Color(1, 0, 0, 1)
 [sub_resource type="ArrayMesh" id="ArrayMesh_8ohvh"]
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1e-05, 1),
-"attribute_data": PackedByteArray(255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255),
+"attribute_data": PackedByteArray("/wAA//8AAP//AAD//wAA/w=="),
 "format": 34359742473,
 "index_count": 12,
-"index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 0, 0, 2, 0, 1, 0, 3, 0),
+"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAAAAgABAAMA"),
 "material": SubResource("StandardMaterial3D_n17l1"),
 "primitive": 1,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
-"vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63)
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/")
 }]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3io7e"]
@@ -183,15 +183,15 @@ albedo_color = Color(1, 0, 0, 1)
 [sub_resource type="ArrayMesh" id="ArrayMesh_2d54p"]
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1e-05, 1),
-"attribute_data": PackedByteArray(255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255, 255, 0, 0, 255),
+"attribute_data": PackedByteArray("/wAA//8AAP//AAD//wAA/w=="),
 "format": 34359742473,
 "index_count": 12,
-"index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 0, 0, 2, 0, 1, 0, 3, 0),
+"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAAAAgABAAMA"),
 "material": SubResource("StandardMaterial3D_3io7e"),
 "primitive": 1,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
-"vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63)
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/")
 }]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_n3f4l"]
@@ -202,15 +202,15 @@ albedo_color = Color(0, 1, 1, 1)
 [sub_resource type="ArrayMesh" id="ArrayMesh_tehwb"]
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1e-05, 1),
-"attribute_data": PackedByteArray(0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255, 0, 255, 255, 255),
+"attribute_data": PackedByteArray("AP///wD///8A////AP///w=="),
 "format": 34359742473,
 "index_count": 12,
-"index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 0, 0, 2, 0, 1, 0, 3, 0),
+"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAAAAgABAAMA"),
 "material": SubResource("StandardMaterial3D_n3f4l"),
 "primitive": 1,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
-"vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63)
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/")
 }]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ctmc1"]
@@ -221,15 +221,15 @@ albedo_color = Color(1, 0.752941, 0.796078, 1)
 [sub_resource type="ArrayMesh" id="ArrayMesh_hfhpw"]
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1e-05, 1),
-"attribute_data": PackedByteArray(255, 192, 203, 255, 255, 192, 203, 255, 255, 192, 203, 255, 255, 192, 203, 255),
+"attribute_data": PackedByteArray("/8DL///Ay///wMv//8DL/w=="),
 "format": 34359742473,
 "index_count": 12,
-"index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 0, 0, 2, 0, 1, 0, 3, 0),
+"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAAAAgABAAMA"),
 "material": SubResource("StandardMaterial3D_ctmc1"),
 "primitive": 1,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
-"vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63)
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/")
 }]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_canw8"]
@@ -240,15 +240,15 @@ albedo_color = Color(0.984314, 0.807843, 0.694118, 1)
 [sub_resource type="ArrayMesh" id="ArrayMesh_prsjq"]
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1e-05, 1),
-"attribute_data": PackedByteArray(251, 206, 177, 255, 251, 206, 177, 255, 251, 206, 177, 255, 251, 206, 177, 255),
+"attribute_data": PackedByteArray("+86x//vOsf/7zrH/+86x/w=="),
 "format": 34359742473,
 "index_count": 12,
-"index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 0, 0, 2, 0, 1, 0, 3, 0),
+"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAAAAgABAAMA"),
 "material": SubResource("StandardMaterial3D_canw8"),
 "primitive": 1,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
-"vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63)
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/")
 }]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_te650"]
@@ -259,15 +259,15 @@ albedo_color = Color(0.498039, 1, 0.831373, 1)
 [sub_resource type="ArrayMesh" id="ArrayMesh_cx5y7"]
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1e-05, 1),
-"attribute_data": PackedByteArray(127, 255, 212, 255, 127, 255, 212, 255, 127, 255, 212, 255, 127, 255, 212, 255),
+"attribute_data": PackedByteArray("f//U/3//1P9//9T/f//U/w=="),
 "format": 34359742473,
 "index_count": 12,
-"index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 0, 0, 2, 0, 1, 0, 3, 0),
+"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAAAAgABAAMA"),
 "material": SubResource("StandardMaterial3D_te650"),
 "primitive": 1,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
-"vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63)
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/")
 }]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_tv0nj"]
@@ -278,19 +278,19 @@ albedo_color = Color(0, 1, 0, 1)
 [sub_resource type="ArrayMesh" id="ArrayMesh_l1tm6"]
 _surfaces = [{
 "aabb": AABB(0, 0, 0, 1, 1e-05, 1),
-"attribute_data": PackedByteArray(0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255, 0, 255),
+"attribute_data": PackedByteArray("AP8A/wD/AP8A/wD/AP8A/w=="),
 "format": 34359742473,
 "index_count": 12,
-"index_data": PackedByteArray(0, 0, 1, 0, 1, 0, 2, 0, 2, 0, 3, 0, 3, 0, 0, 0, 0, 0, 2, 0, 1, 0, 3, 0),
+"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAAAAgABAAMA"),
 "material": SubResource("StandardMaterial3D_tv0nj"),
 "primitive": 1,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 4,
-"vertex_data": PackedByteArray(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 128, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128, 63)
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/")
 }]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_xmlxu"]
-render_priority = -1
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b1hol"]
+render_priority = 0
 shader = ExtResource("5_8cej7")
 shader_parameter/depth_threshold = 0.05
 shader_parameter/reverse_depth_threshold = 0.25
@@ -301,12 +301,12 @@ shader_parameter/normal_edge_bias = Vector3(1, 1, 1)
 shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
 
 [sub_resource type="QuadMesh" id="QuadMesh_fq383"]
-material = SubResource("ShaderMaterial_xmlxu")
+material = SubResource("ShaderMaterial_b1hol")
 flip_faces = true
 size = Vector2(2, 2)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3bxu4"]
-render_priority = -1
+render_priority = 1
 shader = ExtResource("5_lw418")
 shader_parameter/u_under_water_albedo = Color(0.0559846, 0.118861, 0.48, 1)
 
@@ -429,9 +429,9 @@ metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(0.685187, -0.0412937, -0.727195, 0, 0.998392, -0.0566935, 0.728367, 0.0388457, 0.684085, -142.623, -11.1192, 134.168)
+transform = Transform3D(0.870326, -0.036496, 0.491122, 0, 0.99725, 0.0741071, -0.492476, -0.0644974, 0.867933, 8162.39, -7.15565, -12176.3)
 near = 0.5
-far = 18432.0
+far = 30720.0
 
 [node name="PostProcessingOutLine" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
 transform = Transform3D(0.582015, 0.000569433, -0.813178, -0.303312, 0.927985, -0.21644, 0.754493, 0.372618, 0.540274, 0, 0, -11.381)
@@ -441,7 +441,6 @@ mesh = SubResource("QuadMesh_fq383")
 
 [node name="PostProcessingUnderWaterOverride" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
 transform = Transform3D(0.582015, 0.000569433, -0.813178, -0.303312, 0.927985, -0.21644, 0.754493, 0.372618, 0.540274, 0, 0, -11.3809)
-visible = false
 extra_cull_margin = 16384.0
 mesh = SubResource("QuadMesh_emvfv")
 
@@ -609,11 +608,11 @@ transform = Transform3D(-0.947768, 0, -0.318959, 0, 1, 0, 0.318959, 0, -0.947768
 
 [node name="UI" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main" instance=ExtResource("4_cjpoh")]
 
-[node name="PostProcessGreyScaleEffect" type="CanvasLayer" parent="."]
+[node name="PostProcessingGreyScaleEffect" type="CanvasLayer" parent="."]
 visible = false
 follow_viewport_enabled = true
 
-[node name="ColorRect" type="ColorRect" parent="PostProcessGreyScaleEffect"]
+[node name="ColorRect" type="ColorRect" parent="PostProcessingGreyScaleEffect"]
 material = SubResource("ShaderMaterial_epqem")
 anchors_preset = 15
 anchor_right = 1.0
@@ -621,11 +620,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="PostProcessGaussianBlurEffect" type="CanvasLayer" parent="."]
+[node name="PostProcessingGaussianBlurEffect" type="CanvasLayer" parent="."]
 visible = false
 follow_viewport_enabled = true
 
-[node name="ColorRect" type="ColorRect" parent="PostProcessGaussianBlurEffect"]
+[node name="ColorRect" type="ColorRect" parent="PostProcessingGaussianBlurEffect"]
 material = SubResource("ShaderMaterial_6wri7")
 anchors_preset = 15
 anchor_right = 1.0

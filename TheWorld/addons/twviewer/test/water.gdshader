@@ -290,7 +290,7 @@ void fragment() {
 	}
 
 	// contrast z-fighting or z-clipping: at great distance we need to force sea in front of terrain in the z-buffer to avoid flickering when camera moves
-	float z_fighting_max_camera_heigth = 10000.0;
+	/*float z_fighting_max_camera_heigth = 100000.0;
 	if (CAMERA_POSITION_WORLD.y <= z_fighting_max_camera_heigth) {
 		// near terrain we assume not to have z-fighting
 		DEPTH = FRAGCOORD.z;
@@ -309,7 +309,7 @@ void fragment() {
 				// terrain over water
 				DEPTH = FRAGCOORD.z + 0.1;
 			}
-	}
+	}*/
 
 	if (u_generate_global_map) {
 		alpha = 1.0;

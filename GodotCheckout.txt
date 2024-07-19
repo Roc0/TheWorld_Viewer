@@ -1,9 +1,13 @@
 git show HEAD
-get checkout master
+git checkout master
 
 godot		4.2.1-stable
 godot-cpp	godot-4.2.1-stable
 
 15/03/2024
 godot		commit c9c17d6ca6e5edf4cc54327265c989ac025afa07		HEAD detached at c9c17d6ca6 (git status)
+godot-cpp	commit a62f633cebee4b36356dc903d00670733cd28fb1		HEAD detached at a62f633 (git status)
+
+16/07/2024 (godot 4.3 beta 3)
+godot		commit 82cedc83c9069125207c128f9a07ce3d82c317cc		HEAD detached at 82cedc83c9 (git status)
 godot-cpp	commit a62f633cebee4b36356dc903d00670733cd28fb1		HEAD detached at a62f633 (git status)

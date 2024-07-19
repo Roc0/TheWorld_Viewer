@@ -382,8 +382,8 @@ expression = "vec4 distance_texture(sampler2D _tex, vec2 _uv) {
 		return texture(_tex, _uv);
 	} else {
 		vec4 final = texture(_tex, _uv * far_uv_scale);
-		final = mix(final, texture(_tex, _uv * middle_uv_scale), v_middle_mask);
-		final = mix(final, texture(_tex, _uv * close_uv_scale), v_close_mask);
+		final = mix(final, texture(_tex, _uv * middle_uv_scale), var_v_middle_mask);
+		final = mix(final, texture(_tex, _uv * close_uv_scale), var_v_close_mask);
 		return final;
 	}
 }
@@ -393,8 +393,8 @@ vec4 distance_texture_layer(sampler2DArray _tex, vec3 _uv) {
 		return texture(_tex, _uv);
 	} else {
 		vec4 final = texture(_tex, vec3(_uv.xy * far_uv_scale, _uv.z));
-		final = mix(final, texture(_tex, vec3(_uv.xy * middle_uv_scale, _uv.z)), v_middle_mask);
-		final = mix(final, texture(_tex, vec3(_uv.xy * close_uv_scale, _uv.z)), v_close_mask);
+		final = mix(final, texture(_tex, vec3(_uv.xy * middle_uv_scale, _uv.z)), var_v_middle_mask);
+		final = mix(final, texture(_tex, vec3(_uv.xy * close_uv_scale, _uv.z)), var_v_close_mask);
 		return final;
 	}
 }
@@ -1667,18 +1667,18 @@ global uniform float gu_camera_altitude_from_terrain = -1;
 global uniform bool gu_show_chunks = false;
 
 // Varyings
-varying vec4 v_vertex_world_pos;
-varying vec2 v_vertex_cell_coords_in_textures;
-varying float v_distance_from_camera;
-varying vec4 v_splat;
-varying vec3 v_tint0;
-varying vec3 v_tint1;
-varying vec3 v_tint2;
-varying vec3 v_tint3;
-varying float v_distance_from_camera_on_terrain;
-varying float v_close_mask;
-varying float v_middle_mask;
-varying float v_lod;
+varying vec4 var_v_vertex_world_pos;
+varying vec2 var_v_vertex_cell_coords_in_textures;
+varying float var_v_distance_from_camera;
+varying vec4 var_v_splat;
+varying vec3 var_v_tint0;
+varying vec3 var_v_tint1;
+varying vec3 var_v_tint2;
+varying vec3 var_v_tint3;
+varying float var_v_distance_from_camera_on_terrain;
+varying float var_v_close_mask;
+varying float var_v_middle_mask;
+varying float var_v_lod;
 
 uniform mat4 u_terrain_inverse_transform;
 uniform float u_grid_step = 2;
@@ -1845,8 +1845,8 @@ uniform sampler2D tex_frg_62;
 			return texture(_tex, _uv);
 		} else {
 			vec4 final = texture(_tex, _uv * far_uv_scale);
-			final = mix(final, texture(_tex, _uv * middle_uv_scale), v_middle_mask);
-			final = mix(final, texture(_tex, _uv * close_uv_scale), v_close_mask);
+			final = mix(final, texture(_tex, _uv * middle_uv_scale), var_v_middle_mask);
+			final = mix(final, texture(_tex, _uv * close_uv_scale), var_v_close_mask);
 			return final;
 		}
 	}
@@ -1856,8 +1856,8 @@ uniform sampler2D tex_frg_62;
 			return texture(_tex, _uv);
 		} else {
 			vec4 final = texture(_tex, vec3(_uv.xy * far_uv_scale, _uv.z));
-			final = mix(final, texture(_tex, vec3(_uv.xy * middle_uv_scale, _uv.z)), v_middle_mask);
-			final = mix(final, texture(_tex, vec3(_uv.xy * close_uv_scale, _uv.z)), v_close_mask);
+			final = mix(final, texture(_tex, vec3(_uv.xy * middle_uv_scale, _uv.z)), var_v_middle_mask);
+			final = mix(final, texture(_tex, vec3(_uv.xy * close_uv_scale, _uv.z)), var_v_close_mask);
 			return final;
 		}
 	}
@@ -2273,11 +2273,11 @@ void vertex() {
 
 
 // VaryingSetter:14
-	v_vertex_world_pos = n_out13p1;
+	var_v_vertex_world_pos = n_out13p1;
 
 
 // VaryingSetter:16
-	v_vertex_cell_coords_in_textures = n_out12p0;
+	var_v_vertex_cell_coords_in_textures = n_out12p0;
 
 
 // Vector3Parameter:71
@@ -2305,7 +2305,7 @@ void vertex() {
 
 
 // VaryingSetter:19
-	v_distance_from_camera = n_out18p0;
+	var_v_distance_from_camera = n_out18p0;
 
 
 // BooleanParameter:38
@@ -2323,7 +2323,7 @@ void vertex() {
 
 
 // VaryingSetter:24
-	v_splat = n_out23p0;
+	var_v_splat = n_out23p0;
 
 
 	vec3 n_out25p0;
@@ -2345,42 +2345,42 @@ void vertex() {
 
 
 // VaryingSetter:26
-	v_tint0 = n_out25p0;
+	var_v_tint0 = n_out25p0;
 
 
 // VaryingSetter:27
-	v_tint1 = n_out25p1;
+	var_v_tint1 = n_out25p1;
 
 
 // VaryingSetter:28
-	v_tint2 = n_out25p2;
+	var_v_tint2 = n_out25p2;
 
 
 // VaryingSetter:29
-	v_tint3 = n_out25p3;
+	var_v_tint3 = n_out25p3;
 
 
 // VaryingSetter:68
-	v_distance_from_camera_on_terrain = n_out18p1;
+	var_v_distance_from_camera_on_terrain = n_out18p1;
 
 
 // VaryingSetter:69
-	v_close_mask = n_out18p2;
+	var_v_close_mask = n_out18p2;
 
 
 // VaryingSetter:70
-	v_middle_mask = n_out18p3;
+	var_v_middle_mask = n_out18p3;
 
 
 // VaryingSetter:77
-	v_lod = n_out76p0;
+	var_v_lod = n_out76p0;
 
 
 }
 
 void fragment() {
 // VaryingGetter:3
-	float n_out3p0 = v_distance_from_camera;
+	float n_out3p0 = var_v_distance_from_camera;
 
 
 // ParameterRef:23
@@ -2462,15 +2462,15 @@ void fragment() {
 
 
 // VaryingGetter:11
-	vec2 n_out11p0 = v_vertex_cell_coords_in_textures;
+	vec2 n_out11p0 = var_v_vertex_cell_coords_in_textures;
 
 
 // VaryingGetter:12
-	vec4 n_out12p0 = v_vertex_world_pos;
+	vec4 n_out12p0 = var_v_vertex_world_pos;
 
 
 // VaryingGetter:84
-	float n_out84p0 = v_distance_from_camera_on_terrain;
+	float n_out84p0 = var_v_distance_from_camera_on_terrain;
 
 
 // Input:8
@@ -2569,7 +2569,7 @@ void fragment() {
 
 
 // VaryingGetter:37
-	vec4 n_out37p0 = v_splat;
+	vec4 n_out37p0 = var_v_splat;
 
 
 // Texture2D:62
@@ -2797,19 +2797,19 @@ void fragment() {
 
 
 // VaryingGetter:38
-	vec3 n_out38p0 = v_tint0;
+	vec3 n_out38p0 = var_v_tint0;
 
 
 // VaryingGetter:39
-	vec3 n_out39p0 = v_tint1;
+	vec3 n_out39p0 = var_v_tint1;
 
 
 // VaryingGetter:40
-	vec3 n_out40p0 = v_tint2;
+	vec3 n_out40p0 = var_v_tint2;
 
 
 // VaryingGetter:41
-	vec3 n_out41p0 = v_tint3;
+	vec3 n_out41p0 = var_v_tint3;
 
 
 // ParameterRef:36
@@ -3019,7 +3019,7 @@ void fragment() {
 
 
 // VaryingGetter:88
-	float n_out88p0 = v_lod;
+	float n_out88p0 = var_v_lod;
 
 
 	vec3 n_out89p0;
@@ -3878,8 +3878,8 @@ nodes/fragment/45/expression = "vec4 distance_texture(sampler2D _tex, vec2 _uv) 
 		return texture(_tex, _uv);
 	} else {
 		vec4 final = texture(_tex, _uv * far_uv_scale);
-		final = mix(final, texture(_tex, _uv * middle_uv_scale), v_middle_mask);
-		final = mix(final, texture(_tex, _uv * close_uv_scale), v_close_mask);
+		final = mix(final, texture(_tex, _uv * middle_uv_scale), var_v_middle_mask);
+		final = mix(final, texture(_tex, _uv * close_uv_scale), var_v_close_mask);
 		return final;
 	}
 }
@@ -3889,8 +3889,8 @@ vec4 distance_texture_layer(sampler2DArray _tex, vec3 _uv) {
 		return texture(_tex, _uv);
 	} else {
 		vec4 final = texture(_tex, vec3(_uv.xy * far_uv_scale, _uv.z));
-		final = mix(final, texture(_tex, vec3(_uv.xy * middle_uv_scale, _uv.z)), v_middle_mask);
-		final = mix(final, texture(_tex, vec3(_uv.xy * close_uv_scale, _uv.z)), v_close_mask);
+		final = mix(final, texture(_tex, vec3(_uv.xy * middle_uv_scale, _uv.z)), var_v_middle_mask);
+		final = mix(final, texture(_tex, vec3(_uv.xy * close_uv_scale, _uv.z)), var_v_close_mask);
 		return final;
 	}
 }
