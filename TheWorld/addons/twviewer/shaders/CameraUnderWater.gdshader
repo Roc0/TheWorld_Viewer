@@ -31,7 +31,7 @@ void fragment() {
 		}
 	}
 
-	/*if (under_water) {
+	if (under_water) {
 		//ALBEDO = vec3(0.188, 0.172, 0.758);
 		ALBEDO = u_under_water_albedo;
 		ALPHA = 0.8;
@@ -42,7 +42,7 @@ void fragment() {
 		vec4 normal_roughness = texture(NORMAL_ROUGHNESS_TEXTURE, SCREEN_UV);
 		NORMAL_MAP = normal_roughness.rgb;
 		ROUGHNESS = normal_roughness.a;
-	}*/
+	}
 
 	/*if (gu_camera_on_sea) {
 		ALBEDO = vec3(1.0, 0.0, 0.0);
@@ -53,11 +53,11 @@ void fragment() {
 		ALBEDO = vec3(1.0, 0.0, 0.0);
 	} else {
 		ALBEDO = vec3(0.0, 1.0, 0.0);
-	}*/
+	}
 	if (under_water) {
 		ALBEDO = vec3(0.0, 0.0, 1.0);
 	} else {
 		ALBEDO = vec3(1.0, 0.0, 0.0);
 	}
-	ALPHA = 0.8;
+	ALPHA = 0.8;*/
 }

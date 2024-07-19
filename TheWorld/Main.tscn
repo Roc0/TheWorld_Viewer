@@ -1,4 +1,4 @@
-[gd_scene load_steps=63 format=4 uid="uid://c4ukh1kw4impi"]
+[gd_scene load_steps=66 format=4 uid="uid://c4ukh1kw4impi"]
 
 [ext_resource type="Script" path="res://main/TheWorld_Main.gd" id="1_760ml"]
 [ext_resource type="Script" path="res://addons/twviewer/tw_viewer.gd" id="3_yxvy6"]
@@ -13,6 +13,7 @@
 [ext_resource type="Material" uid="uid://dee4mdtcckm70" path="res://addons/twviewer/test/m_sea.tres" id="6_32vc6"]
 [ext_resource type="PackedScene" uid="uid://v6sfi8k7dr7o" path="res://player.tscn" id="6_wlxwp"]
 [ext_resource type="Script" path="res://addons/twviewer/test/test_quadrant.gd" id="7_7uq48"]
+[ext_resource type="Shader" path="res://addons/twviewer/shaders/CameraUnderWaterNew.gdshader" id="7_yrlpt"]
 [ext_resource type="Shader" path="res://utils/GaussianBlurEffectPostProcess.gdshader" id="9_2dtkh"]
 [ext_resource type="Shader" uid="uid://h5kcbfu71fyx" path="res://addons/twviewer/test/test_shader_1.tres" id="9_hvx40"]
 [ext_resource type="PackedScene" uid="uid://caqxfqurbp3ku" path="res://assets/scenes/pine_tree.tscn" id="11_fbf05"]
@@ -305,15 +306,33 @@ material = SubResource("ShaderMaterial_b1hol")
 flip_faces = true
 size = Vector2(2, 2)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_3bxu4"]
-render_priority = 1
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7rgld"]
+render_priority = 0
 shader = ExtResource("5_lw418")
-shader_parameter/u_under_water_albedo = Color(0.0559846, 0.118861, 0.48, 1)
+shader_parameter/u_under_water_albedo = Color(0.056, 0.119, 0.48, 1)
 
 [sub_resource type="QuadMesh" id="QuadMesh_emvfv"]
-material = SubResource("ShaderMaterial_3bxu4")
+material = SubResource("ShaderMaterial_7rgld")
 flip_faces = true
 size = Vector2(2, 2)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6alpk"]
+render_priority = 0
+shader = ExtResource("7_yrlpt")
+shader_parameter/albedo = Color(0.054902, 0.117647, 0.478431, 1)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = null
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+
+[sub_resource type="QuadMesh" id="QuadMesh_y8qsi"]
+material = SubResource("ShaderMaterial_6alpk")
+size = Vector2(3, 2)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_60os2"]
 material = ExtResource("6_32vc6")
@@ -433,16 +452,22 @@ transform = Transform3D(0.870326, -0.036496, 0.491122, 0, 0.99725, 0.0741071, -0
 near = 0.5
 far = 30720.0
 
-[node name="PostProcessingOutLine" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
+[node name="__PostProcessingOutLine" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
 transform = Transform3D(0.582015, 0.000569433, -0.813178, -0.303312, 0.927985, -0.21644, 0.754493, 0.372618, 0.540274, 0, 0, -11.381)
 visible = false
 extra_cull_margin = 16384.0
 mesh = SubResource("QuadMesh_fq383")
 
-[node name="PostProcessingUnderWaterOverride" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
+[node name="__PostProcessingUnderWaterOverride" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
 transform = Transform3D(0.582015, 0.000569433, -0.813178, -0.303312, 0.927985, -0.21644, 0.754493, 0.372618, 0.540274, 0, 0, -11.3809)
+visible = false
 extra_cull_margin = 16384.0
 mesh = SubResource("QuadMesh_emvfv")
+
+[node name="PostProcessingUnderWaterOverride" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+visible = false
+mesh = SubResource("QuadMesh_y8qsi")
 
 [node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
 
