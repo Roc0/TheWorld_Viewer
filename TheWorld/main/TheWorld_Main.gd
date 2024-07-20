@@ -143,7 +143,7 @@ func init():
 	log_debug("init")
 	#visible = false
 	$UI/MessageContainer/Message.add_theme_color_override("font_color", Color(251.0 / 255.0, 206.0 / 255.0, 177.0 / 255.0))
-	$UI/MessageContainer/Message.text = "Deploying world ..."
+	#$UI/MessageContainer/Message.text = "Deploying world ..."
 	_config_file_name = ""
 	while(_config_file_name == ""):
 		_config_file_name = TWViewer().GDN_globals().get_config_filename(0)
@@ -173,7 +173,7 @@ func deinit():
 func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> void:
 	if new_client_status == tw_const.clientstatus_world_undeploy_in_progress:
 		save_current_position(-1)
-		$UI/MessageContainer/Message.text = "Undeploying world ..."
+		#$UI/MessageContainer/Message.text = "Undeploying world ..."
 			
 	_clientstatus = new_client_status
 	_client_status = Globals.Constants.status_to_string(new_client_status)
@@ -385,9 +385,9 @@ func _process(_delta):
 			$Player/Player.set_player_in_world(true)
 			#$UI/MessageContainer/Message.text = ""
 		
-		$UI/MessageContainer/Message.text = "World deployed"
+		#_saved_time_to_fade_message = Time.get_ticks_msec()
+		#$UI/MessageContainer/Message.text = "World deployed"
 		#visible = true
-		_saved_time_to_fade_message = Time.get_ticks_msec()
 		post_world_deploy_initialized = true
 	
 	#if scene_initialized && post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
