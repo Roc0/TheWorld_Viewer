@@ -11,3 +11,5 @@ godot-cpp	commit a62f633cebee4b36356dc903d00670733cd28fb1		HEAD detached at a62f
 16/07/2024 (godot 4.3 beta 3)
 godot		commit 82cedc83c9069125207c128f9a07ce3d82c317cc		HEAD detached at 82cedc83c9 (git status)
 godot-cpp	commit a62f633cebee4b36356dc903d00670733cd28fb1		HEAD detached at a62f633 (git status)
+
+AGGIORNARE COMMENTO IN !start.bat

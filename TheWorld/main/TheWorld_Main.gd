@@ -184,7 +184,7 @@ func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> 
 func _input(event):
 	_clientstatus = get_clientstatus()
 	if _clientstatus < Globals.Constants.clientstatus_session_initialized:
-		pass
+		return
 		
 	if event is InputEventKey and event.is_action_pressed("ui_toggle_fullscreen"):
 		if not debug_running_game_global.get_game_anchored_in_editor():
