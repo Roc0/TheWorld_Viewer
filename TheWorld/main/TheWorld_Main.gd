@@ -406,14 +406,16 @@ func _process(_delta):
 		
 		if _viewpoint_to_save >= 0:
 			save_current_position(_viewpoint_to_save)
-			$UI/MessageContainer/Message.text = "Viewpoint " + str(_viewpoint_to_save) + " saved!"
+			#$UI/MessageContainer/Message.text = "Viewpoint " + str(_viewpoint_to_save) + " saved!"
+			TWViewer().GDN_viewer().set_hud_message("Viewpoint " + str(_viewpoint_to_save) + " saved!", 3000)
 			_saved_time_to_fade_message = Time.get_ticks_msec()
 			_viewpoint_to_save = -1
 		
 		if _viewpoint_to_load >= 0:			
 			if not $Player/Player.camera_tracking_player():
 				load_position(_viewpoint_to_load)
-				$UI/MessageContainer/Message.text = "Viewpoint " + str(_viewpoint_to_load) + " loaded!"
+				#$UI/MessageContainer/Message.text = "Viewpoint " + str(_viewpoint_to_load) + " loaded!"
+				TWViewer().GDN_viewer().set_hud_message("Viewpoint " + str(_viewpoint_to_load) + " loaded!", 3000)
 				_saved_time_to_fade_message = Time.get_ticks_msec()
 			_viewpoint_to_load = -1
 			
