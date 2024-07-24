@@ -22,3 +22,16 @@ windows.release.x86_64 = "res://addons/twviewer/native/TheWorld_GDN_Viewer.dll"
 #android.release.x86_64 = "res://bin/libgdexample.android.template_release.x86_64.so"
 #android.debug.arm64 = "res://bin/libgdexample.android.template_debug.arm64.so"
 #android.release.arm64 = "res://bin/libgdexample.android.template_release.arm64.so"
+
+[icons]
+
+GDN_TheWorld_Globals = "res://addons/twviever/icons/Node.svg"
+GDN_TW_Globals = "res://addons/twviever/icons/Node.svg"
+GDN_TheWorld_Viewer = "res://addons/twviever/icons/Node3D.svg"
+GDN_TW_Viewer = "res://addons/twviever/icons/Node3D.svg"
+GDN_TheWorld_Camera = "res://addons/twviever/icons/Camera3D.svg"
+GDN_TW_Camera = "res://addons/twviever/icons/Camera3D.svg"
+GDN_TheWorld_Main = "res://addons/twviever/icons/Node.svg"
+GDN_TW_Main = "res://addons/twviever/icons/Node.svg"
+GDN_TheWorld_MapViewer = "res://addons/twviever/icons/Node2D.svg"
+GDN_TW_MapViewer = "res://addons/twviever/icons/Node2D.svg"
