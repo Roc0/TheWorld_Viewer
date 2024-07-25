@@ -471,6 +471,8 @@ mesh = SubResource("QuadMesh_y8qsi")
 
 [node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
 
+[node name="GDN_TW_MapViewer" type="GDN_TheWorld_MapViewer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
+
 [node name="TestQuadrants" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape"]
 visible = false
 
@@ -632,6 +634,7 @@ transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 5509.65, 31, 25664.9)
 transform = Transform3D(-0.947768, 0, -0.318959, 0, 1, 0, 0.318959, 0, -0.947768, 5526.69, 31, 25651.1)
 
 [node name="UI" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main" instance=ExtResource("4_cjpoh")]
+visible = false
 
 [node name="PostProcessingGreyScaleEffect" type="CanvasLayer" parent="."]
 visible = false
