@@ -473,6 +473,9 @@ mesh = SubResource("QuadMesh_y8qsi")
 
 [node name="GDN_TW_MapViewer" type="GDN_TheWorld_MapViewer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
 
+[node name="GDN_TW_MapCamera" type="GDN_TheWorld_MapCamera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
+enabled = false
+
 [node name="TestQuadrants" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape"]
 visible = false
 
