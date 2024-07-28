@@ -472,8 +472,19 @@ mesh = SubResource("QuadMesh_y8qsi")
 [node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
 
 [node name="GDN_TW_MapViewer" type="GDN_TheWorld_MapViewer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
+visible = false
 
-[node name="GDN_TW_MapCamera" type="GDN_TheWorld_MapCamera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
+[node name="GDN_TW_MapViewportContainer" type="GDN_TheWorld_MapViewportContainer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer"]
+offset_right = 512.0
+offset_bottom = 512.0
+
+[node name="GDN_TW_MapViewport" type="GDN_TheWorld_MapViewport" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer"]
+handle_input_locally = false
+render_target_update_mode = 0
+
+[node name="GDN_TW_Map" type="GDN_TheWorld_Map" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer/GDN_TW_MapViewport"]
+
+[node name="GDN_TW_MapCamera" type="GDN_TheWorld_MapCamera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer/GDN_TW_MapViewport"]
 enabled = false
 
 [node name="TestQuadrants" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape"]
@@ -668,3 +679,8 @@ transform = Transform3D(0.582015, 0.000569433, -0.813178, -0.303312, 0.927985, -
 visible = false
 extra_cull_margin = 16384.0
 mesh = SubResource("QuadMesh_fq383")
+
+[node name="PostProcessingUnderWaterOverride" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
+visible = false
+mesh = SubResource("QuadMesh_y8qsi")
