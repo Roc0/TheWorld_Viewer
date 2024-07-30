@@ -720,7 +720,7 @@ func test_subvieport(node : Node) -> void:
 func save_current_position(viewpoint : int) -> void:
 	var camera : Camera3D = null
 	var gdn_viewer = TWViewer().GDN_viewer()
-	camera = TWViewer().get_camera()
+	camera = TWViewer().get_world_camera()
 	if camera != null && camera.has_method("get_yaw") && camera.has_method("get_pitch") && camera.has_method("get_roll"):
 		#var config = ConfigFile.new()
 		#@warning_ignore("unused_variable")

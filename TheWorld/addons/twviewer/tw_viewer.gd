@@ -378,10 +378,10 @@ func custom_ready():
 	log_debug("custom_ready done")
 	_is_really_ready = true
 
-func get_camera() -> Camera3D:
+func get_world_camera() -> Camera3D:
 	var gdn_viewver = GDN_viewer()
 	if (gdn_viewver != null):
-		return gdn_viewver.get_camera()
+		return gdn_viewver.get_world_camera()
 	else:
 		return null
 
@@ -522,7 +522,7 @@ func _process(delta):
 		return
 	
 	#if gdn_viewer != null:
-	#	if gdn_viewer.has_method("get_camera"):
+	#	if gdn_viewer.has_method("get_world_camera"):
 	#		print ("has method")
 	#	else:
 	#		print ("does not have method")
@@ -695,7 +695,7 @@ func _process(delta):
 	if _camera_param_initial_pos_changed:
 		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
 			var camera : Camera3D = null
-			camera = gdn_viewer.get_camera()
+			camera = gdn_viewer.get_world_camera()
 			if (camera != null):
 				if Engine.is_editor_hint():
 					camera.global_transform.origin = _camera_param_initial_pos
@@ -710,7 +710,7 @@ func _process(delta):
 	if _camera_param_initial_yaw_pitch_roll_changed:
 		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
 			var camera : Camera3D = null
-			camera = gdn_viewer.get_camera()
+			camera = gdn_viewer.get_world_camera()
 			if (camera != null):
 				if camera.has_method("set_yaw"):
 					camera.set_yaw(_camera_param_initial_yaw_pitch_roll.x, false)
@@ -761,13 +761,13 @@ func _process(delta):
 				log_debug(str("edit_mode_ui_control added"))
 				_edit_mode_ui_control_added_to_editor_overlay = true
 	
-	#print(gdn_viewer.has_method("get_camera"))
-	if _info_panel != null && _info_panel.visible && gdn_viewer.has_method("get_camera") && not _quitting:
+	#print(gdn_viewer.has_method("get_world_camera"))
+	if _info_panel != null && _info_panel.visible && gdn_viewer.has_method("get_world_camera") && not _quitting:
 		var tot_element_to_initialize : int = GDN_globals().get_tot_element_to_initialize()
 		var num_element_initialized : int = GDN_globals().get_num_element_initialized()
 		_info_panel_status = "Status: " + tw_constants.status_to_string(_client_status) + " (" + str(num_element_initialized) + "/"+ str(tot_element_to_initialize) + ")" + "\n"
 		var camera : Camera3D = null
-		camera = gdn_viewer.get_camera()
+		camera = gdn_viewer.get_world_camera()
 		#print(str(camera))
 		var e : Vector3 
 		if camera != null:

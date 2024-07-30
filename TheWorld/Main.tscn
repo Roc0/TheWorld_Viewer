@@ -1,4 +1,4 @@
-[gd_scene load_steps=66 format=4 uid="uid://c4ukh1kw4impi"]
+[gd_scene load_steps=63 format=4 uid="uid://c4ukh1kw4impi"]
 
 [ext_resource type="Script" path="res://main/TheWorld_Main.gd" id="1_760ml"]
 [ext_resource type="Script" path="res://addons/twviewer/tw_viewer.gd" id="3_yxvy6"]
@@ -8,7 +8,6 @@
 [ext_resource type="Shader" path="res://addons/twviewer/shaders/outline.gdshader" id="5_8cej7"]
 [ext_resource type="Texture2D" uid="uid://bg5fxjgjk8nfg" path="res://addons/compass/resources/compassbar.png" id="5_how1r"]
 [ext_resource type="PackedScene" uid="uid://bi138l8muok7h" path="res://components/test.tscn" id="5_kid0l"]
-[ext_resource type="Shader" path="res://addons/twviewer/shaders/CameraUnderWater.gdshader" id="5_lw418"]
 [ext_resource type="Script" path="res://addons/compass/entities/compassbar.gd" id="6_2m3hx"]
 [ext_resource type="Material" uid="uid://dee4mdtcckm70" path="res://addons/twviewer/test/m_sea.tres" id="6_32vc6"]
 [ext_resource type="PackedScene" uid="uid://v6sfi8k7dr7o" path="res://player.tscn" id="6_wlxwp"]
@@ -290,32 +289,6 @@ _surfaces = [{
 "vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/")
 }]
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_b1hol"]
-render_priority = 0
-shader = ExtResource("5_8cej7")
-shader_parameter/depth_threshold = 0.05
-shader_parameter/reverse_depth_threshold = 0.25
-shader_parameter/normal_threshold = 0.6
-shader_parameter/darken_amount = 0.3
-shader_parameter/lighten_amount = 1.5
-shader_parameter/normal_edge_bias = Vector3(1, 1, 1)
-shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
-
-[sub_resource type="QuadMesh" id="QuadMesh_fq383"]
-material = SubResource("ShaderMaterial_b1hol")
-flip_faces = true
-size = Vector2(2, 2)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_7rgld"]
-render_priority = 0
-shader = ExtResource("5_lw418")
-shader_parameter/u_under_water_albedo = Color(0.056, 0.119, 0.48, 1)
-
-[sub_resource type="QuadMesh" id="QuadMesh_emvfv"]
-material = SubResource("ShaderMaterial_7rgld")
-flip_faces = true
-size = Vector2(2, 2)
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6alpk"]
 render_priority = 0
 shader = ExtResource("7_yrlpt")
@@ -380,6 +353,22 @@ shader_parameter/greyScale = Vector3(0.5, 0.5, 0.5)
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6wri7"]
 shader = ExtResource("9_2dtkh")
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_b1hol"]
+render_priority = 0
+shader = ExtResource("5_8cej7")
+shader_parameter/depth_threshold = 0.05
+shader_parameter/reverse_depth_threshold = 0.25
+shader_parameter/normal_threshold = 0.6
+shader_parameter/darken_amount = 0.3
+shader_parameter/lighten_amount = 1.5
+shader_parameter/normal_edge_bias = Vector3(1, 1, 1)
+shader_parameter/light_direction = Vector3(-0.96, -0.18, 0.2)
+
+[sub_resource type="QuadMesh" id="QuadMesh_fq383"]
+material = SubResource("ShaderMaterial_b1hol")
+flip_faces = true
+size = Vector2(2, 2)
+
 [node name="RootNode" type="Node"]
 
 [node name="TheWorld_Main_Control" type="Control" parent="."]
@@ -430,7 +419,7 @@ _shader_param_globalmap_blend_start = 10000.0
 [node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
 perfparam_threshold_cache_heights = 15000.0
 
-[node name="GDN_TW_Viewer" type="GDN_TheWorld_Viewer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
+[node name="GDN_TW_WorldViewer" type="GDN_TheWorld_Viewer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
 metadata/debug_wirecube_mesh_lod_5 = SubResource("ArrayMesh_kfft6")
 metadata/debug_wirecube_mesh_lod_6 = SubResource("ArrayMesh_4lakm")
 metadata/debug_wirecube_mesh_lod_3 = SubResource("ArrayMesh_inpye")
@@ -446,28 +435,33 @@ metadata/debug_wiresquare_mesh_lod_0 = SubResource("ArrayMesh_prsjq")
 metadata/debug_wiresquare_mesh_lod_1 = SubResource("ArrayMesh_cx5y7")
 metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
 
-[node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
-camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(-0.998848, -0.0130243, -0.0461801, 0, 0.962455, -0.271443, 0.0479816, -0.27113, -0.961346, 8132.88, 20.3149, -12181.4)
-near = 0.5
-far = 18432.0
+[node name="CompassContainer" type="CenterContainer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_WorldViewer"]
+auto_translate_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -48.0
+offset_top = 20.0
+offset_right = 48.0
+offset_bottom = 28.0
+grow_horizontal = 2
+scale = Vector2(2, 2)
 
-[node name="__PostProcessingOutLine" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
-transform = Transform3D(0.582015, 0.000569433, -0.813178, -0.303312, 0.927985, -0.21644, 0.754493, 0.372618, 0.540274, 0, 0, -11.381)
-visible = false
-extra_cull_margin = 16384.0
-mesh = SubResource("QuadMesh_fq383")
+[node name="Pointer" type="Polygon2D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_WorldViewer/CompassContainer"]
+modulate = Color(0.0784314, 0.0784314, 0.0784314, 1)
+position = Vector2(48.5, -3)
+color = Color(0.14902, 0.14902, 0.14902, 1)
+polygon = PackedVector2Array(0, 0, -3, -4, 3, -4)
 
-[node name="__PostProcessingUnderWaterOverride" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
-transform = Transform3D(1, -1.86265e-09, -1.49012e-08, 0, 1, -2.79397e-09, 0, -3.0268e-09, 1, 0, 0, 0)
-visible = false
-extra_cull_margin = 16384.0
-mesh = SubResource("QuadMesh_emvfv")
-
-[node name="PostProcessingUnderWaterOverride" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
-visible = false
-mesh = SubResource("QuadMesh_y8qsi")
+[node name="CompassBar" type="TextureRect" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_WorldViewer/CompassContainer" node_paths=PackedStringArray("parent")]
+auto_translate_mode = 1
+texture_repeat = 2
+material = ExtResource("4_skg2b")
+layout_mode = 2
+texture = ExtResource("5_how1r")
+stretch_mode = 3
+script = ExtResource("6_2m3hx")
+parent = NodePath("../../../GDN_TW_Camera")
 
 [node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
 
@@ -475,17 +469,30 @@ mesh = SubResource("QuadMesh_y8qsi")
 visible = false
 
 [node name="GDN_TW_MapViewportContainer" type="GDN_TheWorld_MapViewportContainer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer"]
-offset_right = 512.0
-offset_bottom = 512.0
+offset_right = 1024.0
+offset_bottom = 522.0
 
 [node name="GDN_TW_MapViewport" type="GDN_TheWorld_MapViewport" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer"]
 handle_input_locally = false
+size = Vector2i(1024, 522)
 render_target_update_mode = 0
-
-[node name="GDN_TW_Map" type="GDN_TheWorld_Map" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer/GDN_TW_MapViewport"]
 
 [node name="GDN_TW_MapCamera" type="GDN_TheWorld_MapCamera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer/GDN_TW_MapViewport"]
 enabled = false
+
+[node name="GDN_TW_Map" type="GDN_TheWorld_Map" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer/GDN_TW_MapViewport"]
+
+[node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
+camera_tracking_offset = Vector3(0, 5, 10)
+transform = Transform3D(-0.898772, -0.115318, -0.422978, 0, 0.964787, -0.263034, 0.438416, -0.236407, -0.867124, 8132.9, 20.3518, -12181.3)
+near = 0.5
+far = 18432.0
+
+[node name="PostProcessingUnderWaterOverride" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
+transform = Transform3D(-0.998846, 9.31322e-10, 0.0480178, -0.0130341, 0.962454, -0.27113, -0.046215, -0.271443, -0.961344, 8708.38, -3216.03, -11328.1)
+visible = false
+mesh = SubResource("QuadMesh_y8qsi")
+skeleton = NodePath("../../../../../../../..")
 
 [node name="TestQuadrants" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape"]
 visible = false
@@ -598,34 +605,6 @@ visible = false
 mesh = SubResource("SphereMesh_812q2")
 skeleton = NodePath("../../../../../../..")
 
-[node name="CompassContainer" type="CenterContainer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape"]
-auto_translate_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -48.0
-offset_top = 20.0
-offset_right = 48.0
-offset_bottom = 28.0
-grow_horizontal = 2
-scale = Vector2(2, 2)
-
-[node name="Pointer" type="Polygon2D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/CompassContainer"]
-modulate = Color(0.0784314, 0.0784314, 0.0784314, 1)
-position = Vector2(48.5, -3)
-color = Color(0.14902, 0.14902, 0.14902, 1)
-polygon = PackedVector2Array(0, 0, -3, -4, 3, -4)
-
-[node name="CompassBar" type="TextureRect" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/CompassContainer" node_paths=PackedStringArray("parent")]
-auto_translate_mode = 1
-texture_repeat = 2
-material = ExtResource("4_skg2b")
-layout_mode = 2
-texture = ExtResource("5_how1r")
-stretch_mode = 3
-script = ExtResource("6_2m3hx")
-parent = NodePath("../../TWViewer/GDN_TW_Camera")
-
 [node name="Test" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main" instance=ExtResource("5_kid0l")]
 
 [node name="Player" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main" instance=ExtResource("6_wlxwp")]
@@ -679,8 +658,3 @@ transform = Transform3D(0.582015, 0.000569433, -0.813178, -0.303312, 0.927985, -
 visible = false
 extra_cull_margin = 16384.0
 mesh = SubResource("QuadMesh_fq383")
-
-[node name="PostProcessingUnderWaterOverride" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -1)
-visible = false
-mesh = SubResource("QuadMesh_y8qsi")
