@@ -114,13 +114,15 @@ func _set_debug_mode(p_debug_mode : int):
 @export_group("World", "_world_param")
 
 var _world_param_depth_quad_changed := true
-const MAX_DEPTH_QUAD=6
+const MAX_DEPTH_QUAD=12
 @export var _world_param_depth_quad : int = 3:		# 3
 	set = _set_world_param_depth_quad
 func _set_world_param_depth_quad(depth_quad : int):
 	if depth_quad >= 0 && depth_quad <= MAX_DEPTH_QUAD:
 		_world_param_depth_quad = depth_quad
 		_world_param_depth_quad_changed = true
+		if _world_param_depth_quad > _world_param_max_depth_quad:
+			_set_world_param_max_depth_quad(_world_param_depth_quad)
 
 var _world_param_cache_quad_changed := true
 const MAX_CACHE_QUAD=2
@@ -138,6 +140,8 @@ func _set_world_param_max_depth_quad(depth_quad : int):
 	if depth_quad >= 0 && depth_quad <= MAX_DEPTH_QUAD:
 		_world_param_max_depth_quad = depth_quad
 		_world_param_max_depth_quad_changed = true
+		if _world_param_max_depth_quad < _world_param_depth_quad:
+			_set_world_param_depth_quad(_world_param_max_depth_quad)
 
 var _world_param_info_panel_visibility_changed := true
 @export var _world_param_info_panel_visible : bool = false:
@@ -1046,10 +1050,10 @@ func set_editor_interface(editor_interface : EditorInterface):
 	_editor_interface = editor_interface
 	GDN_viewer().set_editor_interface(editor_interface)
 
-func set_editor_camera(camera : Camera3D):
+func set_world_editor_camera(camera : Camera3D):
 	var gdn_viewer = GDN_viewer()
-	if (gdn_viewer != null && gdn_viewer.has_method("set_editor_camera")):
-		gdn_viewer.set_editor_camera(camera)
+	if (gdn_viewer != null && gdn_viewer.has_method("set_world_editor_camera")):
+		gdn_viewer.set_world_editor_camera(camera)
 	_editor_camera = camera
 
 func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> void:

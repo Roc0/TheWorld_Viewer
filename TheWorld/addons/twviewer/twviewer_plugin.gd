@@ -201,7 +201,7 @@ func _forward_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:
 	var ret : int = EditorPlugin.AFTER_GUI_INPUT_PASS
 	
 	if _viewer != null:
-		_viewer.set_editor_camera(p_camera)
+		_viewer.set_world_editor_camera(p_camera)
 		
 	_camera = p_camera
 	
