@@ -59,7 +59,8 @@ var _info_panel_max_width : int = 0
 var _mouse_inside_info_panel : bool = false
 
 var _info_panel_general_label : Label = null
-var _info_panel_camera_label : Label = null
+var _info_panel_camera3d_label : Label = null
+var _info_panel_camera2d_label : Label = null
 var _info_panel_quadrants_label : Label = null
 var _info_panel_chunks_label : Label = null
 var _info_panel_mouse_tracking_label : Label = null
@@ -76,6 +77,8 @@ var _info_panel_camera_roll := ""
 var _info_panel_camera_rot := ""
 var _info_panel_camera_pos := ""
 var _info_panel_camera_pos_in_map := ""
+var _info_panel_camera2d_pos := ""
+var _info_panel_camera2d_pos_in_map := ""
 var _info_label_num_quadrants := ""
 var _info_label_num_visible_quadrants := ""
 var _info_label_num_empty_quadrants := ""
@@ -705,7 +708,7 @@ func _process(delta):
 					camera.global_transform.origin = _camera_param_initial_pos
 				else:
 					var t : Transform3D = Transform3D(camera.global_transform.basis, _camera_param_initial_pos)
-					camera.set_camera_map_transform(t)
+					camera.set_camera_world_transform(t)
 				#var gizmos := []
 				#gizmos = camera.get_gizmos()
 				#print(str("gizmos=",gizmos.size()))
@@ -776,6 +779,8 @@ func _process(delta):
 		var e : Vector3 
 		if camera != null:
 			e = camera.global_transform.basis.get_euler()
+		var camera2d : Camera2D = null
+		camera2d = gdn_viewer.get_map_camera()
 		var viewer_custom_camera = get_tree().get_first_node_in_group(tw_constants.custom_cameras_group)
 		var update_quads1_duration : int = gdn_viewer.get_update_quads1_duration()
 		var update_quads2_duration : int = gdn_viewer.get_update_quads2_duration()
@@ -806,13 +811,21 @@ func _process(delta):
 		#+ " T " + String(viewer.get_mouse_track_hit_duration()) + "\n"
 		if camera != null:
 			var camera_pos_in_map : Vector3
-			if camera.has_method("get_camera_map_transform"):
-				camera_pos_in_map = camera.get_camera_map_transform().origin
+			if camera.has_method("get_camera_world_transform"):
+				camera_pos_in_map = camera.get_camera_world_transform().origin
 			else:
 				camera_pos_in_map = camera.global_transform.origin
 			_info_panel_camera_rot = "  Rot: " + str(camera.global_transform.basis.get_euler()) + "\n"
 			_info_panel_camera_pos = "  Pos: " + str(camera.global_transform.origin) + "\n"
 			_info_panel_camera_pos_in_map = "  Pos in map: " + str(camera_pos_in_map)
+		if camera2d != null:
+			var camera2d_pos_in_map : Vector2
+			if camera2d.has_method("get_camera_map_transform"):
+				camera2d_pos_in_map = camera2d.get_camera_map_transform().origin
+			else:
+				camera2d_pos_in_map = camera2d.global_transform.origin
+			_info_panel_camera2d_pos = "  Pos: " + str(camera2d.global_transform.origin) + "\n"
+			_info_panel_camera2d_pos_in_map = "  Pos in map: " + str(camera2d_pos_in_map)
 		var toEraseQuadrants : int = gdn_viewer.get_num_toerase_quadrant()
 		var notInitializedQuadrants : int = gdn_viewer.get_num_quadrant() - gdn_viewer.get_num_initialized_quadrant() - toEraseQuadrants
 		_info_label_num_quadrants = "  Total: " + str(gdn_viewer.get_num_initialized_quadrant(), ":", gdn_viewer.get_num_quadrant()) + " To Init: " + str(notInitializedQuadrants) + " To Erase: " + str(toEraseQuadrants) + "\n"
@@ -822,19 +835,19 @@ func _process(delta):
 		_info_label_num_flushed_quadrants = "  Flushed: " + str(gdn_viewer.get_num_flushed_quadrant())
 		_info_label_num_reloading_quadrants = "  Reloading: " + str(gdn_viewer.get_num_reloading_quadrant()) + "\n"
 		_info_label_num_with_collider = "  Collider: " + str(gdn_viewer.get_num_quadrant_with_enabled_collider()) + "/" + str(gdn_viewer.get_num_quadrant_with_collider()) + " (H " + str(gdn_viewer.get_num_quadrant_with_hires_collider()) + " / L " + str(gdn_viewer.get_num_quadrant_with_lowres_collider()) + ")"
-		_info_panel_num_active_chunks = "  Active: " + str(gdn_viewer.get_num_active_chunks()) + "\n"
-		_info_panel_num_chunk_splits = "  Splits: " + str(gdn_viewer.get_num_splits()) + "\n"
+		_info_panel_num_active_chunks = "  Active: " + str(gdn_viewer.get_num_active_chunks()) + " "
+		_info_panel_num_chunk_splits = "  Splits: " + str(gdn_viewer.get_num_splits()) + " "
 		_info_panel_num_chunk_joins = "  Joins: " + str(gdn_viewer.get_num_joins())
 		_info_panel_hit_pos = "  Hit pos: " + str(gdn_viewer.get_mouse_hit_global()) + "\n"
 		_info_panel_hit_pos_in_map = "  Hit pos in map: " + str(gdn_viewer.get_mouse_hit_in_map()) + "\n"
 		_info_panel_hit_distance_from_camera = "  Hit pos dist from camera: " + str(gdn_viewer.get_mouse_hit_distance_from_camera()) + "\n"
 		_info_panel_delta_pos = "  Delta pos: " + str(_delta_pos) + "\n"
 		_info_panel_quad_hit_name = "  Quad name: " + gdn_viewer.get_mouse_quadrant_hit_name() + " " + gdn_viewer.get_mouse_quadrant_hit_tag() + "\n"
-		_info_panel_quad_hit_pos = "  Quad pos: " + str(gdn_viewer.get_mouse_quadrant_hit_pos()) + "\n"
-		_info_panel_quad_hit_size = "  Quad size: " + str(gdn_viewer.get_mouse_quadrant_hit_size()) + "\n"
+		_info_panel_quad_hit_pos = "  Quad pos: " + str(gdn_viewer.get_mouse_quadrant_hit_pos()) + " "
+		_info_panel_quad_hit_size = "  size: " + str(gdn_viewer.get_mouse_quadrant_hit_size()) + "\n"
 		_info_panel_chunk_hit_name = "  Chunk name: " + gdn_viewer.get_mouse_chunk_hit_name() + "\n"
-		_info_panel_chunk_hit_pos = "  Chunk pos: " + str(gdn_viewer.get_mouse_chunk_hit_pos()) + "\n"
-		_info_panel_chunk_hit_size = "  Chunk size: " + str(gdn_viewer.get_mouse_chunk_hit_size()) + "\n"
+		_info_panel_chunk_hit_pos = "  Chunk pos: " + str(gdn_viewer.get_mouse_chunk_hit_pos()) + " "
+		_info_panel_chunk_hit_size = "  size: " + str(gdn_viewer.get_mouse_chunk_hit_size()) + "\n"
 		_info_panel_chunk_hit_dist_from_camera = "  Chunk dist from camera: " + str(gdn_viewer.get_mouse_chunk_hit_dist_from_cam())
 		if gdn_viewer.get_track_mouse_state():
 			_info_panel_track_mouse_state = "on"
@@ -870,7 +883,7 @@ func _process(delta):
 			+ _info_panel_grid_origin \
 			+ "Cursor pos in viewport: " + str(mouse_pos)
 		
-		_info_panel_camera_label.text = "Camera3D: " + _info_panel_camera_projection + "\n" \
+		_info_panel_camera3d_label.text = "Camera3D: " + _info_panel_camera_projection + "\n" \
 		+ _info_panel_camera_degree_from_north \
 		+ _info_panel_camera_yaw \
 		+ _info_panel_camera_pitch \
@@ -879,6 +892,10 @@ func _process(delta):
 		+ _info_panel_camera_rot \
 		+ _info_panel_camera_pos \
 		+ _info_panel_camera_pos_in_map
+		
+		_info_panel_camera2d_label.text = "Camera2D\n" \
+		+ _info_panel_camera2d_pos \
+		+ _info_panel_camera2d_pos_in_map
 		
 		_info_panel_quadrants_label.text = "Quadrants\n" \
 		+ _info_label_num_quadrants \
@@ -1336,7 +1353,9 @@ func create_info_panel():
 	
 	_info_panel_general_label = add_info_panel_empty_line()
 	add_info_panel_separator()
-	_info_panel_camera_label = add_info_panel_empty_line()
+	_info_panel_camera3d_label = add_info_panel_empty_line()
+	add_info_panel_separator()
+	_info_panel_camera2d_label = add_info_panel_empty_line()
 	add_info_panel_separator()
 	_info_panel_quadrants_label = add_info_panel_empty_line()
 	add_info_panel_separator()
@@ -1557,7 +1576,8 @@ func print_variables_to_restore():
 	_logger.debug(str("_info_panel=", _info_panel))
 	_logger.debug(str("_info_panel_main_vboxcontainer=", _info_panel_main_vboxcontainer))
 	_logger.debug(str("_info_panel_general_label=", _info_panel_general_label))
-	_logger.debug(str("_info_panel_camera_label=", _info_panel_camera_label))
+	_logger.debug(str("_info_panel_camera3d_label=", _info_panel_camera3d_label))
+	_logger.debug(str("_info_panel_camera2d_label=", _info_panel_camera2d_label))
 	_logger.debug(str("_info_panel_quadrants_label=", _info_panel_quadrants_label))
 	_logger.debug(str("_info_panel_chunks_label=", _info_panel_chunks_label))
 	_logger.debug(str("_info_panel_mouse_tracking_label=", _info_panel_mouse_tracking_label))

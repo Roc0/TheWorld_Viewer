@@ -1,8 +1,0 @@
-TEST
-
-
-BUGS
-* se si esce senza salvare la scena dopo il popup che chiede se salvare o meno viene ricreato tw_viewer: risolto con un workaround
-
-TODO
-* edit terreno in EDITOR

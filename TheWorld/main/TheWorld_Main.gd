@@ -373,7 +373,7 @@ func _process(_delta):
 				$Player/Player.global_transform.origin = Vector3(_initial_camera_position_in_map.x, result.position.y + 50, _initial_camera_position_in_map.z)
 			if _initial_player_pos_in_map != null && _initial_player_basis_in_map != null:
 				var player_initial_map_transform : Transform3D = Transform3D(_initial_player_basis_in_map, _initial_player_pos_in_map)
-				var player_initial_global_transform : Transform3D = TWViewer().GDN_viewer().map_transform_to_global_transform(player_initial_map_transform)
+				var player_initial_global_transform : Transform3D = TWViewer().GDN_viewer().world_transform_to_global_transform(player_initial_map_transform)
 				var initial_player_pos_global_coord := player_initial_global_transform.origin
 				var initial_player_basis_global_coord := player_initial_global_transform.basis
 				$Player/Player.global_transform.origin = initial_player_pos_global_coord #+  Vector3(10, 5000, 10)
@@ -392,9 +392,9 @@ func _process(_delta):
 	
 	#if scene_initialized && post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
 	if post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
-		ball_pos = TWViewer().GDN_viewer().global_pos_to_map_transform($Test/TestBall.global_transform.origin).origin
+		ball_pos = TWViewer().GDN_viewer().global_pos_to_world_transform($Test/TestBall.global_transform.origin).origin
 		tw_viewer.set_info_panel_external_value("Ball pos: (" + str(snapped(ball_pos.x, 0.01)) + ", " + str(snapped(ball_pos.y, 0.01)) + ", " + str(snapped(ball_pos.z, 0.01)) + ")", _ball_pos_info_line_index)
-		_player_pos = TWViewer().GDN_viewer().global_pos_to_map_transform($Player/Player.global_transform.origin).origin
+		_player_pos = TWViewer().GDN_viewer().global_pos_to_world_transform($Player/Player.global_transform.origin).origin
 		_player_velocity = $Player/Player.velocity
 		var velocity : float = _player_velocity.length()
 		var player_dist_from_terrain := ""
@@ -731,12 +731,12 @@ func save_current_position(viewpoint : int) -> void:
 		camera_ypr.y = camera.get_pitch(false)
 		camera_ypr.z = camera.get_roll(false)
 		var camera_pos : Vector3
-		camera_pos = camera.get_camera_map_transform().origin
+		camera_pos = camera.get_camera_world_transform().origin
 		var param_key_camera_pos := ""
 		var param_key_camera_ypr := ""
 		if viewpoint == -1:
 			var player_global_transform = $Player/Player.global_transform 
-			var player_map_transform : Transform3D = gdn_viewer.global_transform_to_map_transform(player_global_transform)
+			var player_map_transform : Transform3D = gdn_viewer.global_transform_to_world_transform(player_global_transform)
 			_config.set_value(tw_const.param_group_player, tw_const.param_key_player_pos, player_map_transform.origin)
 			_config.set_value(tw_const.param_group_player, tw_const.param_key_player_basis, player_map_transform.basis)
 			param_key_camera_pos = tw_const.param_key_initial_camera_pos
