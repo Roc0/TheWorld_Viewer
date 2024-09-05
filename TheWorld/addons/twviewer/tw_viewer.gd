@@ -824,7 +824,7 @@ func _process(delta):
 				camera2d_pos_in_map = camera2d.get_camera_map_transform().origin
 			else:
 				camera2d_pos_in_map = camera2d.global_transform.origin
-			_info_panel_camera2d_pos = "  Pos: " + str(camera2d.global_transform.origin) + "\n"
+			_info_panel_camera2d_pos = "  Pos: " + str(camera2d.global_transform.origin) + " Scale: " + str(snapped(gdn_viewer.get_map_scale_factor(), 0.01)) + "\n"
 			_info_panel_camera2d_pos_in_map = "  Pos in map: " + str(camera2d_pos_in_map)
 		var toEraseQuadrants : int = gdn_viewer.get_num_toerase_quadrant()
 		var notInitializedQuadrants : int = gdn_viewer.get_num_quadrant() - gdn_viewer.get_num_initialized_quadrant() - toEraseQuadrants
