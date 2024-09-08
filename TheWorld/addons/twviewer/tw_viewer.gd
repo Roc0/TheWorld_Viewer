@@ -12,6 +12,7 @@ var _gdn_main_instance_errmsg : bool = true
 
 const tw_constants = preload("./tw_const.gd")
 const HT_Logger = preload("./util/logger.gd")
+const tw_info_container = preload("./tw_info_container.gd")
 
 var _editor_interface : EditorInterface = null
 var _editor_camera : Camera3D = null
@@ -52,7 +53,8 @@ var _info_panel_closing_labels = []
 var _info_panel_num_closing_labels : int = 2
 var _info_panel_external_labels = []
 
-var _info_panel : Control = null
+#var _info_panel : Control = null
+var _info_panel : tw_info_container = null
 var _info_panel_main_vboxcontainer : VBoxContainer = null
 var _info_panel_scroll_container : ScrollContainer = null
 var _info_panel_max_width : int = 0
@@ -63,6 +65,7 @@ var _info_panel_camera3d_label : Label = null
 var _info_panel_camera2d_label : Label = null
 var _info_panel_quadrants_label : Label = null
 var _info_panel_chunks_label : Label = null
+var _info_panel_map_quadrants_label : Label = null
 var _info_panel_mouse_tracking_label : Label = null
 
 var _info_panel_status := ""
@@ -79,6 +82,8 @@ var _info_panel_camera_pos := ""
 var _info_panel_camera_pos_in_map := ""
 var _info_panel_camera2d_pos := ""
 var _info_panel_camera2d_pos_in_map := ""
+var _info_map_quadrants := ""
+var _info_map_texture_rects := ""
 var _info_label_num_quadrants := ""
 var _info_label_num_visible_quadrants := ""
 var _info_label_num_empty_quadrants := ""
@@ -437,7 +442,7 @@ func _input(event):
 	#						_editor_3d_overlay.accept_event()
 	#				else:
 	#					get_viewport().set_input_as_handled()
-				
+
 	if Engine.is_editor_hint():
 		return
 		
@@ -826,6 +831,8 @@ func _process(delta):
 				camera2d_pos_in_map = camera2d.global_transform.origin
 			_info_panel_camera2d_pos = "  Pos: " + str(camera2d.global_transform.origin) + " Scale: " + str(snapped(gdn_viewer.get_map_scale_factor(), 0.01)) + "\n"
 			_info_panel_camera2d_pos_in_map = "  Pos in map: " + str(camera2d_pos_in_map)
+		_info_map_quadrants = "Total: " + str(gdn_viewer.get_map_quadrants_num()) + " To show: " + str(gdn_viewer.get_to_show_map_quadrants_num()) + " Updating: " + str(gdn_viewer.get_updating_map_quadrants_num()) + "\n"
+		_info_map_texture_rects = "Texture Rects: " + str(gdn_viewer.get_map_quadrants_rect())
 		var toEraseQuadrants : int = gdn_viewer.get_num_toerase_quadrant()
 		var notInitializedQuadrants : int = gdn_viewer.get_num_quadrant() - gdn_viewer.get_num_initialized_quadrant() - toEraseQuadrants
 		_info_label_num_quadrants = "  Total: " + str(gdn_viewer.get_num_initialized_quadrant(), ":", gdn_viewer.get_num_quadrant()) + " To Init: " + str(notInitializedQuadrants) + " To Erase: " + str(toEraseQuadrants) + "\n"
@@ -909,6 +916,10 @@ func _process(delta):
 		+ _info_panel_num_active_chunks \
 		+ _info_panel_num_chunk_splits \
 		+ _info_panel_num_chunk_joins
+		
+		_info_panel_map_quadrants_label.text = "Map Quadrants\n" \
+		+ _info_map_quadrants \
+		+ _info_map_texture_rects
 		
 		_info_panel_mouse_tracking_label.text = "Mouse tracking: " + _info_panel_track_mouse_state + "\n" \
 		+ _info_panel_hit_pos \
@@ -1311,7 +1322,8 @@ func create_info_panel():
 	if _info_panel != null:
 		return
 	
-	_info_panel = PanelContainer.new()
+	#_info_panel = PanelContainer.new()
+	_info_panel = tw_info_container.new()
 	_info_panel.connect("mouse_entered", Callable(self, "info_panel_mouse_entered"))
 	_info_panel.connect("mouse_exited", Callable(self, "info_panel_mouse_exited"))
 	#_info_panel = Control.new()
@@ -1327,6 +1339,9 @@ func create_info_panel():
 	_info_panel.self_modulate = Color(1, 1, 1, 0.5)
 	
 	_info_panel_scroll_container = ScrollContainer.new()
+	var v_scroll_bar := _info_panel_scroll_container.get_v_scroll_bar()
+	v_scroll_bar.connect("mouse_entered", Callable(self, "info_panel_mouse_entered"))
+	v_scroll_bar.connect("mouse_exited", Callable(self, "info_panel_mouse_exited"))
 	
 	_info_panel_main_vboxcontainer = VBoxContainer.new()
 	_info_panel_main_vboxcontainer.name = "Info"
@@ -1361,6 +1376,8 @@ func create_info_panel():
 	add_info_panel_separator()
 	_info_panel_chunks_label = add_info_panel_empty_line()
 	add_info_panel_separator()
+	_info_panel_map_quadrants_label = add_info_panel_empty_line()
+	add_info_panel_separator()
 	_info_panel_mouse_tracking_label = add_info_panel_empty_line()
 	
 	for idx in _info_panel_num_closing_labels:
@@ -1391,10 +1408,15 @@ func remove_info_panel():
 
 func info_panel_mouse_entered() -> void:
 	_mouse_inside_info_panel = true
+	var viewer = GDN_viewer()
+	if viewer != null:
+		viewer.pause_mouse_movement()
 
 func info_panel_mouse_exited() -> void:
 	_mouse_inside_info_panel = false
-
+	var viewer = GDN_viewer()
+	if viewer != null:
+		viewer.resume_mouse_movement()
 func get_info_panel() -> Control:
 	return _info_panel
 
@@ -1580,6 +1602,7 @@ func print_variables_to_restore():
 	_logger.debug(str("_info_panel_camera2d_label=", _info_panel_camera2d_label))
 	_logger.debug(str("_info_panel_quadrants_label=", _info_panel_quadrants_label))
 	_logger.debug(str("_info_panel_chunks_label=", _info_panel_chunks_label))
+	_logger.debug(str("_info_panel_map_quadrants_label=", _info_panel_map_quadrants_label))
 	_logger.debug(str("_info_panel_mouse_tracking_label=", _info_panel_mouse_tracking_label))
 	
 # debug
