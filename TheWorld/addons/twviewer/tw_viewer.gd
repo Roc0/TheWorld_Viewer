@@ -791,11 +791,14 @@ func _process(delta):
 		var update_quads2_duration : int = gdn_viewer.get_update_quads2_duration()
 		var update_quads3_duration : int = gdn_viewer.get_update_quads3_duration()
 		_hit_pos = gdn_viewer.get_mouse_hit_in_map()
-		if Time.get_ticks_msec() - _last_check_delta_pos > 100:
-			if _hit_pos != _prev_hit_pos:
-				_delta_pos = _hit_pos - _prev_hit_pos
-				_prev_hit_pos = _hit_pos
-			_last_check_delta_pos = Time.get_ticks_msec()
+		if gdn_viewer.map_mode():
+			_delta_pos = Vector3(0, 0, 0)
+		else:
+			if Time.get_ticks_msec() - _last_check_delta_pos > 100:
+				if _hit_pos != _prev_hit_pos:
+					_delta_pos = _hit_pos - _prev_hit_pos
+					_prev_hit_pos = _hit_pos
+				_last_check_delta_pos = Time.get_ticks_msec()
 		if !Engine.is_editor_hint() or Engine.is_editor_hint():
 			_info_panel_draw_mode = "Draw mode: " +  gdn_viewer.get_debug_draw_mode() + "\n"
 			_info_panel_num_locks = "Locks: " + str(gdn_viewer.get_num_process_not_owns_lock()) + " debug: " + str(gdn_viewer.get_debug_visibility()) + "\n"
@@ -829,7 +832,10 @@ func _process(delta):
 				camera2d_pos_in_map = camera2d.get_camera_map_transform().origin
 			else:
 				camera2d_pos_in_map = camera2d.global_transform.origin
-			_info_panel_camera2d_pos = "  Pos: " + str(camera2d.global_transform.origin) + " Scale: " + str(snapped(gdn_viewer.get_map_scale_factor(), 0.01)) + "\n"
+			var zoom : float = 1
+			if camera2d.has_method("get_zoom_factor"):
+				zoom = camera2d.get_zoom_factor()
+			_info_panel_camera2d_pos = "  Pos: " + str(camera2d.global_transform.origin) + " Zoom: " + str(snapped(zoom, 0.01)) + "\n"
 			_info_panel_camera2d_pos_in_map = "  Pos in map: " + str(camera2d_pos_in_map)
 		_info_map_quadrants = "Total: " + str(gdn_viewer.get_map_quadrants_num()) + " To show: " + str(gdn_viewer.get_to_show_map_quadrants_num()) + " Updating: " + str(gdn_viewer.get_updating_map_quadrants_num()) + "\n"
 		_info_map_texture_rects = "Texture Rects: " + str(gdn_viewer.get_map_quadrants_rect())

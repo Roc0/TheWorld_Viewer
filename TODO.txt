@@ -1,4 +1,3 @@
-. Info relative ai map quadrants
 . Ottimizzare il numero dei nodi al crescere dei map quadrants
-. Gestire la posizione della camera quando si scala in modo che rimanga al centro dello schermo
-. Capire perché certi quadranti non vengono visualizzati
+. Se errore nel recupero dei quadranti riprovarci
+. recuperare map quadrant e map texture rect obsoleti
