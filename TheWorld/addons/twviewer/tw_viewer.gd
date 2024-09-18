@@ -828,8 +828,8 @@ func _process(delta):
 			_info_panel_camera_pos_in_map = "  Pos in map: " + str(camera_pos_in_map)
 		if camera2d != null:
 			var camera2d_pos_in_map : Vector2
-			if camera2d.has_method("get_camera_map_transform"):
-				camera2d_pos_in_map = camera2d.get_camera_map_transform().origin
+			if camera2d.has_method("get_camera_world_transform"):
+				camera2d_pos_in_map = camera2d.get_camera_world_transform().origin
 			else:
 				camera2d_pos_in_map = camera2d.global_transform.origin
 			var zoom : float = 1

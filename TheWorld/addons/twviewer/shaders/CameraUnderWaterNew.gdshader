@@ -58,7 +58,7 @@ void fragment() {
 		vec4 roughness_texture_channel = vec4(1.0, 0.0, 0.0, 0.0);
 		float roughness_tex = dot(texture(texture_roughness, base_uv), roughness_texture_channel);
 		ROUGHNESS = roughness_tex * roughness;
-		
+
 		ALPHA = 0.8;
 	} else {
 		ALPHA = 0.0;
