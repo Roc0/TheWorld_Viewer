@@ -209,7 +209,7 @@ func _forward_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:
 	
 	if p_event is InputEventKey:
 		var dict : Dictionary = {'viewpoint_to_save' : _viewpoint_to_save, "viewpoint_to_load" : _viewpoint_to_load}
-		tw_const.check_viewpoin_input(p_event, dict)
+		tw_const.check_viewpoint_input(p_event, dict)
 		_viewpoint_to_save = dict['viewpoint_to_save']
 		_viewpoint_to_load = dict['viewpoint_to_load']
 		#if _viewpoint_to_save != 0:

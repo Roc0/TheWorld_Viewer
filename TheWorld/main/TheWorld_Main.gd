@@ -182,6 +182,14 @@ func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> 
 	log_debug(str("_on_tw_status_changed ", old_client_status_str, "(", old_client_status, ") ==> ", new_client_status_str, "(", new_client_status, ")"))
 	
 func _input(event):
+	if event is InputEventKey && event.is_pressed() and event.is_action_pressed("ui_cancel"):
+		var dict : Dictionary = {'viewpoint_to_save' : _viewpoint_to_save, "viewpoint_to_load" : _viewpoint_to_load}
+		tw_const.check_viewpoint_input(event, dict)
+		_viewpoint_to_save = dict['viewpoint_to_save']
+		_viewpoint_to_load = dict['viewpoint_to_load']
+		get_tree().get_root().propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
+		log_debug("ESC pressed...")
+		
 	_clientstatus = get_clientstatus()
 	if _clientstatus < Globals.Constants.clientstatus_session_initialized:
 		return
@@ -202,7 +210,7 @@ func _input(event):
 
 	if event is InputEventKey && event.is_pressed():
 		var dict : Dictionary = {'viewpoint_to_save' : _viewpoint_to_save, "viewpoint_to_load" : _viewpoint_to_load}
-		tw_const.check_viewpoin_input(event, dict)
+		tw_const.check_viewpoint_input(event, dict)
 		_viewpoint_to_save = dict['viewpoint_to_save']
 		_viewpoint_to_load = dict['viewpoint_to_load']
 
