@@ -471,12 +471,12 @@ parent = NodePath("../../../GDN_TW_Camera")
 visible = false
 
 [node name="GDN_TW_MapViewportContainer" type="GDN_TheWorld_MapViewportContainer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer"]
-offset_right = 1024.0
-offset_bottom = 522.0
+offset_right = 2.0
+offset_bottom = 2.0
 
 [node name="GDN_TW_MapViewport" type="GDN_TheWorld_MapViewport" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer"]
 handle_input_locally = false
-size = Vector2i(1024, 522)
+size = Vector2i(2, 2)
 render_target_update_mode = 0
 
 [node name="GDN_TW_MapCamera" type="GDN_TheWorld_MapCamera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer/GDN_TW_MapViewport"]
