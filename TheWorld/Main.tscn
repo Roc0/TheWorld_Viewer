@@ -471,6 +471,9 @@ parent = NodePath("../../../GDN_TW_Camera")
 visible = false
 
 [node name="GDN_TW_MapViewportContainer" type="GDN_TheWorld_MapViewportContainer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_right = 2.0
 offset_bottom = 2.0
 

@@ -16,4 +16,8 @@ godot-cpp	commit a62f633cebee4b36356dc903d00670733cd28fb1		HEAD detached at a62f
 godot		commit 82cedc83c9069125207c128f9a07ce3d82c317cc		HEAD detached at 82cedc83c9 (git status)
 godot-cpp	commit 0a1e31fa459b2d3e1b5f3a56823740f86a2fe02a		Hash 0a1e31f (git rev-parse --short HEAD)
 
+17/10/2024 (godot 4.3 stable)
+godot		commit 77dcf97d82cbfe4e4615475fa52ca03da645dbd8 (HEAD, tag: 4.3-stable)				Hash 77dcf97d82 (git rev-parse --short HEAD)	HEAD detached at 4.3-stable (git status)
+godot-cpp	commit fbbf9ec4efd8f1055d00edb8d926eef8ba4c2cce (HEAD, tag: godot-4.3-stable)		Hash fbbf9ec (git rev-parse --short HEAD)	HEAD detached at godot-4.3-stable
+
 AGGIORNARE COMMENTO IN !start.bat
