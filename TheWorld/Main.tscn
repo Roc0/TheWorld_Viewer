@@ -1,6 +1,7 @@
-[gd_scene load_steps=63 format=4 uid="uid://c4ukh1kw4impi"]
+[gd_scene load_steps=64 format=4 uid="uid://c4ukh1kw4impi"]
 
 [ext_resource type="Script" path="res://main/TheWorld_Main.gd" id="1_760ml"]
+[ext_resource type="Script" path="res://main.gd" id="1_tdbos"]
 [ext_resource type="Script" path="res://addons/twviewer/tw_viewer.gd" id="3_yxvy6"]
 [ext_resource type="PackedScene" uid="uid://djjd1xm5iotj1" path="res://components/UI.tscn" id="4_cjpoh"]
 [ext_resource type="PackedScene" uid="uid://cdlipa2pmvrju" path="res://components/world_environment.tscn" id="4_gxev0"]
@@ -369,7 +370,8 @@ material = SubResource("ShaderMaterial_b1hol")
 flip_faces = true
 size = Vector2(2, 2)
 
-[node name="RootNode" type="Node"]
+[node name="RootNode" type="Node3D"]
+script = ExtResource("1_tdbos")
 
 [node name="TheWorld_Main_Control" type="Control" parent="."]
 layout_mode = 3
@@ -405,6 +407,7 @@ script = ExtResource("15_6btyd")
 
 [node name="TWViewer" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape"]
 script = ExtResource("3_yxvy6")
+_loading_screen = false
 _world_param_depth_quad = 2
 _world_param_cache_quad = 2
 _world_param_max_depth_quad = 6
@@ -492,6 +495,7 @@ zoom = Vector2(0.5, 0.5)
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
 transform = Transform3D(-0.898772, -0.115318, -0.422978, 0, 0.964787, -0.263034, 0.438416, -0.236407, -0.867124, 8132.9, 20.3518, -12181.3)
+current = true
 near = 0.5
 far = 18432.0
 

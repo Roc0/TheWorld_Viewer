@@ -112,6 +112,20 @@ var _initial_level : int = 0
 
 #@export_category("TWViewer")
 
+var _loading_screen_changed := true
+@export var _loading_screen : bool = true:
+	set = _set_loading_screen
+func _set_loading_screen(loading_screen : bool):
+	_loading_screen = loading_screen
+	_loading_screen_changed = true
+
+var _full_world_deploy_changed := true
+@export var _full_world_deploy : bool = true:
+	set = _set_full_world_deploy
+func _set_full_world_deploy(full_world_deploy : bool):
+	_full_world_deploy = full_world_deploy
+	_full_world_deploy_changed = true
+
 var _debug_mode_changed := true
 @export_enum("Default:0", "Enabled:1", "Disabled:2") var _debug_mode: int = 0:
 	set = _set_debug_mode
@@ -530,7 +544,7 @@ func _process(delta):
 		if !_init_done && gdn_main.initialized():
 			restore_init()
 	
-	if gdn_viewer == null:
+	if gdn_viewer == null or gdn_globals == null:
 		return
 	
 	#if gdn_viewer != null:
@@ -704,6 +718,14 @@ func _process(delta):
 		set_debug_mode(_debug_mode)
 		_debug_mode_changed = false
 		
+	if _loading_screen_changed:
+		gdn_globals.set_loading_screen(_loading_screen)
+		_loading_screen_changed = false
+		
+	if _full_world_deploy_changed:
+		gdn_globals.set_loading_screen_exit_on_full_world_deploy(_full_world_deploy)
+		_full_world_deploy_changed = false
+
 	if _camera_param_initial_pos_changed:
 		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
 			var camera : Camera3D = null
@@ -1611,6 +1633,30 @@ func print_variables_to_restore():
 	_logger.debug(str("_info_panel_map_quadrants_label=", _info_panel_map_quadrants_label))
 	_logger.debug(str("_info_panel_mouse_tracking_label=", _info_panel_mouse_tracking_label))
 	
+func get_num_quadrant() -> int:
+	var gdn_viewer = GDN_viewer()
+	if gdn_viewer == null:
+		return -1
+	return gdn_viewer.get_num_quadrant()
+	
+func get_max_num_quadrant() -> int:
+	var gdn_viewer = GDN_viewer()
+	if gdn_viewer == null:
+		return -1
+	return gdn_viewer.get_max_num_quadrant()
+
+func get_num_initialized_quadrant() -> int:
+	var gdn_viewer = GDN_viewer()
+	if gdn_viewer == null:
+		return -1
+	return gdn_viewer.get_num_initialized_quadrant()
+
+func loading_screen() -> bool:
+	return _loading_screen
+
+func full_world_deploy() -> bool:
+	return _full_world_deploy
+
 # debug
 #enum Tile {TILE_AIR = 0, TILE_BLOCK, TILE_ICE}
 #export(Tile) var tile_type : int = 0 setget set_tile_type
