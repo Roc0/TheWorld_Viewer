@@ -10,7 +10,7 @@ func _ready() -> void:
 	var v : Viewport = get_viewport()
 	var result = v.connect("size_changed", Callable(self, "resize"))
 	scene_root = get_tree().current_scene
-	print(scene_root)
+	#print(scene_root)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
