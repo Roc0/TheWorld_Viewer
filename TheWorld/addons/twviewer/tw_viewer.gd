@@ -1633,6 +1633,12 @@ func print_variables_to_restore():
 	_logger.debug(str("_info_panel_map_quadrants_label=", _info_panel_map_quadrants_label))
 	_logger.debug(str("_info_panel_mouse_tracking_label=", _info_panel_mouse_tracking_label))
 	
+func get_loading_progress() -> float:
+	var gdn_viewer = GDN_viewer()
+	if gdn_viewer == null:
+		return -1
+	return gdn_viewer.get_loading_progress()
+
 func get_num_quadrant() -> int:
 	var gdn_viewer = GDN_viewer()
 	if gdn_viewer == null:
@@ -1644,6 +1650,12 @@ func get_max_num_quadrant() -> int:
 	if gdn_viewer == null:
 		return -1
 	return gdn_viewer.get_max_num_quadrant()
+
+func get_min_num_quadrant() -> int:
+	var gdn_viewer = GDN_viewer()
+	if gdn_viewer == null:
+		return -1
+	return gdn_viewer.get_min_num_quadrant()
 
 func get_num_initialized_quadrant() -> int:
 	var gdn_viewer = GDN_viewer()

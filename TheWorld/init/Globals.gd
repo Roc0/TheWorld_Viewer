@@ -10,7 +10,8 @@ var main_scene : Node
 
 #var loading_screen = true
 #var loading_screen_to_full_world_deploy = false
-var still_loading : bool
+var still_loading : bool = false
+var ending_loading : bool = false
 
 var appstatus : int
 const appstatus_running = 1
@@ -58,16 +59,25 @@ func _process(_delta):
 		log_debug(str("signal tw_status_changed connected (result=", result, ")"))
 	
 	if tw_viewer != null and still_loading:
-		var num_initialized_quadrant : float = tw_viewer.get_num_initialized_quadrant()
-		var num_quadrant : float = 0
-		if tw_viewer.full_world_deploy():
-			num_quadrant = tw_viewer.get_max_num_quadrant()
+		#var num_initialized_quadrant : float = tw_viewer.get_num_initialized_quadrant()
+		#var num_quadrant : float = 0
+		#if tw_viewer.full_world_deploy():
+		#	num_quadrant = tw_viewer.get_max_num_quadrant()
+		#else:
+		#	#num_quadrant = tw_viewer.get_num_quadrant()
+		#	num_quadrant = tw_viewer.get_min_num_quadrant()
+		#if (num_quadrant > 1 and num_initialized_quadrant > 0):
+		#	var progress : float = num_initialized_quadrant / num_quadrant
+		#	loadingscreen_scene.set_progress(progress * 100)
+		var loadingProgress : float = 0
+		if ending_loading:
+			loadingProgress = 100
+			still_loading = false
 		else:
-			num_quadrant = tw_viewer.get_num_quadrant()
-		if (num_quadrant > 1 and num_initialized_quadrant > 0):
-			var progress : float = num_initialized_quadrant / num_quadrant
-			loadingscreen_scene.set_progress(progress * 100)
-		
+			loadingProgress = tw_viewer.get_loading_progress()
+		if loadingProgress > 0:
+			loadingscreen_scene.set_progress(loadingProgress)
+			
 func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> void:
 	if tw_viewer == null:
 		return
@@ -76,7 +86,7 @@ func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> 
 			or (!tw_viewer.full_world_deploy() and new_client_status == Constants.clientstatus_minimal_world_deployed):
 		loadingscreen_scene.visible = false
 		main_scene.visible = true
-		still_loading = false
+		ending_loading = true
 
 func load_loading_screen() -> void:
 	var root = get_tree().get_root()
