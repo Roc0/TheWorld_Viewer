@@ -1,3 +1,0 @@
-. Ottimizzare il numero dei nodi al crescere dei map quadrants
-. Se errore nel recupero dei quadranti riprovarci
-. recuperare map quadrant e map texture rect obsoleti
