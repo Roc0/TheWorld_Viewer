@@ -1,3 +1,9 @@
+resolution = numero di pixel comprensivo del primo e dell'ultimo per cui è un numero dispari (un multiplo di 2 + 1)
+global size = resolution - 1 ovvero numero di spazi fra un punto e l'altro ed è un nuemro pari multiplo di 2
+le immagini sono aidacenti ma si sovrappongono sull'ultimo pixel
+MapRect_ deve avere un padding maggiore (occorre rigenerare tutti i rect sia nel server che nel client) 
+
+
 gu_grid_step
 gu_terrain_inverse_transform
 
