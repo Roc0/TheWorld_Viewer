@@ -739,7 +739,7 @@ func _process(delta):
 				#var gizmos := []
 				#gizmos = camera.get_gizmos()
 				#print(str("gizmos=",gizmos.size()))
-		_camera_param_initial_pos_changed = false
+			_camera_param_initial_pos_changed = false
 	
 	if _camera_param_initial_yaw_pitch_roll_changed:
 		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
@@ -829,7 +829,7 @@ func _process(delta):
 				_info_panel_camera_yaw = "  Yaw: " + str(snapped(viewer_custom_camera.get_yaw(false), 0.01)) 
 				_info_panel_camera_pitch = "  Pitch: " + str(snapped(viewer_custom_camera.get_pitch(false), 0.01))
 				_info_panel_camera_roll = "  Roll: " + str(snapped(viewer_custom_camera.get_roll(false), 0.01)) + "\n"
-		_info_panel_grid_origin = "Map origin: " + str(gdn_viewer.global_transform.origin) + "\n"
+		_info_panel_grid_origin = "Map origin: " + str(gdn_viewer.get_anchor_for_origin_shift().global_transform.origin) + "\n"
 		_info_panel_render_process_durations_mcs = "Render process (mcs): " + str(gdn_viewer.get_process_duration()) + "\n"
 		#+ " UQ " + String (update_quads1_duration + update_quads2_duration + update_quads3_duration) \
 		#+ " (" + String(update_quads1_duration) \

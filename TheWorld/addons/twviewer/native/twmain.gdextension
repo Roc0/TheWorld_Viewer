@@ -9,9 +9,14 @@ compatibility_minimum = 4.1
 #macos.release = "res://bin/libgdexample.macos.template_release.framework"
 #windows.debug.x86_32 = "res://bin/libgdexample.windows.template_debug.x86_32.dll"
 #windows.release.x86_32 = "res://bin/libgdexample.windows.template_release.x86_32.dll"
-windows.debug.x86_64 = "res://addons/twviewer/native/TheWorld_GDN_Viewer_d.dll"
-#windows.debug.x86_64 = "res://addons/twviewer/native/TheWorld_GDN_Viewer.dll"
+
+# editor and template_debug
+#windows.debug.x86_64 = "res://addons/twviewer/native/TheWorld_GDN_Viewer_d.dll"
+windows.debug.x86_64 = "res://addons/twviewer/native/TheWorld_GDN_Viewer.dll"
+
+# template_release
 windows.release.x86_64 = "res://addons/twviewer/native/TheWorld_GDN_Viewer.dll"
+
 #linux.debug.x86_64 = "res://bin/libgdexample.linux.template_debug.x86_64.so"
 #linux.release.x86_64 = "res://bin/libgdexample.linux.template_release.x86_64.so"
 #linux.debug.arm64 = "res://bin/libgdexample.linux.template_debug.arm64.so"
