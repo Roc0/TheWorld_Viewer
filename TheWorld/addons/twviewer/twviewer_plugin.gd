@@ -82,6 +82,7 @@ func _process(delta: float):
 			_viewer.custom_ready()
 			_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done, " custom_ready done"))
 			
+			#if Engine.is_editor_hint():
 			var editor_interface := get_editor_interface()
 			_logger.debug (str("EditorInterface ", editor_interface))
 			_viewer.set_editor_interface(editor_interface)

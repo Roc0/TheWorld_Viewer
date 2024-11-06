@@ -8,6 +8,8 @@ var tw_const = preload("res://addons/twviewer/tw_const.gd")
 const HT_Logger = preload("res://addons/twviewer/util/logger.gd")
 var _logger = HT_Logger.get_for(self)
 
+#var debug_running_game_global = preload("res://addons/debug_running_game/debug_running_game_global.gd")
+
 var _config_file_name : String = ""
 var _config := ConfigFile.new()
 

@@ -30,6 +30,9 @@ rem set executable=..\..\Client\godot\bin\godot.windows.editor.dev.x86_64.exe
 				rem rem rem rem rem rem rem set executable=..\..\Client\godot\bin\godot.windows.editor.dev.double.x86_64.exe
 
 dir %executable%
-call %executable% -v %project% %edit% 2>&1 1>log.txt
+set command=%executable% -v %project% %edit%
+echo %command%
+call %command% 2>&1 1>log.txt
+rem call %executable% -v %project% %edit% 2>&1 1>log.txt
 rem pause
 

@@ -14,7 +14,8 @@ const tw_constants = preload("./tw_const.gd")
 const HT_Logger = preload("./util/logger.gd")
 const tw_info_container = preload("./tw_info_container.gd")
 
-var _editor_interface : EditorInterface = null
+#var _editor_interface : EditorInterface = null
+var _editor_interface = null
 var _editor_camera : Camera3D = null
 var _editor_3d_overlay : Control = null
 
@@ -24,6 +25,8 @@ const EXIT_STATUS_PREDEINIT_REQUIRED = 2
 const EXIT_STATUS_QUIT_REQUIRED = 3
 const EXIT_STATUS_QUITTING = 4
 var _exit_status : int = EXIT_STATUS_RUNNING
+
+var undeploy_request_logged : bool = false
 
 var _gdn_globals : Node = null
 var _gdn_viewer : Node3D = null
@@ -485,9 +488,12 @@ func init_world() -> void:
 	GDN_viewer().deploy_world(_camera_param_initial_pos.x, _camera_param_initial_pos.y, _camera_param_initial_pos.z, _camera_param_initial_alt_forced, _camera_param_initial_yaw_pitch_roll.x, _camera_param_initial_yaw_pitch_roll.y, _camera_param_initial_yaw_pitch_roll.z, _initial_level, -1 , -1)
 	#_camera_param_initial_yaw_pitch_roll_changed = true
 	log_debug("World initialization completed...")
+	undeploy_request_logged = false
 
 func deinit_world() -> void:
-	log_debug("Sending undeploy world request...")
+	if not undeploy_request_logged:
+		log_debug("Sending undeploy world request...")
+		undeploy_request_logged = true
 	GDN_viewer().undeploy_world()
 	#log_debug("World de-initialization completed...")
 
@@ -1102,7 +1108,8 @@ func set_editor_3d_overlay(overlay : Control):
 		log_debug(str("connected _editor_3d_overlay resized signal (result=", e, ")"))
 	GDN_viewer().set_editor_3d_overlay(overlay)
 
-func set_editor_interface(editor_interface : EditorInterface):
+#func set_editor_interface(editor_interface : EditorInterface):
+func set_editor_interface(editor_interface):
 	_editor_interface = editor_interface
 	GDN_viewer().set_editor_interface(editor_interface)
 

@@ -4,7 +4,8 @@ extends MeshInstance3D
 const HT_Logger = preload("../util/logger.gd")
 const tw_constants = preload("../tw_const.gd")
 
-var plugin : EditorPlugin = null
+#var plugin : EditorPlugin = null
+var plugin = null
 
 var _viewer : Node3D = null
 var _plane_mesh : PlaneMesh = null
@@ -59,7 +60,8 @@ func _set_num_vertices_read_only(v : int) -> void:
 	if not _var_read_only:
 		_num_vertices_read_only = v
 
-func set_plugin(plugin_ : EditorPlugin) -> void:
+#func set_plugin(plugin_ : EditorPlugin) -> void:
+func set_plugin(plugin_) -> void:
 	plugin = plugin_
 	#_logger.debug(str("set_plugin = ", plugin_))
 

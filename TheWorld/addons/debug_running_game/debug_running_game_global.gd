@@ -1,5 +1,5 @@
 # res://addons/debug_running_game/debug_running_game_global.gd
-# loadede as autoload: it is executed only in game 
+# loaded as autoload: it is executed only in game 
 extends Node
 
 const HT_Logger = preload("./util/logger.gd")
