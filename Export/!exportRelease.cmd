@@ -3,7 +3,7 @@
 set curpath=%~dp0
 cd /D %curpath%
 
-set export_dir=TheWorld
+set export_dir=..\..\TheWorld
 set export_executable=TheWorld.exe
 
 if not exist %export_dir% mkdir %export_dir%
