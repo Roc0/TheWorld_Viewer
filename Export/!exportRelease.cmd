@@ -1,5 +1,10 @@
 @echo off
 
+echo Verificare che TheWorld sia stato compilato in Release ...
+echo ... dopo l'esecuzione del comando di export attivare TheWorld.exe o TheWorld.console.exe da D:\TheWorld\Client\TheWorld
+
+pause
+
 set curpath=%~dp0
 cd /D %curpath%
 

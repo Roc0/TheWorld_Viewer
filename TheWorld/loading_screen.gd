@@ -1,5 +1,5 @@
 extends Node2D
-var first_resize := false
+var first_resize_done := false
 var scene_root : Node
 
 # Called when the node enters the scene tree for the first time.
@@ -14,9 +14,9 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if not first_resize:
+	if not first_resize_done:
 		resize()
-		first_resize = true
+		first_resize_done = true
 	
 func resize() -> void:
 	var viewport_rect : Rect2 = get_viewport_rect()
