@@ -772,6 +772,7 @@ func load_position(viewpoint : int) -> void:
 	if camera_position_in_map != null and camera_ypr_in_map != null:
 		TWViewer()._set_camera_param_initial_pos(camera_position_in_map)
 		TWViewer()._set_camera_param_initial_yaw_pitch_roll(camera_ypr_in_map)
+		Globals.activate_loading_screen(null)
 	
 func read_shift_ctrl_alt() -> void:
 	if Input.is_action_pressed("ui_alt"):
