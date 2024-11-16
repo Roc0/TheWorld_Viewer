@@ -1220,7 +1220,7 @@ func set_debug_mode(debug_mode : int):
 		print("GDN_globals() does not have method set_debug_enabled")
 		return
 	globals.set_debug_enabled(debug_enabled)
-	log_debug(str("debug mode: ", debug_mode))
+	log_debug(str("debug mode: ", debug_mode, " ", ("enabled" if debug_enabled else "disabled")))
 
 func get_clientstatus() -> int:
 	if _init_done:
