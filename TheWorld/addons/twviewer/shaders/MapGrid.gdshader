@@ -21,7 +21,7 @@ void vertex() {
 }
 
 void fragment() {
-	if (u_frame_visible) 
+	if (u_frame_visible)
 	{
 		bool on_quadrant_border = false;
 		float uv_fragment = 1.0 / float(u_num_quadrants);
@@ -34,7 +34,7 @@ void fragment() {
 				{
 					on_quadrant_border = true;
 					break;
-				} 
+				}
 				else if (((upper_left_quadrant_uv.x + uv_fragment) - UV.x) > 0.0 && ((upper_left_quadrant_uv.x + uv_fragment) - UV.x) < u_line_thickness)
 				{
 					on_quadrant_border = true;
@@ -55,16 +55,16 @@ void fragment() {
 		if (on_quadrant_border)
 		{
 			COLOR = u_color;
-			
+
 			/*if (u_num_visible_quadrants_on_north_side > -1 && u_num_visible_quadrants_on_south_side > -1 && u_num_visible_quadrants_on_west_side > -1 && u_num_visible_quadrants_on_east_side > -1)
 			{
 				float distance_north = 0.0;
 				float distance_south = 0.0;
 				float distance_west = 0.0;
 				float distance_east = 0.0;
-				
+
 				float quadrant_size = u_quadrant_size;
-				
+
 				bool pixel_in_north_quadrant = false;
 				bool pixel_in_south_quadrant = false;
 				bool pixel_in_west_quadrant = false;
@@ -89,7 +89,7 @@ void fragment() {
 					pixel_in_east_quadrant = true;
 					distance_east =  world_pos.x - (u_world_camera_quadrant_pos.x + quadrant_size);
 				}
-				
+
 				if (pixel_in_north_quadrant && distance_north < float(u_num_visible_quadrants_on_north_side))
 				{
 					COLOR = u_color_visible_quadrants;

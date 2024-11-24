@@ -3,6 +3,7 @@ var _first_resize_done := false
 var _end_loading_node : Node
 var _tw_viewer : Node
 var _loading : bool = false
+var _loadingProgress : float = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -20,9 +21,14 @@ func _process(delta: float) -> void:
 	
 	if _tw_viewer != null and _loading:
 		var loadingProgress : float = _tw_viewer.get_loading_progress()
+		if (loadingProgress < _loadingProgress):
+			loadingProgress = _loadingProgress
+		else:
+			_loadingProgress = loadingProgress
 		set_progress(loadingProgress)
 		if (loadingProgress == 100):
 			_loading = false
+			_loadingProgress = 0
 			visible = false
 			_end_loading_node.visible = true
 	
@@ -44,7 +50,8 @@ func activate_loading_screen(end_loading_node : Node) -> void:
 	_end_loading_node.visible = false
 	visible = true
 	_loading = true
-	
+	_loadingProgress = 0
+
 func set_progress(progress : float) -> void:
 	$VBoxContainer/ProgressBar.value = progress
 	

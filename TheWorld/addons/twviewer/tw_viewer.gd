@@ -1365,7 +1365,8 @@ func create_info_panel():
 	#_info_panel = Panel.new()
 	_info_panel.name = "InfoPanel"
 	log_debug(str("_info_panel:", _info_panel, " ", _info_panel.name))
-	add_child(_info_panel)
+	#add_child(_info_panel)
+	get_tree().get_root().add_child(_info_panel)
 	if _world_editor_param_info_panel_visible:
 		_info_panel.visible = true
 	else:
