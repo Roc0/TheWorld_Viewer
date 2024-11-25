@@ -14,10 +14,10 @@ void fragment()
 {
 	//COLOR.rgb = u_color.rgb;
 	//COLOR.a = u_alpha;
-	
+
 	vec4 color = vec4(1.0, 1.0, 1.0, 0.0);
 	float alpha = 0.0;
-	
+
 	if (u_world_quadrant != world_quadrant_nope)
 	{
 		if (u_world_quadrant == world_quadrant_camera)
@@ -37,7 +37,7 @@ void fragment()
 			color = vec4(1.0, 1.0, 1.0, 0.0);
 		}
 	}
-	
+
 	if (u_quadrant_ready)
 	{
 		alpha = 0.1;

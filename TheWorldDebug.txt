@@ -3,9 +3,9 @@
 ******** 04/11/2024 Depth Quad: 12 Cache Quad: 2 Max Depth Quad: 12 ****************************************************************************************
 ************************************************************************************************************************************************************
 
-======================================================================================================================================================================
-TheWorld RELEASE BUILD (no profiler) in Godot Editor - Camera world pos: 122143, 31.3, 126722 (pelo dell'acqua a 40 km da isola 4 - Alt 8 di TheWorldConfig.cfg.save6)
-======================================================================================================================================================================
+===============================================================================================================================================================================
+TheWorld RELEASE BUILD (no profiler & 2-2-12) in Godot Editor - Camera world pos: 122143, 31.3, 126722 (pelo dell'acqua a 40 km da isola 4 - Alt 8 di TheWorldConfig.cfg.save6)
+===============================================================================================================================================================================
 
 WORLD QUADRANTS
 Initialization of last stream of quadrant COMPLETED:
@@ -77,9 +77,9 @@ Num Map Quadrants = 841 Num Updated Map Quadrants = 841 Num Map Texture Rects = 
 2024-11-04 09:35:34.227 DEBUG [21356] [godot::GDN_TheWorld_Globals::debugPrint@353] DEBUG - DUMP COMPLETE
 2024-11-04 09:35:34.227 DEBUG [21356] [godot::GDN_TheWorld_Globals::debugPrint@353] DEBUG - *************
 
-=================================================================================================================================================================
-TheWorld RELEASE BUILD (no profiler) in Godot Editor - Camera world pos: 5515, 39, 25599.2 (piana all'interno di main island - Alt 9 di TheWorldConfig.cfg.save6)
-=================================================================================================================================================================
+==========================================================================================================================================================================
+TheWorld RELEASE BUILD (no profiler & 2-2-12) in Godot Editor - Camera world pos: 5515, 39, 25599.2 (piana all'interno di main island - Alt 9 di TheWorldConfig.cfg.save6)
+==========================================================================================================================================================================
 
 WORLD QUADRANTS
 Initialization of last stream of quadrant COMPLETED:
@@ -147,14 +147,80 @@ Num Map Quadrants = 841 Num Updated Map Quadrants = 841 Num Map Texture Rects = 
 2024-11-04 09:15:14.059 DEBUG [26584] [godot::GDN_TheWorld_Globals::debugPrint@353] DEBUG - DUMP COMPLETE
 2024-11-04 09:15:14.059 DEBUG [26584] [godot::GDN_TheWorld_Globals::debugPrint@353] DEBUG - *************
 
-====================================================================================================================================================================
-TheWorld DEBUG BUILD (no profiler) in Godot Editor - Camera world pos: 122143, 31.3, 126722 (pelo dell'acqua a 40 km da isola 4 - Alt 8 di TheWorldConfig.cfg.save6)
-====================================================================================================================================================================
+=============================================================================================================================================================================
+TheWorld DEBUG BUILD (no profiler & 2-2-12) in Godot Editor - Camera world pos: 122143, 31.3, 126722 (pelo dell'acqua a 40 km da isola 4 - Alt 8 di TheWorldConfig.cfg.save6)
+=============================================================================================================================================================================
 
+WORLD QUADRANTS
+Initialization of last stream of quadrant COMPLETED:
+  num streamed = 841 total quadrants = 841 elapsed = 67804 average = 80
+  visible = 312
+  invisible = 529
+  opt. level change = 825  texture resize = 10219  elapsed = 16505 average = 1
+  load from cache = 0  elapsed = 0 average = 0
+  reset shader params = 838  elapsed = 9697 average = 11
+  update shader params = 838  elapsed = 114 average = 0
+  set hires collisions = 13  elapsed = 127 average = 9
+  set lowres collisions = 825  elapsed = 3432 average = 4
+MAP QUADRANTS
 
-===============================================================================================================================================================
-TheWorld DEBUG BUILD (no profiler) in Godot Editor - Camera world pos: 5515, 39, 25599.2 (piana all'interno di main island - Alt 9 di TheWorldConfig.cfg.save6)
-===============================================================================================================================================================
+2024-11-25 11:30:44.026 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - *************
+2024-11-25 11:30:44.026 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - STARTING DUMP
+2024-11-25 11:30:44.027 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - FPS: 68.000000
+2024-11-25 11:30:44.035 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Threshold value to cache maps and images : 15000.00 m
+2024-11-25 11:30:44.035 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Quadrants : 841, cached map memory : 0.986495 GB, cached image memory : 2.398557 GB (resized cached image memory : 0.920552 GB)
+2024-11-25 11:30:44.036 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG -    Heigthmap16 : 0.328571 GB
+2024-11-25 11:30:44.036 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG -    Heigthmap32 : 0.657141 GB
+2024-11-25 11:30:44.036 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG -    Normalmap : 0.000000 GB
+2024-11-25 11:30:44.036 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG -    Splatmap : 0.000000 GB
+2024-11-25 11:30:44.036 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG -    Globalmap : 0.000000 GB
+2024-11-25 11:30:44.037 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG -    Colormap : 0.000000 GB
+2024-11-25 11:30:44.037 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG -    TerrainEdit : 0.000783 GB
+2024-11-25 11:30:44.037 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG -    Collider Heights : 0.000000 GB
+2024-11-25 11:30:44.037 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Engine monitor : 
+2024-11-25 11:30:44.038 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG -    Static memory in use : 4.598764 GB
+2024-11-25 11:30:44.038 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG -    Render video memory in use : 1.696482 GB, for texture 1.314017 GB, for buffers 0.257438 GB
+2024-11-25 11:30:44.038 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num. quadrants with sea = 832
+2024-11-25 11:30:44.038 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Min. num. visible quadrants on perimeter : 2
+2024-11-25 11:30:44.038 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Max. num. visible quadrants on perimeter : 12
+2024-11-25 11:30:44.039 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num. cache quadrants on perimeter : 2
+2024-11-25 11:30:44.039 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Actual num quadrants on perimeter on north side : 12
+2024-11-25 11:30:44.039 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Actual num quadrants on perimeter on east side : 12
+2024-11-25 11:30:44.039 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Actual num quadrants on perimeter on south side : 12
+2024-11-25 11:30:44.039 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Actual num quadrants on perimeter on west side : 12
+2024-11-25 11:30:44.040 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num quadrants with optimization level 0 : 13 - map size : 2049
+2024-11-25 11:30:44.040 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num quadrants with optimization level 2 : 72 - map size : 513
+2024-11-25 11:30:44.040 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num quadrants with optimization level 4 : 181 - map size : 129
+2024-11-25 11:30:44.040 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num quadrants with optimization level 6 : 575 - map size : 33
+2024-11-25 11:30:44.041 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num chunks at lod 1 = 32 - Num chunks per quadrant side = 128 - Grid step in WUs = 4.000000 - Num vertices per quadrant side = 1024 - Quadrant size in WUs = 4096.000000
+2024-11-25 11:30:44.041 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num chunks at lod 2 = 40 - Num chunks per quadrant side = 64 - Grid step in WUs = 8.000000 - Num vertices per quadrant side = 512 - Quadrant size in WUs = 4096.000000
+2024-11-25 11:30:44.041 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num chunks at lod 3 = 36 - Num chunks per quadrant side = 32 - Grid step in WUs = 16.000000 - Num vertices per quadrant side = 256 - Quadrant size in WUs = 4096.000000
+2024-11-25 11:30:44.041 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num chunks at lod 4 = 64 - Num chunks per quadrant side = 16 - Grid step in WUs = 32.000000 - Num vertices per quadrant side = 128 - Quadrant size in WUs = 4096.000000
+2024-11-25 11:30:44.041 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num chunks at lod 5 = 81 - Num chunks per quadrant side = 8 - Grid step in WUs = 64.000000 - Num vertices per quadrant side = 64 - Quadrant size in WUs = 4096.000000
+2024-11-25 11:30:44.042 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num chunks at lod 6 = 83 - Num chunks per quadrant side = 4 - Grid step in WUs = 128.000000 - Num vertices per quadrant side = 32 - Quadrant size in WUs = 4096.000000
+2024-11-25 11:30:44.042 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num chunks at lod 7 = 77 - Num chunks per quadrant side = 2 - Grid step in WUs = 256.000000 - Num vertices per quadrant side = 16 - Quadrant size in WUs = 4096.000000
+2024-11-25 11:30:44.042 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num chunks at lod 8 = 1215 - Num chunks per quadrant side = 1 - Grid step in WUs = 512.000000 - Num vertices per quadrant side = 8 - Quadrant size in WUs = 4096.000000
+2024-11-25 11:30:44.042 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Terrain Chunks
+2024-11-25 11:30:44.043 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num chunks at lod 4 = 36 - Num chunks per quadrant side = 16 - Grid step in WUs = 32.000000 - Num vertices per quadrant side = 128 - Quadrant size in WUs = 4096.000000
+2024-11-25 11:30:44.043 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num chunks at lod 5 = 39 - Num chunks per quadrant side = 8 - Grid step in WUs = 64.000000 - Num vertices per quadrant side = 64 - Quadrant size in WUs = 4096.000000
+2024-11-25 11:30:44.043 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num chunks at lod 6 = 40 - Num chunks per quadrant side = 4 - Grid step in WUs = 128.000000 - Num vertices per quadrant side = 32 - Quadrant size in WUs = 4096.000000
+2024-11-25 11:30:44.044 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num chunks at lod 7 = 39 - Num chunks per quadrant side = 2 - Grid step in WUs = 256.000000 - Num vertices per quadrant side = 16 - Quadrant size in WUs = 4096.000000
+2024-11-25 11:30:44.044 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num chunks at lod 8 = 612 - Num chunks per quadrant side = 1 - Grid step in WUs = 512.000000 - Num vertices per quadrant side = 8 - Quadrant size in WUs = 4096.000000
+2024-11-25 11:30:44.044 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Sea Chunks
+2024-11-25 11:30:44.044 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num chunks at lod 1 = 32 - Num chunks per quadrant side = 128 - Grid step in WUs = 4.000000 - Num vertices per quadrant side = 1024 - Quadrant size in WUs = 4096.000000
+2024-11-25 11:30:44.045 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num chunks at lod 2 = 40 - Num chunks per quadrant side = 64 - Grid step in WUs = 8.000000 - Num vertices per quadrant side = 512 - Quadrant size in WUs = 4096.000000
+2024-11-25 11:30:44.045 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num chunks at lod 3 = 36 - Num chunks per quadrant side = 32 - Grid step in WUs = 16.000000 - Num vertices per quadrant side = 256 - Quadrant size in WUs = 4096.000000
+2024-11-25 11:30:44.045 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num chunks at lod 4 = 28 - Num chunks per quadrant side = 16 - Grid step in WUs = 32.000000 - Num vertices per quadrant side = 128 - Quadrant size in WUs = 4096.000000
+2024-11-25 11:30:44.045 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num chunks at lod 5 = 42 - Num chunks per quadrant side = 8 - Grid step in WUs = 64.000000 - Num vertices per quadrant side = 64 - Quadrant size in WUs = 4096.000000
+2024-11-25 11:30:44.046 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num chunks at lod 6 = 43 - Num chunks per quadrant side = 4 - Grid step in WUs = 128.000000 - Num vertices per quadrant side = 32 - Quadrant size in WUs = 4096.000000
+2024-11-25 11:30:44.046 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num chunks at lod 7 = 38 - Num chunks per quadrant side = 2 - Grid step in WUs = 256.000000 - Num vertices per quadrant side = 16 - Quadrant size in WUs = 4096.000000
+2024-11-25 11:30:44.046 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - Num chunks at lod 8 = 603 - Num chunks per quadrant side = 1 - Grid step in WUs = 512.000000 - Num vertices per quadrant side = 8 - Quadrant size in WUs = 4096.000000
+2024-11-25 11:30:44.047 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - DUMP COMPLETE
+2024-11-25 11:30:44.047 DEBUG [16672] [godot::GDN_TheWorld_Globals::debugPrint@359] DEBUG - *************
+
+========================================================================================================================================================================
+TheWorld DEBUG BUILD (no profiler & 2-2-12) in Godot Editor - Camera world pos: 5515, 39, 25599.2 (piana all'interno di main island - Alt 9 di TheWorldConfig.cfg.save6)
+========================================================================================================================================================================
 
 
 ************************************************************************************************************************************************************
