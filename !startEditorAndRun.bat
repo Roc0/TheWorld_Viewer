@@ -2,4 +2,4 @@
 set curpath=%~dp0
 cd /D %curpath%
 
-call !start.bat noedit
+call !startEditor.bat noedit
