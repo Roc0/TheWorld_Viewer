@@ -430,6 +430,7 @@ script = ExtResource("15_6btyd")
 script = ExtResource("3_yxvy6")
 _world_param_depth_quad = 2
 _world_param_cache_quad = 2
+_world_param_max_depth_quad = 2
 _world_param_info_panel_visible = true
 _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 2

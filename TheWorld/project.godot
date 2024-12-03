@@ -24,10 +24,6 @@ debug_running_game_global="*res://addons/debug_running_game/debug_running_game_g
 
 settings/stdout/verbose_stdout=true
 
-[display]
-
-window/vsync/vsync_mode=0
-
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/compass/plugin.cfg", "res://addons/debug_running_game/plugin.cfg", "res://addons/twviewer/plugin.cfg")
