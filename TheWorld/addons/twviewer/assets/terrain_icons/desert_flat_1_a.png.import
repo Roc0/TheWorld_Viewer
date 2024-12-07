@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://3dj06clphbms"
-path="res://.godot/imported/desert_a.png-f6a1e5aa58202af80f9cb0c7b472af37.ctex"
+path="res://.godot/imported/desert_flat_1_a.png-c133194cd31580ceeeb5f38023342add.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/twviewer/assets/terrain_icons/desert_a.png"
-dest_files=["res://.godot/imported/desert_a.png-f6a1e5aa58202af80f9cb0c7b472af37.ctex"]
+source_file="res://addons/twviewer/assets/terrain_icons/desert_flat_1_a.png"
+dest_files=["res://.godot/imported/desert_flat_1_a.png-c133194cd31580ceeeb5f38023342add.ctex"]
 
 [params]
 
