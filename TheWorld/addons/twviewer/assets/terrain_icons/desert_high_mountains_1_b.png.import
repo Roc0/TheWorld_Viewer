@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://lgpfl53kc7qh"
-path="res://.godot/imported/desert_hills_1_a.png-06bc9b185d8880630d07900276b7d7a7.ctex"
+uid="uid://bbkvyjcy82btx"
+path="res://.godot/imported/desert_high_mountains_1_b.png-b5bb499359c8ade87c1d44ef02b1b8b0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/twviewer/assets/terrain_icons/desert_hills_1_a.png"
-dest_files=["res://.godot/imported/desert_hills_1_a.png-06bc9b185d8880630d07900276b7d7a7.ctex"]
+source_file="res://addons/twviewer/assets/terrain_icons/desert_high_mountains_1_b.png"
+dest_files=["res://.godot/imported/desert_high_mountains_1_b.png-b5bb499359c8ade87c1d44ef02b1b8b0.ctex"]
 
 [params]
 
