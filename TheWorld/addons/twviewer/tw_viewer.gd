@@ -86,6 +86,7 @@ var _info_panel_camera_pos_in_map := ""
 var _info_panel_camera2d_pos := ""
 var _info_panel_camera2d_pos_in_map := ""
 var _info_map_quadrants := ""
+var _info_map_quadrant_overrides := ""
 var _info_map_texture_rects := ""
 var _info_label_num_quadrants := ""
 var _info_label_num_visible_quadrants := ""
@@ -865,7 +866,8 @@ func _process(delta):
 				zoom = camera2d.get_zoom_factor()
 			_info_panel_camera2d_pos = "  Pos: " + str(camera2d.global_transform.origin) + " Zoom: " + str(snapped(zoom, 0.01)) + "\n"
 			_info_panel_camera2d_pos_in_map = "  Pos in map: " + str(camera2d_pos_in_map)
-		_info_map_quadrants = "Total: " + str(gdn_viewer.get_map_quadrants_num()) + " To show: " + str(gdn_viewer.get_to_show_map_quadrants_num()) + " Updating: " + str(gdn_viewer.get_updating_map_quadrants_num()) + "\n"
+		_info_map_quadrants = "Total: " + str(gdn_viewer.get_map_quadrant_num()) + " To show: " + str(gdn_viewer.get_to_show_map_quadrant_num()) + " Updating: " + str(gdn_viewer.get_updating_map_quadrant_num()) + "\n"
+		_info_map_quadrant_overrides = "Overrides: " + str(gdn_viewer.get_map_quadrant_override_num()) + " Color ovr: " + str(gdn_viewer.get_map_quadrant_color_override_num()) + " Texture ovr: " + str(gdn_viewer.get_map_quadrant_texture_override_num()) + "\n"
 		_info_map_texture_rects = "Texture Rects: " + str(gdn_viewer.get_map_quadrants_rect())
 		var toEraseQuadrants : int = gdn_viewer.get_num_toerase_quadrant()
 		var notInitializedQuadrants : int = gdn_viewer.get_num_quadrant() - gdn_viewer.get_num_initialized_quadrant() - toEraseQuadrants
@@ -953,6 +955,7 @@ func _process(delta):
 		
 		_info_panel_map_quadrants_label.text = "Map Quadrants\n" \
 		+ _info_map_quadrants \
+		+ _info_map_quadrant_overrides \
 		+ _info_map_texture_rects
 		
 		_info_panel_mouse_tracking_label.text = "Mouse tracking: " + _info_panel_track_mouse_state + "\n" \
@@ -1533,6 +1536,7 @@ func set_size_info_panel():
 		_info_panel.offset_top = 40
 	else:
 		_info_panel.anchor_left = 0
+		_info_panel.custom_minimum_size = Vector2(360, 0)
 	
 func is_ready() -> bool:
 	return _is_ready
