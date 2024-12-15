@@ -1,7 +1,7 @@
 shader_type canvas_item;
 
 uniform vec4 u_color = vec4(0.0, 0.0, 0.0, 1.0);
-uniform vec4 u_color_visible_quadrants = vec4(1.0, 0.0, 0.0, 1.0);
+//uniform vec4 u_color_visible_quadrants = vec4(1.0, 0.0, 0.0, 1.0);
 uniform float u_line_thickness = 0.008;
 uniform bool u_frame_visible = false;
 uniform int u_num_quadrants;
