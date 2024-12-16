@@ -10,6 +10,7 @@ const int world_quadrant_cache = 3;
 uniform int u_world_quadrant = -1;
 uniform bool u_quadrant_ready = false;
 uniform bool u_edit_mode = false;
+uniform bool u_highlighted = false;
 
 void fragment()
 {
@@ -66,8 +67,24 @@ void fragment()
 			alpha = 0.05;
 		}
 	}
-
-
+	
+	if (u_highlighted)
+	{
+		if (is_on_border)
+		{
+			if (mod(floor(TIME * 2.0), 2.0) == 0.0)	// even (pari)
+			{
+				color = vec4(1.0, 0.0, 0.0, 1.0);
+				alpha = 1.0;
+			}
+		}
+		else
+		{
+			color = vec4(1.0, 0.0, 0.0, 1.0);
+			alpha = 1.0;
+		}
+	}
+	
 	COLOR.rgb = color.rgb;
 	COLOR.a = alpha;
 }

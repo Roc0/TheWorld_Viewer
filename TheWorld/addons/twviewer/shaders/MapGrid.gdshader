@@ -3,7 +3,7 @@ shader_type canvas_item;
 uniform vec4 u_color = vec4(0.0, 0.0, 0.0, 1.0);
 //uniform vec4 u_color_visible_quadrants = vec4(1.0, 0.0, 0.0, 1.0);
 uniform float u_line_thickness = 0.008;
-uniform bool u_frame_visible = false;
+global uniform bool gu_map_grid_on = false;
 uniform int u_num_quadrants;
 uniform float u_quadrant_size;
 uniform vec2 u_world_camera_quadrant_pos;
@@ -13,15 +13,17 @@ uniform int u_num_visible_quadrants_on_west_side = -1;
 uniform int u_num_visible_quadrants_on_east_side = -1;
 uniform int u_num_cache_quadrants = -1;
 
-varying vec2 world_pos;
+//varying vec2 world_pos;
 
+/*
 void vertex() {
 	// Called for every vertex the material is visible on.
 	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0, 1.0)).xy;
 }
+*/
 
 void fragment() {
-	if (u_frame_visible)
+	if (gu_map_grid_on)
 	{
 		bool on_quadrant_border = false;
 		float uv_fragment = 1.0 / float(u_num_quadrants);

@@ -364,3 +364,7 @@ gu_camera_under_water={
 "type": "float",
 "value": 1.0
 }
+gu_map_grid_on={
+"type": "bool",
+"value": false
+}
