@@ -7,9 +7,10 @@ var _loadingProgress : float = 0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	$VBoxContainer.custom_minimum_size = Vector2(500, 0)
-	$VBoxContainer/Label.modulate = Color(0.5, 0, 0)
-	$VBoxContainer/Label.add_theme_font_size_override("font_size", 20)
+	$TitleVBoxContainer/Title.add_theme_font_size_override("font_size", 50)
+	$ProgressVBoxContainer.custom_minimum_size = Vector2(500, 0)
+	$ProgressVBoxContainer/LoadingLabel.modulate = Color(0.5, 0, 0)
+	$ProgressVBoxContainer/LoadingLabel.add_theme_font_size_override("font_size", 20)
 	var v : Viewport = get_viewport()
 	var result = v.connect("size_changed", Callable(self, "resize"))
 
@@ -34,13 +35,13 @@ func _process(delta: float) -> void:
 	
 func resize() -> void:
 	var viewport_rect : Rect2 = get_viewport_rect()
-	var vbox_container_size : Vector2 = $VBoxContainer.size
-	#$VBoxContainer.set_anchor(SIDE_TOP, 0.5)
-	$VBoxContainer.set_offset(SIDE_TOP, (viewport_rect.size.y / 2) - (vbox_container_size.y / 2))
-	#$VBoxContainer.set_anchor(SIDE_LEFT, 0.5)
-	$VBoxContainer.set_offset(SIDE_LEFT, (viewport_rect.size.x / 2) - (vbox_container_size.x / 2))
-	#$VBoxContainer.set_position(Vector2(0, 0))
-	#$VBoxContainer.set_size(get_viewport_rect().size)
+	var title_vbox_container_size : Vector2 = $TitleVBoxContainer.size
+	var progress_vbox_container_size : Vector2 = $ProgressVBoxContainer.size
+	$TitleVBoxContainer.set_offset(SIDE_TOP, (viewport_rect.size.y / 2) - (title_vbox_container_size.y / 2))
+	$TitleVBoxContainer.set_offset(SIDE_LEFT, (viewport_rect.size.x / 2) - (title_vbox_container_size.x / 2))
+	$ProgressVBoxContainer.set_offset(SIDE_TOP, (viewport_rect.size.y) - (progress_vbox_container_size.y + 100))
+	#$ProgressVBoxContainer.set_offset(SIDE_TOP, (viewport_rect.size.y / 2) - (vbox_container_size.y / 2))
+	$ProgressVBoxContainer.set_offset(SIDE_LEFT, (viewport_rect.size.x / 2) - (progress_vbox_container_size.x / 2))
 	
 func init(tw_viewer : Node) -> void:
 	_tw_viewer = tw_viewer
@@ -53,5 +54,5 @@ func activate_loading_screen(end_loading_node : Node) -> void:
 	_loadingProgress = 0
 
 func set_progress(progress : float) -> void:
-	$VBoxContainer/ProgressBar.value = progress
+	$ProgressVBoxContainer/ProgressBar.value = progress
 	
