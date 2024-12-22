@@ -174,22 +174,23 @@ func _handles(object):
 	return b
 
 func _make_visible(visible: bool):
-	_logger.debug(str("_make_visible ", visible))
-
+	#_logger.debug(str("_make_visible ", visible))
+	
 	#if not visible:
 	#	_edit(null)
 	#else:
 	#	if _viewer != null:
 	#		_edit(_viewer)
+	pass
 	
 func _edit(object):
-	_logger.debug(str("_edit ", object))
+	#_logger.debug(str("_edit ", object))
 	
 	if object is TWTestQuadrant:
 		add_test_quadrant_to_array(object)
 
 func _forward_3d_draw_over_viewport(overlay : Control):
-	#print("_forward_3d_draw_over_viewport")
+	#_logger.debug(str("_forward_3d_draw_over_viewport ", overlay))
 	
 	if _viewer != null:
 		_viewer.set_editor_3d_overlay(overlay)

@@ -1680,24 +1680,3 @@ func loading_screen() -> bool:
 
 func full_world_deploy() -> bool:
 	return _full_world_deploy
-
-# debug
-#enum Tile {TILE_AIR = 0, TILE_BLOCK, TILE_ICE}
-#export(Tile) var tile_type : int = 0 setget set_tile_type
-#func set_tile_type(p_tile_type : int):
-#	tile_type = p_tile_type
-#	print(tile_type)
-#export({user = 0, moderator = 50, admin = 100}) var role : int = 100 setget set_role
-#func set_role(p_role : int):
-#	role = p_role
-#	print(role)
-#export({"user": 0, "moderator": 50, "admin": 100}) var role_alt : int = 100 setget set_role_alt
-#func set_role_alt(p_role_alt : int):
-#	role_alt = p_role_alt
-#	print(role_alt)
-#const Utils = {"Util 1": 0, "Util 2": 1, "Util 3": 10}
-#export(Utils) var util : int setget set_util
-#func set_util(p_util):
-#	util = p_util
-#	print(util)
-# debug

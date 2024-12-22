@@ -20,7 +20,7 @@ void fragment()
 	vec4 color = vec4(1.0, 1.0, 1.0, 0.0);
 	float alpha = 0.0;
 	vec2 uv = UV;
-	
+
 	float thickness = 0.1;
 	bool is_on_border = false;
 	if ( (uv.x >= 0.0 && uv.x < thickness)
@@ -67,7 +67,7 @@ void fragment()
 			alpha = 0.05;
 		}
 	}
-	
+
 	if (u_highlighted)
 	{
 		if (is_on_border)
@@ -84,7 +84,7 @@ void fragment()
 			alpha = 1.0;
 		}
 	}
-	
+
 	COLOR.rgb = color.rgb;
 	COLOR.a = alpha;
 }

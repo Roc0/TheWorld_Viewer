@@ -1,10 +1,9 @@
-[gd_scene load_steps=68 format=4 uid="uid://c4ukh1kw4impi"]
+[gd_scene load_steps=70 format=4 uid="uid://c4ukh1kw4impi"]
 
 [ext_resource type="Script" path="res://main/TheWorld_Main.gd" id="1_760ml"]
 [ext_resource type="Script" path="res://main.gd" id="1_tdbos"]
 [ext_resource type="Script" path="res://addons/twviewer/tw_viewer.gd" id="3_yxvy6"]
 [ext_resource type="PackedScene" uid="uid://djjd1xm5iotj1" path="res://components/UI.tscn" id="4_cjpoh"]
-[ext_resource type="PackedScene" uid="uid://cdlipa2pmvrju" path="res://components/world_environment.tscn" id="4_gxev0"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="4_skg2b"]
 [ext_resource type="Shader" path="res://addons/twviewer/shaders/outline.gdshader" id="5_8cej7"]
 [ext_resource type="Texture2D" uid="uid://bg5fxjgjk8nfg" path="res://addons/compass/resources/compassbar.png" id="5_how1r"]
@@ -24,6 +23,38 @@
 [ext_resource type="PackedScene" uid="uid://dlay76hdi56fd" path="res://assets/scenes/godot_ball.tscn" id="14_4otfj"]
 [ext_resource type="Script" path="res://addons/debug_running_game/debug_running_game_node.gd" id="15_6btyd"]
 [ext_resource type="Shader" path="res://utils/GreyScalePostProcess.gdshader" id="22_kvffj"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_3miyn"]
+sky_top_color = Color(0.384314, 0.454902, 0.54902, 1)
+sky_horizon_color = Color(0.647059, 0.654902, 0.670588, 1)
+ground_bottom_color = Color(0.384314, 0.454902, 0.54902, 1)
+ground_horizon_color = Color(0.647059, 0.654902, 0.670588, 1)
+
+[sub_resource type="Sky" id="Sky_i3qaf"]
+sky_material = SubResource("ProceduralSkyMaterial_3miyn")
+
+[sub_resource type="Environment" id="Environment_4c4ma"]
+background_mode = 2
+sky = SubResource("Sky_i3qaf")
+ambient_light_source = 3
+ambient_light_color = Color(1, 1, 1, 1)
+ambient_light_sky_contribution = 0.5
+ambient_light_energy = 0.5
+tonemap_mode = 3
+fog_enabled = true
+fog_mode = 1
+fog_density = 0.1468
+fog_aerial_perspective = 0.64
+fog_sky_affect = 0.533
+fog_depth_curve = 3.86376
+fog_depth_begin = 0.0
+fog_depth_end = 0.0
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.004
+volumetric_fog_emission = Color(0.756078, 0.624246, 0.769531, 1)
+volumetric_fog_length = 54.61
+volumetric_fog_ambient_inject = 0.65
+volumetric_fog_sky_affect = 0.0
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xl13w"]
 shading_mode = 0
@@ -422,7 +453,17 @@ script = ExtResource("1_760ml")
 [node name="debug_running_game_node" type="Node" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main"]
 script = ExtResource("15_6btyd")
 
-[node name="WorldEnvironment" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main" instance=ExtResource("4_gxev0")]
+[node name="Environment" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Environment"]
+environment = SubResource("Environment_4c4ma")
+
+[node name="Sun" type="DirectionalLight3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Environment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2000, 0)
+light_energy = 1.3
+shadow_enabled = true
+directional_shadow_fade_start = 0.405
+directional_shadow_max_distance = 11.3
 
 [node name="Landscape" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main"]
 
@@ -434,7 +475,7 @@ _world_param_info_panel_visible = true
 _world_editor_param_depth_quad = 2
 _world_editor_param_cache_quad = 2
 _world_editor_param_max_depth_quad = 6
-_world_editor_param_info_panel_visible = true
+_world_editor_param_deploy_world = true
 _camera_param_initial_pos = Vector3(9420.22, 3019.62, 28709.9)
 _camera_param_initial_yaw_pitch_roll = Vector3(30.6602, -19.2361, 0)
 _shader_param_ground_uv_scale = 6.0
@@ -501,7 +542,7 @@ offset_bottom = 2.0
 
 [node name="GDN_TW_MapViewport" type="GDN_TheWorld_MapViewport" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer"]
 handle_input_locally = false
-size = Vector2i(2, 2)
+size = Vector2i(1044, 578)
 render_target_update_mode = 0
 
 [node name="GDN_TW_MapCamera" type="GDN_TheWorld_MapCamera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer/GDN_TW_MapViewport"]
