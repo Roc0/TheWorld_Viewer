@@ -4,6 +4,7 @@ extends WorldEnvironment
 
 # General settings for time of day, on/off for simulating day and night cycle, rate of time, and overall rotation of the sky
 @export_category("GodotSky Control")
+@export_range(1,12,1) var monthOfYear : int = 7
 @export_range(0,2400,0.01) var timeOfDay : float = 1200.0
 @export var simulateTime : bool = false
 @export_range(0,10,0.01) var rateOfTime : float = 0.1
@@ -29,6 +30,7 @@ extends WorldEnvironment
 var sunPosition : float = 0.0
 var moonPosition : float = 0.0
 var sunPosAlpha : float = 0.0
+var intensityMultiplierPerMonth  : Array = [0,1,1,2,3,3,4,4,4,3,3,1,1]
 
 # Check if simulating day/night cycle, determine rate of time, and increase time
 func simulateDay():
@@ -53,7 +55,7 @@ func updateLights():
 			moon.light_energy = clamp(skyPreset.moonLightIntensity.sample(sunPosition),0.0,1.0)
 		"2D Dynamic":
 			sun.light_energy = clamp(skyPreset.sunLightIntensity.sample(sunPosition) * (1.0 - (cloudCoverage + 0.2)),0.0,1.0)
-			sun.light_energy *= 3
+			sun.light_energy *= intensityMultiplierPerMonth[monthOfYear]
 			moon.light_energy = clamp(skyPreset.moonLightIntensity.sample(sunPosition)  * (1.0 - (cloudCoverage + 0.2)),0.0,1.0)
 
 # Update rotation of sun and moon
