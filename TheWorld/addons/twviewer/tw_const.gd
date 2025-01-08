@@ -42,6 +42,7 @@ const global_shader_param_player_pos := "gu_player_pos"
 const global_shader_param_player_altitude_from_terrain := "gu_player_altitude_from_terrain"
 const global_shader_param_player_texture_blending_size := "gu_texture_blending_size"
 const global_shader_param_player_splatmap_blending_size := "gu_splatmap_blending_size"
+const global_shader_param_player_texture_new_blending := "gu_texture_new_blending"
 
 static func status_to_string(status : int) -> String:
 	if status == clientstatus_error:

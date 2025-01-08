@@ -83,6 +83,7 @@ var _info_panel_camera_roll := ""
 var _info_panel_camera_rot := ""
 var _info_panel_camera_pos := ""
 var _info_panel_camera_pos_in_map := ""
+var _info_panel_camera_velocity := ""
 var _info_panel_camera2d_pos := ""
 var _info_panel_camera2d_pos_in_map := ""
 var _info_map_quadrants := ""
@@ -338,6 +339,13 @@ func _set_shader_param_force_elevation_0(v : bool):
 	_shader_param_force_elevation_0 = v
 	_shader_param_force_elevation_0_changed = true
 
+var _shader_param_new_blending_changed := true
+@export var _shader_param_new_blending : bool = false:
+	set = _set_shader_param_new_blending
+func _set_shader_param_new_blending(v : bool):
+	_shader_param_new_blending = v
+	_shader_param_new_blending_changed = true
+	
 @export_group("", "")
 
 func _init():
@@ -595,6 +603,7 @@ func _process(delta):
 			#print(str("DEBUG _info_panel=", _info_panel, " visible=", _world_editor_param_info_visible))
 			if _info_panel != null:
 				_info_panel.visible = _world_editor_param_info_panel_visible
+				gdn_viewer.set_info_panel_visible(_info_panel.visible)
 				#print(str("_info_panel_visible=", _info_panel.visible))
 			_world_editor_param_info_panel_visibility_changed = false
 
@@ -629,6 +638,7 @@ func _process(delta):
 		if _world_param_info_panel_visibility_changed:
 			if _info_panel != null:
 				_info_panel.visible = _world_param_info_panel_visible
+				gdn_viewer.set_info_panel_visible(_info_panel.visible)
 				#print(str("_info_panel_visible=", _info_panel.visible))
 			_world_param_info_panel_visibility_changed = false
 		
@@ -691,6 +701,10 @@ func _process(delta):
 			gdn_viewer.set_shader_parameter("force_elevation_0", _shader_param_force_elevation_0)
 			log_debug(str("set_shader_parameter force_elevation_0=", _shader_param_force_elevation_0))
 			_shader_param_force_elevation_0_changed = false
+
+		if _shader_param_new_blending_changed:
+			RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_player_texture_new_blending, _shader_param_new_blending)
+			_shader_param_new_blending_changed = false
 
 	if _edit_panel_visibility_changed:
 		gdn_viewer.toggle_edit_mode()
@@ -854,7 +868,8 @@ func _process(delta):
 				camera_pos_in_map = camera.global_transform.origin
 			_info_panel_camera_rot = "  Rot: " + str(camera.global_transform.basis.get_euler()) + "\n"
 			_info_panel_camera_pos = "  Pos: " + str(camera.global_transform.origin) + "\n"
-			_info_panel_camera_pos_in_map = "  Pos in map: " + str(camera_pos_in_map)
+			_info_panel_camera_pos_in_map = "  Pos in map: " + str(camera_pos_in_map) + "\n"
+			_info_panel_camera_velocity = "  Velocity: " + str(snapped(camera.get_velocity(), 0.1)) + "m/s " + str(snapped((camera.get_velocity() * 60 * 60) / 1000, 0.1)) + "km/h"
 		if camera2d != null:
 			var camera2d_pos_in_map : Vector2
 			if camera2d.has_method("get_camera_world_transform"):
@@ -934,7 +949,8 @@ func _process(delta):
 		+ _info_panel_info_camera \
 		+ _info_panel_camera_rot \
 		+ _info_panel_camera_pos \
-		+ _info_panel_camera_pos_in_map
+		+ _info_panel_camera_pos_in_map \
+		+ _info_panel_camera_velocity
 		
 		_info_panel_camera2d_label.text = "Camera2D\n" \
 		+ _info_panel_camera2d_pos \

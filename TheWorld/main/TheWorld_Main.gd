@@ -409,6 +409,8 @@ func _process(_delta):
 		_player_pos = TWViewer().GDN_viewer().global_pos_to_world_transform($Player/Player.global_transform.origin).origin
 		_player_velocity = $Player/Player.velocity
 		var velocity : float = _player_velocity.length()
+		if ($Player/Player.is_stopped()):
+			velocity = 0
 		var player_dist_from_terrain := ""
 		if ($Player/Player.player_dist_from_terrain >= 0):
 			player_dist_from_terrain = str(snapped($Player/Player.player_dist_from_terrain, 0.01))

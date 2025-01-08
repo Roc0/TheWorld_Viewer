@@ -6,6 +6,8 @@ var _back_camera : Camera3D = null
 var _back_camera_container : SubViewportContainer = null
 var _satellite_camera : Camera3D = null
 var _satellite_camera_container : SubViewportContainer = null
+var _previous_position : Vector3
+var _is_stopped : bool = true
 
 var tw_const = preload("res://addons/twviewer/tw_const.gd")
 
@@ -57,6 +59,10 @@ func _physics_process(_delta):
 	#if _player_in_world:
 	if _camera_tracking_player:
 		move_player(_delta)
+		if _previous_position == global_position:
+			_is_stopped = true
+		else:
+			_is_stopped = false
 		RenderingServer.global_shader_parameter_set(tw_const.global_shader_param_player_altitude_from_terrain, _player_dist_from_terrain)
 		RenderingServer.global_shader_parameter_set(tw_const.global_shader_param_player_pos, global_position)
 	
@@ -189,6 +195,8 @@ func align_with_y(xform : Transform3D, new_y : Vector3, rotated_angle : float):
 	return xform
 
 func move_player (delta):
+	_previous_position = global_position
+	
 	#var t3_debug : Transform3D = global_transform
 	var collision_normal : Vector3 = Vector3.ZERO
 	var collision_point : Vector3 = Vector3.ZERO
@@ -291,3 +299,6 @@ func move_player (delta):
 
 func camera_tracking_player() -> bool:
 	return _camera_tracking_player
+
+func is_stopped() -> bool:
+	return _is_stopped

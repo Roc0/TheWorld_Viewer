@@ -368,3 +368,7 @@ gu_map_grid_on={
 "type": "bool",
 "value": false
 }
+gu_texture_new_blending={
+"type": "bool",
+"value": false
+}
