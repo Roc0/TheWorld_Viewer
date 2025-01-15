@@ -21,7 +21,7 @@ void fragment() {
 	vec4 color = vec4(1.0, 1.0, 1.0, 0.0);
 	float alpha = 0.0;
 	vec2 uv = UV;
-	
+
 	float line_thickness_for_quadrant_border = u_line_thickness;
 	float line_thickness_for_texture_border = u_line_thickness;
 	if (u_highlighted)
@@ -69,7 +69,7 @@ void fragment() {
 			if ((1.0 - uv.y) >= 0.0 && (1.0 - uv.y) < line_thickness_for_texture_border)
 				on_texture_border = true;
 		}
-		
+
 		if (on_quadrant_border)
 		{
 			color = u_quadrant_border_color;
