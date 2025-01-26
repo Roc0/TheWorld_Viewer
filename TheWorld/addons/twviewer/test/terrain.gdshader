@@ -1,8 +1,29 @@
 shader_type spatial;
 render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_toon;
 
-global uniform sampler2D gu_terrain_quad_border_distance : source_color;
+#include "res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc"
 
+// global uniforms
+global uniform sampler2D gu_terrain_quad_border_distance : source_color;
+global uniform sampler2DArray gu_ground_albedo_bump_array : source_color;
+global uniform sampler2DArray gu_ground_normal_roughness_array;
+global uniform float gu_texture_blending_size = 0.40000000596046;
+global uniform bool gu_texture_new_blending = false;
+global uniform float gu_grid_step;
+global uniform float gu_camera_altitude_from_terrain = -1;
+global uniform bool gu_show_chunks = false;
+global uniform vec3 gu_camera_pos = vec3(0.000000, 0.000000, 0.000000);
+global uniform int gu_force_height_0 = -1;
+
+// uniforms
+uniform bool u_wireframe = false;
+
+uniform vec4 wire_albedo : source_color = vec4(0.0, 1.0, 0.0, 1.0);		// green
+uniform vec4 wire_color : source_color = vec4(0.0, 0.0, 0.0, 1.0);	// black
+uniform float wire_width : hint_range(0.0, 40.0) = 1.0;
+uniform float wire_smoothness : hint_range(0.0, 0.1) = 0.01;
+
+uniform bool filtered = false;
 uniform sampler2D u_terrain_heightmap;
 uniform sampler2D u_terrain_normalmap;
 uniform bool u_use_globalmap = false;
@@ -19,51 +40,25 @@ uniform float u_mouse_hit_radius = 0.0010000000475;
 uniform bool u_triplanar = false;
 uniform vec4 u_tile_reduction_per_texture = vec4(0.000000, 0.000000, 0.000000, 0.000000);
 uniform bool u_depth_blending = false;
-global uniform sampler2DArray gu_ground_albedo_bump_array : source_color;
-global uniform sampler2DArray gu_ground_normal_roughness_array;
 uniform vec4 u_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
 uniform vec4 u_north_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
 uniform vec4 u_east_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
 uniform vec4 u_west_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
 uniform vec4 u_south_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
-global uniform float gu_texture_blending_size = 0.40000000596046;
-global uniform bool gu_texture_new_blending = false;
 uniform bool u_grid_on = false;
-global uniform float gu_grid_step;
-global uniform float gu_camera_altitude_from_terrain = -1;
-global uniform bool gu_show_chunks = false;
-
-// Varyings
-varying vec4 v_vertex_world_pos;
-varying vec2 v_vertex_cell_coords_in_textures;
-varying float v_distance_from_camera;
-varying vec4 v_splat;
-varying vec3 v_tint0;
-varying vec3 v_tint1;
-varying vec3 v_tint2;
-varying vec3 v_tint3;
-varying float v_distance_from_camera_on_terrain;
-varying float v_close_mask;
-varying float v_middle_mask;
-varying float v_lod;
 
 uniform mat4 u_terrain_inverse_transform;
 uniform float u_grid_step = 2;
 uniform uint u_optimization_level = 0;
 uniform uint u_num_vertices_per_chunk;
-global uniform vec3 gu_camera_pos = vec3(0.000000, 0.000000, 0.000000);
 uniform sampler2D u_terrain_splatmap;
 uniform sampler2D u_terrain_colormap;
 //uniform sampler2D tex_frg_62;
-
-// GlobalExpression:0
-#include "res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc"
 
 uniform mat3 u_terrain_normal_basis;
 uniform float u_terrain_height = 1.0;	// NOTSET
 uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
 uniform bool u_force_height_0 = false;
-global uniform int gu_force_height_0 = -1;
 uniform sampler2D u_ground_albedo_bump_0 : source_color;
 uniform sampler2D u_ground_albedo_bump_1 : source_color;
 uniform sampler2D u_ground_albedo_bump_2 : source_color;
@@ -76,6 +71,8 @@ uniform sampler2D u_ground_normal_roughness_3;
 //uniform float u_globalmap_blend_start = 0;		// 2000 ==> optimization: at 2000 WU from camera will be used global map instead of u_ground_albedo_bump_0/3 and u_ground_normal_roughness_0/3
 //uniform float u_globalmap_blend_distance = 0;	// 1	==> 0 = disable use of global map
 uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);	// NOTSET
+
+// consts
 const float ground_uv_scale_threshold = 15000.0;
 const float altitude_uv_scale_threshold = 800.0;
 
@@ -92,92 +89,27 @@ const float middle_uv_scale = 20.0;
 const float far_uv_scale = 1.0;
 // NEW
 
-// GlobalExpression:1
-/*float get_height(sampler2D tex, float terrain_height, vec2 uv)
-{
-	return texture(tex, uv).r * terrain_height;
-}*/
+const vec3 vectors[3] = {
+	vec3(1.0, 0.0 ,0.0),
+	vec3(0.0, 1.0 ,0.0),
+	vec3(0.0, 0.0 ,1.0)
+};
 
-// GlobalExpression:2
-/*
-const float close_distance = 20.0;
-const float close_blend_amount = 5.0;
-const float middle_distance = 60.0;
-const float middle_blend_amount = 10.0;
+// Varyings
+varying vec4 v_vertex_world_pos;
+varying vec2 v_vertex_cell_coords_in_textures;
+varying float v_distance_from_camera;
+varying vec4 v_splat;
+varying vec3 v_tint0;
+varying vec3 v_tint1;
+varying vec3 v_tint2;
+varying vec3 v_tint3;
+varying float v_distance_from_camera_on_terrain;
+varying float v_close_mask;
+varying float v_middle_mask;
+varying float v_lod;
 
-const float close_uv_scale = 0.5;
-const float middle_uv_scale = 0.1;
-const float far_uv_scale = 0.01;
-
-varying float close_mask;
-varying float middle_mask;
-
-vec4 distance_texture(sampler2D _tex, vec2 _uv) {
-	vec4 final = texture(_tex, _uv * far_uv_scale);
-	final = mix(final, texture(_tex, _uv * middle_uv_scale), middle_mask);
-	final = mix(final, texture(_tex, _uv * close_uv_scale), close_mask);
-	return final;
-}
-
-vertex
-
-	float dis = lenght(CAMERA_POSITION_WOLRD - world_pos);
-	close_mask = smoothstep(close_distance + close_blend_amount, close_distance, dis);		1 if dis < close_distance, 0 if dis > close_distance + close_blend_amount else an intermediate value
-	middle_mask = smoothstep(middle_distance + middle_blend_amount, middle_distance, dis);
-
-fragment
-
-	tutte le fetch delle texture devono essere fatte con distance_texture invece che con texture
-	*/
-
-// GlobalExpression:3
-/*vec3 get_normal(sampler2D tex, mat3 terrain_normal_basis, vec2 uv){
-	// Need to use terrain_normal_basis to handle scaling.
-	vec3 n = terrain_normal_basis * unpack_normal(texture(tex, uv));
-	//vec3 n = unpack_normal(texture(tex, uv));
-	return normalize(n);
-}*/
-
-// GlobalExpression:4
-/*bool is_on_the_border(vec2 uv, float distance_from_border) {
-	if (uv.x > distance_from_border && uv.x < (1.0 - distance_from_border) && uv.y > distance_from_border && uv.y < (1.0 - distance_from_border)) {
-		return false;
-	} else {
-		return true;
-	}
-}
-
-bool is_on_upper_border(vec2 uv, float distance_from_border) {
-	if (uv.y >= 0.0 && uv.y < distance_from_border) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
-bool is_on_lower_border(vec2 uv, float distance_from_border) {
-	if (uv.y > (1.0 - distance_from_border) && uv.y <= 1.0) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
-bool is_on_left_border(vec2 uv, float distance_from_border) {
-	if (uv.x >= 0.0 && uv.x < distance_from_border) {
-		return true;
-	} else {
-		return false;
-	}
-}
-
-bool is_on_right_border(vec2 uv, float distance_from_border) {
-	if (uv.x > (1.0 - distance_from_border) && uv.x <= 1.0) {
-		return true;
-	} else {
-		return false;
-	}
-}*/
+varying vec3 barycentrics;
 
 // GlobalExpression:5
 vec3 get_triplanar_blend(vec3 world_normal) {
@@ -563,6 +495,9 @@ const vec3 lod_colors[10] = {
 };
 
 void vertex() {
+
+	barycentrics = vectors[VERTEX_ID % 3];
+
 // Input:15
 	vec3 vertex_in = VERTEX;
 
@@ -1510,10 +1445,31 @@ void fragment() {
 		//albedo_computed_5 = vec3(UV2.x, UV2.y, 1.0);
 	}
 
-// Output
-	ALBEDO = albedo_computed_5;
-	ROUGHNESS = roughness_computed_5;
-	AO = ao_computed_1;
-	AO_LIGHT_AFFECT = ao_light_affect_computed_1;
-	NORMAL = normal_computed_5;
+	// Output
+	if (u_wireframe)
+	{
+		/*vec3 dBaryCoordX = dFdx(barycentrics);
+		vec3 dBaryCoordY = dFdy(barycentrics);
+		vec3 dBaryCoord  = sqrt(dBaryCoordX*dBaryCoordX + dBaryCoordY*dBaryCoordY);
+		vec3 Remap = smoothstep(
+			vec3(0.0),
+			dBaryCoord,
+			barycentrics
+		);
+		float ClosestEdge = min(min(Remap.x, Remap.y), Remap.z);
+		ALBEDO = vec3(ClosestEdge);*/
+
+		vec3 deltas = fwidth(barycentrics);
+		vec3 barys_s = smoothstep(deltas * wire_width - wire_smoothness, deltas * wire_width + wire_smoothness, barycentrics);
+		float wires = min(barys_s.x, min(barys_s.y, barys_s.z));
+		ALBEDO = mix(wire_color.rgb, wire_albedo.rgb, wires);
+	}
+	else
+	{
+		ALBEDO = albedo_computed_5;
+		ROUGHNESS = roughness_computed_5;
+		AO = ao_computed_1;
+		AO_LIGHT_AFFECT = ao_light_affect_computed_1;
+		NORMAL = normal_computed_5;
+	}
 }
