@@ -442,6 +442,7 @@ _shader_param_globalmap_blend_start = 10000.0
 
 [node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
 perfparam_threshold_cache_heights = 15000.0
+viewparam_show_sea = false
 
 [node name="GDN_TW_WorldViewer" type="GDN_TheWorld_Viewer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
 metadata/debug_wirecube_mesh_lod_5 = SubResource("ArrayMesh_kfft6")

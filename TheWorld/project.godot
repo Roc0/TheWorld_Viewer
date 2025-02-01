@@ -372,3 +372,7 @@ gu_texture_new_blending={
 "type": "bool",
 "value": false
 }
+gu_show_wireframe={
+"type": "bool",
+"value": false
+}

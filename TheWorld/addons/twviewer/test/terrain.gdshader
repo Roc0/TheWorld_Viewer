@@ -12,18 +12,28 @@ global uniform bool gu_texture_new_blending = false;
 global uniform float gu_grid_step;
 global uniform float gu_camera_altitude_from_terrain = -1;
 global uniform bool gu_show_chunks = false;
+global uniform bool gu_show_wireframe = false;
 global uniform vec3 gu_camera_pos = vec3(0.000000, 0.000000, 0.000000);
 global uniform int gu_force_height_0 = -1;
 
 // uniforms
-uniform bool u_wireframe = false;
+uniform bool u_barycentric_wireframe = false;
+uniform bool u_need_blending = false;
+uniform bool u_need_blending_north = false;
+uniform bool u_need_blending_south = false;
+uniform bool u_need_blending_east = false;
+uniform bool u_need_blending_west = false;
 
-uniform vec4 wire_albedo : source_color = vec4(0.0, 1.0, 0.0, 1.0);		// green
-uniform vec4 wire_color : source_color = vec4(0.0, 0.0, 0.0, 1.0);	// black
-uniform float wire_width : hint_range(0.0, 40.0) = 1.0;
-uniform float wire_smoothness : hint_range(0.0, 0.1) = 0.01;
+uniform vec4 u_wire_albedo : source_color = vec4(0.0, 1.0, 0.0, 1.0);	// green
+uniform vec4 u_need_blending_albedo : source_color = vec4(0.0, 0.0, 1.0, 1.0);	// blue
+uniform vec4 u_selected_albedo : source_color = vec4(0.0, 0.0, 1.0, 1.0);	// green
+uniform vec4 u_wire_color : source_color = vec4(0.0, 0.0, 0.0, 1.0);	// black
+uniform vec4 u_wire_color_border_blending : source_color = vec4(1.0, 0.0, 0.0, 1.0);	// red
+uniform float u_uv_wire_width = 0.003;
+uniform float u_wire_width : hint_range(0.0, 40.0) = 1.0;
+uniform float u_wire_smoothness : hint_range(0.0, 0.1) = 0.01;
 
-uniform bool filtered = false;
+//uniform bool filtered = false;
 uniform sampler2D u_terrain_heightmap;
 uniform sampler2D u_terrain_normalmap;
 uniform bool u_use_globalmap = false;
@@ -593,44 +603,50 @@ void vertex() {
 	bool show_chunks = gu_show_chunks;
 
 
-// UIntParameter:75
 	uint num_vertices_per_chunk = u_num_vertices_per_chunk;
+	int vertex_id = VERTEX_ID;
+	int vertex_col = int(floor(mod(float(vertex_id), float(num_vertices_per_chunk))));		// from 0 to num_vertices_per_chunk - 1
+	int vertex_row = int(floor(float(vertex_id) / float(num_vertices_per_chunk)));			// from 0 to num_vertices_per_chunk - 1
 
-
-// Input:74
-	int v_id = VERTEX_ID;
-
-
-	float lod;
-	vec2 uv2_computed;
-// Expression:76
-	lod = 0.0;
-	uv2_computed = vec2(0.0, 0.0);
+	float step_between_vertices_in_current_chunk = -1000000000.0;
+	float chunk_size = -1000000000.0;
+	vec2 uv_chunk = vec2(0.0, 0.0);
+	{
+		if (vertex_col == 0 && vertex_row == 0)
+		{
+			uv_chunk = vec2(0.0, 0.0);
+		}
+		else
+		{
+			if (vertex_col == 0) {	// vertex_row is > 0
+				step_between_vertices_in_current_chunk = floor(vertex_in.z / float(vertex_row));
+			} else {	// vertex_col is > 0
+				step_between_vertices_in_current_chunk = floor(vertex_in.x / float(vertex_col));
+			}
+			chunk_size = step_between_vertices_in_current_chunk * float(num_vertices_per_chunk - uint(1));
+			uv_chunk = vertex_in.xz / vec2(chunk_size);
+		}
+	}
+	
+	
+	float lod = 0.0;;
 	{
 		lod = -1.0;
-		if (show_chunks) {
-			int vertex_col = int(floor(mod(float(v_id), float(num_vertices_per_chunk))));		// from 0 to num_vertices_per_chunk - 1
-			int vertex_row = int(floor(float(v_id) / float(num_vertices_per_chunk)));	// from 0 to num_vertices_per_chunk - 1
-			float step_between_vertices_in_current_mesh = -1.0;
+		if (show_chunks)
+		{
 			if ((vertex_col == 0 && vertex_row == 0) || (vertex_col == 0 && vertex_row == int(num_vertices_per_chunk - uint(1)))
-				|| (vertex_col == int(num_vertices_per_chunk - uint(1)) && vertex_row == 0) || (vertex_col == int(num_vertices_per_chunk - uint(1)) && vertex_row == int(num_vertices_per_chunk - uint(1)))) {
-			} else {
-				if (vertex_col == 0) {	// vertex_row is > 0
-					step_between_vertices_in_current_mesh = floor(vertex_in.z / float(vertex_row));
-				} else {
-					step_between_vertices_in_current_mesh = floor(vertex_in.x / float(vertex_col));
-				}
-			}
-			if (step_between_vertices_in_current_mesh == -1.0) {
-				uv2_computed = vec2(0.0, 0.0);
+				|| (vertex_col == int(num_vertices_per_chunk - uint(1)) && vertex_row == 0) || (vertex_col == int(num_vertices_per_chunk - uint(1)) && vertex_row == int(num_vertices_per_chunk - uint(1))))
+			{
+				//uv_chunk = vec2(0.0, 0.0);
 				lod = 99.0;
-			} else {
-				float chunk_size = step_between_vertices_in_current_mesh * float(num_vertices_per_chunk - uint(1));
-				uv2_computed = vertex_in.xz / vec2(chunk_size);
-				//uv2_computed = vec2(float(vertex_col) / float(num_vertices_per_chunk), float(vertex_row) / float(num_vertices_per_chunk));
-				//lod = log2(step_between_vertices_in_current_mesh);
-				lod = log2(step_between_vertices_in_current_mesh) - 1.0;
-				//lod = float(step_between_vertices_in_current_mesh);
+			}
+			else
+			{
+				//uv_chunk = vertex_in.xz / vec2(chunk_size);
+				//uv_chunk = vec2(float(vertex_col) / float(num_vertices_per_chunk), float(vertex_row) / float(num_vertices_per_chunk));
+				//lod = log2(step_between_vertices_in_current_chunk);
+				lod = log2(step_between_vertices_in_current_chunk) - 1.0;
+				//lod = float(step_between_vertices_in_current_chunk);
 			}
 		}
 	}
@@ -640,7 +656,7 @@ void vertex() {
 	VERTEX = vertex_with_h;
 	NORMAL = normal_computed;
 	UV = uv_quadrant;
-	UV2 = uv2_computed;
+	UV2 = uv_chunk;
 
 
 // VaryingSetter:14
@@ -750,37 +766,20 @@ void vertex() {
 }
 
 void fragment() {
-// VaryingGetter:3
+
+	float alpha = 1.0;
 	float distance_from_camera = v_distance_from_camera;
-
-
-// ParameterRef:23
 	float globalmap_blend_start = u_globalmap_blend_start;
-
-
-// ParameterRef:24
 	float globalmap_blend_distance = u_globalmap_blend_distance;
-
-
-// Input:13
-	vec2 uv_in = UV;
-
-
-// ParameterRef:26
+	vec2 uv_quadrant = UV;
+	vec2 uv_chunk = UV2;
 	float editmode_selected = u_editmode_selected;
-
-
-// ParameterRef:21
 	bool use_globalmap = u_use_globalmap;
 
-
-	bool editmode_pixel;
-	bool globalmap_pixel;
-// Expression:25
-	editmode_pixel = false;
-	globalmap_pixel = false;
+	bool editmode_pixel = false;
+	bool globalmap_pixel = false;
 	{
-		if (editmode_selected > 0.0 && is_on_the_border(uv_in, u_quad_border_line_thickness)) {
+		if (editmode_selected > 0.0 && is_on_the_border(uv_quadrant, u_quad_border_line_thickness)) {
 			editmode_pixel = true;
 		} else {
 			editmode_pixel = false;
@@ -806,7 +805,7 @@ void fragment() {
 		if (editmode_pixel) {
 			albedo_computed_1 = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 		} else {
-			albedo_computed_1 = texture(u_terrain_globalmap, uv_in).rgb;
+			albedo_computed_1 = texture(u_terrain_globalmap, uv_quadrant).rgb;
 			if (globalmap_pixel) {
 				roughness_computed_1 = 0.5;
 			} else {
@@ -825,7 +824,7 @@ void fragment() {
 // Expression:14
 	normal_computed_1 = vec3(0.0, 0.0, 0.0);
 	{
-		normal_computed_1 = get_normal(u_terrain_normalmap, u_terrain_normal_basis, uv_in);
+		normal_computed_1 = get_normal(u_terrain_normalmap, u_terrain_normal_basis, uv_quadrant);
 	}
 
 
@@ -994,19 +993,19 @@ void fragment() {
 		splat_pixel_computed = splat_pixel_in;
 
 		if (!editmode_pixel && !globalmap_pixel) {
-			if (is_on_upper_border(uv_in, distance_from_border)) {
+			if (is_on_upper_border(uv_quadrant, distance_from_border)) {
 				north_border_pixel = true;
 				//splat_pixel_computed = splat_pixel_computed + ;
 			}
-			if (is_on_lower_border(uv_in, distance_from_border)) {
+			if (is_on_lower_border(uv_quadrant, distance_from_border)) {
 				south_border_pixel = true;
 				//splat_pixel_computed = splat_pixel_computed + ;
 			}
-			if (is_on_left_border(uv_in, distance_from_border)) {
+			if (is_on_left_border(uv_quadrant, distance_from_border)) {
 				west_border_pixel = true;
 				//splat_pixel_computed = splat_pixel_computed + ;
 			}
-			if (is_on_right_border(uv_in, distance_from_border)) {
+			if (is_on_right_border(uv_quadrant, distance_from_border)) {
 				east_border_pixel = true;
 				//splat_pixel_computed = splat_pixel_computed + ;
 			}
@@ -1032,7 +1031,7 @@ void fragment() {
 		if (new) {
 			ground_uv_scale_per_texture_computed = vec4(1.0, 1.0, 1.0, 1.0);
 		}
-		base_ground_uv = vec3(uv_in.x, vertex_world_pos.y * MODEL_MATRIX[1][1], uv_in.y);
+		base_ground_uv = vec3(uv_quadrant.x, vertex_world_pos.y * MODEL_MATRIX[1][1], uv_quadrant.y);
 		ground_uv0 = base_ground_uv.xz * ground_uv_scale_per_texture_computed.x;
 		ground_uv1 = base_ground_uv.xz * ground_uv_scale_per_texture_computed.y;
 		ground_uv2 = base_ground_uv.xz * ground_uv_scale_per_texture_computed.z;
@@ -1315,7 +1314,7 @@ void fragment() {
 		//bool grid_on = !(mouse_hit == vec2(-1));
 		/*if (grid_on) {
 			float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
-			vec2 uv_begin_texel = uv_in - vec2(half_texel_size);
+			vec2 uv_begin_texel = uv_quadrant - vec2(half_texel_size);
 			vec2 distance_from_vertex =
 				fract(vec2(uv_begin_texel.x / (half_texel_size * 2.0), uv_begin_texel.y / (half_texel_size * 2.0)));
 			if (distance_from_vertex.x < quad_line_thickness || (1.0 - distance_from_vertex.x) < quad_line_thickness
@@ -1339,11 +1338,11 @@ void fragment() {
 
 		if (mouse_hit != vec2(-1)) {
 			float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
-			vec2 uv_begin_texel = uv_in - vec2(half_texel_size);
+			vec2 uv_begin_texel = uv_quadrant - vec2(half_texel_size);
 			vec2 distance_from_vertex =
 				fract(vec2(uv_begin_texel.x / (half_texel_size * 2.0), uv_begin_texel.y / (half_texel_size * 2.0)));
 			float grid_radius = mouse_hit_radius * 5.0;
-			if (grid_radius != 0.0 && distance(mouse_hit, uv_in) < grid_radius)
+			if (grid_radius != 0.0 && distance(mouse_hit, uv_quadrant) < grid_radius)
 			{
 				if (distance_from_vertex.x < quad_line_thickness || (1.0 - distance_from_vertex.x) < quad_line_thickness
 					|| distance_from_vertex.y < quad_line_thickness || (1.0 - distance_from_vertex.y) < quad_line_thickness) {
@@ -1358,7 +1357,7 @@ void fragment() {
 				}
 			}
 
-			if (mouse_hit_radius != 0.0 && distance(mouse_hit, uv_in) < mouse_hit_radius) {
+			if (mouse_hit_radius != 0.0 && distance(mouse_hit, uv_quadrant) < mouse_hit_radius) {
 				vec3 mouse_hit_albedo = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 				albedo_computed_4 = mix(albedo_computed_4, mouse_hit_albedo, 0.3);
 			}
@@ -1395,7 +1394,7 @@ void fragment() {
 				if (u_mouse_hit != vec2(-1) && distance(u_mouse_hit, UV) < u_mouse_hit_radius) {
 					albedo_computed_5 = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 				} else {
-					if (is_on_the_border(UV, chunk_border_line_thickness) || is_on_the_border(UV2, chunk_border_line_thickness)) {
+					if (is_on_the_border(UV, chunk_border_line_thickness) || is_on_the_border(uv_chunk, chunk_border_line_thickness)) {
 						//albedo_computed_5 = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
 						albedo_computed_5 = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
 					} else {
@@ -1411,14 +1410,13 @@ void fragment() {
 
 		//bool grid_on = !(mouse_hit == vec2(-1));
 		if (grid_on) {
-			float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
-			vec2 uv_begin_texel = uv_in - vec2(half_texel_size);
-			vec2 distance_from_vertex =
-				fract(vec2(uv_begin_texel.x / (half_texel_size * 2.0), uv_begin_texel.y / (half_texel_size * 2.0)));
-			if (distance_from_vertex.x < quad_line_thickness || (1.0 - distance_from_vertex.x) < quad_line_thickness
-				|| distance_from_vertex.y < quad_line_thickness || (1.0 - distance_from_vertex.y) < quad_line_thickness) {
-				if ((distance_from_vertex.x < quad_line_thickness || (1.0 - distance_from_vertex.x) < quad_line_thickness)
-					&& (distance_from_vertex.y < quad_line_thickness || (1.0 - distance_from_vertex.y) < quad_line_thickness)) {
+			float half_texel_size_in_uv_coords = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
+			vec2 uv_begin_texel = uv_quadrant - vec2(half_texel_size_in_uv_coords);	// assuming uv is in the center of a texel for each fragment
+			vec2 distance_of_current_fragment_from_grid_vertex = fract(vec2(uv_begin_texel.x / (half_texel_size_in_uv_coords * 2.0), uv_begin_texel.y / (half_texel_size_in_uv_coords * 2.0)));
+			if (distance_of_current_fragment_from_grid_vertex.x < quad_line_thickness || (1.0 - distance_of_current_fragment_from_grid_vertex.x) < quad_line_thickness
+				|| distance_of_current_fragment_from_grid_vertex.y < quad_line_thickness || (1.0 - distance_of_current_fragment_from_grid_vertex.y) < quad_line_thickness) {
+				if ((distance_of_current_fragment_from_grid_vertex.x < quad_line_thickness || (1.0 - distance_of_current_fragment_from_grid_vertex.x) < quad_line_thickness)
+					&& (distance_of_current_fragment_from_grid_vertex.y < quad_line_thickness || (1.0 - distance_of_current_fragment_from_grid_vertex.y) < quad_line_thickness)) {
 					//albedo_computed_5 = mix(albedo_computed_5, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
 					albedo_computed_5 = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
 				} else {
@@ -1433,20 +1431,103 @@ void fragment() {
 				albedo_computed_5 = mix(albedo_computed_5, vec3(0.0, 0.0, 1.0), 0.3);		// GDN_TheWorld_Globals::g_color_blue;
 			}
 		}
+		
+		uint num_vertices_per_chunk = u_num_vertices_per_chunk;
+		bool wireframe = u_need_blending;
+		if (!wireframe)
+			wireframe = gu_show_wireframe;
+		//wireframe = true;	// DEBUG
+		if (wireframe)
+		{
+			bool need_blending_north = u_need_blending_north;
+			bool need_blending_south = u_need_blending_south;
+			bool need_blending_east = u_need_blending_east;
+			bool need_blending_west = u_need_blending_west;
+			//need_blending_north = false;
+			//need_blending_south = false;
+			//need_blending_east = true;
+			//need_blending_west = false;
+			float uv_wire_width = u_uv_wire_width;
+			float uv_border_wire_width = u_uv_wire_width * 3.0;
+			float half_texel_size_in_uv_coords = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
+			//half_texel_size_in_uv_coords = 0.0;	// DEBUG
+			
+			if (uv_quadrant.x < (half_texel_size_in_uv_coords + uv_border_wire_width))
+			{
+				if (need_blending_west) {
+					albedo_computed_5 = u_wire_color_border_blending.rgb;
+				}
+				else {
+					albedo_computed_5 = u_wire_color.rgb;
+				}
+			}
+			else if (uv_quadrant.y < (half_texel_size_in_uv_coords + uv_border_wire_width))
+			{
+				if (need_blending_north) {
+					albedo_computed_5 = u_wire_color_border_blending.rgb;
+				}
+				else {
+					albedo_computed_5 = u_wire_color.rgb;
+				}
+			}
+			else if ((1.0 - uv_quadrant.x) < (half_texel_size_in_uv_coords + uv_border_wire_width))
+			{
+				if (need_blending_east) {
+					albedo_computed_5 = u_wire_color_border_blending.rgb;
+				}
+				else {
+					albedo_computed_5 = u_wire_color.rgb;
+				}
+			}
+			else if  ((1.0 - uv_quadrant.y) < (half_texel_size_in_uv_coords + uv_border_wire_width))
+			{
+				if (need_blending_south) {
+					albedo_computed_5 = u_wire_color_border_blending.rgb;
+				}
+				else {
+					albedo_computed_5 = u_wire_color.rgb;
+				}
+			}
+			else
+			{
+				float uv_distance_from_vertices = 1.0 / float(num_vertices_per_chunk - uint(1));
+				vec2 uv_distance_from_previous_vertex = fract(uv_chunk / vec2(uv_distance_from_vertices)) * vec2(uv_distance_from_vertices);
+				vec2 uv_distance_from_next_vertex = vec2(uv_distance_from_vertices) - uv_distance_from_previous_vertex;
+				if ((uv_distance_from_previous_vertex.x < (half_texel_size_in_uv_coords + uv_wire_width)) || (uv_distance_from_previous_vertex.y < (half_texel_size_in_uv_coords + uv_wire_width))
+					|| (uv_distance_from_next_vertex.x < (half_texel_size_in_uv_coords + uv_wire_width)) || (uv_distance_from_next_vertex.y < (half_texel_size_in_uv_coords + uv_wire_width)))
+				{
+					albedo_computed_5 = u_wire_color.rgb;
+				}
+				else
+				{
+					if (u_need_blending) {
+						if (u_editmode_selected > 0.0) {
+							albedo_computed_5 = u_selected_albedo.rgb;
+						} else {
+							albedo_computed_5 = u_need_blending_albedo.rgb;
+						}
+					} else {
+						albedo_computed_5 = u_wire_albedo.rgb;
+					}
+					alpha = 0.5;
+				}
+			}
+		}
 
 		/*if (quadrant_texture_lod >= 0.0 && quadrant_texture_lod <= 511.0) {
 			albedo_computed_5 = vec3(1.0);	// white
 		} else {
 			albedo_computed_5 = vec3(0.0);	// black
 		}*/
-		/*if (UV2.x >= 0.0 && UV2.x <= 1.0 && UV2.y >= 0.0 && UV2.y <= 1.0) {
+		/*if (uv_chunk.x >= 0.0 && uv_chunk.x <= 1.0 && uv_chunk.y >= 0.0 && uv_chunk.y <= 1.0) {
 			albedo_computed_5 = vec3(1.0);	// white
 		}*/
-		//albedo_computed_5 = vec3(UV2.x, UV2.y, 1.0);
+		//albedo_computed_5 = vec3(uv_chunk.x, uv_chunk.y, 1.0);
 	}
+	
 
 	// Output
-	if (u_wireframe)
+	if (u_barycentric_wireframe)
 	{
 		/*vec3 dBaryCoordX = dFdx(barycentrics);
 		vec3 dBaryCoordY = dFdy(barycentrics);
@@ -1460,9 +1541,10 @@ void fragment() {
 		ALBEDO = vec3(ClosestEdge);*/
 
 		vec3 deltas = fwidth(barycentrics);
-		vec3 barys_s = smoothstep(deltas * wire_width - wire_smoothness, deltas * wire_width + wire_smoothness, barycentrics);
+		vec3 barys_s = smoothstep(deltas * u_wire_width - u_wire_smoothness, deltas * u_wire_width + u_wire_smoothness, barycentrics);
 		float wires = min(barys_s.x, min(barys_s.y, barys_s.z));
-		ALBEDO = mix(wire_color.rgb, wire_albedo.rgb, wires);
+		ALBEDO = mix(u_wire_color.rgb, u_wire_albedo.rgb, wires);
+		//ALPHA = alpha;
 	}
 	else
 	{
@@ -1471,5 +1553,6 @@ void fragment() {
 		AO = ao_computed_1;
 		AO_LIGHT_AFFECT = ao_light_affect_computed_1;
 		NORMAL = normal_computed_5;
+		//ALPHA = alpha;
 	}
 }
