@@ -12,10 +12,10 @@ func _ready() -> void:
 	$ProgressVBoxContainer/LoadingLabel.modulate = Color(0.5, 0, 0)
 	$ProgressVBoxContainer/LoadingLabel.add_theme_font_size_override("font_size", 20)
 	var v : Viewport = get_viewport()
-	var result = v.connect("size_changed", Callable(self, "resize"))
+	var _result = v.connect("size_changed", Callable(self, "resize"))
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if not _first_resize_done:
 		resize()
 		_first_resize_done = true

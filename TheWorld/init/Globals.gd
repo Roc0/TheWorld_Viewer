@@ -66,7 +66,7 @@ func _process(_delta):
 	#	if loadingProgress > 0:
 	#		loadingscreen_scene.set_progress(loadingProgress)
 			
-func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> void:
+func _on_tw_status_changed(_old_client_status : int, _new_client_status : int) -> void:
 	if tw_viewer == null:
 		return
 		 
