@@ -7,6 +7,7 @@ const int world_quadrant_camera = 0;
 const int world_quadrant_initial = 1;
 const int world_quadrant_growing = 2;
 const int world_quadrant_cache = 3;
+const int world_quadrant_blend_needed = 4;
 uniform int u_world_quadrant = -1;
 uniform bool u_quadrant_ready = false;
 uniform bool u_edit_mode = false;
@@ -55,6 +56,10 @@ void fragment()
 			else if (u_world_quadrant == world_quadrant_cache)
 			{
 				color = vec4(1.0, 1.0, 1.0, 0.0);
+			}
+			else if (u_world_quadrant == world_quadrant_blend_needed)
+			{
+				color = vec4(0.0, 1.0, 0.0, 0.0);
 			}
 		}
 
