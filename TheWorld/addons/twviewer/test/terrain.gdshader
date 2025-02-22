@@ -13,6 +13,7 @@ global uniform float gu_grid_step;
 global uniform float gu_camera_altitude_from_terrain = -1;
 global uniform bool gu_show_chunks = false;
 global uniform bool gu_show_wireframe = false;
+global uniform bool gu_show_need_blending = false;
 global uniform vec3 gu_camera_pos = vec3(0.000000, 0.000000, 0.000000);
 global uniform int gu_force_height_0 = -1;
 
@@ -1433,7 +1434,10 @@ void fragment() {
 		}
 		
 		uint num_vertices_per_chunk = u_num_vertices_per_chunk;
-		bool wireframe = u_need_blending;
+		bool need_blending = u_need_blending;
+		if (!gu_show_need_blending)
+			need_blending = false;
+		bool wireframe = need_blending;
 		if (!wireframe)
 			wireframe = gu_show_wireframe;
 		//wireframe = true;	// DEBUG
@@ -1452,7 +1456,7 @@ void fragment() {
 			float half_texel_size_in_uv_coords = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
 			//half_texel_size_in_uv_coords = 0.0;	// DEBUG
 			
-			if (uv_quadrant.x < (half_texel_size_in_uv_coords + uv_border_wire_width))
+			if (uv_quadrant.x < (half_texel_size_in_uv_coords + uv_border_wire_width))					// check left border of quadrant
 			{
 				if (need_blending_west) {
 					albedo_computed_5 = u_wire_color_border_blending.rgb;
@@ -1461,7 +1465,7 @@ void fragment() {
 					albedo_computed_5 = u_wire_color.rgb;
 				}
 			}
-			else if (uv_quadrant.y < (half_texel_size_in_uv_coords + uv_border_wire_width))
+			else if (uv_quadrant.y < (half_texel_size_in_uv_coords + uv_border_wire_width))				// check up border of quadrant
 			{
 				if (need_blending_north) {
 					albedo_computed_5 = u_wire_color_border_blending.rgb;
@@ -1470,7 +1474,7 @@ void fragment() {
 					albedo_computed_5 = u_wire_color.rgb;
 				}
 			}
-			else if ((1.0 - uv_quadrant.x) < (half_texel_size_in_uv_coords + uv_border_wire_width))
+			else if ((1.0 - uv_quadrant.x) < (half_texel_size_in_uv_coords + uv_border_wire_width))		// check right border of quadrant
 			{
 				if (need_blending_east) {
 					albedo_computed_5 = u_wire_color_border_blending.rgb;
@@ -1479,7 +1483,7 @@ void fragment() {
 					albedo_computed_5 = u_wire_color.rgb;
 				}
 			}
-			else if  ((1.0 - uv_quadrant.y) < (half_texel_size_in_uv_coords + uv_border_wire_width))
+			else if  ((1.0 - uv_quadrant.y) < (half_texel_size_in_uv_coords + uv_border_wire_width))	// check bottom border of quadrant
 			{
 				if (need_blending_south) {
 					albedo_computed_5 = u_wire_color_border_blending.rgb;
@@ -1500,7 +1504,7 @@ void fragment() {
 				}
 				else
 				{
-					if (u_need_blending) {
+					if (need_blending) {
 						if (u_editmode_selected > 0.0) {
 							albedo_computed_5 = u_selected_albedo.rgb;
 						} else {
