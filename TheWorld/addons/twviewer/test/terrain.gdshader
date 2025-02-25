@@ -16,6 +16,7 @@ global uniform bool gu_show_wireframe = false;
 global uniform bool gu_show_need_blending = false;
 global uniform vec3 gu_camera_pos = vec3(0.000000, 0.000000, 0.000000);
 global uniform int gu_force_height_0 = -1;
+global uniform bool gu_highlight_hit_quadrant = false;
 
 // uniforms
 uniform bool u_barycentric_wireframe = false;
@@ -84,6 +85,8 @@ uniform sampler2D u_ground_normal_roughness_3;
 uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);	// NOTSET
 
 // consts
+const vec3 apricot_color = vec3(1.0, 0.749, 0.0);
+
 const float ground_uv_scale_threshold = 15000.0;
 const float altitude_uv_scale_threshold = 800.0;
 
@@ -804,7 +807,7 @@ void fragment() {
 		globalmap_factor = 1.0;
 		roughness_computed_1 = 1.0;
 		if (editmode_pixel) {
-			albedo_computed_1 = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+			albedo_computed_1 = apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
 		} else {
 			albedo_computed_1 = texture(u_terrain_globalmap, uv_quadrant).rgb;
 			if (globalmap_pixel) {
@@ -1137,7 +1140,7 @@ void fragment() {
 			/*vec3 red = vec3(1.0, 0.0, 0.0);
 			vec3 green = vec3(0.0, 1.0, 0.0);
 			vec3 blue = vec3(0.0, 0.0, 1.0);
-			vec3 yellow = vec3(1.0, 0.749, 0.0);
+			vec3 yellow = apricot_color;
 			if (north_border_pixel)	{
 				ab0.rgb = red;
 				ab1.rgb = red;
@@ -1261,7 +1264,7 @@ void fragment() {
 			/*vec3 red = vec3(1.0, 0.0, 0.0);
 			vec3 green = vec3(0.0, 1.0, 0.0);
 			vec3 blue = vec3(0.0, 0.0, 1.0);
-			vec3 yellow = vec3(1.0, 0.749, 0.0);
+			vec3 yellow = apricot_color;
 			if (splat_pixel_computed.x < 0.0)	{
 				albedo_computed_3 = red;
 			}
@@ -1325,8 +1328,8 @@ void fragment() {
 					//albedo_computed_4 = mix(albedo_computed_4, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
 					albedo_computed_4 = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
 				} else {
-					//albedo_computed_4 = mix(albedo_computed_4, vec3(1.0, 0.749, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_apricot
-					albedo_computed_4 = vec3(1.0, 0.749, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+					//albedo_computed_4 = mix(albedo_computed_4, apricot_color, 0.3);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+					albedo_computed_4 = apricot_color;	// GDN_TheWorld_Globals::g_color_yellow_apricot
 				}
 			}
 			vec2 g_uv0 = fract(ground_uv0);
@@ -1352,14 +1355,14 @@ void fragment() {
 						//albedo_computed_4 = mix(albedo_computed_4, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
 						albedo_computed_4 = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
 					} else {
-						//albedo_computed_4 = mix(albedo_computed_4, vec3(1.0, 0.749, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_apricot
-						albedo_computed_4 = vec3(1.0, 0.749, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+						//albedo_computed_4 = mix(albedo_computed_4, apricot_color, 0.3);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+						albedo_computed_4 = apricot_color;	// GDN_TheWorld_Globals::g_color_yellow_apricot
 					}
 				}
 			}
 
 			if (mouse_hit_radius != 0.0 && distance(mouse_hit, uv_quadrant) < mouse_hit_radius) {
-				vec3 mouse_hit_albedo = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+				vec3 mouse_hit_albedo = apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
 				albedo_computed_4 = mix(albedo_computed_4, mouse_hit_albedo, 0.3);
 			}
 		}
@@ -1390,10 +1393,10 @@ void fragment() {
 			float chunk_border_line_thickness = 0.005;
 
 			if (u_editmode_selected > 0.0 && is_on_the_border(UV, quad_line_thickness)) {
-				albedo_computed_5 = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+				albedo_computed_5 = apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
 			} else {
-				if (u_mouse_hit != vec2(-1) && distance(u_mouse_hit, UV) < u_mouse_hit_radius) {
-					albedo_computed_5 = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
+				if (mouse_hit != vec2(-1) && distance(mouse_hit, UV) < mouse_hit_radius) {
+					albedo_computed_5 = apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
 				} else {
 					if (is_on_the_border(UV, chunk_border_line_thickness) || is_on_the_border(uv_chunk, chunk_border_line_thickness)) {
 						//albedo_computed_5 = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
@@ -1421,8 +1424,8 @@ void fragment() {
 					//albedo_computed_5 = mix(albedo_computed_5, vec3(1.0, 0.0, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_red
 					albedo_computed_5 = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
 				} else {
-					//albedo_computed_5 = mix(albedo_computed_5, vec3(1.0, 0.749, 0.0), 0.3);	// GDN_TheWorld_Globals::g_color_yellow_apricot
-					albedo_computed_5 = vec3(1.0, 0.749, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+					//albedo_computed_5 = mix(albedo_computed_5, apricot_color, 0.3);	// GDN_TheWorld_Globals::g_color_yellow_apricot
+					albedo_computed_5 = apricot_color;	// GDN_TheWorld_Globals::g_color_yellow_apricot
 				}
 			}
 			vec2 g_uv0 = fract(ground_uv0);
@@ -1558,5 +1561,11 @@ void fragment() {
 		AO_LIGHT_AFFECT = ao_light_affect_computed_1;
 		NORMAL = normal_computed_5;
 		//ALPHA = alpha;
+	}
+	
+	if (gu_highlight_hit_quadrant && mouse_hit != vec2(-1))
+	{
+		ALBEDO = mix(ALBEDO, apricot_color, 0.1);
+		//ALBEDO = vec3(1.0);
 	}
 }

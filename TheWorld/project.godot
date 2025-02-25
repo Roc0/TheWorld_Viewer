@@ -380,3 +380,7 @@ gu_show_need_blending={
 "type": "bool",
 "value": false
 }
+gu_highlight_hit_quadrant={
+"type": "bool",
+"value": false
+}
