@@ -29,7 +29,7 @@ uniform bool u_grid_on = false;
 uniform float u_quad_border_line_thickness = 0.005;
 uniform float u_mouse_hit_radius = 0.0010000000475;
 uniform uint u_num_vertices_per_chunk;
-uniform vec2 u_mouse_hit = vec2(-1.000000, -1.000000);
+uniform vec2 u_mouse_hit_uv_quadrant = vec2(-1.000000, -1.000000);
 uniform mat4 u_terrain_inverse_transform;
 uniform float u_quadrant_size = 4096.0;
 uniform bool u_generate_global_map = false;
@@ -336,7 +336,7 @@ void fragment() {
 		if (u_editmode_selected > 0.0 && is_on_the_border(UV, u_quad_border_line_thickness)) {
 			ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 		} else {
-			if (u_mouse_hit != vec2(-1) && distance(u_mouse_hit, UV) < u_mouse_hit_radius) {
+			if (u_mouse_hit_uv_quadrant != vec2(-1) && distance(u_mouse_hit_uv_quadrant, UV) < u_mouse_hit_radius) {
 				ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 			} else {
 				if (is_on_the_border(UV, chunk_border_line_thickness) || is_on_the_border(UV2, chunk_border_line_thickness)) {

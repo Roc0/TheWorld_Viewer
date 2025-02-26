@@ -14,7 +14,7 @@ uniform uint u_piecing_threshold_factor = 4;
 uniform float u_globalmap_blend_start = 0;
 uniform float u_globalmap_blend_distance = 0;
 uniform float u_editmode_selected = 0;
-uniform vec2 u_mouse_hit = vec2(-1.000000, -1.000000);
+uniform vec2 u_mouse_hit_uv_quadrant = vec2(-1.000000, -1.000000);
 uniform float u_mouse_hit_radius = 0.0010000000475;
 uniform bool u_triplanar = false;
 uniform vec4 u_tile_reduction_per_texture = vec4(0.000000, 0.000000, 0.000000, 0.000000);
@@ -1282,7 +1282,7 @@ void fragment() {
 		}
 	}
 
-	vec2 mouse_hit = u_mouse_hit;
+	vec2 mouse_hit = u_mouse_hit_uv_quadrant;
 
 	float mouse_hit_radius = u_mouse_hit_radius;
 
@@ -1397,7 +1397,7 @@ void fragment() {
 			if (u_editmode_selected > 0.0 && is_on_the_border(UV, quad_line_thickness)) {
 				albedo_computed_5 = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 			} else {
-				if (u_mouse_hit != vec2(-1) && distance(u_mouse_hit, UV) < u_mouse_hit_radius) {
+				if (u_mouse_hit_uv_quadrant != vec2(-1) && distance(u_mouse_hit_uv_quadrant, UV) < u_mouse_hit_radius) {
 					albedo_computed_5 = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
 				} else {
 					if (is_on_the_border(UV, chunk_border_line_thickness) || is_on_the_border(UV2, chunk_border_line_thickness)) {

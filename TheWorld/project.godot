@@ -384,3 +384,7 @@ gu_highlight_hit_quadrant={
 "type": "bool",
 "value": false
 }
+gu_hold_blending={
+"type": "bool",
+"value": false
+}

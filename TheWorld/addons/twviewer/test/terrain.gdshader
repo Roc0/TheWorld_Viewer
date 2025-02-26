@@ -3,6 +3,31 @@ render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_t
 
 #include "res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc"
 
+// consts
+const vec3 apricot_color = vec3(1.0, 0.749, 0.0);
+const vec3 red_salmon_color = vec3(0.980, 0.502, 0.447);
+const float ground_uv_scale_threshold = 15000.0;
+const float altitude_uv_scale_threshold = 800.0;
+
+const bool new = false;
+//const bool new = true;
+// NEW
+const float close_distance = 30.0;
+const float close_blend_amount = 5.0;
+const float middle_distance_increment = 1200.0;
+const float middle_blend_amount = 10.0;
+const float middle_distance = close_distance + middle_distance_increment;
+const float close_uv_scale = 50.0;
+const float middle_uv_scale = 20.0;
+const float far_uv_scale = 1.0;
+// NEW
+
+const vec3 vectors[3] = {
+	vec3(1.0, 0.0 ,0.0),
+	vec3(0.0, 1.0 ,0.0),
+	vec3(0.0, 0.0 ,1.0)
+};
+
 // global uniforms
 global uniform sampler2D gu_terrain_quad_border_distance : source_color;
 global uniform sampler2DArray gu_ground_albedo_bump_array : source_color;
@@ -17,8 +42,14 @@ global uniform bool gu_show_need_blending = false;
 global uniform vec3 gu_camera_pos = vec3(0.000000, 0.000000, 0.000000);
 global uniform int gu_force_height_0 = -1;
 global uniform bool gu_highlight_hit_quadrant = false;
+global uniform bool gu_hold_blending = false;
 
 // uniforms
+//uniform vec4 u_shine_color : source_color = vec4(1.0, 1.0, 1.0, 1.0);
+//uniform vec4 u_shine_color : source_color = vec4(1.0, 0.749, 0.0, 1.0);
+uniform float u_shine_speed : hint_range(0.1, 10) = 1.5;
+uniform float u_smoothness : hint_range(0.1, 1.0) = 0.2;
+
 uniform bool u_barycentric_wireframe = false;
 uniform bool u_need_blending = false;
 uniform bool u_need_blending_north = false;
@@ -47,7 +78,7 @@ uniform uint u_piecing_threshold_factor = 4;
 uniform float u_globalmap_blend_start = 0;
 uniform float u_globalmap_blend_distance = 0;
 uniform float u_editmode_selected = 0;
-uniform vec2 u_mouse_hit = vec2(-1.000000, -1.000000);
+uniform vec2 u_mouse_hit_uv_quadrant = vec2(-1.000000, -1.000000);
 uniform float u_mouse_hit_radius = 0.0010000000475;
 uniform bool u_triplanar = false;
 uniform vec4 u_tile_reduction_per_texture = vec4(0.000000, 0.000000, 0.000000, 0.000000);
@@ -83,31 +114,6 @@ uniform sampler2D u_ground_normal_roughness_3;
 //uniform float u_globalmap_blend_start = 0;		// 2000 ==> optimization: at 2000 WU from camera will be used global map instead of u_ground_albedo_bump_0/3 and u_ground_normal_roughness_0/3
 //uniform float u_globalmap_blend_distance = 0;	// 1	==> 0 = disable use of global map
 uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);	// NOTSET
-
-// consts
-const vec3 apricot_color = vec3(1.0, 0.749, 0.0);
-
-const float ground_uv_scale_threshold = 15000.0;
-const float altitude_uv_scale_threshold = 800.0;
-
-const bool new = false;
-//const bool new = true;
-// NEW
-const float close_distance = 30.0;
-const float close_blend_amount = 5.0;
-const float middle_distance_increment = 1200.0;
-const float middle_blend_amount = 10.0;
-const float middle_distance = close_distance + middle_distance_increment;
-const float close_uv_scale = 50.0;
-const float middle_uv_scale = 20.0;
-const float far_uv_scale = 1.0;
-// NEW
-
-const vec3 vectors[3] = {
-	vec3(1.0, 0.0 ,0.0),
-	vec3(0.0, 1.0 ,0.0),
-	vec3(0.0, 0.0 ,1.0)
-};
 
 // Varyings
 varying vec4 v_vertex_world_pos;
@@ -807,7 +813,10 @@ void fragment() {
 		globalmap_factor = 1.0;
 		roughness_computed_1 = 1.0;
 		if (editmode_pixel) {
-			albedo_computed_1 = apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
+			if (gu_hold_blending)
+				albedo_computed_1 = red_salmon_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
+			else
+				albedo_computed_1 = apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
 		} else {
 			albedo_computed_1 = texture(u_terrain_globalmap, uv_quadrant).rgb;
 			if (globalmap_pixel) {
@@ -1280,7 +1289,7 @@ void fragment() {
 		}
 	}
 
-	vec2 mouse_hit = u_mouse_hit;
+	vec2 mouse_hit_uv_quadrant = u_mouse_hit_uv_quadrant;
 
 	float mouse_hit_radius = u_mouse_hit_radius;
 
@@ -1315,7 +1324,7 @@ void fragment() {
 		//albedo_computed_4 = vec3(v_close_mask);	// DEBUG
 		//albedo_computed_4 = vec3(v_middle_mask);	// DEBUG
 
-		//bool grid_on = !(mouse_hit == vec2(-1));
+		//bool grid_on = !(mouse_hit_uv_quadrant == vec2(-1));
 		/*if (grid_on) {
 			float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
 			vec2 uv_begin_texel = uv_quadrant - vec2(half_texel_size);
@@ -1340,13 +1349,13 @@ void fragment() {
 			}
 		}*/
 
-		if (mouse_hit != vec2(-1)) {
+		if (mouse_hit_uv_quadrant != vec2(-1)) {
 			float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
 			vec2 uv_begin_texel = uv_quadrant - vec2(half_texel_size);
 			vec2 distance_from_vertex =
 				fract(vec2(uv_begin_texel.x / (half_texel_size * 2.0), uv_begin_texel.y / (half_texel_size * 2.0)));
 			float grid_radius = mouse_hit_radius * 5.0;
-			if (grid_radius != 0.0 && distance(mouse_hit, uv_quadrant) < grid_radius)
+			if (grid_radius != 0.0 && distance(mouse_hit_uv_quadrant, uv_quadrant) < grid_radius)
 			{
 				if (distance_from_vertex.x < quad_line_thickness || (1.0 - distance_from_vertex.x) < quad_line_thickness
 					|| distance_from_vertex.y < quad_line_thickness || (1.0 - distance_from_vertex.y) < quad_line_thickness) {
@@ -1361,7 +1370,7 @@ void fragment() {
 				}
 			}
 
-			if (mouse_hit_radius != 0.0 && distance(mouse_hit, uv_quadrant) < mouse_hit_radius) {
+			if (mouse_hit_radius != 0.0 && distance(mouse_hit_uv_quadrant, uv_quadrant) < mouse_hit_radius) {
 				vec3 mouse_hit_albedo = apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
 				albedo_computed_4 = mix(albedo_computed_4, mouse_hit_albedo, 0.3);
 			}
@@ -1395,7 +1404,7 @@ void fragment() {
 			if (u_editmode_selected > 0.0 && is_on_the_border(UV, quad_line_thickness)) {
 				albedo_computed_5 = apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
 			} else {
-				if (mouse_hit != vec2(-1) && distance(mouse_hit, UV) < mouse_hit_radius) {
+				if (mouse_hit_uv_quadrant != vec2(-1) && distance(mouse_hit_uv_quadrant, UV) < mouse_hit_radius) {
 					albedo_computed_5 = apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
 				} else {
 					if (is_on_the_border(UV, chunk_border_line_thickness) || is_on_the_border(uv_chunk, chunk_border_line_thickness)) {
@@ -1412,7 +1421,7 @@ void fragment() {
 			}
 		}
 
-		//bool grid_on = !(mouse_hit == vec2(-1));
+		//bool grid_on = !(mouse_hit_uv_quadrant == vec2(-1));
 		if (grid_on) {
 			float half_texel_size_in_uv_coords = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
 			vec2 uv_begin_texel = uv_quadrant - vec2(half_texel_size_in_uv_coords);	// assuming uv is in the center of a texel for each fragment
@@ -1563,9 +1572,15 @@ void fragment() {
 		//ALPHA = alpha;
 	}
 	
-	if (gu_highlight_hit_quadrant && mouse_hit != vec2(-1))
+	if (gu_highlight_hit_quadrant && mouse_hit_uv_quadrant != vec2(-1) && (mouse_hit_uv_quadrant.x >= 0.0 && mouse_hit_uv_quadrant.x <= 1.0 && mouse_hit_uv_quadrant.y >= 0.0 && mouse_hit_uv_quadrant.y <= 1.0))
 	{
-		ALBEDO = mix(ALBEDO, apricot_color, 0.1);
-		//ALBEDO = vec3(1.0);
+		float shine = abs(sin(TIME * u_shine_speed));
+		float start_smoothness = 0.05;
+		float smooth_shine = mix(start_smoothness, u_smoothness, shine);
+		vec3 shine_color = apricot_color;
+		if (gu_hold_blending)
+			shine_color = red_salmon_color;
+		ALBEDO = mix(ALBEDO, shine_color.rgb, smooth_shine);
+		//ALBEDO = mix(ALBEDO, apricot_color, 0.05);
 	}
 }
