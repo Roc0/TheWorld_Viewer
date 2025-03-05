@@ -1574,13 +1574,13 @@ void fragment() {
 	
 	if (gu_highlight_hit_quadrant && mouse_hit_uv_quadrant != vec2(-1) && (mouse_hit_uv_quadrant.x >= 0.0 && mouse_hit_uv_quadrant.x <= 1.0 && mouse_hit_uv_quadrant.y >= 0.0 && mouse_hit_uv_quadrant.y <= 1.0))
 	{
-		float shine = abs(sin(TIME * u_shine_speed));
+		/*float shine = abs(sin(TIME * u_shine_speed));
 		float start_smoothness = 0.05;
 		float smooth_shine = mix(start_smoothness, u_smoothness, shine);
 		vec3 shine_color = apricot_color;
 		if (gu_hold_blending)
 			shine_color = red_salmon_color;
-		ALBEDO = mix(ALBEDO, shine_color.rgb, smooth_shine);
-		//ALBEDO = mix(ALBEDO, apricot_color, 0.05);
+		ALBEDO = mix(ALBEDO, shine_color.rgb, smooth_shine);*/
+		ALBEDO = mix(ALBEDO, apricot_color, 0.05);
 	}
 }
