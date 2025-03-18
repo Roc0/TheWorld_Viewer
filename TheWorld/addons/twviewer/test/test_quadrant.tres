@@ -1642,12 +1642,12 @@ uniform sampler2D u_terrain_normalmap;
 uniform bool u_use_globalmap = false;
 uniform sampler2D u_terrain_globalmap : source_color;
 uniform vec4 u_ground_uv_scale_per_texture = vec4(2.000000, 2.000000, 2.000000, 2.000000);
-uniform float u_piece_size = 200;
-uniform float u_scale_per_texture_factor = 1;
+uniform float u_piece_size = 200.0;
+uniform float u_scale_per_texture_factor = 1.0;
 uniform uint u_piecing_threshold_factor = 4;
-uniform float u_globalmap_blend_start = 0;
-uniform float u_globalmap_blend_distance = 0;
-uniform float u_editmode_selected = 0;
+uniform float u_globalmap_blend_start = 0.0;
+uniform float u_globalmap_blend_distance = 0.0;
+uniform float u_editmode_selected = 0.0;
 uniform vec2 u_mouse_hit = vec2(-1.000000, -1.000000);
 uniform float u_mouse_hit_radius = 0.0010000000475;
 uniform bool u_triplanar = false;
@@ -1663,7 +1663,7 @@ uniform vec4 u_south_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.00
 global uniform float gu_texture_blending_size = 0.40000000596046;
 uniform bool u_grid_on = false;
 global uniform float gu_grid_step;
-global uniform float gu_camera_altitude_from_terrain = -1;
+global uniform float gu_camera_altitude_from_terrain = -1.0;
 global uniform bool gu_show_chunks = false;
 
 // Varyings
@@ -1681,7 +1681,7 @@ varying float var_v_middle_mask;
 varying float var_v_lod;
 
 uniform mat4 u_terrain_inverse_transform;
-uniform float u_grid_step = 2;
+uniform float u_grid_step = 2.0;
 uniform uint u_optimization_level = 0;
 uniform uint u_num_vertices_per_chunk;
 global uniform vec3 gu_camera_pos = vec3(0.000000, 0.000000, 0.000000);

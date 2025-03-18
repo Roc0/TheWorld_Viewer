@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://1gfropwtqfbn"]
 
 [ext_resource type="Environment" uid="uid://wwq6f40kybqq" path="res://GodotSky/WorldEnvironment/default_environment.tres" id="1_ico8d"]
-[ext_resource type="Script" path="res://GodotSky/Scripts/GodotSky.gd" id="2_8wvsc"]
+[ext_resource type="Script" uid="uid://dq4cf4pgvia3p" path="res://GodotSky/Scripts/GodotSky.gd" id="2_8wvsc"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_pkqrv"]
 

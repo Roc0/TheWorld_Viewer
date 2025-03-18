@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=6 format=3 uid="uid://dee4mdtcckm70"]
 
-[ext_resource type="Shader" path="res://addons/twviewer/test/stayathomedevWater.gdshader" id="1_8d0jk"]
+[ext_resource type="Shader" uid="uid://8udcbogmxhol" path="res://addons/twviewer/test/stayathomedevWater.gdshader" id="1_8d0jk"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_8fybr"]
 noise_type = 3
@@ -30,6 +30,8 @@ shader_parameter/albedo = Color(0, 0.3, 0.344, 1)
 shader_parameter/albedo2 = Color(0.25, 0.32, 0.43, 1)
 shader_parameter/metallic = 0.0
 shader_parameter/roughness = 0.02
+shader_parameter/texture_normal = SubResource("NoiseTexture2D_egqa6")
+shader_parameter/texture_normal2 = SubResource("NoiseTexture2D_rs4tj")
 shader_parameter/wave_direction = Vector2(2, 0)
 shader_parameter/wave_direction2 = Vector2(0, 1)
 shader_parameter/time_scale = 0.0005
@@ -43,5 +45,3 @@ shader_parameter/edge_scale = 0.1
 shader_parameter/near = 1.0
 shader_parameter/far = 20000.0
 shader_parameter/edge_color = Color(1, 1, 1, 1)
-shader_parameter/texture_normal = SubResource("NoiseTexture2D_egqa6")
-shader_parameter/texture_normal2 = SubResource("NoiseTexture2D_rs4tj")

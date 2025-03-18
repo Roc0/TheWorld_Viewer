@@ -20,4 +20,10 @@ godot-cpp	commit 0a1e31fa459b2d3e1b5f3a56823740f86a2fe02a		Hash 0a1e31f (git rev
 godot		commit 77dcf97d82cbfe4e4615475fa52ca03da645dbd8 (HEAD, tag: 4.3-stable)				Hash 77dcf97d82 (git rev-parse --short HEAD)	HEAD detached at 4.3-stable (git status)
 godot-cpp	commit fbbf9ec4efd8f1055d00edb8d926eef8ba4c2cce (HEAD, tag: godot-4.3-stable)		Hash fbbf9ec (git rev-parse --short HEAD)	HEAD detached at godot-4.3-stable
 
-AGGIORNARE COMMENTO IN !start.bat
+06/03/2025 (godot 4.4 stable)
+godot		"git status" ==> HEAD detached at 4.4-stable
+			"git show HEAD" ==> commit 4c311cbee68c0b66ff8ebb8b0defdd9979dd2a41 (HEAD, tag: 4.4-stable)
+			"git rev-parse --short HEAD" ==> Hash 4c311cbee6
+godot-cpp	"git status" ==> HEAD detached at godot-4.4-stable
+			"git show HEAD" ==> commit 714c9e2c165db2dcb7e6ea57e62a04204d3cfbfa (HEAD, tag: godot-4.4-stable, origin/master, origin/HEAD, origin/4.4, master)
+			"git rev-parse --short HEAD" ==> Hash 714c9e2

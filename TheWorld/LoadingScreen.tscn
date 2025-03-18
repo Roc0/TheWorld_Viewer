@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://clw73nx5jf2cq"]
 
-[ext_resource type="Script" path="res://loading_screen.gd" id="1_xsw4i"]
+[ext_resource type="Script" uid="uid://3jkuwdvcbfbr" path="res://loading_screen.gd" id="1_xsw4i"]
 [ext_resource type="Texture2D" uid="uid://cnqtiojyq0nmx" path="res://addons/twviewer/assets/savannah_3175209.png" id="2_qsxx7"]
 
 [node name="LoadingScreen" type="Node2D"]

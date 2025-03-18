@@ -16,11 +16,9 @@ rem RELEASE single OFFICIAL
 rem set executable=Godot_v4.2.1-stable_win64.exe
 
 rem CUSTOM BUILD RELEASE single	precision	==> scons platform=windows bits=64 -j11 vsproj=yes target=editor
-rem godot 4.3 beta 3 HEAD detached at 82cedc83c9 - godot.cpp 4.3 HEAD detached at a62f633
 rem set executable=..\..\Client\godot\bin\godot.windows.editor.x86_64.exe
 
 rem CUSTOM BUILD DEBUG single precision		==> scons platform=windows bits=64 -j11 vsproj=yes target=editor dev_build=yes
-rem godot 4.3 beta 3 HEAD detached at 82cedc83c9 - godot.cpp 4.3 HEAD detached at a62f633
 set executable=..\..\Client\godot\bin\godot.windows.editor.dev.x86_64.exe
 
 				rem rem rem rem rem rem rem CUSTOM BUILD RELEASE double	precision	==> scons platform=windows bits=64 -j10 vsproj=yes target=editor precision=double

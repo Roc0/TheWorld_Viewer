@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://j16cr0mc33qr" path="res://GodotSky/Presets/alien/alien_moonLight.tres" id="5_vgvui"]
 [ext_resource type="Curve" uid="uid://dfwsgpngfonpr" path="res://GodotSky/Presets/default/moonLightIntensity.tres" id="6_fucbm"]
 [ext_resource type="Texture2D" uid="uid://ldtmjeqburwu" path="res://GodotSky/Presets/default/overcastCloudColor.tres" id="7_mv4q7"]
-[ext_resource type="Script" path="res://GodotSky/Presets/sky_presets.gd" id="7_ut0ib"]
+[ext_resource type="Script" uid="uid://dmak30un35rdt" path="res://GodotSky/Presets/sky_presets.gd" id="7_ut0ib"]
 [ext_resource type="Texture2D" uid="uid://cssgcr5l78yas" path="res://GodotSky/Presets/alien/alien_sunDiscColor.tres" id="8_w7l4r"]
 [ext_resource type="Texture2D" uid="uid://cql6exfjhd3eb" path="res://GodotSky/Presets/alien/alien_sunGlowColor.tres" id="9_xjib6"]
 [ext_resource type="Texture2D" uid="uid://b6pfci202gt33" path="res://GodotSky/Presets/alien/alien_sunLight.tres" id="10_x6ke3"]

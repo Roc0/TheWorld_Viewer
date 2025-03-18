@@ -869,7 +869,10 @@ func _process(delta):
 			_info_panel_camera_rot = "  Rot: " + str(camera.global_transform.basis.get_euler()) + "\n"
 			_info_panel_camera_pos = "  Pos: " + str(camera.global_transform.origin) + "\n"
 			_info_panel_camera_pos_in_map = "  Pos in map: " + str(camera_pos_in_map) + "\n"
-			_info_panel_camera_velocity = "  Velocity: " + str(snapped(camera.get_velocity(), 0.1)) + "m/s " + str(snapped((camera.get_velocity() * 60 * 60) / 1000, 0.1)) + "km/h"
+			var camera_velocity : float = 0
+			if (camera.has_method("get_velocity")):
+				camera_velocity = camera.get_velocity()
+			_info_panel_camera_velocity = "  Velocity: " + str(snapped(camera_velocity, 0.1)) + "m/s " + str(snapped((camera_velocity * 60 * 60) / 1000, 0.1)) + "km/h"
 		if camera2d != null:
 			var camera2d_pos_in_map : Vector2
 			if camera2d.has_method("get_camera_world_transform"):

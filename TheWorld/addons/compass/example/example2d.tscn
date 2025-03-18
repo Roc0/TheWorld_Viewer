@@ -1,13 +1,13 @@
 [gd_scene load_steps=10 format=3 uid="uid://bcfjmx2ny2mle"]
 
-[ext_resource type="Script" path="res://addons/compass/example/player2d.gd" id="1_my2v5"]
+[ext_resource type="Script" uid="uid://c2vledlkpxt8y" path="res://addons/compass/example/player2d.gd" id="1_my2v5"]
 [ext_resource type="Texture2D" uid="uid://cbkhgi3vutjmp" path="res://icon.svg" id="2_1oawq"]
-[ext_resource type="Script" path="res://addons/compass/entities/compass2d.gd" id="2_gaay4"]
+[ext_resource type="Script" uid="uid://cduti4btn8y80" path="res://addons/compass/entities/compass2d.gd" id="2_gaay4"]
 [ext_resource type="Texture2D" uid="uid://cl0khbhy12on8" path="res://addons/compass/resources/needle2d.png" id="3_dhren"]
 [ext_resource type="Material" uid="uid://eu6lh0fr601x" path="res://addons/compass/resources/compassbar.material" id="3_dthym"]
 [ext_resource type="Texture2D" uid="uid://d2gjnjq1vygis" path="res://addons/compass/resources/container2d.png" id="4_5wfv4"]
 [ext_resource type="Texture2D" uid="uid://bg5fxjgjk8nfg" path="res://addons/compass/resources/compassbar.png" id="4_nlw4q"]
-[ext_resource type="Script" path="res://addons/compass/entities/compassbar.gd" id="5_kmrv6"]
+[ext_resource type="Script" uid="uid://baj2tvcc130o4" path="res://addons/compass/entities/compassbar.gd" id="5_kmrv6"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_g88fw"]
 

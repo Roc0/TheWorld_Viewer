@@ -1,6 +1,6 @@
 [gd_resource type="ShaderMaterial" load_steps=7 format=3 uid="uid://d2xjhxoho6gkv"]
 
-[ext_resource type="Shader" path="res://assets/models/maple_tree/leaves_wind.gdshader" id="1_n484g"]
+[ext_resource type="Shader" uid="uid://u8o3yfgk4q1v" path="res://assets/models/maple_tree/leaves_wind.gdshader" id="1_n484g"]
 [ext_resource type="Texture2D" uid="uid://rnfmd3jd4p7m" path="res://assets/models/maple_tree/maple_tree_3.png" id="2_gpbrp"]
 
 [sub_resource type="Gradient" id="Gradient_pookg"]
@@ -25,6 +25,9 @@ noise = SubResource("FastNoiseLite_t7o5y")
 resource_name = "Tree_1Mat"
 render_priority = 0
 shader = ExtResource("1_n484g")
+shader_parameter/texture_albedo = ExtResource("2_gpbrp")
+shader_parameter/texture_gradient = SubResource("GradientTexture1D_i1eyf")
+shader_parameter/texture_noise = SubResource("NoiseTexture2D_2ln2i")
 shader_parameter/alpha_scissor_threshold = 0.437
 shader_parameter/transmission = Color(0.0627451, 0.929412, 0.168627, 1)
 shader_parameter/total_height = 4.046
@@ -32,6 +35,3 @@ shader_parameter/wind_direction = Vector2(1, -0.5)
 shader_parameter/wind_speed = 0.5
 shader_parameter/wind_strength = 0.1
 shader_parameter/noise_scale = 12.0
-shader_parameter/texture_albedo = ExtResource("2_gpbrp")
-shader_parameter/texture_gradient = SubResource("GradientTexture1D_i1eyf")
-shader_parameter/texture_noise = SubResource("NoiseTexture2D_2ln2i")
