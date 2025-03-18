@@ -106,14 +106,16 @@ uniform mat3 u_terrain_normal_basis;
 uniform float u_terrain_height = 1.0;	// NOTSET
 uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
 uniform bool u_force_height_0 = false;
-uniform sampler2D u_ground_albedo_bump_0 : source_color;
-uniform sampler2D u_ground_albedo_bump_1 : source_color;
-uniform sampler2D u_ground_albedo_bump_2 : source_color;
-uniform sampler2D u_ground_albedo_bump_3 : source_color;
-uniform sampler2D u_ground_normal_roughness_0;
-uniform sampler2D u_ground_normal_roughness_1;
-uniform sampler2D u_ground_normal_roughness_2;
-uniform sampler2D u_ground_normal_roughness_3;
+
+//uniform sampler2D u_ground_albedo_bump_0 : source_color;
+//uniform sampler2D u_ground_albedo_bump_1 : source_color;
+//uniform sampler2D u_ground_albedo_bump_2 : source_color;
+//uniform sampler2D u_ground_albedo_bump_3 : source_color;
+//uniform sampler2D u_ground_normal_roughness_0;
+//uniform sampler2D u_ground_normal_roughness_1;
+//uniform sampler2D u_ground_normal_roughness_2;
+//uniform sampler2D u_ground_normal_roughness_3;
+
 //uniform vec4 u_tile_reduction_per_texture = vec4(0.0, 0.0, 0.0, 0.0);	// Each component corresponds to a ground texture. Set greater than zero to enable.
 //uniform float u_globalmap_blend_start = 0;		// 2000 ==> optimization: at 2000 WU from camera will be used global map instead of u_ground_albedo_bump_0/3 and u_ground_normal_roughness_0/3
 //uniform float u_globalmap_blend_distance = 0;	// 1	==> 0 = disable use of global map
@@ -259,7 +261,8 @@ vec4 texture_albedo_bump(int type,
 		if (u_ground_layers.x >= 0.0) {
 			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.x));
 		} else {
-			return distance_texture(u_ground_albedo_bump_0, uv);
+			//return distance_texture(u_ground_albedo_bump_0, uv);
+			return vec4(1.0, 1.0, 1.0, 1.0);
 		}
 	} else if (type == 1) {
 		vec4 north = vec4(0.0, 0.0, 0.0, 0.0);
@@ -291,7 +294,8 @@ vec4 texture_albedo_bump(int type,
 		if (u_ground_layers.y >= 0.0) {
 			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.y));
 		} else {
-			return distance_texture(u_ground_albedo_bump_1, uv);
+			//return distance_texture(u_ground_albedo_bump_1, uv);
+			return vec4(1.0, 1.0, 1.0, 1.0);
 		}
 	} else if (type == 2) {
 		vec4 north = vec4(0.0, 0.0, 0.0, 0.0);
@@ -323,7 +327,8 @@ vec4 texture_albedo_bump(int type,
 		if (u_ground_layers.z >= 0.0) {
 			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.z));
 		} else {
-			return distance_texture(u_ground_albedo_bump_2, uv);
+			//return distance_texture(u_ground_albedo_bump_2, uv);
+			return vec4(1.0, 1.0, 1.0, 1.0);
 		}
 	} else {
 		vec4 north = vec4(0.0, 0.0, 0.0, 0.0);
@@ -355,7 +360,8 @@ vec4 texture_albedo_bump(int type,
 		if (u_ground_layers.a >= 0.0) {
 			return distance_texture_layer(gu_ground_albedo_bump_array, vec3(uv, u_ground_layers.a));
 		} else {
-			return distance_texture(u_ground_albedo_bump_3, uv);
+			//return distance_texture(u_ground_albedo_bump_3, uv);
+			return vec4(1.0, 1.0, 1.0, 1.0);
 		}
 	}
 }
@@ -375,7 +381,8 @@ vec4 texture_normal_roughness(int type,
 		} else if (u_ground_layers.x >= 0.0) {
 			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.x));
 		} else {
-			return distance_texture(u_ground_normal_roughness_0, uv);
+			//return distance_texture(u_ground_normal_roughness_0, uv);
+			return vec4(1.0, 1.0, 1.0, 1.0);
 		}
 	} else if (type == 1) {
 		if (north_border_pixel && u_north_ground_layers.y >= 0.0) {
@@ -385,7 +392,8 @@ vec4 texture_normal_roughness(int type,
 		} else if (u_ground_layers.y >= 0.0) {
 			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.y));
 		} else {
-			return distance_texture(u_ground_normal_roughness_1, uv);
+			//return distance_texture(u_ground_normal_roughness_1, uv);
+			return vec4(1.0, 1.0, 1.0, 1.0);
 		}
 	} else if (type == 2) {
 		if (north_border_pixel && u_north_ground_layers.z >= 0.0) {
@@ -395,7 +403,8 @@ vec4 texture_normal_roughness(int type,
 		} else if (u_ground_layers.z >= 0.0) {
 			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.z));
 		} else {
-			return distance_texture(u_ground_normal_roughness_2, uv);
+			//return distance_texture(u_ground_normal_roughness_2, uv);
+			return vec4(1.0, 1.0, 1.0, 1.0);
 		}
 	} else {
 		if (north_border_pixel && u_north_ground_layers.a >= 0.0) {
@@ -405,7 +414,8 @@ vec4 texture_normal_roughness(int type,
 		} else if (u_ground_layers.a >= 0.0) {
 			return distance_texture_layer(gu_ground_normal_roughness_array, vec3(uv, u_ground_layers.a));
 		} else {
-			return distance_texture(u_ground_normal_roughness_3, uv);
+			//return distance_texture(u_ground_normal_roughness_3, uv);
+			return vec4(1.0, 1.0, 1.0, 1.0);
 		}
 	}
 }
