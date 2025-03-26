@@ -40,9 +40,12 @@ const global_shader_param_camera_altitude_from_terrain := "gu_camera_altitude_fr
 const global_shader_param_camera_pos := "gu_camera_pos"
 const global_shader_param_player_pos := "gu_player_pos"
 const global_shader_param_player_altitude_from_terrain := "gu_player_altitude_from_terrain"
-const global_shader_param_player_texture_blending_size := "gu_texture_blending_size"
-const global_shader_param_player_splatmap_blending_size := "gu_splatmap_blending_size"
-const global_shader_param_player_texture_new_blending := "gu_texture_new_blending"
+const global_shader_param_player_texture_overflow_size := "gu_texture_overflow_size"
+const global_shader_param_player_splatmap_overflow_size := "gu_splatmap_blending_size"
+const global_shader_param_player_texture_new_overflow := "gu_texture_new_overflow"
+const global_shader_param_ground_roughness_scale := "gu_ground_roughness_scale"
+const global_shader_param_ground_normal_scale := "gu_ground_normal_scale"
+const global_shader_param_ground_ao_light_affect := "gu_ground_ao_light_affect"
 
 static func status_to_string(status : int) -> String:
 	if status == clientstatus_error:

@@ -482,8 +482,8 @@ _world_editor_param_depth_quad = 2
 _world_editor_param_max_depth_quad = 2
 _camera_param_initial_pos = Vector3(9420.22, 3019.62, 28709.9)
 _camera_param_initial_yaw_pitch_roll = Vector3(30.6602, -19.2361, 0)
-_shader_param_ground_uv_scale = 6.0
-_shader_param_globalmap_blend_start = 10000.0
+_shader_param_ground_uv_scale = 1.0
+_shader_param_tile_reduction = false
 
 [node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
 perfparam_threshold_cache_heights = 15000.0
@@ -546,7 +546,7 @@ offset_bottom = 2.0
 
 [node name="GDN_TW_MapViewport" type="GDN_TheWorld_MapViewport" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer"]
 handle_input_locally = false
-size = Vector2i(1099, 823)
+size = Vector2i(1057, 823)
 render_target_update_mode = 0
 
 [node name="GDN_TW_MapCamera" type="GDN_TheWorld_MapCamera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer/GDN_TW_MapViewport"]

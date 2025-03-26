@@ -264,10 +264,6 @@ gu_camera_altitude_from_terrain={
 "type": "float",
 "value": -1.0
 }
-gu_texture_blending_size={
-"type": "float",
-"value": 0.3
-}
 gu_player_altitude_from_terrain={
 "type": "float",
 "value": -1.0
@@ -368,10 +364,6 @@ gu_map_grid_on={
 "type": "bool",
 "value": false
 }
-gu_texture_new_blending={
-"type": "bool",
-"value": false
-}
 gu_show_wireframe={
 "type": "bool",
 "value": false
@@ -387,4 +379,80 @@ gu_highlight_hit_quadrant={
 gu_hold_blending={
 "type": "bool",
 "value": false
+}
+gu_ground_albedo_array={
+"type": "sampler2DArray",
+"value": ""
+}
+gu_ground_normal_array={
+"type": "sampler2DArray",
+"value": ""
+}
+gu_ground_roughness_array={
+"type": "sampler2DArray",
+"value": ""
+}
+gu_ground_displ_array={
+"type": "sampler2DArray",
+"value": ""
+}
+gu_ground_ao_array={
+"type": "sampler2DArray",
+"value": ""
+}
+gu_ground_albedo_modifier={
+"type": "vec4",
+"value": Vector4(1, 1, 1, 1)
+}
+gu_ground_roughness_scale={
+"type": "float",
+"value": 1.0
+}
+gu_ground_normal_scale={
+"type": "float",
+"value": 1.0
+}
+gu_ground_heightmap_scale={
+"type": "float",
+"value": 1.0
+}
+gu_ground_ao_light_affect={
+"type": "float",
+"value": 0.0
+}
+gu_texture_overflow_size={
+"type": "float",
+"value": 0.3
+}
+gu_texture_new_overflow={
+"type": "bool",
+"value": false
+}
+gu_debug_view_pieces={
+"type": "bool",
+"value": null
+}
+gu_debug_uv0={
+"type": "float",
+"value": 1.0
+}
+gu_debug_uv1={
+"type": "float",
+"value": 0.0
+}
+gu_debug_uv2={
+"type": "float",
+"value": 1.0
+}
+gu_debug_uv3={
+"type": "float",
+"value": 1.0
+}
+gu_debug_uv4={
+"type": "float",
+"value": 1.0
+}
+gu_debug_uv5={
+"type": "float",
+"value": 1.0
 }

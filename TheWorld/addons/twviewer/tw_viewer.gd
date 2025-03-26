@@ -269,8 +269,29 @@ func _get_camera_param_initial_yaw_pitch_roll():
 
 @export_group("Shader Params", "_shader_param")
 
+var _shader_param_ground_roughness_scale_changed := true
+@export_range(0.0, 1.0, 0.001) var _shader_param_roughness_scale : float = 1.0:
+	set = _set_shader_param_ground_roughness_scale
+func _set_shader_param_ground_roughness_scale(roughness_scale : float):
+	_shader_param_roughness_scale = roughness_scale
+	_shader_param_ground_roughness_scale_changed = true
+
+var _shader_param_ground_normal_scale_changed := true
+@export_range(-16.0, 16.0, 0.001) var _shader_param_normal_scale : float = 5.0:
+	set = _set_shader_param_ground_normal_scale
+func _set_shader_param_ground_normal_scale(normal_scale : float):
+	_shader_param_normal_scale = normal_scale
+	_shader_param_ground_normal_scale_changed = true
+
+var _shader_param_ground_ao_light_affect_changed := true
+@export_range(0.0, 1.0, 0.01) var _shader_param_ao_light_affect : float = 0.0:
+	set = _set_shader_param_ground_ao_light_affect
+func _set_shader_param_ground_ao_light_affect(ao_light_affect : float):
+	_shader_param_ao_light_affect = ao_light_affect
+	_shader_param_ground_ao_light_affect_changed = true
+
 var _shader_param_ground_uv_scale_changed := true
-@export_range(1.0, 10.0, 0.01, "or_greater", "or_less") var _shader_param_ground_uv_scale : float = 150.0:
+@export_range(1.0, 10.0, 0.01, "or_greater", "or_less") var _shader_param_ground_uv_scale : float = 5.0:	#150.0:
 	set = _set_shader_param_ground_uv_scale
 func _set_shader_param_ground_uv_scale(ground_uv_scale : float):
 	_shader_param_ground_uv_scale = ground_uv_scale
@@ -283,12 +304,12 @@ func _set_shader_param_depth_blending(depth_blending : bool):
 	_shader_param_depth_blending = depth_blending
 	_shader_param_depth_blending_changed = true
 
-var _shader_param_triplanar_changed := true
-@export var _shader_param_triplanar : bool = false:
-	set = _set_shader_param_triplanar
-func _set_shader_param_triplanar(triplanar : bool):
-	_shader_param_triplanar = triplanar
-	_shader_param_triplanar_changed = true
+#var _shader_param_triplanar_changed := true
+#@export var _shader_param_triplanar : bool = false:
+#	set = _set_shader_param_triplanar
+#func _set_shader_param_triplanar(triplanar : bool):
+#	_shader_param_triplanar = triplanar
+#	_shader_param_triplanar_changed = true
 
 var _shader_param_tile_reduction_changed := true
 @export var _shader_param_tile_reduction : bool = true:
@@ -297,40 +318,26 @@ func _set_shader_param_tile_reduction(tile_reduction : bool):
 	_shader_param_tile_reduction = tile_reduction
 	_shader_param_tile_reduction_changed = true
 
-var _shader_param_globalmap_blend_start_changed := true
-@export_range(0.0, 10000.0, 10.0, "or_greater", "or_less") var _shader_param_globalmap_blend_start : float = 0.0:
-	set = _set_shader_param_globalmap_blend_start
-func _set_shader_param_globalmap_blend_start(globalmap_blend_start : float):
-	_shader_param_globalmap_blend_start = globalmap_blend_start
-	_shader_param_globalmap_blend_start_changed = true
-
-var _shader_param_globalmap_blend_distance_changed := true
-@export_range(0.001, 1.0, 0.001, "or_greater", "or_less") var _shader_param_globalmap_blend_distance : float = 0.0:
-	set = _set_shader_param_globalmap_blend_distance
-func _set_shader_param_globalmap_blend_distance(globalmap_blend_distance : float):
-	_shader_param_globalmap_blend_distance = globalmap_blend_distance
-	_shader_param_globalmap_blend_distance_changed = true
-
 var _shader_param_colormap_opacity_changed := true
-@export var _shader_param_colormap_opacity : float = 1.0:
+@export_range(0.1, 10.0, 0.1) var _shader_param_colormap_opacity : float = 1.0:
 	set = _set_shader_param_colormap_opacity
 func _set_shader_param_colormap_opacity(colormap_opacity : float):
 	_shader_param_colormap_opacity = colormap_opacity
 	_shader_param_colormap_opacity_changed = true
 
-var _shader_param_texture_blending_size_changed := true
-@export_range(0.00, 1.0, 0.01, "or_greater", "or_less")  var _shader_param_texture_blending_size : float = 0.3:
-	set = _set_shader_param_texture_blending_size
-func _set_shader_param_texture_blending_size(texture_blending_size : float):
-	_shader_param_texture_blending_size = texture_blending_size
-	_shader_param_texture_blending_size_changed = true
+var _shader_param_texture_overflow_size_changed := true
+@export_range(0.00, 1.0, 0.01, "or_greater", "or_less")  var _shader_param_texture_overflow_size : float = 0.3:
+	set = _set_shader_param_texture_overflow_size
+func _set_shader_param_texture_overflow_size(texture_overflow_size : float):
+	_shader_param_texture_overflow_size = texture_overflow_size
+	_shader_param_texture_overflow_size_changed = true
 	
-var _shader_param_splatmap_blending_size_changed := true
-@export_range(0.00, 1.0, 0.01, "or_greater", "or_less")  var _shader_param_splatmap_blending_size : float = 0.2:
-	set = _set_shader_param_splatmap_blending_size
-func _set_shader_param_splatmap_blending_size(splatmap_blending_size : float):
-	_shader_param_splatmap_blending_size = splatmap_blending_size
-	_shader_param_splatmap_blending_size_changed = true
+var _shader_param_splatmap_overflow_size_changed := true
+@export_range(0.00, 1.0, 0.01, "or_greater", "or_less")  var _shader_param_splatmap_overflow_size : float = 0.2:
+	set = _set_shader_param_splatmap_overflow_size
+func _set_shader_param_splatmap_overflow_size(splatmap_overflow_size : float):
+	_shader_param_splatmap_overflow_size = splatmap_overflow_size
+	_shader_param_splatmap_overflow_size_changed = true
 
 var _shader_param_force_elevation_0_changed := true
 @export var _shader_param_force_elevation_0 : bool = false:
@@ -339,13 +346,62 @@ func _set_shader_param_force_elevation_0(v : bool):
 	_shader_param_force_elevation_0 = v
 	_shader_param_force_elevation_0_changed = true
 
-var _shader_param_new_blending_changed := true
-@export var _shader_param_new_blending : bool = false:
-	set = _set_shader_param_new_blending
-func _set_shader_param_new_blending(v : bool):
-	_shader_param_new_blending = v
-	_shader_param_new_blending_changed = true
-	
+var _shader_param_new_overflow_changed := true
+@export var _shader_param_new_overflow : bool = false:
+	set = _set_shader_param_new_overflow
+func _set_shader_param_new_overflow(v : bool):
+	_shader_param_new_overflow = v
+	_shader_param_new_overflow_changed = true
+
+var _shader_param_debug_show_pieces_changed := true
+@export var _shader_param_debug_show_pieces : bool = false:
+	set = _set_shader_debug_param_show_pieces
+func _set_shader_debug_param_show_pieces(show : bool):
+	_shader_param_debug_show_pieces = show
+	_shader_param_debug_show_pieces_changed = true
+
+var _shader_param_debug_uv0_changed := true
+@export_range(1.0, 300.0, 1.0) var _shader_param_debug_uv0 : float = 1.0:
+	set = _set_shader_debug_param_uv0
+func _set_shader_debug_param_uv0(show : float):
+	_shader_param_debug_uv0 = show
+	_shader_param_debug_uv0_changed = true
+
+var _shader_param_debug_uv1_changed := true
+@export_range(1.0, 300.0, 1.0) var _shader_param_debug_uv1 : float = 1.0:
+	set = _set_shader_debug_param_uv1
+func _set_shader_debug_param_uv1(show : float):
+	_shader_param_debug_uv1 = show
+	_shader_param_debug_uv1_changed = true
+
+var _shader_param_debug_uv2_changed := true
+@export_range(1.0, 300.0, 1.0) var _shader_param_debug_uv2 : float = 1.0:
+	set = _set_shader_debug_param_uv2
+func _set_shader_debug_param_uv2(show : float):
+	_shader_param_debug_uv2 = show
+	_shader_param_debug_uv2_changed = true
+
+var _shader_param_debug_uv3_changed := true
+@export_range(1.0, 300.0, 1.0) var _shader_param_debug_uv3 : float = 1.0:
+	set = _set_shader_debug_param_uv3
+func _set_shader_debug_param_uv3(show : float):
+	_shader_param_debug_uv3 = show
+	_shader_param_debug_uv3_changed = true
+
+var _shader_param_debug_uv4_changed := true
+@export_range(1.0, 300.0, 1.0) var _shader_param_debug_uv4 : float = 1.0:
+	set = _set_shader_debug_param_uv4
+func _set_shader_debug_param_uv4(show : float):
+	_shader_param_debug_uv4 = show
+	_shader_param_debug_uv4_changed = true
+
+var _shader_param_debug_uv5_changed := true
+@export_range(1.0, 300.0, 1.0) var _shader_param_debug_uv5 : float = 1.0:
+	set = _set_shader_debug_param_uv5
+func _set_shader_debug_param_uv5(show : float):
+	_shader_param_debug_uv5 = show
+	_shader_param_debug_uv5_changed = true
+
 @export_group("", "")
 
 func _init():
@@ -516,15 +572,15 @@ func _process(delta):
 	
 	var gdn_globals = GDN_globals()
 
-	if _shader_param_texture_blending_size_changed && gdn_globals != null:
-		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_player_texture_blending_size, _shader_param_texture_blending_size)
-		gdn_globals.set_texture_blending_size(_shader_param_texture_blending_size)
-		_shader_param_texture_blending_size_changed = false
+	if _shader_param_texture_overflow_size_changed && gdn_globals != null:
+		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_player_texture_overflow_size, _shader_param_texture_overflow_size)
+		gdn_globals.set_texture_overflow_size(_shader_param_texture_overflow_size)
+		_shader_param_texture_overflow_size_changed = false
 
-	if _shader_param_splatmap_blending_size_changed && gdn_globals != null:
-		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_player_splatmap_blending_size, _shader_param_splatmap_blending_size)
-		gdn_globals.set_splatmap_blending_size(_shader_param_splatmap_blending_size)
-		_shader_param_splatmap_blending_size_changed = false
+	if _shader_param_splatmap_overflow_size_changed && gdn_globals != null:
+		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_player_splatmap_overflow_size, _shader_param_splatmap_overflow_size)
+		gdn_globals.set_splatmap_overflow_size(_shader_param_splatmap_overflow_size)
+		_shader_param_splatmap_overflow_size_changed = false
 
 	if _exit_status == EXIT_STATUS_UNDEPLOYWORLD_REQUIRED:
 		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
@@ -652,6 +708,18 @@ func _process(delta):
 				_world_param_edit_panel_visible = edit_mode
 				_world_param_edit_panel_visibility_changed = false
 
+	if _shader_param_ground_roughness_scale_changed:
+		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_ground_roughness_scale, _shader_param_roughness_scale)
+		_shader_param_ground_roughness_scale_changed = false
+
+	if _shader_param_ground_normal_scale_changed:
+		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_ground_normal_scale, _shader_param_normal_scale)
+		_shader_param_ground_normal_scale_changed = false
+
+	if _shader_param_ground_ao_light_affect_changed:
+		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_ground_ao_light_affect, _shader_param_ao_light_affect)
+		_shader_param_ground_ao_light_affect_changed = false
+
 	if gdn_viewer.has_method("set_shader_parameter"):
 		
 		if _shader_param_ground_uv_scale_changed:
@@ -672,25 +740,15 @@ func _process(delta):
 			log_debug(str("set_shader_parameter depth_blending=", _shader_param_depth_blending))
 			_shader_param_depth_blending_changed = false
 
-		if _shader_param_triplanar_changed:
-			gdn_viewer.set_shader_parameter("triplanar", _shader_param_triplanar)
-			log_debug(str("set_shader_parameter triplanar=", _shader_param_triplanar))
-			_shader_param_triplanar_changed = false
+		#if _shader_param_triplanar_changed:
+		#	gdn_viewer.set_shader_parameter("triplanar", _shader_param_triplanar)
+		#	log_debug(str("set_shader_parameter triplanar=", _shader_param_triplanar))
+		#	_shader_param_triplanar_changed = false
 
 		if _shader_param_tile_reduction_changed:
 			gdn_viewer.set_shader_parameter("tile_reduction", _shader_param_tile_reduction)
 			log_debug(str("set_shader_parameter tile_reduction=", _shader_param_tile_reduction))
 			_shader_param_tile_reduction_changed = false
-
-		if _shader_param_globalmap_blend_start_changed:
-			gdn_viewer.set_shader_parameter("globalmap_blend_start", _shader_param_globalmap_blend_start)
-			log_debug(str("set_shader_parameter globalmap_blend_start=", _shader_param_globalmap_blend_start))
-			_shader_param_globalmap_blend_start_changed = false
-
-		if _shader_param_globalmap_blend_distance_changed:
-			gdn_viewer.set_shader_parameter("globalmap_blend_distance", _shader_param_globalmap_blend_distance)
-			log_debug(str("set_shader_parameter globalmap_blend_distance=", _shader_param_globalmap_blend_distance))
-			_shader_param_globalmap_blend_distance_changed = false
 
 		if _shader_param_colormap_opacity_changed:
 			gdn_viewer.set_shader_parameter("colormap_opacity", _shader_param_colormap_opacity)
@@ -702,9 +760,37 @@ func _process(delta):
 			log_debug(str("set_shader_parameter force_elevation_0=", _shader_param_force_elevation_0))
 			_shader_param_force_elevation_0_changed = false
 
-		if _shader_param_new_blending_changed:
-			RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_player_texture_new_blending, _shader_param_new_blending)
-			_shader_param_new_blending_changed = false
+		if _shader_param_new_overflow_changed:
+			RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_player_texture_new_overflow, _shader_param_new_overflow)
+			_shader_param_new_overflow_changed = false
+
+		if _shader_param_debug_show_pieces_changed:
+			RenderingServer.global_shader_parameter_set("gu_debug_view_pieces", _shader_param_debug_show_pieces)
+			_shader_param_debug_show_pieces_changed = false
+
+		if _shader_param_debug_uv0_changed:
+			RenderingServer.global_shader_parameter_set("gu_debug_uv0", _shader_param_debug_uv0)
+			_shader_param_debug_uv0_changed = false
+
+		if _shader_param_debug_uv1_changed:
+			RenderingServer.global_shader_parameter_set("gu_debug_uv1", _shader_param_debug_uv1)
+			_shader_param_debug_uv1_changed = false
+
+		if _shader_param_debug_uv2_changed:
+			RenderingServer.global_shader_parameter_set("gu_debug_uv2", _shader_param_debug_uv2)
+			_shader_param_debug_uv2_changed = false
+
+		if _shader_param_debug_uv3_changed:
+			RenderingServer.global_shader_parameter_set("gu_debug_uv3", _shader_param_debug_uv3)
+			_shader_param_debug_uv3_changed = false
+
+		if _shader_param_debug_uv4_changed:
+			RenderingServer.global_shader_parameter_set("gu_debug_uv4", _shader_param_debug_uv4)
+			_shader_param_debug_uv4_changed = false
+
+		if _shader_param_debug_uv5_changed:
+			RenderingServer.global_shader_parameter_set("gu_debug_uv5", _shader_param_debug_uv5)
+			_shader_param_debug_uv5_changed = false
 
 	if _edit_panel_visibility_changed:
 		gdn_viewer.toggle_edit_mode()
@@ -1085,14 +1171,19 @@ func init_gdn_viewer() -> bool:
 		return true
 
 func set_shader_parameters() -> void:
+	_shader_param_ground_roughness_scale_changed = true
+	_shader_param_ground_normal_scale_changed = true
+	_shader_param_ground_ao_light_affect_changed = true
 	_shader_param_ground_uv_scale_changed = true
 	_shader_param_depth_blending_changed = true
-	_shader_param_triplanar_changed = true
+	#_shader_param_triplanar_changed = true
 	_shader_param_tile_reduction_changed = true
-	_shader_param_globalmap_blend_start_changed = true
-	_shader_param_globalmap_blend_distance_changed = true
 	_shader_param_colormap_opacity_changed = true
-
+	_shader_param_texture_overflow_size_changed = false
+	_shader_param_splatmap_overflow_size_changed = false
+	_shader_param_new_overflow_changed = false
+	_shader_param_force_elevation_0_changed = false
+	
 func pre_deinit():
 	log_debug("pre_deinit")
 	if GDN_main() == null:

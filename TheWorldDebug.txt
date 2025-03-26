@@ -1,3 +1,23 @@
+*** texture in uso ***
+grass
+Ground003_2K
+Ground037_1K				O
+Ground049C_1K				OK
+Ground080_1K
+leaves
+PaintedPlaster017_1K
+Rock029_1K
+rocks07
+Rocks017_1K
+sand
+
+*** texture da sostituire ***
+Grass004_4K
+Ground003_2K
+PaintedPlaster017_1K
+grass
+rocks07
+
 https://github.com/blackears/terrain_layered_shader.git
 https://godotshaders.com/shader/multi-biome-terrain-shader/
 
