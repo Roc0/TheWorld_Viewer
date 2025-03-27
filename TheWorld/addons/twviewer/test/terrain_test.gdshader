@@ -9,7 +9,6 @@ const vec3 apricot_color = vec3(1.0, 0.749, 0.0);
 const vec3 orange_color = vec3(0.77, 0.53, 0.11);
 const vec3 red_salmon_color = vec3(0.980, 0.502, 0.447);
 const float ground_uv_scale_threshold = 15000.0;
-const float altitude_uv_scale_threshold = 800.0;
 
 const vec3 vectors[3] = {
 	vec3(1.0, 0.0 ,0.0),
@@ -45,6 +44,7 @@ global uniform int gu_force_height_0 = -1;
 global uniform bool gu_highlight_hit_quadrant = false;
 global uniform bool gu_hold_blending = false;
 
+global uniform float gu_piece_size = 200;
 global uniform bool gu_debug_view_pieces = false;
 global uniform float gu_debug_uv0 = 40.0;
 global uniform float gu_debug_uv1 = 20.0;
@@ -52,6 +52,7 @@ global uniform float gu_debug_uv2 = 20.0;
 global uniform float gu_debug_uv3 = 16.0;
 global uniform float gu_debug_uv4 = 12.0;
 global uniform float gu_debug_uv5 = 6.0;
+global uniform float gu_camera_altitude_uv_scale_threshold = 800.0;
 
 // uniforms
 uniform bool u_test_quadrant = false;
@@ -79,9 +80,9 @@ uniform sampler2D u_terrain_heightmap;
 uniform sampler2D u_terrain_normalmap;
 //uniform sampler2D u_terrain_globalmap : source_color;
 uniform vec4 u_ground_uv_scale_per_texture = vec4(1.000000, 1.000000, 1.000000, 1.000000);
-uniform float u_piece_size = 200;
-uniform float u_scale_per_texture_factor = 1;
-uniform uint u_piecing_threshold_factor = 4;
+
+//uniform float u_scale_per_texture_factor = 1;
+//uniform uint u_piecing_threshold_factor = 4;
 uniform float u_editmode_selected = 0;
 uniform vec2 u_mouse_hit_uv_quadrant = vec2(-1.000000, -1.000000);
 uniform float u_mouse_hit_radius = 0.0010000000475;
@@ -160,15 +161,12 @@ uniform sampler2D texture_displacement : hint_default_black, filter_linear_mipma
 // Varyings
 varying vec4 v_vertex_world_pos;
 varying vec2 v_vertex_cell_coords_in_textures;
-varying float v_distance_from_camera;
 varying vec4 v_splat;
 varying vec3 v_tint0;
 varying vec3 v_tint1;
 varying vec3 v_tint2;
 varying vec3 v_tint3;
 varying float v_distance_from_camera_on_terrain;
-varying float v_close_mask;
-varying float v_middle_mask;
 varying float v_lod;
 
 vec3 get_triplanar_blend(vec3 world_normal) {
@@ -842,6 +840,7 @@ const vec3 lod_colors[10] = {
 void vertex() {
 
 	vec3 camera_pos = gu_camera_pos;
+	float camera_altitude_from_terrain = gu_camera_altitude_from_terrain;
 
 	bool test_quadrant = u_test_quadrant;
 	mat4 terrain_inverse_transform = u_terrain_inverse_transform;
@@ -949,15 +948,7 @@ void vertex() {
 		}
 	}
 
-	float distance_from_camera = 0.0;
-	float distance_from_camera_on_terrain = 0.0;
-	float close_mask = 0.0;
-	float middle_mask = 0.0;
-	{
-		//camera_pos = INV_VIEW_MATRIX[3].xyz;
-		distance_from_camera = distance(vertex_world_pos_with_h.xyz, camera_pos);
-		distance_from_camera_on_terrain = distance(vertex_world_pos_with_h.xyz, vec3(camera_pos.x, camera_pos.y - gu_camera_altitude_from_terrain, camera_pos.z));
-	}
+	float distance_from_camera_on_terrain = distance(vertex_world_pos_with_h.xyz, vec3(camera_pos.x, camera_pos.y - camera_altitude_from_terrain, camera_pos.z));
 
 	vec4 splat = texture(u_terrain_splatmap, uv_quadrant);
 
@@ -991,15 +982,12 @@ void vertex() {
 // Varyings
 	v_vertex_world_pos = vertex_world_pos_with_h;
 	v_vertex_cell_coords_in_textures = vertex_cell_coords_in_textures;
-	v_distance_from_camera = distance_from_camera;
 	v_splat = splat;
 	v_tint0 = tint0;
 	v_tint1 = tint1;
 	v_tint2 = tint2;
 	v_tint3 = tint3;
 	v_distance_from_camera_on_terrain = distance_from_camera_on_terrain;
-	v_close_mask = close_mask;
-	v_middle_mask = middle_mask;
 	v_lod = lod;
 }
 
@@ -1008,16 +996,15 @@ void fragment() {
 // Uniforms
 	bool test_quadrant = u_test_quadrant;
 	uint num_vertices_per_chunk = u_num_vertices_per_chunk;
-	float distance_from_camera = v_distance_from_camera;
 	float editmode_selected = u_editmode_selected;
 	//bool triplanar = u_triplanar;
 	bool triplanar = false;
 	vec4 ground_uv_scale_per_texture = u_ground_uv_scale_per_texture;
-	vec4 ground_uv_scale_per_texture_computed = ground_uv_scale_per_texture;
-	uint piecing_threshold_factor = u_piecing_threshold_factor;
-	float piece_size = u_piece_size;
-	float scale_per_texture_factor = u_scale_per_texture_factor;
+	//uint piecing_threshold_factor = u_piecing_threshold_factor;
+	float piece_size = gu_piece_size;
+	//float scale_per_texture_factor = u_scale_per_texture_factor;
 	float camera_altitude_from_terrain = gu_camera_altitude_from_terrain;
+	float camera_altitude_uv_scale_threshold = gu_camera_altitude_uv_scale_threshold;
 	bool need_blending = u_need_blending;
 	bool grid_on = u_grid_on;
 	vec2 mouse_hit_uv_quadrant = u_mouse_hit_uv_quadrant;
@@ -1085,6 +1072,7 @@ void fragment() {
 	int pieces_from_camera_piece = 0;
 	if (pixel_type == normal_texture_pixel)
 	{
+		float scale_per_texture_factor = 1.0;
 		pieces_from_camera_piece = -1;
 
 		int alt_piece = int(floor(camera_altitude_from_terrain / piece_size));
@@ -1093,65 +1081,65 @@ void fragment() {
 		} else {
 			camera_altitude_from_terrain = -1.0;
 		}*/
-		if (camera_altitude_from_terrain < altitude_uv_scale_threshold) {
-			scale_per_texture_factor *= pow(2.0, float(alt_piece));
+		if (camera_altitude_from_terrain < camera_altitude_uv_scale_threshold) {
+			scale_per_texture_factor *= pow(2.0, float(alt_piece));		// 1 if camera alt < piece_size, 2 if camera alt < piece_size * 2, 4 if camera alt < piece_size * 3 ==> 1 if 0-200, 2 if 200-400, 4 if 400-600, 8 if 600-800
 		} else {
 			camera_altitude_from_terrain = -1.0;
 		}
 
-		if (distance_from_camera_on_terrain < ground_uv_scale_threshold) {
-			if (camera_altitude_from_terrain > 0.0) {
-				vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(vertex_in, 1.0)).xyz;
-				int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / piece_size));
-				int camera_piece_z = int(floor(CAMERA_POSITION_WORLD.z / piece_size));
-				int frag_piece_x = int(floor(fragment_world_pos.x / piece_size));
-				int frag_piece_z = int(floor(fragment_world_pos.z / piece_size));
-				pieces_from_camera_piece = max(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_z - frag_piece_z)));
-				if (pieces_from_camera_piece <= 1)
-				{
-					ground_uv_scale_per_texture_computed /= (scale_per_texture_factor / 20.0);
-					//ground_uv_scale_per_texture_computed = vec4(40.0);	// DEBUG
-					ground_uv_scale_per_texture_computed = vec4(gu_debug_uv0);	// DEBUG
-				}
-				else if (pieces_from_camera_piece <= 3)
-				{
-					ground_uv_scale_per_texture_computed /= (scale_per_texture_factor / 10.0);
-					//ground_uv_scale_per_texture_computed = vec4(20.0);	// DEBUG
-					ground_uv_scale_per_texture_computed = vec4(gu_debug_uv1);	// DEBUG
-				}
-				else if (pieces_from_camera_piece <= 5)
-				{
-					ground_uv_scale_per_texture_computed /= (scale_per_texture_factor / 10.0);
-					//ground_uv_scale_per_texture_computed = vec4(20.0);	// DEBUG
-					ground_uv_scale_per_texture_computed = vec4(gu_debug_uv2);	// DEBUG
-				}
-				else if (pieces_from_camera_piece <= 7)
-				{
-					ground_uv_scale_per_texture_computed /= (scale_per_texture_factor / 8.0);
-					//ground_uv_scale_per_texture_computed = vec4(16.0);	// DEBUG
-					ground_uv_scale_per_texture_computed = vec4(gu_debug_uv3);	// DEBUG
-				}
-				else if (pieces_from_camera_piece <= 9)
-				{
-					ground_uv_scale_per_texture_computed /= (scale_per_texture_factor / 4.0);
-					//ground_uv_scale_per_texture_computed = vec4(12.0);	// DEBUG
-					ground_uv_scale_per_texture_computed = vec4(gu_debug_uv4);	// DEBUG
-				}
-				else if (pieces_from_camera_piece <= 11)
-				{
-					ground_uv_scale_per_texture_computed /= (scale_per_texture_factor / 2.0);
-					//ground_uv_scale_per_texture_computed = vec4(6.0);	// DEBUG
-					ground_uv_scale_per_texture_computed = vec4(gu_debug_uv5);	// DEBUG
-				}
+		if (distance_from_camera_on_terrain < ground_uv_scale_threshold && camera_altitude_from_terrain > 0.0)
+		{
+			vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(vertex_in, 1.0)).xyz;
+			int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / piece_size));
+			int camera_piece_z = int(floor(CAMERA_POSITION_WORLD.z / piece_size));
+			int frag_piece_x = int(floor(fragment_world_pos.x / piece_size));
+			int frag_piece_z = int(floor(fragment_world_pos.z / piece_size));
+			pieces_from_camera_piece = max(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_z - frag_piece_z)));
+			if (pieces_from_camera_piece <= 1)
+			{
+				ground_uv_scale_per_texture /= (scale_per_texture_factor / 20.0);
+				//if (ground_uv_scale_per_texture.r < gu_debug_uv0 || ground_uv_scale_per_texture.g < gu_debug_uv0 || ground_uv_scale_per_texture.b < gu_debug_uv0 || ground_uv_scale_per_texture.a < gu_debug_uv0)
+				//	ground_uv_scale_per_texture = vec4(gu_debug_uv0);	// DEBUG
+			}
+			else if (pieces_from_camera_piece <= 3)
+			{
+				ground_uv_scale_per_texture /= (scale_per_texture_factor / 10.0);
+				//if (ground_uv_scale_per_texture.r < gu_debug_uv1 || ground_uv_scale_per_texture.g < gu_debug_uv1 || ground_uv_scale_per_texture.b < gu_debug_uv1 || ground_uv_scale_per_texture.a < gu_debug_uv1)
+				//	ground_uv_scale_per_texture = vec4(gu_debug_uv1);	// DEBUG
+			}
+			else if (pieces_from_camera_piece <= 5)
+			{
+				ground_uv_scale_per_texture /= (scale_per_texture_factor / 10.0);
+				//if (ground_uv_scale_per_texture.r < gu_debug_uv2 || ground_uv_scale_per_texture.g < gu_debug_uv2 || ground_uv_scale_per_texture.b < gu_debug_uv2 || ground_uv_scale_per_texture.a < gu_debug_uv2)
+				//	ground_uv_scale_per_texture = vec4(gu_debug_uv2);	// DEBUG
+			}
+			else if (pieces_from_camera_piece <= 7)
+			{
+				ground_uv_scale_per_texture /= (scale_per_texture_factor / 8.0);
+				//if (ground_uv_scale_per_texture.r < gu_debug_uv3 || ground_uv_scale_per_texture.g < gu_debug_uv3 || ground_uv_scale_per_texture.b < gu_debug_uv3 || ground_uv_scale_per_texture.a < gu_debug_uv3)
+				//	ground_uv_scale_per_texture = vec4(gu_debug_uv3);	// DEBUG
+			}
+			else if (pieces_from_camera_piece <= 9)
+			{
+				ground_uv_scale_per_texture /= (scale_per_texture_factor / 4.0);
+				//if (ground_uv_scale_per_texture.r < gu_debug_uv4 || ground_uv_scale_per_texture.g < gu_debug_uv4 || ground_uv_scale_per_texture.b < gu_debug_uv4 || ground_uv_scale_per_texture.a < gu_debug_uv4)
+				//	ground_uv_scale_per_texture = vec4(gu_debug_uv4);	// DEBUG
+			}
+			else if (pieces_from_camera_piece <= 11)
+			{
+				ground_uv_scale_per_texture /= (scale_per_texture_factor / 2.0);
+				//if (ground_uv_scale_per_texture.r < gu_debug_uv5 || ground_uv_scale_per_texture.g < gu_debug_uv5 || ground_uv_scale_per_texture.b < gu_debug_uv5 || ground_uv_scale_per_texture.a < gu_debug_uv5)
+				//	ground_uv_scale_per_texture = vec4(gu_debug_uv5);	// DEBUG
 			}
 		}
 		else
 		{
 			//float forced_scale_value_beyond_threshold = 1.0;
-			//ground_uv_scale_per_texture_computed = vec4(forced_scale_value_beyond_threshold);
+			//ground_uv_scale_per_texture = vec4(forced_scale_value_beyond_threshold);
 		}
-		//ground_uv_scale_per_texture_computed = vec4(1.0);		// DEBUG
+		//ground_uv_scale_per_texture = vec4(1.0);		// DEBUG
 
+		vec4 ground_uv_scale_per_texture_computed = ground_uv_scale_per_texture;
 		vec3 base_ground_uv = vec3(uv_quadrant.x, vertex_world_pos.y * MODEL_MATRIX[1][1], uv_quadrant.y);
 		ground_uv0 = base_ground_uv.xz * ground_uv_scale_per_texture_computed.x;
 		ground_uv1 = base_ground_uv.xz * ground_uv_scale_per_texture_computed.y;
@@ -1455,8 +1443,6 @@ void fragment() {
 			}
 		}
 		// DEBUG: wisualize pieces
-		//albedo_computed = vec3(v_close_mask);	// DEBUG
-		//albedo_computed = vec3(v_middle_mask);	// DEBUG
 
 		// Highlight grid inside grid radius
 		if (mouse_hit_uv_quadrant != vec2(-1)) {

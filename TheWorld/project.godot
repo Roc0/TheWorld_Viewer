@@ -456,3 +456,11 @@ gu_debug_uv5={
 "type": "float",
 "value": 1.0
 }
+gu_camera_altitude_uv_scale_threshold={
+"type": "float",
+"value": 800.0
+}
+gu_piece_size={
+"type": "float",
+"value": 200.0
+}
