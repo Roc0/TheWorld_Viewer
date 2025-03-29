@@ -45,6 +45,7 @@ const global_shader_param_player_splatmap_overflow_size := "gu_splatmap_blending
 const global_shader_param_player_texture_new_overflow := "gu_texture_new_overflow"
 const global_shader_param_ground_roughness_scale := "gu_ground_roughness_scale"
 const global_shader_param_ground_normal_scale := "gu_ground_normal_scale"
+const global_shader_param_ground_height_scale := "gu_ground_heightmap_scale"
 const global_shader_param_ground_ao_light_affect := "gu_ground_ao_light_affect"
 
 static func status_to_string(status : int) -> String:

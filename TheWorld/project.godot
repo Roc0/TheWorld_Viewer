@@ -414,7 +414,7 @@ gu_ground_normal_scale={
 }
 gu_ground_heightmap_scale={
 "type": "float",
-"value": 1.0
+"value": 0.0
 }
 gu_ground_ao_light_affect={
 "type": "float",

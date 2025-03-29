@@ -22,15 +22,15 @@ global uniform sampler2D gu_terrain_quad_border_distance : source_color;
 //global uniform sampler2DArray gu_ground_albedo_bump_array : source_color;
 //global uniform sampler2DArray gu_ground_normal_roughness_array;
 global uniform sampler2DArray gu_ground_albedo_array : source_color, filter_linear_mipmap, repeat_enable;
-global uniform sampler2DArray gu_ground_normal_array : hint_roughness_normal, filter_linear_mipmap, repeat_enable;
+global uniform sampler2DArray gu_ground_normal_array : hint_normal, filter_linear_mipmap, repeat_enable;		// hint_roughness_normal
 global uniform sampler2DArray gu_ground_roughness_array : hint_roughness_r, filter_linear_mipmap, repeat_enable;
 global uniform sampler2DArray gu_ground_displ_array : hint_default_black, filter_linear_mipmap, repeat_enable;
 //global uniform sampler2DArray gu_ground_ao_array : hint_default_white, filter_linear_mipmap, repeat_enable;
 global uniform vec4 gu_ground_albedo_modifier : source_color = vec4(1.0, 1.0, 1.0, 1.0);
 global uniform float gu_ground_roughness_scale : hint_range(0.0, 1.0) = 1.0;
-global uniform float gu_ground_normal_scale : hint_range(-16.0, 16.0) = 1.0;
+global uniform float gu_ground_normal_scale : hint_range(1.0, 16.0, 0.1) = 3.0;
 global uniform float gu_ground_ao_light_affect : hint_range(0.0, 1.0, 0.01) = 0.0;
-global uniform float gu_ground_heightmap_scale : hint_range(-16.0, 16.0, 0.001) = 1.0;	//=3.871;
+global uniform float gu_ground_heightmap_scale : hint_range(0.0, 5.0, 0.001) = 0.0;	//=3.871;
 
 global uniform float gu_texture_overflow_size = 0.3;
 global uniform bool gu_texture_new_overflow = false;
@@ -79,7 +79,7 @@ uniform float u_wire_smoothness : hint_range(0.0, 0.1) = 0.01;
 uniform sampler2D u_terrain_heightmap;
 uniform sampler2D u_terrain_normalmap;
 //uniform sampler2D u_terrain_globalmap : source_color;
-uniform vec4 u_ground_uv_scale_per_texture = vec4(1.000000, 1.000000, 1.000000, 1.000000);
+uniform vec4 u_ground_uv_scale_per_texture = vec4(1.000000, 1.000000, 1.000000, 1.000000);	// actually used as float, only first coord is used assuming same scaling in all textures
 
 //uniform float u_scale_per_texture_factor = 1;
 //uniform uint u_piecing_threshold_factor = 4;
@@ -166,6 +166,7 @@ varying vec3 v_tint0;
 varying vec3 v_tint1;
 varying vec3 v_tint2;
 varying vec3 v_tint3;
+varying float v_distance_from_camera;
 varying float v_distance_from_camera_on_terrain;
 varying float v_lod;
 
@@ -948,6 +949,7 @@ void vertex() {
 		}
 	}
 
+	float distance_from_camera = distance(vertex_world_pos_with_h.xyz, camera_pos);
 	float distance_from_camera_on_terrain = distance(vertex_world_pos_with_h.xyz, vec3(camera_pos.x, camera_pos.y - camera_altitude_from_terrain, camera_pos.z));
 
 	vec4 splat = texture(u_terrain_splatmap, uv_quadrant);
@@ -987,6 +989,7 @@ void vertex() {
 	v_tint1 = tint1;
 	v_tint2 = tint2;
 	v_tint3 = tint3;
+	v_distance_from_camera = distance_from_camera;
 	v_distance_from_camera_on_terrain = distance_from_camera_on_terrain;
 	v_lod = lod;
 }
@@ -999,7 +1002,6 @@ void fragment() {
 	float editmode_selected = u_editmode_selected;
 	//bool triplanar = u_triplanar;
 	bool triplanar = false;
-	vec4 ground_uv_scale_per_texture = u_ground_uv_scale_per_texture;
 	//uint piecing_threshold_factor = u_piecing_threshold_factor;
 	float piece_size = gu_piece_size;
 	//float scale_per_texture_factor = u_scale_per_texture_factor;
@@ -1018,6 +1020,7 @@ void fragment() {
 // Varyings
 	vec2 vertex_cell_coords_in_textures = v_vertex_cell_coords_in_textures;
 	vec4 vertex_world_pos = v_vertex_world_pos;
+	float distance_from_camera = v_distance_from_camera;
 	float distance_from_camera_on_terrain = v_distance_from_camera_on_terrain;
 	vec4 splat_pixel_in = v_splat;
 	float quadrant_texture_lod = v_lod;
@@ -1027,6 +1030,7 @@ void fragment() {
 	vec3 albedo_computed = vec3(0.0, 0.0, 0.0);
 	float roughness_computed = 1.0;
 	vec3 normal_computed = get_normal(u_terrain_normalmap, u_terrain_normal_basis, uv_quadrant);
+	float ground_normal_scale = gu_ground_normal_scale;
 	float ao_computed = 0.0;
 	//float ao_light_affect_computed = 0.0;
 
@@ -1072,74 +1076,77 @@ void fragment() {
 	int pieces_from_camera_piece = 0;
 	if (pixel_type == normal_texture_pixel)
 	{
-		float scale_per_texture_factor = 1.0;
-		pieces_from_camera_piece = -1;
-
-		int alt_piece = int(floor(camera_altitude_from_terrain / piece_size));
-		/*if (alt_piece < 4) {
-			scale_per_texture_factor *= pow(2.0, float(alt_piece));
-		} else {
-			camera_altitude_from_terrain = -1.0;
-		}*/
-		if (camera_altitude_from_terrain < camera_altitude_uv_scale_threshold) {
-			scale_per_texture_factor *= pow(2.0, float(alt_piece));		// 1 if camera alt < piece_size, 2 if camera alt < piece_size * 2, 4 if camera alt < piece_size * 3 ==> 1 if 0-200, 2 if 200-400, 4 if 400-600, 8 if 600-800
-		} else {
-			camera_altitude_from_terrain = -1.0;
-		}
-
-		if (distance_from_camera_on_terrain < ground_uv_scale_threshold && camera_altitude_from_terrain > 0.0)
+		float ground_uv_scale_per_texture = 1.0;
+		
+		const float max_distance_for_uv_scale = 5000.0;
+		if (distance_from_camera < max_distance_for_uv_scale)
 		{
-			vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(vertex_in, 1.0)).xyz;
-			int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / piece_size));
-			int camera_piece_z = int(floor(CAMERA_POSITION_WORLD.z / piece_size));
-			int frag_piece_x = int(floor(fragment_world_pos.x / piece_size));
-			int frag_piece_z = int(floor(fragment_world_pos.z / piece_size));
-			pieces_from_camera_piece = max(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_z - frag_piece_z)));
-			if (pieces_from_camera_piece <= 1)
-			{
-				ground_uv_scale_per_texture /= (scale_per_texture_factor / 20.0);
-				//if (ground_uv_scale_per_texture.r < gu_debug_uv0 || ground_uv_scale_per_texture.g < gu_debug_uv0 || ground_uv_scale_per_texture.b < gu_debug_uv0 || ground_uv_scale_per_texture.a < gu_debug_uv0)
-				//	ground_uv_scale_per_texture = vec4(gu_debug_uv0);	// DEBUG
+			float scale_per_texture_factor = 1.0;
+			pieces_from_camera_piece = -1;
+
+			int alt_piece = int(floor(camera_altitude_from_terrain / piece_size));
+			/*if (alt_piece < 4) {
+				scale_per_texture_factor *= pow(2.0, float(alt_piece));
+			} else {
+				camera_altitude_from_terrain = -1.0;
+			}*/
+			if (camera_altitude_from_terrain < camera_altitude_uv_scale_threshold) {
+				scale_per_texture_factor *= pow(2.0, float(alt_piece));		// 1 if camera alt < piece_size, 2 if camera alt < piece_size * 2, 4 if camera alt < piece_size * 3 ==> 1 if 0-200, 2 if 200-400, 4 if 400-600, 8 if 600-800
+			} else {
+				camera_altitude_from_terrain = -1.0;
 			}
-			else if (pieces_from_camera_piece <= 3)
+
+			if (distance_from_camera_on_terrain < ground_uv_scale_threshold && camera_altitude_from_terrain > 0.0)
 			{
-				ground_uv_scale_per_texture /= (scale_per_texture_factor / 10.0);
-				//if (ground_uv_scale_per_texture.r < gu_debug_uv1 || ground_uv_scale_per_texture.g < gu_debug_uv1 || ground_uv_scale_per_texture.b < gu_debug_uv1 || ground_uv_scale_per_texture.a < gu_debug_uv1)
-				//	ground_uv_scale_per_texture = vec4(gu_debug_uv1);	// DEBUG
-			}
-			else if (pieces_from_camera_piece <= 5)
-			{
-				ground_uv_scale_per_texture /= (scale_per_texture_factor / 10.0);
-				//if (ground_uv_scale_per_texture.r < gu_debug_uv2 || ground_uv_scale_per_texture.g < gu_debug_uv2 || ground_uv_scale_per_texture.b < gu_debug_uv2 || ground_uv_scale_per_texture.a < gu_debug_uv2)
-				//	ground_uv_scale_per_texture = vec4(gu_debug_uv2);	// DEBUG
-			}
-			else if (pieces_from_camera_piece <= 7)
-			{
-				ground_uv_scale_per_texture /= (scale_per_texture_factor / 8.0);
-				//if (ground_uv_scale_per_texture.r < gu_debug_uv3 || ground_uv_scale_per_texture.g < gu_debug_uv3 || ground_uv_scale_per_texture.b < gu_debug_uv3 || ground_uv_scale_per_texture.a < gu_debug_uv3)
-				//	ground_uv_scale_per_texture = vec4(gu_debug_uv3);	// DEBUG
-			}
-			else if (pieces_from_camera_piece <= 9)
-			{
-				ground_uv_scale_per_texture /= (scale_per_texture_factor / 4.0);
-				//if (ground_uv_scale_per_texture.r < gu_debug_uv4 || ground_uv_scale_per_texture.g < gu_debug_uv4 || ground_uv_scale_per_texture.b < gu_debug_uv4 || ground_uv_scale_per_texture.a < gu_debug_uv4)
-				//	ground_uv_scale_per_texture = vec4(gu_debug_uv4);	// DEBUG
-			}
-			else if (pieces_from_camera_piece <= 11)
-			{
-				ground_uv_scale_per_texture /= (scale_per_texture_factor / 2.0);
-				//if (ground_uv_scale_per_texture.r < gu_debug_uv5 || ground_uv_scale_per_texture.g < gu_debug_uv5 || ground_uv_scale_per_texture.b < gu_debug_uv5 || ground_uv_scale_per_texture.a < gu_debug_uv5)
-				//	ground_uv_scale_per_texture = vec4(gu_debug_uv5);	// DEBUG
+				ground_uv_scale_per_texture = u_ground_uv_scale_per_texture.r;
+				vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(vertex_in, 1.0)).xyz;
+				int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / piece_size));
+				int camera_piece_z = int(floor(CAMERA_POSITION_WORLD.z / piece_size));
+				int frag_piece_x = int(floor(fragment_world_pos.x / piece_size));
+				int frag_piece_z = int(floor(fragment_world_pos.z / piece_size));
+				pieces_from_camera_piece = max(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_z - frag_piece_z)));
+				if (pieces_from_camera_piece <= 1)
+				{
+					ground_uv_scale_per_texture /= (scale_per_texture_factor / 20.0);
+					//if (ground_uv_scale_per_texture.r < gu_debug_uv0 || ground_uv_scale_per_texture.g < gu_debug_uv0 || ground_uv_scale_per_texture.b < gu_debug_uv0 || ground_uv_scale_per_texture.a < gu_debug_uv0)
+					//	ground_uv_scale_per_texture = vec4(gu_debug_uv0);	// DEBUG
+				}
+				else if (pieces_from_camera_piece <= 3)
+				{
+					ground_uv_scale_per_texture /= (scale_per_texture_factor / 5.0);	// 10.0
+					//if (ground_uv_scale_per_texture.r < gu_debug_uv1 || ground_uv_scale_per_texture.g < gu_debug_uv1 || ground_uv_scale_per_texture.b < gu_debug_uv1 || ground_uv_scale_per_texture.a < gu_debug_uv1)
+					//	ground_uv_scale_per_texture = vec4(gu_debug_uv1);	// DEBUG
+				}
+				else if (pieces_from_camera_piece <= 5)
+				{
+					ground_uv_scale_per_texture /= (scale_per_texture_factor / 5.0);	// 10.0
+					//if (ground_uv_scale_per_texture.r < gu_debug_uv2 || ground_uv_scale_per_texture.g < gu_debug_uv2 || ground_uv_scale_per_texture.b < gu_debug_uv2 || ground_uv_scale_per_texture.a < gu_debug_uv2)
+					//	ground_uv_scale_per_texture = vec4(gu_debug_uv2);	// DEBUG
+				}
+				else if (pieces_from_camera_piece <= 7)
+				{
+					ground_uv_scale_per_texture /= (scale_per_texture_factor / 5.0);	// 8.0
+					//if (ground_uv_scale_per_texture.r < gu_debug_uv3 || ground_uv_scale_per_texture.g < gu_debug_uv3 || ground_uv_scale_per_texture.b < gu_debug_uv3 || ground_uv_scale_per_texture.a < gu_debug_uv3)
+					//	ground_uv_scale_per_texture = vec4(gu_debug_uv3);	// DEBUG
+				}
+				else if (pieces_from_camera_piece <= 9)
+				{
+					ground_uv_scale_per_texture /= (scale_per_texture_factor / 4.0);	// 4.0
+					//if (ground_uv_scale_per_texture.r < gu_debug_uv4 || ground_uv_scale_per_texture.g < gu_debug_uv4 || ground_uv_scale_per_texture.b < gu_debug_uv4 || ground_uv_scale_per_texture.a < gu_debug_uv4)
+					//	ground_uv_scale_per_texture = vec4(gu_debug_uv4);	// DEBUG
+				}
+				else if (pieces_from_camera_piece <= 11)
+				{
+					ground_uv_scale_per_texture /= (scale_per_texture_factor / 2.0);	// 2.0
+					//if (ground_uv_scale_per_texture.r < gu_debug_uv5 || ground_uv_scale_per_texture.g < gu_debug_uv5 || ground_uv_scale_per_texture.b < gu_debug_uv5 || ground_uv_scale_per_texture.a < gu_debug_uv5)
+					//	ground_uv_scale_per_texture = vec4(gu_debug_uv5);	// DEBUG
+				}
 			}
 		}
-		else
-		{
-			//float forced_scale_value_beyond_threshold = 1.0;
-			//ground_uv_scale_per_texture = vec4(forced_scale_value_beyond_threshold);
-		}
+
 		//ground_uv_scale_per_texture = vec4(1.0);		// DEBUG
 
-		vec4 ground_uv_scale_per_texture_computed = ground_uv_scale_per_texture;
+		vec4 ground_uv_scale_per_texture_computed = vec4(ground_uv_scale_per_texture);
 		vec3 base_ground_uv = vec3(uv_quadrant.x, vertex_world_pos.y * MODEL_MATRIX[1][1], uv_quadrant.y);
 		ground_uv0 = base_ground_uv.xz * ground_uv_scale_per_texture_computed.x;
 		ground_uv1 = base_ground_uv.xz * ground_uv_scale_per_texture_computed.y;
@@ -1317,7 +1324,9 @@ void fragment() {
 
 			vec4 w;
 			if (depth_blending) {
-				w = get_depth_blended_weights(splat_pixel_computed, vec4(ab0.a, ab1.a, ab2.a, ab3.a));
+				float ground_heightmap_scale = gu_ground_heightmap_scale;
+				vec4 bumps = vec4(ab0.a, ab1.a, ab2.a, ab3.a) + ground_heightmap_scale;
+				w = get_depth_blended_weights(splat_pixel_computed, bumps);
 			} else {
 				w = splat_pixel_computed.rgba;
 			}
@@ -1327,11 +1336,23 @@ void fragment() {
 			albedo_computed = (w.r * col0.rgb + w.g * col1.rgb + w.b * col2.rgb + w.a * col3.rgb) / w_sum;
 			albedo_computed = gu_ground_albedo_modifier.rgb * albedo_computed;
 
+			float ground_roughness_scale = gu_ground_roughness_scale;
 			roughness_computed = (w.r * rough.r + w.g * rough.g + w.b * rough.b + w.a * rough.a) / w_sum;
-			roughness_computed = roughness_computed * gu_ground_roughness_scale;
+			roughness_computed = roughness_computed * ground_roughness_scale;
 
 			vec3 ground_normal = (w.r * normal0 + w.g * normal1 + w.b * normal2 + w.a * normal3) / w_sum;
 			normal_computed = normalize(ground_normal);
+			
+			const float max_distance_for_normal_scale = 10000.0;
+			if (distance_from_camera > max_distance_for_normal_scale)
+			{
+				ground_normal_scale = 1.0;
+			}
+			else
+			{
+				float normal_scale_increment = abs(ground_normal_scale - 1.0);
+				ground_normal_scale = 1.0 + normal_scale_increment * smoothstep(max_distance_for_normal_scale, 0.0, distance_from_camera);		// smoothstep = 0 if distance_from_camera >= max_distance_for_normal_scale, grows to 1.0 if distance_from_camera decreases to zero
+			}
 
 			//ao_computed = (w.r * ao.r + w.g * ao.g + w.b * ao.b + w.a * ao.a) / w_sum;;
 		}
@@ -1404,7 +1425,7 @@ void fragment() {
 				normal_computed = nr_test.rgb;									// <== OCCHIO!
 				//normal_computed = (VIEW_MATRIX * (vec4(normal_computed, 0.0))).xyz;
 				NORMAL_MAP = normal_computed;
-				NORMAL_MAP_DEPTH = gu_ground_normal_scale;
+				NORMAL_MAP_DEPTH = ground_normal_scale;
 				//DEPTH = texture(texture_displacement, base_uv).r * heightmap_scale;
 
 				////AO = dot(texture(texture_ambient_occlusion, base_uv), ao_texture_channel);
@@ -1652,7 +1673,7 @@ void fragment() {
 		AO = ao_computed;
 		AO_LIGHT_AFFECT = gu_ground_ao_light_affect;
 		NORMAL_MAP = normal_computed;
-		NORMAL_MAP_DEPTH = gu_ground_normal_scale;
+		NORMAL_MAP_DEPTH = ground_normal_scale;
 		NORMAL = normal_computed;	// ?????
 	}
 
