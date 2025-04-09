@@ -1,18 +1,17 @@
 *** texture in uso ***
-grass
-Ground003_2K
-Ground037_1K				O
-Ground049C_1K				OK
-Ground080_1K
-leaves
-PaintedPlaster017_1K
-Rock029_1K
-rocks07
-Rocks017_1K
-sand
+grass					==> grass_2		rocky_terrain_02_1k
+Ground003_2K			==> grass_1		aerial_grass_rock_1k
+Ground037_1K			==> grass_3		Ground037_1K
+sand					==> beach_1		sand					
+Ground049C_1K			==> beach_2		Ground049C_1K			
+Ground080_1K			==> desert_1	Ground080_1K			
+leaves					==> dirt_1		leaves					
+PaintedPlaster017_1K	==> snow_1		snow_02_1k				
+Rock029_1K				==> desert_2	Rock029_1K				
+rocks07					==> rocks_1		Rock028_1K				
+Rocks017_1K				==> rocks_2		aerial_rocks_02_1k		
 
 *** texture da sostituire ***
-Grass004_4K
 Ground003_2K
 PaintedPlaster017_1K
 grass

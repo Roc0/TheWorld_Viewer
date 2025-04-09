@@ -252,10 +252,6 @@ gu_grid_step={
 "type": "float",
 "value": 0.0
 }
-gu_ground_albedo_bump_array={
-"type": "sampler2DArray",
-"value": ""
-}
 gu_ground_normal_roughness_array={
 "type": "sampler2DArray",
 "value": ""
@@ -432,30 +428,6 @@ gu_debug_view_pieces={
 "type": "bool",
 "value": null
 }
-gu_debug_uv0={
-"type": "float",
-"value": 20.0
-}
-gu_debug_uv1={
-"type": "float",
-"value": 5.0
-}
-gu_debug_uv2={
-"type": "float",
-"value": 5.0
-}
-gu_debug_uv3={
-"type": "float",
-"value": 5.0
-}
-gu_debug_uv4={
-"type": "float",
-"value": 4.0
-}
-gu_debug_uv5={
-"type": "float",
-"value": 2.0
-}
 gu_camera_altitude_uv_scale_threshold={
 "type": "float",
 "value": 800.0
@@ -467,4 +439,36 @@ gu_piece_size={
 gu_camera_distance_uv_scale_threshold={
 "type": "float",
 "value": 5000.0
+}
+gu_ground_albedo_displ_array={
+"type": "sampler2DArray",
+"value": ""
+}
+gu_ground_base_values_array={
+"type": "sampler2D",
+"value": ""
+}
+gu_debug_float0={
+"type": "float",
+"value": 0.0
+}
+gu_debug_float1={
+"type": "float",
+"value": 0.0
+}
+gu_debug_float2={
+"type": "float",
+"value": 0.0
+}
+gu_debug_float3={
+"type": "float",
+"value": 0.0
+}
+gu_debug_float4={
+"type": "float",
+"value": 0.0
+}
+gu_debug_float5={
+"type": "float",
+"value": 0.0
 }

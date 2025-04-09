@@ -19,12 +19,13 @@ const vec3 vectors[3] = {
 // global uniforms
 global uniform sampler2D gu_terrain_quad_border_distance : source_color;
 
-//global uniform sampler2DArray gu_ground_albedo_bump_array : source_color;
-//global uniform sampler2DArray gu_ground_normal_roughness_array;
-global uniform sampler2DArray gu_ground_albedo_array : source_color, filter_linear_mipmap, repeat_enable;
-global uniform sampler2DArray gu_ground_normal_array : hint_normal, filter_linear_mipmap, repeat_enable;		// hint_roughness_normal
-global uniform sampler2DArray gu_ground_roughness_array : hint_roughness_r, filter_linear_mipmap, repeat_enable;
-global uniform sampler2DArray gu_ground_displ_array : hint_default_black, filter_linear_mipmap, repeat_enable;
+global uniform sampler2DArray gu_ground_albedo_displ_array : source_color;
+global uniform sampler2DArray gu_ground_normal_roughness_array;
+global uniform sampler2D gu_ground_base_values_array;
+//global uniform sampler2DArray gu_ground_albedo_array : source_color, filter_linear_mipmap, repeat_enable;
+//global uniform sampler2DArray gu_ground_normal_array : hint_normal, filter_linear_mipmap, repeat_enable;		// hint_roughness_normal
+//global uniform sampler2DArray gu_ground_roughness_array : hint_roughness_r, filter_linear_mipmap, repeat_enable;
+//global uniform sampler2DArray gu_ground_displ_array : hint_default_black, filter_linear_mipmap, repeat_enable;
 //global uniform sampler2DArray gu_ground_ao_array : hint_default_white, filter_linear_mipmap, repeat_enable;
 global uniform vec4 gu_ground_albedo_modifier : source_color = vec4(1.0, 1.0, 1.0, 1.0);
 global uniform float gu_ground_roughness_scale : hint_range(0.0, 1.0) = 1.0;
@@ -46,12 +47,12 @@ global uniform bool gu_hold_blending = false;
 
 global uniform float gu_piece_size = 200;
 global uniform bool gu_debug_view_pieces = false;
-global uniform float gu_debug_uv0 = 40.0;
-global uniform float gu_debug_uv1 = 20.0;
-global uniform float gu_debug_uv2 = 20.0;
-global uniform float gu_debug_uv3 = 16.0;
-global uniform float gu_debug_uv4 = 12.0;
-global uniform float gu_debug_uv5 = 6.0;
+//global uniform float gu_debug_float0 = 40.0;
+//global uniform float gu_debug_float1 = 20.0;
+//global uniform float gu_debug_float2 = 20.0;
+//global uniform float gu_debug_float3 = 16.0;
+//global uniform float gu_debug_float4 = 12.0;
+//global uniform float gu_debug_float5 = 6.0;
 global uniform float gu_camera_altitude_uv_scale_threshold = 6000.0;
 global uniform float gu_camera_distance_uv_scale_threshold = 10000.0;
 
@@ -201,18 +202,32 @@ vec4 distance_texture_layer(sampler2DArray _tex, vec3 _uv) {
 }
 
 vec4 fetch_texture_albedo_displ(vec3 uv) {
-	vec4 pixel;
+	/*vec4 pixel;
 	pixel.rgb = distance_texture_layer(gu_ground_albedo_array, uv).rgb;
 	pixel.a = distance_texture_layer(gu_ground_displ_array, uv).r;
-	pixel.a = 0.0;	// DEBUG
+	//pixel.a = 0.0;	// DEBUG*/
+	vec4 pixel = distance_texture_layer(gu_ground_albedo_displ_array, uv);
+	
+	vec4 base_values0 = texture(gu_ground_base_values_array, vec2(uv.z, 0));
+	pixel.rgb = pixel.rgb * base_values0.rgb;
+	vec4 base_values1 = texture(gu_ground_base_values_array, vec2(uv.z, 1));
+	pixel.a = pixel.a + base_values1.r;
+
 	return pixel;
 }
 
 vec4 fetch_texture_normal_roughness(vec3 uv) {
-	vec4 pixel;
+	/*vec4 pixel;
 	pixel.rgb = distance_texture_layer(gu_ground_normal_array, uv).rgb;
 	pixel.a = distance_texture_layer(gu_ground_roughness_array, uv).r;
-	pixel.a = 1.0;	// DEBUG
+	//pixel.a = 1.0;	// DEBUG*/
+	vec4 pixel = distance_texture_layer(gu_ground_normal_roughness_array, uv);
+
+	//vec4 base_values0 = texture(gu_ground_base_values_array, vec2(uv.z, 0));
+	vec4 base_values1 = texture(gu_ground_base_values_array, vec2(uv.z, 1));
+	pixel.rgb = pixel.rgb * base_values1.g;
+	pixel.a = pixel.a * base_values1.b;
+
 	return pixel;
 }
 
@@ -1080,7 +1095,7 @@ void fragment() {
 	if (pixel_type == normal_texture_pixel)
 	{
 		float ground_uv_scale_per_texture = 1.0;
-		
+
 		float max_distance_for_uv_scale = gu_camera_distance_uv_scale_threshold;
 		if (distance_from_camera < max_distance_for_uv_scale)
 		{
@@ -1094,7 +1109,7 @@ void fragment() {
 				camera_altitude_from_terrain = -1.0;
 			}
 			//scale_per_texture_factor = 1.0;*/
-			
+
 			if (distance_from_camera_on_terrain < ground_uv_scale_threshold && camera_altitude_from_terrain > 0.0)
 			{
 				ground_uv_scale_per_texture = u_ground_uv_scale_per_texture.r;
@@ -1365,7 +1380,7 @@ void fragment() {
 
 			vec3 ground_normal = (w.r * normal0 + w.g * normal1 + w.b * normal2 + w.a * normal3) / w_sum;
 			normal_computed = normalize(ground_normal);
-			
+
 			const float max_distance_for_normal_scale = 10000.0;
 			if (distance_from_camera > max_distance_for_normal_scale)
 			{

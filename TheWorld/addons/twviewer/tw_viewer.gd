@@ -374,47 +374,47 @@ func _set_shader_debug_param_piece_size(size : float):
 	_shader_param_debug_piece_size = size
 	_shader_param_debug_piece_size_changed = true
 
-var _shader_param_debug_uv0_changed := true
-@export_range(1.0, 300.0, 1.0) var _shader_param_debug_uv0 : float = 1.0:
+var _shader_param_debug_float0_changed := true
+@export_range(1.0, 300.0, 1.0) var _shader_param_debug_float0 : float = 1.0:
 	set = _set_shader_debug_param_uv0
 func _set_shader_debug_param_uv0(uv : float):
-	_shader_param_debug_uv0 = uv
-	_shader_param_debug_uv0_changed = true
+	_shader_param_debug_float0 = uv
+	_shader_param_debug_float0_changed = true
 
-var _shader_param_debug_uv1_changed := true
-@export_range(1.0, 300.0, 1.0) var _shader_param_debug_uv1 : float = 1.0:
-	set = _set_shader_debug_param_uv1
-func _set_shader_debug_param_uv1(uv : float):
-	_shader_param_debug_uv1 = uv
-	_shader_param_debug_uv1_changed = true
-
-var _shader_param_debug_uv2_changed := true
-@export_range(1.0, 300.0, 1.0) var _shader_param_debug_uv2 : float = 1.0:
-	set = _set_shader_debug_param_uv2
-func _set_shader_debug_param_uv2(uv : float):
-	_shader_param_debug_uv2 = uv
-	_shader_param_debug_uv2_changed = true
-
-var _shader_param_debug_uv3_changed := true
-@export_range(1.0, 300.0, 1.0) var _shader_param_debug_uv3 : float = 1.0:
-	set = _set_shader_debug_param_uv3
-func _set_shader_debug_param_uv3(uv : float):
-	_shader_param_debug_uv3 = uv
-	_shader_param_debug_uv3_changed = true
-
-var _shader_param_debug_uv4_changed := true
-@export_range(1.0, 300.0, 1.0) var _shader_param_debug_uv4 : float = 1.0:
-	set = _set_shader_debug_param_uv4
-func _set_shader_debug_param_uv4(uv : float):
-	_shader_param_debug_uv4 = uv
-	_shader_param_debug_uv4_changed = true
-
-var _shader_param_debug_uv5_changed := true
-@export_range(1.0, 300.0, 1.0) var _shader_param_debug_uv5 : float = 1.0:
-	set = _set_shader_debug_param_uv5
-func _set_shader_debug_param_uv5(uv : float):
-	_shader_param_debug_uv5 = uv
-	_shader_param_debug_uv5_changed = true
+#var _shader_param_debug_float1_changed := true
+#@export_range(1.0, 300.0, 1.0) var _shader_param_debug_float1 : float = 1.0:
+	#set = _set_shader_debug_param_uv1
+#func _set_shader_debug_param_uv1(uv : float):
+	#_shader_param_debug_float1 = uv
+	#_shader_param_debug_float1_changed = true
+#
+#var _shader_param_debug_float2_changed := true
+#@export_range(1.0, 300.0, 1.0) var _shader_param_debug_float2 : float = 1.0:
+	#set = _set_shader_debug_param_uv2
+#func _set_shader_debug_param_uv2(uv : float):
+	#_shader_param_debug_float2 = uv
+	#_shader_param_debug_float2_changed = true
+#
+#var _shader_param_debug_float3_changed := true
+#@export_range(1.0, 300.0, 1.0) var _shader_param_debug_float3 : float = 1.0:
+	#set = _set_shader_debug_param_uv3
+#func _set_shader_debug_param_uv3(uv : float):
+	#_shader_param_debug_float3 = uv
+	#_shader_param_debug_float3_changed = true
+#
+#var _shader_param_debug_float4_changed := true
+#@export_range(1.0, 300.0, 1.0) var _shader_param_debug_float4 : float = 1.0:
+	#set = _set_shader_debug_param_uv4
+#func _set_shader_debug_param_uv4(uv : float):
+	#_shader_param_debug_float4 = uv
+	#_shader_param_debug_float4_changed = true
+#
+#var _shader_param_debug_float5_changed := true
+#@export_range(1.0, 300.0, 1.0) var _shader_param_debug_float5 : float = 1.0:
+	#set = _set_shader_debug_param_uv5
+#func _set_shader_debug_param_uv5(uv : float):
+	#_shader_param_debug_float5 = uv
+	#_shader_param_debug_float5_changed = true
 
 var _shader_param_cam_alt_uv_threshold_changed := true
 @export_range(1.0, 6000.0, 1.0) var _shader_param_cam_alt_uv_threshold : float = 800.0:
@@ -804,29 +804,29 @@ func _process(delta):
 			RenderingServer.global_shader_parameter_set("gu_piece_size", _shader_param_debug_piece_size)
 			_shader_param_debug_piece_size_changed = false
 
-		if _shader_param_debug_uv0_changed:
-			RenderingServer.global_shader_parameter_set("gu_debug_uv0", _shader_param_debug_uv0)
-			_shader_param_debug_uv0_changed = false
+		if _shader_param_debug_float0_changed:
+			RenderingServer.global_shader_parameter_set("gu_debug_float0", _shader_param_debug_float0)
+			_shader_param_debug_float0_changed = false
 
-		if _shader_param_debug_uv1_changed:
-			RenderingServer.global_shader_parameter_set("gu_debug_uv1", _shader_param_debug_uv1)
-			_shader_param_debug_uv1_changed = false
-
-		if _shader_param_debug_uv2_changed:
-			RenderingServer.global_shader_parameter_set("gu_debug_uv2", _shader_param_debug_uv2)
-			_shader_param_debug_uv2_changed = false
-
-		if _shader_param_debug_uv3_changed:
-			RenderingServer.global_shader_parameter_set("gu_debug_uv3", _shader_param_debug_uv3)
-			_shader_param_debug_uv3_changed = false
-
-		if _shader_param_debug_uv4_changed:
-			RenderingServer.global_shader_parameter_set("gu_debug_uv4", _shader_param_debug_uv4)
-			_shader_param_debug_uv4_changed = false
-
-		if _shader_param_debug_uv5_changed:
-			RenderingServer.global_shader_parameter_set("gu_debug_uv5", _shader_param_debug_uv5)
-			_shader_param_debug_uv5_changed = false
+		#if _shader_param_debug_float1_changed:
+			#RenderingServer.global_shader_parameter_set("gu_debug_float1", _shader_param_debug_float1)
+			#_shader_param_debug_float1_changed = false
+#
+		#if _shader_param_debug_float2_changed:
+			#RenderingServer.global_shader_parameter_set("gu_debug_float2", _shader_param_debug_float2)
+			#_shader_param_debug_float2_changed = false
+#
+		#if _shader_param_debug_float3_changed:
+			#RenderingServer.global_shader_parameter_set("gu_debug_float3", _shader_param_debug_float3)
+			#_shader_param_debug_float3_changed = false
+#
+		#if _shader_param_debug_float4_changed:
+			#RenderingServer.global_shader_parameter_set("gu_debug_float4", _shader_param_debug_float4)
+			#_shader_param_debug_float4_changed = false
+#
+		#if _shader_param_debug_float5_changed:
+			#RenderingServer.global_shader_parameter_set("gu_debug_float5", _shader_param_debug_float5)
+			#_shader_param_debug_float5_changed = false
 
 		if _shader_param_cam_alt_uv_threshold_changed:
 			RenderingServer.global_shader_parameter_set("gu_camera_altitude_uv_scale_threshold", _shader_param_cam_alt_uv_threshold)
@@ -1230,12 +1230,12 @@ func set_shader_parameters() -> void:
 	_shader_param_force_elevation_0_changed = true
 	_shader_param_debug_show_pieces_changed = true
 	_shader_param_debug_piece_size_changed = true
-	_shader_param_debug_uv0_changed = true
-	_shader_param_debug_uv1_changed = true
-	_shader_param_debug_uv2_changed = true
-	_shader_param_debug_uv3_changed = true
-	_shader_param_debug_uv4_changed = true
-	_shader_param_debug_uv5_changed = true
+	_shader_param_debug_float0_changed = true
+	#_shader_param_debug_float1_changed = true
+	#_shader_param_debug_float2_changed = true
+	#_shader_param_debug_float3_changed = true
+	#_shader_param_debug_float4_changed = true
+	#_shader_param_debug_float5_changed = true
 	_shader_param_cam_alt_uv_threshold_changed = true
 	_shader_param_cam_dist_uv_threshold_changed = true
 
