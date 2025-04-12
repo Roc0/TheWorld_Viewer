@@ -472,3 +472,7 @@ gu_debug_float5={
 "type": "float",
 "value": 0.0
 }
+gu_ground_heightmap_displ={
+"type": "float",
+"value": 0.0
+}

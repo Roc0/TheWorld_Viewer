@@ -277,18 +277,18 @@ func _set_shader_param_ground_roughness_scale(roughness_scale : float):
 	_shader_param_ground_roughness_scale_changed = true
 
 var _shader_param_ground_normal_scale_changed := true
-@export_range(1.0, 16.0, 0.1) var _shader_param_normal_scale : float = 3.0:
+@export_range(1.0, 16.0, 0.1) var _shader_param_normal_scale : float = 1.0:
 	set = _set_shader_param_ground_normal_scale
 func _set_shader_param_ground_normal_scale(normal_scale : float):
 	_shader_param_normal_scale = normal_scale
 	_shader_param_ground_normal_scale_changed = true
 
-var _shader_param_ground_height_scale_changed := true
-@export_range(0.0, 5.0, 0.001) var _shader_param_height_scale : float = 0.0:
-	set = _set_shader_param_ground_height_scale
-func _set_shader_param_ground_height_scale(height_scale : float):
-	_shader_param_height_scale = height_scale
-	_shader_param_ground_height_scale_changed = true
+var _shader_param_ground_height_displ_changed := true
+@export_range(0.0, 5.0, 0.001) var _shader_param_height_displ : float = 0.0:
+	set = _set_shader_param_ground_height_displ
+func _set_shader_param_ground_height_displ(height_displ : float):
+	_shader_param_height_displ = height_displ
+	_shader_param_ground_height_displ_changed = true
 
 var _shader_param_ground_ao_light_affect_changed := true
 @export_range(0.0, 1.0, 0.01) var _shader_param_ao_light_affect : float = 0.0:
@@ -353,12 +353,12 @@ func _set_shader_param_force_elevation_0(v : bool):
 	_shader_param_force_elevation_0 = v
 	_shader_param_force_elevation_0_changed = true
 
-var _shader_param_new_overflow_changed := true
-@export var _shader_param_new_overflow : bool = false:
-	set = _set_shader_param_new_overflow
-func _set_shader_param_new_overflow(v : bool):
-	_shader_param_new_overflow = v
-	_shader_param_new_overflow_changed = true
+#var _shader_param_new_overflow_changed := true
+#@export var _shader_param_new_overflow : bool = false:
+	#set = _set_shader_param_new_overflow
+#func _set_shader_param_new_overflow(v : bool):
+	#_shader_param_new_overflow = v
+	#_shader_param_new_overflow_changed = true
 
 var _shader_param_debug_show_pieces_changed := true
 @export var _shader_param_debug_show_pieces : bool = false:
@@ -744,9 +744,9 @@ func _process(delta):
 		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_ground_normal_scale, _shader_param_normal_scale)
 		_shader_param_ground_normal_scale_changed = false
 
-	if _shader_param_ground_height_scale_changed:
-		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_ground_height_scale, _shader_param_height_scale)
-		_shader_param_ground_height_scale_changed = false
+	if _shader_param_ground_height_displ_changed:
+		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_ground_height_displ, _shader_param_height_displ)
+		_shader_param_ground_height_displ_changed = false
 
 	if _shader_param_ground_ao_light_affect_changed:
 		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_ground_ao_light_affect, _shader_param_ao_light_affect)
@@ -792,9 +792,9 @@ func _process(delta):
 			log_debug(str("set_shader_parameter force_elevation_0=", _shader_param_force_elevation_0))
 			_shader_param_force_elevation_0_changed = false
 
-		if _shader_param_new_overflow_changed:
-			RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_player_texture_new_overflow, _shader_param_new_overflow)
-			_shader_param_new_overflow_changed = false
+		#if _shader_param_new_overflow_changed:
+			#RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_player_texture_new_overflow, _shader_param_new_overflow)
+			#_shader_param_new_overflow_changed = false
 
 		if _shader_param_debug_show_pieces_changed:
 			RenderingServer.global_shader_parameter_set("gu_debug_view_pieces", _shader_param_debug_show_pieces)
@@ -1217,7 +1217,7 @@ func init_gdn_viewer() -> bool:
 func set_shader_parameters() -> void:
 	_shader_param_ground_roughness_scale_changed = true
 	_shader_param_ground_normal_scale_changed = true
-	_shader_param_ground_height_scale_changed = true
+	_shader_param_ground_height_displ_changed = true
 	_shader_param_ground_ao_light_affect_changed = true
 	_shader_param_ground_uv_scale_changed = true
 	_shader_param_depth_blending_changed = true
@@ -1226,7 +1226,7 @@ func set_shader_parameters() -> void:
 	_shader_param_colormap_opacity_changed = true
 	_shader_param_texture_overflow_size_changed = true
 	_shader_param_splatmap_overflow_size_changed = true
-	_shader_param_new_overflow_changed = true
+	#_shader_param_new_overflow_changed = true
 	_shader_param_force_elevation_0_changed = true
 	_shader_param_debug_show_pieces_changed = true
 	_shader_param_debug_piece_size_changed = true
