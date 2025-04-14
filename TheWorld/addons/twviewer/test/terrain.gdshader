@@ -56,8 +56,8 @@ global uniform float gu_camera_distance_uv_scale_threshold = 10000.0;
 uniform bool u_test_quadrant = false;
 uniform bool u_test_quadrant_show_wireframe = false;
 
-uniform float u_shine_speed : hint_range(0.1, 10) = 1.5;
-uniform float u_smoothness : hint_range(0.1, 1.0) = 0.2;
+//uniform float u_shine_speed : hint_range(0.1, 10) = 1.5;
+uniform float u_highlight_quadrant_smoothness : hint_range(0.1, 1.0) = 0.2;
 
 uniform bool u_need_blending = false;
 uniform bool u_need_blending_north = false;
@@ -89,9 +89,11 @@ uniform vec4 u_tile_reduction_per_texture = vec4(0.000000, 0.000000, 0.000000, 0
 uniform bool u_depth_blending = false;
 uniform vec4 u_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
 uniform vec4 u_north_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
-uniform vec4 u_east_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
+//uniform vec4 u_east_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
 uniform vec4 u_west_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
-uniform vec4 u_south_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
+//uniform vec4 u_south_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
+uniform vec4 u_north_west_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
+//uniform vec4 u_south_east_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
 uniform bool u_grid_on = false;
 
 uniform mat4 u_terrain_inverse_transform;
@@ -188,12 +190,12 @@ vec4 texture_layer(sampler2DArray _tex, vec3 _uv) {
 	return texture(_tex, _uv);
 }
 
-vec4 fetch_texture_albedo_displ(vec2 uv, float layer, float base_scale_uv, vec3 base_albedo, float base_scale_height) {
+vec4 fetch_texture_albedo_displ(vec2 uv, float layer, float base_scale_uv, vec3 base_albedo, float base_scale_ao) {
 	vec3 uv_layer = vec3(uv * base_scale_uv, layer);
 	//vec3 uv_layer = vec3(uv, layer);
 	vec4 pixel = texture_layer(gu_ground_albedo_displ_array, uv_layer);
 	pixel.rgb = pixel.rgb * base_albedo;
-	pixel.a = pixel.a * base_scale_height;
+	pixel.a = pixel.a * base_scale_ao;
 	return pixel;
 }
 
@@ -221,7 +223,7 @@ void fetch_base_values0(float layer, out vec3 base_albedo, out float unused_valu
 	unused_value = base_values0.a * 16.0;
 }
 
-void fetch_base_values1(float layer, out float base_scale_height, out float base_scale_normal, out float base_scale_roughness, out float base_scale_uv) {
+void fetch_base_values1(float layer, out float base_scale_ao, out float base_scale_normal, out float base_scale_roughness, out float base_scale_uv) {
 	vec2 pixel_index = vec2(layer, 1.0);	// rangex from 0 to max texture-index (0-based) on the x side
 	pixel_index += vec2(0.5);				// we need to center the pixel: rangex from 0.5 to max texture-index (0-based) + 0.5 on the x side
 	vec2 pixel_uv = pixel_index / vec2(textureSize(gu_ground_base_values_array, 0));	// normalized UV to be in the range 0/1
@@ -230,7 +232,7 @@ void fetch_base_values1(float layer, out float base_scale_height, out float base
 	vec4 base_values1 = texture(gu_ground_base_values_array, pixel_uv);
 	//vec4 base_values1 = vec4(1.0, 1.0, 1.0, 1.0);		// DEBUG
 	//base_values1.g = gu_debug_float0;	// DEBUG
-	base_scale_height = base_values1.r * 16.0;
+	base_scale_ao = base_values1.r * 16.0;
 	base_scale_normal = base_values1.g * 16.0;
 	base_scale_roughness = base_values1.b * 16.0;
 	base_scale_uv = base_values1.a * 16.0;
@@ -245,7 +247,7 @@ vec4 texture_ad_nr(int layer,
 	out vec4 out_nr,
 	out float normal_map_scale)
 {
-	float base_scale_height;
+	float base_scale_ao;
 	float base_scale_normal;
 	float base_scale_roughness;
 	float base_scale_uv;
@@ -253,190 +255,171 @@ vec4 texture_ad_nr(int layer,
 	float unused_value;
 
 	if (layer == 0) {
-		vec4 north_ad = vec4(0.0, 0.0, 0.0, 0.0);
-		vec4 north_nr = vec4(0.0, 0.0, 0.0, 0.0);
-		bool north_border_pixel_fetched = false;
+		if (north_border_pixel && west_border_pixel && u_north_west_ground_layers.x >= 0.0) {
+			fetch_base_values0(u_north_west_ground_layers.x, base_albedo, unused_value);
+			fetch_base_values1(u_north_west_ground_layers.x, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
+
+			vec4 north_west_ad = fetch_texture_albedo_displ(uv, u_north_west_ground_layers.x, base_scale_uv, base_albedo, base_scale_ao);
+			vec4 north_west_nr = fetch_texture_normal_roughness(uv, u_north_west_ground_layers.x, base_scale_uv, base_scale_roughness);
+
+			normal_map_scale = base_scale_normal;
+			out_nr = north_west_nr;
+			return north_west_ad;
+		}
+		
 		if (north_border_pixel && u_north_ground_layers.x >= 0.0) {
 			fetch_base_values0(u_north_ground_layers.x, base_albedo, unused_value);
-			fetch_base_values1(u_north_ground_layers.x, base_scale_height, base_scale_normal, base_scale_roughness, base_scale_uv);
+			fetch_base_values1(u_north_ground_layers.x, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-			north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.x, base_scale_uv, base_albedo, base_scale_height);
-			north_nr = fetch_texture_normal_roughness(uv, u_north_ground_layers.x, base_scale_uv, base_scale_roughness);
-			north_border_pixel_fetched = true;
+			vec4 north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.x, base_scale_uv, base_albedo, base_scale_ao);
+			vec4 north_nr = fetch_texture_normal_roughness(uv, u_north_ground_layers.x, base_scale_uv, base_scale_roughness);
 
 			normal_map_scale = base_scale_normal;
 			out_nr = north_nr;
 			return north_ad;
 		}
 
-		vec4 west_ad = vec4(0.0, 0.0, 0.0, 0.0);
-		vec4 west_nr = vec4(0.0, 0.0, 0.0, 0.0);
-		bool west_border_pixel_fetched = false;
 		if (west_border_pixel && u_west_ground_layers.x >= 0.0) {
 			fetch_base_values0(u_west_ground_layers.x, base_albedo, unused_value);
-			fetch_base_values1(u_west_ground_layers.x, base_scale_height, base_scale_normal, base_scale_roughness, base_scale_uv);
+			fetch_base_values1(u_west_ground_layers.x, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-			west_ad = fetch_texture_albedo_displ(uv, u_west_ground_layers.x, base_scale_uv, base_albedo, base_scale_height);
-			west_nr = fetch_texture_normal_roughness(uv, u_west_ground_layers.x, base_scale_uv, base_scale_roughness);
-			west_border_pixel_fetched = true;
+			vec4 west_ad = fetch_texture_albedo_displ(uv, u_west_ground_layers.x, base_scale_uv, base_albedo, base_scale_ao);
+			vec4 west_nr = fetch_texture_normal_roughness(uv, u_west_ground_layers.x, base_scale_uv, base_scale_roughness);
 
 			normal_map_scale = base_scale_normal;
 			out_nr = west_nr;
 			return west_ad;
 		}
-
-		/*if (north_border_pixel_fetched && west_border_pixel_fetched) {
-			if (!gu_texture_new_overflow) {
-				out_nr = mix(west_nr, north_nr, 0.5);
-				return mix(west_ad, north_ad, 0.5);
-			}
-		} else if (north_border_pixel_fetched) {
-			out_nr = north_nr;
-			return north_ad;
-		} else if (west_border_pixel_fetched) {
-			out_nr = west_nr;
-			return west_ad;
-		}*/
 
 		if (u_ground_layers.x >= 0.0) {
 			fetch_base_values0(u_ground_layers.x, base_albedo, unused_value);
-			fetch_base_values1(u_ground_layers.x, base_scale_height, base_scale_normal, base_scale_roughness, base_scale_uv);
+			fetch_base_values1(u_ground_layers.x, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
 			normal_map_scale = base_scale_normal;
 			out_nr = fetch_texture_normal_roughness(uv, u_ground_layers.x, base_scale_uv, base_scale_roughness);
-			return fetch_texture_albedo_displ(uv, u_ground_layers.x, base_scale_uv, base_albedo, base_scale_height);
+			return fetch_texture_albedo_displ(uv, u_ground_layers.x, base_scale_uv, base_albedo, base_scale_ao);
 		} else {
 			normal_map_scale = 1.0;
 			out_nr = vec4(1.0, 1.0, 1.0, 1.0);
 			return vec4(1.0, 1.0, 1.0, 1.0);
 		}
 	} else if (layer == 1) {
-		vec4 north_ad = vec4(0.0, 0.0, 0.0, 0.0);
-		vec4 north_nr = vec4(0.0, 0.0, 0.0, 0.0);
-		bool north_border_pixel_fetched = false;
+		if (north_border_pixel && west_border_pixel && u_north_west_ground_layers.y >= 0.0) {
+			fetch_base_values0(u_north_west_ground_layers.y, base_albedo, unused_value);
+			fetch_base_values1(u_north_west_ground_layers.y, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
+
+			vec4 north_west_ad = fetch_texture_albedo_displ(uv, u_north_west_ground_layers.y, base_scale_uv, base_albedo, base_scale_ao);
+			vec4 north_west_nr = fetch_texture_normal_roughness(uv, u_north_west_ground_layers.y, base_scale_uv, base_scale_roughness);
+
+			normal_map_scale = base_scale_normal;
+			out_nr = north_west_nr;
+			return north_west_ad;
+		}
+
 		if (north_border_pixel && u_north_ground_layers.y >= 0.0) {
 			fetch_base_values0(u_north_ground_layers.y, base_albedo, unused_value);
-			fetch_base_values1(u_north_ground_layers.y, base_scale_height, base_scale_normal, base_scale_roughness, base_scale_uv);
+			fetch_base_values1(u_north_ground_layers.y, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-			north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.y, base_scale_uv, base_albedo, base_scale_height);
-			north_nr = fetch_texture_normal_roughness(uv, u_north_ground_layers.y, base_scale_uv, base_scale_roughness);
-			north_border_pixel_fetched = true;
+			vec4 north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.y, base_scale_uv, base_albedo, base_scale_ao);
+			vec4 north_nr = fetch_texture_normal_roughness(uv, u_north_ground_layers.y, base_scale_uv, base_scale_roughness);
 
 			normal_map_scale = base_scale_normal;
 			out_nr = north_nr;
 			return north_ad;
 		}
 
-		vec4 west_ad = vec4(0.0, 0.0, 0.0, 0.0);
-		vec4 west_nr = vec4(0.0, 0.0, 0.0, 0.0);
-		bool west_border_pixel_fetched = false;
 		if (west_border_pixel && u_west_ground_layers.y >= 0.0) {
 			fetch_base_values0(u_west_ground_layers.y, base_albedo, unused_value);
-			fetch_base_values1(u_west_ground_layers.y, base_scale_height, base_scale_normal, base_scale_roughness, base_scale_uv);
+			fetch_base_values1(u_west_ground_layers.y, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-			west_ad = fetch_texture_albedo_displ(uv, u_west_ground_layers.y, base_scale_uv, base_albedo, base_scale_height);
-			west_nr = fetch_texture_normal_roughness(uv, u_west_ground_layers.y, base_scale_uv, base_scale_roughness);
-			west_border_pixel_fetched = true;
+			vec4 west_ad = fetch_texture_albedo_displ(uv, u_west_ground_layers.y, base_scale_uv, base_albedo, base_scale_ao);
+			vec4 west_nr = fetch_texture_normal_roughness(uv, u_west_ground_layers.y, base_scale_uv, base_scale_roughness);
 
 			normal_map_scale = base_scale_normal;
 			out_nr = west_nr;
 			return west_ad;
 		}
-
-		/*if (north_border_pixel_fetched && west_border_pixel_fetched) {
-			if (!gu_texture_new_overflow) {
-				out_nr = mix(west_nr, north_nr, 0.5);
-				return mix(west_ad, north_ad, 0.5);
-			}
-		} else if (north_border_pixel_fetched) {
-			out_nr = north_nr;
-			return north_ad;
-		} else if (west_border_pixel_fetched) {
-			out_nr = west_nr;
-			return west_ad;
-		}*/
 
 		if (u_ground_layers.y >= 0.0) {
 			fetch_base_values0(u_ground_layers.y, base_albedo, unused_value);
-			fetch_base_values1(u_ground_layers.y, base_scale_height, base_scale_normal, base_scale_roughness, base_scale_uv);
+			fetch_base_values1(u_ground_layers.y, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
 			normal_map_scale = base_scale_normal;
 			out_nr = fetch_texture_normal_roughness(uv, u_ground_layers.y, base_scale_uv, base_scale_roughness);
-			return fetch_texture_albedo_displ(uv, u_ground_layers.y, base_scale_uv, base_albedo, base_scale_height);
+			return fetch_texture_albedo_displ(uv, u_ground_layers.y, base_scale_uv, base_albedo, base_scale_ao);
 		} else {
 			normal_map_scale = 1.0;
 			out_nr = vec4(1.0, 1.0, 1.0, 1.0);
 			return vec4(1.0, 1.0, 1.0, 1.0);
 		}
 	} else if (layer == 2) {
-		vec4 north_ad = vec4(0.0, 0.0, 0.0, 0.0);
-		vec4 north_nr = vec4(0.0, 0.0, 0.0, 0.0);
-		bool north_border_pixel_fetched = false;
+		if (north_border_pixel && west_border_pixel && u_north_west_ground_layers.z >= 0.0) {
+			fetch_base_values0(u_north_west_ground_layers.z, base_albedo, unused_value);
+			fetch_base_values1(u_north_west_ground_layers.z, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
+
+			vec4 north_west_ad = fetch_texture_albedo_displ(uv, u_north_west_ground_layers.z, base_scale_uv, base_albedo, base_scale_ao);
+			vec4 north_west_nr = fetch_texture_normal_roughness(uv, u_north_west_ground_layers.z, base_scale_uv, base_scale_roughness);
+
+			normal_map_scale = base_scale_normal;
+			out_nr = north_west_nr;
+			return north_west_ad;
+		}
+
 		if (north_border_pixel && u_north_ground_layers.z >= 0.0) {
 			fetch_base_values0(u_north_ground_layers.z, base_albedo, unused_value);
-			fetch_base_values1(u_north_ground_layers.z, base_scale_height, base_scale_normal, base_scale_roughness, base_scale_uv);
+			fetch_base_values1(u_north_ground_layers.z, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-			north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.z, base_scale_uv, base_albedo, base_scale_height);
-			north_nr = fetch_texture_normal_roughness(uv, u_north_ground_layers.z, base_scale_uv, base_scale_roughness);
-			north_border_pixel_fetched = true;
+			vec4 north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.z, base_scale_uv, base_albedo, base_scale_ao);
+			vec4 north_nr = fetch_texture_normal_roughness(uv, u_north_ground_layers.z, base_scale_uv, base_scale_roughness);
 
 			normal_map_scale = base_scale_normal;
 			out_nr = north_nr;
 			return north_ad;
 		}
 
-		vec4 west_ad = vec4(0.0, 0.0, 0.0, 0.0);
-		vec4 west_nr = vec4(0.0, 0.0, 0.0, 0.0);
-		bool west_border_pixel_fetched = false;
 		if (west_border_pixel && u_west_ground_layers.z >= 0.0) {
 			fetch_base_values0(u_west_ground_layers.z, base_albedo, unused_value);
-			fetch_base_values1(u_west_ground_layers.z, base_scale_height, base_scale_normal, base_scale_roughness, base_scale_uv);
+			fetch_base_values1(u_west_ground_layers.z, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-			west_ad = fetch_texture_albedo_displ(uv, u_west_ground_layers.z, base_scale_uv, base_albedo, base_scale_height);
-			west_nr = fetch_texture_normal_roughness(uv, u_west_ground_layers.z, base_scale_uv, base_scale_roughness);
-			west_border_pixel_fetched = true;
+			vec4 west_ad = fetch_texture_albedo_displ(uv, u_west_ground_layers.z, base_scale_uv, base_albedo, base_scale_ao);
+			vec4 west_nr = fetch_texture_normal_roughness(uv, u_west_ground_layers.z, base_scale_uv, base_scale_roughness);
 
 			normal_map_scale = base_scale_normal;
 			out_nr = west_nr;
 			return west_ad;
 		}
-
-		/*if (north_border_pixel_fetched && west_border_pixel_fetched) {
-			if (!gu_texture_new_overflow) {
-				out_nr = mix(west_nr, north_nr, 0.5);
-				return mix(west_ad, north_ad, 0.5);
-			}
-		} else if (north_border_pixel_fetched) {
-			out_nr = north_nr;
-			return north_ad;
-		} else if (west_border_pixel_fetched) {
-			out_nr = west_nr;
-			return west_ad;
-		}*/
 
 		if (u_ground_layers.z >= 0.0) {
 			fetch_base_values0(u_ground_layers.z, base_albedo, unused_value);
-			fetch_base_values1(u_ground_layers.z, base_scale_height, base_scale_normal, base_scale_roughness, base_scale_uv);
+			fetch_base_values1(u_ground_layers.z, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
 			normal_map_scale = base_scale_normal;
 			out_nr = fetch_texture_normal_roughness(uv, u_ground_layers.z, base_scale_uv, base_scale_roughness);
-			return fetch_texture_albedo_displ(uv, u_ground_layers.z, base_scale_uv, base_albedo, base_scale_height);
+			return fetch_texture_albedo_displ(uv, u_ground_layers.z, base_scale_uv, base_albedo, base_scale_ao);
 		} else {
 			normal_map_scale = 1.0;
 			out_nr = vec4(1.0, 1.0, 1.0, 1.0);
 			return vec4(1.0, 1.0, 1.0, 1.0);
 		}
 	} else {
-		vec4 north_ad = vec4(0.0, 0.0, 0.0, 0.0);
-		vec4 north_nr = vec4(0.0, 0.0, 0.0, 0.0);
-		bool north_border_pixel_fetched = false;
+		if (north_border_pixel && west_border_pixel && u_north_west_ground_layers.a >= 0.0) {
+			fetch_base_values0(u_north_west_ground_layers.a, base_albedo, unused_value);
+			fetch_base_values1(u_north_west_ground_layers.a, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
+
+			vec4 north_west_ad = fetch_texture_albedo_displ(uv, u_north_west_ground_layers.a, base_scale_uv, base_albedo, base_scale_ao);
+			vec4 north_west_nr = fetch_texture_normal_roughness(uv, u_north_west_ground_layers.a, base_scale_uv, base_scale_roughness);
+
+			normal_map_scale = base_scale_normal;
+			out_nr = north_west_nr;
+			return north_west_ad;
+		}
+
 		if (north_border_pixel && u_north_ground_layers.a >= 0.0) {
 			fetch_base_values0(u_north_ground_layers.a, base_albedo, unused_value);
-			fetch_base_values1(u_north_ground_layers.a, base_scale_height, base_scale_normal, base_scale_roughness, base_scale_uv);
+			fetch_base_values1(u_north_ground_layers.a, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-			north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.a, base_scale_uv, base_albedo, base_scale_height);
-			north_nr = fetch_texture_normal_roughness(uv, u_north_ground_layers.a, base_scale_uv, base_scale_roughness);
-			north_border_pixel_fetched = true;
+			vec4 north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.a, base_scale_uv, base_albedo, base_scale_ao);
+			vec4 north_nr = fetch_texture_normal_roughness(uv, u_north_ground_layers.a, base_scale_uv, base_scale_roughness);
 
 			normal_map_scale = base_scale_normal;
 			out_nr = north_nr;
@@ -448,37 +431,23 @@ vec4 texture_ad_nr(int layer,
 		bool west_border_pixel_fetched = false;
 		if (west_border_pixel && u_west_ground_layers.a >= 0.0) {
 			fetch_base_values0(u_west_ground_layers.a, base_albedo, unused_value);
-			fetch_base_values1(u_west_ground_layers.a, base_scale_height, base_scale_normal, base_scale_roughness, base_scale_uv);
+			fetch_base_values1(u_west_ground_layers.a, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-			west_ad = fetch_texture_albedo_displ(uv, u_west_ground_layers.a, base_scale_uv, base_albedo, base_scale_height);
-			west_nr = fetch_texture_normal_roughness(uv, u_west_ground_layers.a, base_scale_uv, base_scale_roughness);
-			west_border_pixel_fetched = true;
+			vec4 west_ad = fetch_texture_albedo_displ(uv, u_west_ground_layers.a, base_scale_uv, base_albedo, base_scale_ao);
+			vec4 west_nr = fetch_texture_normal_roughness(uv, u_west_ground_layers.a, base_scale_uv, base_scale_roughness);
 
 			normal_map_scale = base_scale_normal;
 			out_nr = west_nr;
 			return west_ad;
 		}
 
-		/*if (north_border_pixel_fetched && west_border_pixel_fetched) {
-			if (!gu_texture_new_overflow) {
-				out_nr = mix(west_nr, north_nr, 0.5);
-				return mix(west_ad, north_ad, 0.5);
-			}
-		} else if (north_border_pixel_fetched) {
-			out_nr = north_nr;
-			return north_ad;
-		} else if (west_border_pixel_fetched) {
-			out_nr = west_nr;
-			return west_ad;
-		}*/
-
 		if (u_ground_layers.a >= 0.0) {
 			fetch_base_values0(u_ground_layers.a, base_albedo, unused_value);
-			fetch_base_values1(u_ground_layers.a, base_scale_height, base_scale_normal, base_scale_roughness, base_scale_uv);
+			fetch_base_values1(u_ground_layers.a, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
 			normal_map_scale = base_scale_normal;
 			out_nr = fetch_texture_normal_roughness(uv, u_ground_layers.a, base_scale_uv, base_scale_roughness);
-			return fetch_texture_albedo_displ(uv, u_ground_layers.a, base_scale_uv, base_albedo, base_scale_height);
+			return fetch_texture_albedo_displ(uv, u_ground_layers.a, base_scale_uv, base_albedo, base_scale_ao);
 		} else {
 			normal_map_scale = 1.0;
 			out_nr = vec4(1.0, 1.0, 1.0, 1.0);
@@ -1104,10 +1073,10 @@ void fragment() {
 		float normal_map_scale1 = 1.0;
 		float normal_map_scale2 = 1.0;
 		float normal_map_scale3 = 1.0;
-		//vec4 ao0 = vec4(0.0, 0.0, 0.0, 0.0);
-		//vec4 ao1 = vec4(0.0, 0.0, 0.0, 0.0);
-		//vec4 ao2 = vec4(0.0, 0.0, 0.0, 0.0);
-		//vec4 ao3 = vec4(0.0, 0.0, 0.0, 0.0);
+		vec4 ao0 = vec4(0.0, 0.0, 0.0, 0.0);
+		vec4 ao1 = vec4(0.0, 0.0, 0.0, 0.0);
+		vec4 ao2 = vec4(0.0, 0.0, 0.0, 0.0);
+		vec4 ao3 = vec4(0.0, 0.0, 0.0, 0.0);
 		{
 			int layer = 3;
 			//layer = 2;	// DEBUG
@@ -1123,6 +1092,7 @@ void fragment() {
 				}
 			}
 			//ao3 = texture_ao(layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv3.xz);
+			ao3 = vec4(ab3.a);
 
 			layer = 0;
 			//layer = 2;	// DEBUG
@@ -1132,6 +1102,7 @@ void fragment() {
 				ab0 = texture_ad_nr(layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv3.xz, nr0, normal_map_scale0);
 			}
 			//ao0 = texture_ao(layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv0);
+			ao0 = vec4(ab0.a);
 
 			layer = 1;
 			//layer = 2;	// DEBUG
@@ -1141,6 +1112,7 @@ void fragment() {
 				ab1 = texture_ad_nr(layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv3.xz, nr1, normal_map_scale1);
 			}
 			//ao1 = texture_ao(layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv1);
+			ao1 = vec4(ab1.a);
 
 			layer = 2;
 			if (tile_reduction_per_texture[layer] > 0.0) {
@@ -1149,6 +1121,7 @@ void fragment() {
 				ab2 = texture_ad_nr(layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv3.xz, nr2, normal_map_scale2);
 			}
 			//ao2 = texture_ao(layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_uv2);
+			ao2 = vec4(ab2.a);
 
 			// DEBUG
 			/*vec3 red = vec3(1.0, 0.0, 0.0);
@@ -1196,7 +1169,7 @@ void fragment() {
 			vec3 col3 = ab3.rgb * tint3;
 
 			vec4 rough = vec4(nr0.a, nr1.a, nr2.a, nr3.a);
-			//vec4 ao = vec4(ao0.r, ao1.r, ao2.r, ao3.r);
+			vec4 ao = vec4(ao0.r, ao1.r, ao2.r, ao3.r);
 
 			vec3 normal0 = nr0.rgb;
 			vec3 normal1 = nr1.rgb;
@@ -1239,7 +1212,7 @@ void fragment() {
 			//if (normal_map_scale0 > 1.0)					// DEBUG
 			//	albedo_computed = vec3(1.0, 0.0, 0.0);		// DEBUG
 
-			//ao_computed = (w.r * ao.r + w.g * ao.g + w.b * ao.b + w.a * ao.a) / w_sum;;
+			ao_computed = (w.r * ao.r + w.g * ao.g + w.b * ao.b + w.a * ao.a) / w_sum;;
 		}
 	}
 
@@ -1458,12 +1431,12 @@ void fragment() {
 	{
 		/*float shine = abs(sin(TIME * u_shine_speed));
 		float start_smoothness = 0.05;
-		float smooth_shine = mix(start_smoothness, u_smoothness, shine);
+		float smooth_shine = mix(start_smoothness, u_highlight_quadrant_smoothness, shine);
 		vec3 shine_color = apricot_color;
 		if (gu_hold_blending)
 			shine_color = red_salmon_color;
 		albedo_computed = mix(albedo_computed, shine_color.rgb, smooth_shine);*/
-		albedo_computed = mix(albedo_computed, orange_color, u_smoothness);
+		albedo_computed = mix(albedo_computed, orange_color, u_highlight_quadrant_smoothness);
 		//METALLIC = 1.0; // 0.0 (no metallic) to 1.0 (full metallic)
 	}
 
