@@ -84,7 +84,7 @@ func _process(delta):
 		
 		_material = ShaderMaterial.new()
 		#var shader : Shader = load("res://addons/twviewer/test/terrain.gdshader")
-		var shader : Shader = load("res://addons/twviewer/test/terrain_test.gdshader")
+		var shader : Shader = load("res://addons/twviewer/test/terrain.gdshader")
 		_material.shader = shader
 
 		_viewer = find_node_by_name(tw_constants.tw_viewer_node_name)
