@@ -298,7 +298,7 @@ func _set_shader_param_ground_ao_light_affect(ao_light_affect : float):
 	_shader_param_ground_ao_light_affect_changed = true
 
 var _shader_param_ground_uv_scale_changed := true
-@export_range(1.0, 10.0, 0.01, "or_greater", "or_less") var _shader_param_ground_uv_scale : float = 3.0:	#150.0:
+@export_range(1.0, 10.0, 0.01, "or_greater", "or_less") var _shader_param_ground_uv_scale : float = 1.0:	#150.0:
 	set = _set_shader_param_ground_uv_scale
 func _set_shader_param_ground_uv_scale(ground_uv_scale : float):
 	_shader_param_ground_uv_scale = ground_uv_scale
