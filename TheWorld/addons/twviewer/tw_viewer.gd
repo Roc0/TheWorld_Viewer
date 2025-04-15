@@ -283,15 +283,15 @@ func _set_shader_param_ground_normal_scale(normal_scale : float):
 	_shader_param_normal_scale = normal_scale
 	_shader_param_ground_normal_scale_changed = true
 
-var _shader_param_ground_height_displ_changed := true
-@export_range(0.0, 5.0, 0.001) var _shader_param_height_displ : float = 0.0:
-	set = _set_shader_param_ground_height_displ
-func _set_shader_param_ground_height_displ(height_displ : float):
-	_shader_param_height_displ = height_displ
-	_shader_param_ground_height_displ_changed = true
+#var _shader_param_ground_height_displ_changed := true
+#@export_range(0.0, 5.0, 0.001) var _shader_param_height_displ : float = 0.0:
+	#set = _set_shader_param_ground_height_displ
+#func _set_shader_param_ground_height_displ(height_displ : float):
+	#_shader_param_height_displ = height_displ
+	#_shader_param_ground_height_displ_changed = true
 
 var _shader_param_ground_ao_light_affect_changed := true
-@export_range(0.0, 1.0, 0.01) var _shader_param_ao_light_affect : float = 0.0:
+@export_range(0.0, 1.0, 0.01) var _shader_param_ao_light_affect : float = 0.3:
 	set = _set_shader_param_ground_ao_light_affect
 func _set_shader_param_ground_ao_light_affect(ao_light_affect : float):
 	_shader_param_ao_light_affect = ao_light_affect
@@ -744,9 +744,9 @@ func _process(delta):
 		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_ground_normal_scale, _shader_param_normal_scale)
 		_shader_param_ground_normal_scale_changed = false
 
-	if _shader_param_ground_height_displ_changed:
-		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_ground_height_displ, _shader_param_height_displ)
-		_shader_param_ground_height_displ_changed = false
+	#if _shader_param_ground_height_displ_changed:
+		#RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_ground_height_displ, _shader_param_height_displ)
+		#_shader_param_ground_height_displ_changed = false
 
 	if _shader_param_ground_ao_light_affect_changed:
 		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_ground_ao_light_affect, _shader_param_ao_light_affect)
@@ -1217,7 +1217,7 @@ func init_gdn_viewer() -> bool:
 func set_shader_parameters() -> void:
 	_shader_param_ground_roughness_scale_changed = true
 	_shader_param_ground_normal_scale_changed = true
-	_shader_param_ground_height_displ_changed = true
+	#_shader_param_ground_height_displ_changed = true
 	_shader_param_ground_ao_light_affect_changed = true
 	_shader_param_ground_uv_scale_changed = true
 	_shader_param_depth_blending_changed = true

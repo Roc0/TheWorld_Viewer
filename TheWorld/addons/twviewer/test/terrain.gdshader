@@ -885,6 +885,7 @@ void fragment() {
 	vec3 normal_computed = get_normal(u_terrain_normalmap, u_terrain_normal_basis, uv_quadrant);
 	float ground_normal_scale = gu_ground_normal_scale;
 	float ao_computed = 0.0;
+	float ao_light_affect = 0.0;
 	//float ao_light_affect_computed = 0.0;
 
 	//
@@ -1178,8 +1179,8 @@ void fragment() {
 
 			vec4 w;
 			if (depth_blending) {
-				float ground_heightmap_displ = gu_ground_heightmap_displ;
-				vec4 bumps = vec4(ab0.a, ab1.a, ab2.a, ab3.a) + ground_heightmap_displ;
+				//float ground_heightmap_displ = gu_ground_heightmap_displ;
+				vec4 bumps = vec4(ab0.a, ab1.a, ab2.a, ab3.a) /*+ ground_heightmap_displ*/;
 				w = get_depth_blended_weights(splat_pixel_computed, bumps);
 			} else {
 				w = splat_pixel_computed.rgba;
@@ -1209,10 +1210,12 @@ void fragment() {
 				ground_normal_scale = 1.0 + normal_scale_increment * smoothstep(max_distance_for_normal_scale, 0.0, distance_from_camera);		// smoothstep = 0 if distance_from_camera >= max_distance_for_normal_scale, grows to 1.0 if distance_from_camera decreases to zero
 			}
 
-			//if (normal_map_scale0 > 1.0)					// DEBUG
-			//	albedo_computed = vec3(1.0, 0.0, 0.0);		// DEBUG
-
 			ao_computed = (w.r * ao.r + w.g * ao.g + w.b * ao.b + w.a * ao.a) / w_sum;;
+			float ground_ao_light_affect = gu_ground_ao_light_affect;
+			if (ground_ao_light_affect == 0.0)
+				ground_ao_light_affect = 0.01;
+			float max_view_distance = 40000.0 * ground_ao_light_affect;
+			ao_light_affect = (distance_from_camera / max_view_distance) / 2.0;
 		}
 	}
 
@@ -1347,7 +1350,6 @@ void fragment() {
 		float uv_wire_width = u_uv_wire_width;
 		float uv_border_wire_width = uv_wire_width * 3.0;
 		float half_texel_size_in_uv_coords = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
-		//half_texel_size_in_uv_coords = 0.0;	// DEBUG
 
 		if (uv_quadrant.x < (half_texel_size_in_uv_coords + uv_border_wire_width))					// check left border of quadrant
 		{
@@ -1446,7 +1448,7 @@ void fragment() {
 	{
 		ROUGHNESS = roughness_computed;
 		AO = ao_computed;
-		AO_LIGHT_AFFECT = gu_ground_ao_light_affect;
+		AO_LIGHT_AFFECT = ao_light_affect;
 		NORMAL_MAP = normal_computed;
 		NORMAL_MAP_DEPTH = ground_normal_scale;
 		NORMAL = normal_computed;	// ?????
