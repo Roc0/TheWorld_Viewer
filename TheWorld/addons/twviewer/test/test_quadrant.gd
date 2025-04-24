@@ -304,7 +304,7 @@ func render():
 		#if tex != null:
 		#	mat.set_shader_parameter("u_ground_normal_roughness_3", tex)
 			
-		var v4 : Vector4 = gdn_viewer.get_ground_texture_layers()
+		var v4 : Vector4 = gdn_viewer.get_ground_texture_layers("default")
 		mat.set_shader_parameter("u_ground_layers", v4)
 		_logger.debug(str("u_ground_layers = ", v4))
 
