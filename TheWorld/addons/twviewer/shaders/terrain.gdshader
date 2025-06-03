@@ -110,6 +110,8 @@ uniform bool u_force_height_0 = false;
 
 uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);	// NOTSET
 
+uniform float u_override_camera_altitude_from_terrain = -2.0;
+
 //********************************************************************************************************************
 //     Test PBR
 //********************************************************************************************************************
@@ -266,7 +268,7 @@ vec4 texture_ad_nr(int layer,
 			out_nr = north_west_nr;
 			return north_west_ad;
 		}
-		
+
 		if (north_border_pixel && u_north_ground_layers.x >= 0.0) {
 			fetch_base_values0(u_north_ground_layers.x, base_albedo, unused_value);
 			fetch_base_values1(u_north_ground_layers.x, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
@@ -694,7 +696,9 @@ const vec3 lod_colors[10] = {
 void vertex() {
 
 	vec3 camera_pos = gu_camera_pos;
-	float camera_altitude_from_terrain = gu_camera_altitude_from_terrain;
+	float camera_altitude_from_terrain = u_override_camera_altitude_from_terrain;
+	if (camera_altitude_from_terrain < -1.0)
+		camera_altitude_from_terrain = gu_camera_altitude_from_terrain;
 
 	bool test_quadrant = u_test_quadrant;
 	mat4 terrain_inverse_transform = u_terrain_inverse_transform;
@@ -858,7 +862,9 @@ void fragment() {
 	//uint piecing_threshold_factor = u_piecing_threshold_factor;
 	float piece_size = gu_piece_size;
 	//float scale_per_texture_factor = u_scale_per_texture_factor;
-	float camera_altitude_from_terrain = gu_camera_altitude_from_terrain;
+	float camera_altitude_from_terrain = u_override_camera_altitude_from_terrain;
+	if (camera_altitude_from_terrain < -1.0)
+		camera_altitude_from_terrain = gu_camera_altitude_from_terrain;
 	float camera_altitude_uv_scale_threshold = gu_camera_altitude_uv_scale_threshold;
 	bool need_blending = u_need_blending;
 	bool grid_on = u_grid_on;
@@ -950,7 +956,7 @@ void fragment() {
 					if (camera_altitude_from_terrain < 100.0)
 						uv0 = 90.0;
 					//uv0 = gu_debug_float0;		// DEBUG
-					
+
 					//ground_uv_scale_per_texture /= (scale_per_texture_factor / uv0);	// 20.0
 					ground_uv_scale_per_texture *= uv0;
 					//ground_uv_scale_per_texture = gu_debug_float0;
@@ -964,7 +970,7 @@ void fragment() {
 					else if (camera_altitude_from_terrain < 100.0)
 						uv0 = 40.0;
 					//uv0 = gu_debug_float0;		// DEBUG
-					
+
 					//ground_uv_scale_per_texture /= (scale_per_texture_factor / uv0);	// 20.0
 					ground_uv_scale_per_texture *= uv0;
 				}
@@ -984,7 +990,7 @@ void fragment() {
 					if (camera_altitude_from_terrain < 100.0)
 						uv2 = 10.0;
 					//uv2 = gu_debug_float2;		// DEBUG
-					
+
 					//ground_uv_scale_per_texture /= (scale_per_texture_factor / uv2);	// 10.0
 					ground_uv_scale_per_texture *= uv2;
 				}
@@ -994,7 +1000,7 @@ void fragment() {
 					if (camera_altitude_from_terrain < 100.0)
 						uv3 = 5.0;
 					//uv3 = gu_debug_float3;		// DEBUG
-					
+
 					//ground_uv_scale_per_texture /= (scale_per_texture_factor / uv3);	// 8.0
 					ground_uv_scale_per_texture *= uv3;
 				}
@@ -1004,7 +1010,7 @@ void fragment() {
 					if (camera_altitude_from_terrain < 100.0)
 						uv4 = 5.0;
 					//uv4 = gu_debug_float4;		// DEBUG
-					
+
 					//ground_uv_scale_per_texture /= (scale_per_texture_factor / uv4);	// 4.0
 					ground_uv_scale_per_texture *= uv4
 					;
@@ -1015,7 +1021,7 @@ void fragment() {
 					if (camera_altitude_from_terrain < 100.0)
 						uv5 = 1.0;
 					//uv5 = gu_debug_float5;		// DEBUG
-					
+
 					//ground_uv_scale_per_texture /= (scale_per_texture_factor / uv5);	// 2.0
 					ground_uv_scale_per_texture *= uv5;
 				}
@@ -1238,7 +1244,7 @@ void fragment() {
 			float max_view_distance = 40000.0 * ground_ao_light_affect;
 			ao_light_affect = (distance_from_camera / max_view_distance) / 2.0;
 		}
-		
+
 		/*{
 			const float line_thickness = 0.3;
 			if ((uv_ground.x >= 0.0 && uv_ground.x < line_thickness) || (uv_ground.x <= 1.0 && uv_ground.x > 1.0 - line_thickness)

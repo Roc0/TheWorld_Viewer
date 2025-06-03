@@ -11,8 +11,11 @@ uniform float u_grid_step = 2.0;
 uniform mat4 u_terrain_inverse_transform;
 uniform float u_quadrant_size = 4096.0;
 
-uniform vec3 u_sea_color : source_color = vec3(0.10, 0.19, 0.32);	// vec3(0.0, 0.03, 0.34);		// vec3(0.0, 0.19, 0.46);		// vec3(0.0, 0.32, 0.43);
-uniform vec3 u_sea_color2 : source_color = vec3(0.25, 0.32, 0.43);	// vec3(0.25, 0.32, 0.43);	// vec3(1.0, 1.0, 1.0);
+//uniform vec3 u_sea_color : source_color = vec3(0.10, 0.19, 0.32);	// vec3(0.0, 0.03, 0.34);		// vec3(0.0, 0.19, 0.46);		// vec3(0.0, 0.32, 0.43);
+//uniform vec3 u_sea_color2 : source_color = vec3(0.25, 0.32, 0.43);	// vec3(0.25, 0.32, 0.43);	// vec3(1.0, 1.0, 1.0);
+uniform vec3 u_sea_color : source_color = vec3(0.27, 0.32, 0.40);	// vec3(0.0, 0.03, 0.34);		// vec3(0.0, 0.19, 0.46);		// vec3(0.0, 0.32, 0.43);
+//uniform vec3 u_sea_color : source_color = vec3(0.17, 0.22, 0.29);	// vec3(0.0, 0.03, 0.34);		// vec3(0.0, 0.19, 0.46);		// vec3(0.0, 0.32, 0.43);
+uniform vec3 u_sea_color2 : source_color = vec3(0.17, 0.22, 0.29);	// vec3(0.25, 0.32, 0.43);	// vec3(1.0, 1.0, 1.0);
 uniform float u_metallic : hint_range(0.0, 1.0) = 0.8;
 uniform float u_roughness : hint_range(0.0, 1.0) = 0.02;
 uniform vec2 u_wave_direction = vec2(2.0,0.0); // Direction of wave 1
@@ -86,8 +89,8 @@ void fragment() {
 
 	// Calculate Fresnel
 	{
-		float fresnel = fresnel(1.0, NORMAL, VIEW);
-		surface_color = mix(u_sea_color, u_sea_color2, fresnel / 5.0); // Interpolate albedo values by frensel
+		//float fresnel = fresnel(1.0, NORMAL, VIEW);
+		//surface_color = mix(u_sea_color, u_sea_color2, fresnel / 5.0); // Interpolate albedo values by frensel
 	}
 
 	ALBEDO = surface_color;
