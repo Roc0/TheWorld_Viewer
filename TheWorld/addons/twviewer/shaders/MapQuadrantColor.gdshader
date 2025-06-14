@@ -1,5 +1,7 @@
 shader_type canvas_item;
 
+global uniform bool gu_hold_blending = false;
+
 //uniform vec4 u_color : source_color = vec4(1, 0, 0, 0);
 //uniform float u_alpha = 0.05;
 const int world_quadrant_nope = -1;
@@ -8,6 +10,10 @@ const int world_quadrant_initial = 1;
 const int world_quadrant_growing = 2;
 const int world_quadrant_cache = 3;
 const int world_quadrant_blend_needed = 4;
+
+const vec4 apricot_color = vec4(1.0, 0.749, 0.0, 1.0);
+const vec4 red_salmon_color = vec4(0.980, 0.502, 0.447, 1.0);
+
 uniform int u_world_quadrant = -1;
 uniform bool u_quadrant_ready = false;
 uniform bool u_edit_mode = false;
@@ -34,7 +40,10 @@ void fragment()
 
 	if (u_edit_mode && is_on_border)
 	{
-		color = vec4(1.0, 0.749, 0.0, 1.0);
+		if (gu_hold_blending)
+			color = red_salmon_color;
+		else
+			color = apricot_color;
 		alpha = 1.0;
 	}
 	else
