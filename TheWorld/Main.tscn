@@ -481,6 +481,7 @@ _world_editor_param_depth_quad = 2
 _world_editor_param_max_depth_quad = 2
 _camera_param_initial_pos = Vector3(9420.22, 3019.62, 28709.9)
 _camera_param_initial_yaw_pitch_roll = Vector3(30.6602, -19.2361, 0)
+_shader_param_texture_overflow_size = 0.15
 _shader_param_debug_float0 = 45.0
 _shader_param_cam_alt_uv_threshold = 6000.0
 _shader_param_cam_dist_uv_threshold = 10000.0
