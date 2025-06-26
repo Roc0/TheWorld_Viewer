@@ -89,6 +89,8 @@ uniform float u_mouse_hit_radius = 0.0010000000475;
 uniform bool u_triplanar = false;
 uniform vec4 u_tile_reduction_per_texture = vec4(0.000000, 0.000000, 0.000000, 0.000000);	// Each component corresponds to a ground texture. Set greater than zero to enable.
 uniform bool u_depth_blending = false;
+uniform bool u_grid_on = false;
+
 uniform vec4 u_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
 uniform vec4 u_north_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
 //uniform vec4 u_east_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
@@ -96,7 +98,6 @@ uniform vec4 u_west_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000
 //uniform vec4 u_south_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
 uniform vec4 u_north_west_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
 //uniform vec4 u_south_east_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
-uniform bool u_grid_on = false;
 
 uniform mat4 u_terrain_inverse_transform;
 uniform float u_grid_step = 2;
