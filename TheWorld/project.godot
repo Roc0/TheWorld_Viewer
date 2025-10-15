@@ -476,3 +476,7 @@ gu_ground_heightmap_displ={
 "type": "float",
 "value": 0.0
 }
+gu_debug_texture_overflow={
+"type": "bool",
+"value": false
+}

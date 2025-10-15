@@ -17,7 +17,9 @@ const vec3 vectors[3] = {
 	vec3(0.0, 0.0 ,1.0)
 };
 
+// ***************
 // global uniforms
+// ***************
 global uniform sampler2D gu_terrain_quad_border_distance : source_color;
 
 global uniform sampler2DArray gu_ground_albedo_displ_array : source_color;
@@ -50,11 +52,14 @@ global uniform float gu_debug_float0 = 40.0;
 //global uniform float gu_debug_float3 = 16.0;
 //global uniform float gu_debug_float4 = 12.0;
 //global uniform float gu_debug_float5 = 6.0;
+global uniform bool gu_debug_texture_overflow = false;
 
 //global uniform float gu_camera_altitude_uv_scale_threshold = 6000.0;
 global uniform float gu_camera_distance_uv_scale_threshold = 10000.0;
 
+// ********
 // uniforms
+// ********
 uniform bool u_test_quadrant = false;
 uniform bool u_test_quadrant_show_wireframe = false;
 
@@ -98,6 +103,9 @@ uniform vec4 u_west_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000
 //uniform vec4 u_south_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
 uniform vec4 u_north_west_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
 //uniform vec4 u_south_east_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
+
+uniform sampler2D u_north_border_splatmap;
+uniform sampler2D u_west_border_splatmap;
 
 uniform mat4 u_terrain_inverse_transform;
 uniform float u_grid_step = 2;
@@ -1048,7 +1056,6 @@ void fragment() {
 	bool south_border_pixel = false;
 	bool west_border_pixel = false;
 	bool east_border_pixel = false;
-	vec4 splat_pixel_computed = splat_pixel_in;
 	if (pixel_type == normal_texture_pixel)
 	{
 		float distance_threshold = 0.000000;
@@ -1088,6 +1095,19 @@ void fragment() {
 		}
 	}
 
+	// If west_border_pixel or north_border_pixel we will use neighbours texture layers so we have to use splatmap vakues accordingly
+	vec4 splat_pixel_computed = splat_pixel_in;
+	if (north_border_pixel || west_border_pixel) {
+		if (west_border_pixel) {
+			vec2 pixel_uv = vec2(uv_quadrant.y, 0.5);
+			splat_pixel_computed = texture(u_west_border_splatmap, pixel_uv);
+		}
+		else {
+			vec2 pixel_uv = vec2(uv_quadrant.x, 0.5);
+			splat_pixel_computed = texture(u_north_border_splatmap, pixel_uv);
+		}
+	}
+	
 	//
 	// Quadrant textures management
 	//
@@ -1482,6 +1502,22 @@ void fragment() {
 		//METALLIC = 1.0; // 0.0 (no metallic) to 1.0 (full metallic)
 	}
 
+	if (gu_debug_texture_overflow)
+	{
+		if (north_border_pixel && west_border_pixel)
+		{
+			albedo_computed = vec3(1.0, 0.0, 0.0);
+		}
+		else if (north_border_pixel)
+		{
+			albedo_computed = vec3(0.0, 1.0, 0.0);
+		}
+		else if (west_border_pixel)
+		{
+			albedo_computed = vec3(0.0, 0.0, 1.0);
+		}
+	}
+	
 	// Output
 	ALBEDO = albedo_computed;
 	if (pixel_type == normal_texture_pixel)

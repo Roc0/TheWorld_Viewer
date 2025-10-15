@@ -332,6 +332,13 @@ func _set_shader_param_colormap_opacity(colormap_opacity : float):
 	_shader_param_colormap_opacity = colormap_opacity
 	_shader_param_colormap_opacity_changed = true
 
+var _shader_param_debug_texture_overflow_changed := true
+@export var _shader_param_debug_texture_overflow : bool = false:
+	set = _set_shader_param_debug_texture_overflow
+func _set_shader_param_debug_texture_overflow(debug_texture_overflow : bool):
+	_shader_param_debug_texture_overflow = debug_texture_overflow
+	_shader_param_debug_texture_overflow_changed = true
+
 var _shader_param_texture_overflow_size_changed := true
 @export_range(0.00, 1.0, 0.01, "or_greater", "or_less")  var _shader_param_texture_overflow_size : float = 0.3:
 	set = _set_shader_param_texture_overflow_size
@@ -599,6 +606,11 @@ func _process(delta):
 	#	return
 	
 	var gdn_globals = GDN_globals()
+
+	if _shader_param_debug_texture_overflow_changed && gdn_globals != null:
+		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_player_debug_texture_overflow, _shader_param_debug_texture_overflow)
+		gdn_globals.set_debug_texture_overflow(_shader_param_debug_texture_overflow)
+		_shader_param_debug_texture_overflow_changed = false
 
 	if _shader_param_texture_overflow_size_changed && gdn_globals != null:
 		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_player_texture_overflow_size, _shader_param_texture_overflow_size)
@@ -1224,6 +1236,7 @@ func set_shader_parameters() -> void:
 	#_shader_param_triplanar_changed = true
 	_shader_param_tile_reduction_changed = true
 	_shader_param_colormap_opacity_changed = true
+	_shader_param_debug_texture_overflow_changed = true
 	_shader_param_texture_overflow_size_changed = true
 	_shader_param_splatmap_overflow_size_changed = true
 	#_shader_param_new_overflow_changed = true
