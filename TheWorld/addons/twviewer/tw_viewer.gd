@@ -1086,7 +1086,7 @@ func _process(delta):
 			+ _info_panel_grid_origin \
 			+ "Cursor pos in viewport: " + str(mouse_pos)
 		
-		_info_panel_camera3d_label.text = "Camera3D: " + _info_panel_camera_projection + "\n" \
+		_info_panel_camera3d_label.text = "Camera3D (World Mode): " + _info_panel_camera_projection + "\n" \
 		+ _info_panel_camera_degree_from_north \
 		+ _info_panel_camera_yaw \
 		+ _info_panel_camera_pitch \
@@ -1097,7 +1097,7 @@ func _process(delta):
 		+ _info_panel_camera_pos_in_map \
 		+ _info_panel_camera_velocity
 		
-		_info_panel_camera2d_label.text = "Camera2D\n" \
+		_info_panel_camera2d_label.text = "Camera2D (Map Mode)\n" \
 		+ _info_panel_camera2d_pos \
 		+ _info_panel_camera2d_pos_in_map
 		

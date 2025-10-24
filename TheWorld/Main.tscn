@@ -473,8 +473,8 @@ script = ExtResource("15_6btyd")
 
 [node name="TWViewer" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape"]
 script = ExtResource("3_yxvy6")
-_world_param_cache_quad = 0
-_world_param_max_depth_quad = 3
+_world_param_depth_quad = 12
+_world_param_cache_quad = 2
 _world_param_info_panel_visible = true
 _world_param_deploy_world = false
 _world_editor_param_depth_quad = 2
