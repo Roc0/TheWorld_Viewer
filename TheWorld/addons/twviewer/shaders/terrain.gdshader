@@ -52,6 +52,7 @@ global uniform float gu_debug_float0 = 40.0;
 //global uniform float gu_debug_float3 = 16.0;
 //global uniform float gu_debug_float4 = 12.0;
 //global uniform float gu_debug_float5 = 6.0;
+global uniform bool gu_debug_texture_overflow = false;
 
 //global uniform float gu_camera_altitude_uv_scale_threshold = 6000.0;
 global uniform float gu_camera_distance_uv_scale_threshold = 10000.0;
@@ -1501,6 +1502,22 @@ void fragment() {
 		//METALLIC = 1.0; // 0.0 (no metallic) to 1.0 (full metallic)
 	}
 
+	if (gu_debug_texture_overflow)
+	{
+		if (north_border_pixel && west_border_pixel)
+		{
+			albedo_computed = vec3(1.0, 0.0, 0.0);
+		}
+		else if (north_border_pixel)
+		{
+			albedo_computed = vec3(0.0, 1.0, 0.0);
+		}
+		else if (west_border_pixel)
+		{
+			albedo_computed = vec3(0.0, 0.0, 1.0);
+		}
+	}
+	
 	// Output
 	ALBEDO = albedo_computed;
 	if (pixel_type == normal_texture_pixel)
