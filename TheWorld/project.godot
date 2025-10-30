@@ -480,3 +480,7 @@ gu_debug_texture_overflow={
 "type": "bool",
 "value": false
 }
+gu_debug_uv_scale_per_texture={
+"type": "bool",
+"value": false
+}

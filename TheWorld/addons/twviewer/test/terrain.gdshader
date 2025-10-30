@@ -10,6 +10,7 @@ const vec3 orange_color = vec3(0.77, 0.53, 0.11);
 const vec3 red_salmon_color = vec3(0.980, 0.502, 0.447);
 const float ground_uv_scale_horiz_threshold = 5000.0;	//15000.0;
 const float ground_uv_scale_vert_threshold = 100.0;
+const float c_max_ground_uv_scale_per_texture = 80.0;
 
 const vec3 vectors[3] = {
 	vec3(1.0, 0.0 ,0.0),
@@ -53,6 +54,7 @@ global uniform float gu_debug_float0 = 40.0;
 //global uniform float gu_debug_float4 = 12.0;
 //global uniform float gu_debug_float5 = 6.0;
 global uniform bool gu_debug_texture_overflow = false;
+global uniform bool gu_debug_uv_scale_per_texture = false;
 
 //global uniform float gu_camera_altitude_uv_scale_threshold = 6000.0;
 global uniform float gu_camera_distance_uv_scale_threshold = 10000.0;
@@ -958,12 +960,11 @@ void fragment()
 	//
 	// Changing resolution (UV management)
 	//
+	float ground_uv_scale_per_texture = 1.0;
 	vec3 ground_texture_uv = vec3(0.0);
 	int pieces_from_camera_piece = 0;
 	if (pixel_type == texture_pixel)
 	{
-		float ground_uv_scale_per_texture = 1.0;
-
 		float max_distance_for_uv_scale = gu_camera_distance_uv_scale_threshold;
 		if (distance_from_camera < max_distance_for_uv_scale)
 		{
@@ -997,7 +998,7 @@ void fragment()
 					{
 						float uv0 = 15.0;
 						if (distance_from_camera < 50.0 && camera_altitude_from_terrain < 10.0)		// 15-30
-							uv0 = 80.0;		//120.0;
+							uv0 = c_max_ground_uv_scale_per_texture;		//120.0;
 						else if (camera_altitude_from_terrain < 100.0)
 							uv0 = 20.0;		//40.0;
 						//uv0 = gu_debug_float0;		// DEBUG
@@ -1559,6 +1560,11 @@ void fragment()
 		{
 			albedo_computed = vec3(0.0, 0.0, 1.0);
 		}
+	}
+	
+	if (gu_debug_uv_scale_per_texture && ground_uv_scale_per_texture != 1.0)
+	{
+		albedo_computed = vec3(ground_uv_scale_per_texture / c_max_ground_uv_scale_per_texture, 0.0, 0.0);
 	}
 	
 	//
