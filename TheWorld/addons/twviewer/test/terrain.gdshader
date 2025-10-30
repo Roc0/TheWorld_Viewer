@@ -1091,48 +1091,47 @@ void fragment()
 	//
 	// Quadrant border pixels management
 	//
-	float distance_from_border = 0.0;
 	bool north_border_pixel = false;
 	bool south_border_pixel = false;
 	bool west_border_pixel = false;
 	bool east_border_pixel = false;
 	if (pixel_type == texture_pixel)
 	{
+		/*vec3 texture_overflow_size = vec3(gu_texture_overflow_size);
 		float distance_threshold = 0.000000;
-		float texture_overflow_size = gu_texture_overflow_size;
-		vec3 n_out76p0;
 		float distance_value = 0.00000;
 		float tolerance = 0.00001;
 		if(abs(distance_threshold - distance_value) < tolerance)
 		{
-			n_out76p0 = vec3(texture_overflow_size);
+			//texture_overflow_size = vec3(gu_texture_overflow_size);
 		}
 		else if(distance_threshold < distance_value)
 		{
-			n_out76p0 = vec3(distance_threshold);
+			texture_overflow_size = vec3(distance_threshold);
 		}
 		else
 		{
-			n_out76p0 = vec3(distance_threshold);
+			texture_overflow_size = vec3(distance_threshold);
 		}
-
 		vec4 distance_texel = texture(gu_terrain_quad_border_distance, uv_quadrant);
-		vec3 n_out69p0 = vec3(distance_texel.xyz) * n_out76p0;
+		vec3 n_out69p0 = vec3(distance_texel.xyz) * texture_overflow_size;
+		float distance_from_border = n_out69p0.x;*/
 
-		distance_from_border = n_out69p0.x;
+		float distance_texel = texture(gu_terrain_quad_border_distance, uv_quadrant).x;
+		float distance_from_border = distance_texel * gu_texture_overflow_size;
 
 		if (is_on_upper_border(uv_quadrant, distance_from_border)) {
 			north_border_pixel = true;
 		}
-		if (is_on_lower_border(uv_quadrant, distance_from_border)) {
+		/*if (is_on_lower_border(uv_quadrant, distance_from_border)) {
 			south_border_pixel = true;
-		}
+		}*/
 		if (is_on_left_border(uv_quadrant, distance_from_border)) {
 			west_border_pixel = true;
 		}
-		if (is_on_right_border(uv_quadrant, distance_from_border)) {
+		/*if (is_on_right_border(uv_quadrant, distance_from_border)) {
 			east_border_pixel = true;
-		}
+		}*/
 	}
 
 	// If west_border_pixel or north_border_pixel we will use neighbours texture layers so we have to use splatmap values accordingly
@@ -1147,6 +1146,7 @@ void fragment()
 			splat_pixel_computed = texture(u_north_border_splatmap, pixel_uv);
 		}
 	}
+	
 	
 	//
 	// Quadrant textures management (mixing them according to splatmap etc.)
