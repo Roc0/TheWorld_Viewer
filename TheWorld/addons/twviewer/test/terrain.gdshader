@@ -960,7 +960,8 @@ void fragment()
 	//
 	// Changing resolution (UV management)
 	//
-	float ground_uv_scale_per_texture = 1.0;
+	//float ground_uv_scale_per_texture = 1.0;
+	float ground_uv_scale_per_texture = u_ground_uv_scale_per_texture.r;
 	vec3 ground_texture_uv = vec3(0.0);
 	int pieces_from_camera_piece = 0;
 	if (pixel_type == texture_pixel)
@@ -1134,7 +1135,7 @@ void fragment()
 		}
 	}
 
-	// If west_border_pixel or north_border_pixel we will use neighbours texture layers so we have to use splatmap vakues accordingly
+	// If west_border_pixel or north_border_pixel we will use neighbours texture layers so we have to use splatmap values accordingly
 	vec4 splat_pixel_computed = splat_pixel_in;
 	if (north_border_pixel || west_border_pixel) {
 		if (west_border_pixel) {
