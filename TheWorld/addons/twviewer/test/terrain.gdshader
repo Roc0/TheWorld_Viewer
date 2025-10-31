@@ -275,6 +275,7 @@ vec4 texture_ad_nr(int splatmap_layer,
 	bool south_border_pixel,
 	bool west_border_pixel,
 	bool east_border_pixel,
+	bool north_west_border_pixel,
 	vec2 uv,
 	out vec4 out_nr,
 	out float normal_map_scale)
@@ -645,6 +646,7 @@ vec4 texture_antitile_layers(int splatmap_layer,
 	bool south_border_pixel,
 	bool west_border_pixel,
 	bool east_border_pixel,
+	bool north_west_border_pixel,
 	vec2 uv, out vec4 out_normal, out float normal_map_scale)
 {
 	float frequency = 2.0;
@@ -660,14 +662,14 @@ vec4 texture_antitile_layers(int splatmap_layer,
 	//vec4 col0 = texture_albedo_displ(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, uv);
 	//vec4 nrm0 = texture_normal_roughness(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, uv);
 	vec4 nrm0;
-	vec4 col0 = texture_ad_nr(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, uv, nrm0, normal_map_scale);
+	vec4 col0 = texture_ad_nr(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, north_west_border_pixel, uv, nrm0, normal_map_scale);
 	//col0 = vec4(0.0, 0.5, 0.5, 1.0); // Highlights variations
 
 	//vec4 col1 = texture_albedo_displ(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, uv2);
 	//vec4 nrm1 = texture_normal_roughness(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, uv2);
 	float dummy;
 	vec4 nrm1;
-	vec4 col1 = texture_ad_nr(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, uv2, nrm1, dummy);
+	vec4 col1 = texture_ad_nr(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, north_west_border_pixel, uv2, nrm1, dummy);
 
 	// Normals have to be rotated too since we are rotating the texture...
 	// TODO Probably not the most efficient but understandable for now
@@ -692,16 +694,17 @@ vec4 texture_triplanar_ad_nr_layers(int splatmap_layer,
 	bool south_border_pixel,
 	bool west_border_pixel,
 	bool east_border_pixel,
+	bool north_west_border_pixel,
 	vec3 world_pos, vec3 blend,
 	out vec4 out_nr, out float normal_map_scale)
 {
 	float dummy;
 	vec4 xaxis_nr;
-	vec4 xaxis_ad = texture_ad_nr(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, world_pos.yz, xaxis_nr, normal_map_scale);
+	vec4 xaxis_ad = texture_ad_nr(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, north_west_border_pixel, world_pos.yz, xaxis_nr, normal_map_scale);
 	vec4 yaxis_nr;
-	vec4 yaxis_ad = texture_ad_nr(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, world_pos.xz, yaxis_nr, dummy);
+	vec4 yaxis_ad = texture_ad_nr(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, north_west_border_pixel, world_pos.xz, yaxis_nr, dummy);
 	vec4 zaxis_nr;
-	vec4 zaxis_ad = texture_ad_nr(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, world_pos.xy, zaxis_nr, dummy);
+	vec4 zaxis_ad = texture_ad_nr(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, north_west_border_pixel, world_pos.xy, zaxis_nr, dummy);
 
 	// blend the results of the 3 planar projections.
 	vec4 out_ad = xaxis_ad * blend.x + yaxis_ad * blend.y + zaxis_ad * blend.z;
@@ -969,32 +972,18 @@ void fragment()
 		float max_distance_for_uv_scale = gu_camera_distance_uv_scale_threshold;
 		if (distance_from_camera < max_distance_for_uv_scale)
 		{
-			//float scale_per_texture_factor = 1.0;
 			pieces_from_camera_piece = -1;
 
 			if (distance_from_vertical_of_camera_on_terrain < ground_uv_scale_horiz_threshold)
 			{
 				if (camera_altitude_from_terrain >= 0.0 && camera_altitude_from_terrain < ground_uv_scale_vert_threshold)
 				{
-					//ground_uv_scale_per_texture = u_ground_uv_scale_per_texture.r;
 					vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(vertex_in, 1.0)).xyz;
 					int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / piece_size));
 					int camera_piece_z = int(floor(CAMERA_POSITION_WORLD.z / piece_size));
 					int frag_piece_x = int(floor(fragment_world_pos.x / piece_size));
 					int frag_piece_z = int(floor(fragment_world_pos.z / piece_size));
 					pieces_from_camera_piece = max(int(abs(camera_piece_x - frag_piece_x)), int(abs(camera_piece_z - frag_piece_z)));
-					/*if (pieces_from_camera_piece == 0)
-					{
-						float uv0 = 45.0;
-						if (camera_altitude_from_terrain < 100.0)
-							uv0 = 90.0;
-						//uv0 = gu_debug_float0;		// DEBUG
-
-						//ground_uv_scale_per_texture /= (scale_per_texture_factor / uv0);	// 20.0
-						ground_uv_scale_per_texture *= uv0;
-						//ground_uv_scale_per_texture = gu_debug_float0;
-					}
-					else*/
 					if (pieces_from_camera_piece <= 1)
 					{
 						float uv0 = 15.0;
@@ -1004,7 +993,6 @@ void fragment()
 							uv0 = 20.0;		//40.0;
 						//uv0 = gu_debug_float0;		// DEBUG
 
-						//ground_uv_scale_per_texture /= (scale_per_texture_factor / uv0);	// 20.0
 						ground_uv_scale_per_texture *= uv0;
 					}
 					else if (pieces_from_camera_piece <= 3)
@@ -1014,7 +1002,6 @@ void fragment()
 							uv1 = 10.0;
 						//uv1 = gu_debug_float1;		// DEBUG
 
-						//ground_uv_scale_per_texture /= (scale_per_texture_factor / uv1);	// 10.0
 						ground_uv_scale_per_texture *= uv1;
 					}
 					else if (pieces_from_camera_piece <= 5)
@@ -1024,7 +1011,6 @@ void fragment()
 							uv2 = 10.0;
 						//uv2 = gu_debug_float2;		// DEBUG
 
-						//ground_uv_scale_per_texture /= (scale_per_texture_factor / uv2);	// 10.0
 						ground_uv_scale_per_texture *= uv2;
 					}
 					else if (pieces_from_camera_piece <= 7)
@@ -1034,7 +1020,6 @@ void fragment()
 							uv3 = 5.0;
 						//uv3 = gu_debug_float3;		// DEBUG
 
-						//ground_uv_scale_per_texture /= (scale_per_texture_factor / uv3);	// 8.0
 						ground_uv_scale_per_texture *= uv3;
 					}
 					else if (pieces_from_camera_piece <= 9)
@@ -1044,7 +1029,6 @@ void fragment()
 							uv4 = 5.0;
 						//uv4 = gu_debug_float4;		// DEBUG
 
-						//ground_uv_scale_per_texture /= (scale_per_texture_factor / uv4);	// 4.0
 						ground_uv_scale_per_texture *= uv4;
 					}
 					else if (pieces_from_camera_piece <= 11)
@@ -1054,7 +1038,6 @@ void fragment()
 							uv5 = 1.0;
 						//uv5 = gu_debug_float5;		// DEBUG
 
-						//ground_uv_scale_per_texture /= (scale_per_texture_factor / uv5);	// 2.0
 						ground_uv_scale_per_texture *= uv5;
 					}
 				}
@@ -1095,42 +1078,34 @@ void fragment()
 	bool south_border_pixel = false;
 	bool west_border_pixel = false;
 	bool east_border_pixel = false;
+	bool north_west_border_pixel = false;
 	if (pixel_type == texture_pixel)
 	{
-		/*vec3 texture_overflow_size = vec3(gu_texture_overflow_size);
-		float distance_threshold = 0.000000;
-		float distance_value = 0.00000;
-		float tolerance = 0.00001;
-		if(abs(distance_threshold - distance_value) < tolerance)
-		{
-			//texture_overflow_size = vec3(gu_texture_overflow_size);
-		}
-		else if(distance_threshold < distance_value)
-		{
-			texture_overflow_size = vec3(distance_threshold);
-		}
-		else
-		{
-			texture_overflow_size = vec3(distance_threshold);
-		}
-		vec4 distance_texel = texture(gu_terrain_quad_border_distance, uv_quadrant);
-		vec3 n_out69p0 = vec3(distance_texel.xyz) * texture_overflow_size;
-		float distance_from_border = n_out69p0.x;*/
-
 		float distance_texel = texture(gu_terrain_quad_border_distance, uv_quadrant).x;
 		float distance_from_border = distance_texel * gu_texture_overflow_size;
 
 		if (is_on_upper_border(uv_quadrant, distance_from_border)) {
 			north_border_pixel = true;
 		}
-		/*if (is_on_lower_border(uv_quadrant, distance_from_border)) {
-			south_border_pixel = true;
-		}*/
 		if (is_on_left_border(uv_quadrant, distance_from_border)) {
 			west_border_pixel = true;
 		}
+		/*if (is_on_lower_border(uv_quadrant, distance_from_border)) {
+			south_border_pixel = true;
+		}*/
 		/*if (is_on_right_border(uv_quadrant, distance_from_border)) {
 			east_border_pixel = true;
+		}*/
+		
+		/*if (north_border_pixel && west_border_pixel)
+		{
+			if (uv_quadrant.x > uv_quadrant.y) {
+				west_border_pixel = false;
+			} else {
+				north_border_pixel = false;
+				west_border_pixel = false;
+				north_west_border_pixel = true;
+			}
 		}*/
 	}
 
@@ -1176,45 +1151,45 @@ void fragment()
 			//splatmap_layer = 2;	// DEBUG
 			if (triplanar) {
 				vec3 blending = get_triplanar_blend(normal_computed);
-				ab3 = texture_triplanar_ad_nr_layers(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_texture_uv, blending, nr3, normal_map_scale3);
+				ab3 = texture_triplanar_ad_nr_layers(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, north_west_border_pixel, ground_texture_uv, blending, nr3, normal_map_scale3);
 
 			} else {
 				if (tile_reduction_per_texture[splatmap_layer] > 0.0) {
-					ab3 = texture_antitile_layers(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_texture_uv.xz, nr3, normal_map_scale3);
+					ab3 = texture_antitile_layers(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, north_west_border_pixel, ground_texture_uv.xz, nr3, normal_map_scale3);
 				} else {
-					ab3 = texture_ad_nr(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_texture_uv.xz, nr3, normal_map_scale3);
+					ab3 = texture_ad_nr(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, north_west_border_pixel, ground_texture_uv.xz, nr3, normal_map_scale3);
 				}
 			}
-			//ao3 = texture_ao(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_texture_uv.xz);
+			//ao3 = texture_ao(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, north_west_border_pixel, ground_texture_uv.xz);
 			ao3 = vec4(ab3.a);
 
 			splatmap_layer = 0;
 			//splatmap_layer = 2;	// DEBUG
 			if (tile_reduction_per_texture[splatmap_layer] > 0.0) {
-				ab0 = texture_antitile_layers(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_texture_uv.xz, nr0, normal_map_scale0);
+				ab0 = texture_antitile_layers(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, north_west_border_pixel, ground_texture_uv.xz, nr0, normal_map_scale0);
 			} else {
-				ab0 = texture_ad_nr(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_texture_uv.xz, nr0, normal_map_scale0);
+				ab0 = texture_ad_nr(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, north_west_border_pixel, ground_texture_uv.xz, nr0, normal_map_scale0);
 			}
-			//ao0 = texture_ao(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_texture_uv.xz);
+			//ao0 = texture_ao(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, north_west_border_pixel, ground_texture_uv.xz);
 			ao0 = vec4(ab0.a);
 
 			splatmap_layer = 1;
 			//splatmap_layer = 2;	// DEBUG
 			if (tile_reduction_per_texture[splatmap_layer] > 0.0) {
-				ab1 = texture_antitile_layers(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_texture_uv.xz, nr1, normal_map_scale1);
+				ab1 = texture_antitile_layers(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, north_west_border_pixel, ground_texture_uv.xz, nr1, normal_map_scale1);
 			} else {
-				ab1 = texture_ad_nr(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_texture_uv.xz, nr1, normal_map_scale1);
+				ab1 = texture_ad_nr(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, north_west_border_pixel, ground_texture_uv.xz, nr1, normal_map_scale1);
 			}
-			//ao1 = texture_ao(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_texture_uv.xz);
+			//ao1 = texture_ao(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, north_west_border_pixel, ground_texture_uv.xz);
 			ao1 = vec4(ab1.a);
 
 			splatmap_layer = 2;
 			if (tile_reduction_per_texture[splatmap_layer] > 0.0) {
-				ab2 = texture_antitile_layers(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_texture_uv.xz, nr2, normal_map_scale2);
+				ab2 = texture_antitile_layers(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, north_west_border_pixel, ground_texture_uv.xz, nr2, normal_map_scale2);
 			} else {
-				ab2 = texture_ad_nr(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_texture_uv.xz, nr2, normal_map_scale2);
+				ab2 = texture_ad_nr(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, north_west_border_pixel, ground_texture_uv.xz, nr2, normal_map_scale2);
 			}
-			//ao2 = texture_ao(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, ground_texture_uv.xz);
+			//ao2 = texture_ao(splatmap_layer, north_border_pixel, south_border_pixel, west_border_pixel, east_border_pixel, north_west_border_pixel, ground_texture_uv.xz);
 			ao2 = vec4(ab2.a);
 
 			// DEBUG
