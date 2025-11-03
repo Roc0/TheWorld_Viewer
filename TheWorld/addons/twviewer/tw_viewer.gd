@@ -297,6 +297,13 @@ func _set_shader_param_ground_ao_light_affect(ao_light_affect : float):
 	_shader_param_ao_light_affect = ao_light_affect
 	_shader_param_ground_ao_light_affect_changed = true
 
+var _shader_param_debug_ground_uv_scale_changed := true
+@export var _shader_param_debug_ground_uv_scale : bool = false:	#150.0:
+	set = _set_shader_debug_param_ground_uv_scale
+func _set_shader_debug_param_ground_uv_scale(debug : bool):
+	_shader_param_debug_ground_uv_scale = debug
+	_shader_param_debug_ground_uv_scale_changed = true
+
 var _shader_param_ground_uv_scale_changed := true
 @export_range(1.0, 10.0, 0.01, "or_greater", "or_less") var _shader_param_ground_uv_scale : float = 1.0:	#150.0:
 	set = _set_shader_param_ground_uv_scale
@@ -606,6 +613,10 @@ func _process(delta):
 	#	return
 	
 	var gdn_globals = GDN_globals()
+
+	if _shader_param_debug_ground_uv_scale_changed && gdn_globals != null:
+		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_player_debug_ground_uv_scale, _shader_param_debug_ground_uv_scale)
+		_shader_param_debug_ground_uv_scale_changed = false
 
 	if _shader_param_debug_texture_overflow_changed && gdn_globals != null:
 		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_player_debug_texture_overflow, _shader_param_debug_texture_overflow)
@@ -1231,6 +1242,7 @@ func set_shader_parameters() -> void:
 	_shader_param_ground_normal_scale_changed = true
 	#_shader_param_ground_height_displ_changed = true
 	_shader_param_ground_ao_light_affect_changed = true
+	_shader_param_debug_ground_uv_scale_changed = true
 	_shader_param_ground_uv_scale_changed = true
 	_shader_param_depth_blending_changed = true
 	#_shader_param_triplanar_changed = true

@@ -426,7 +426,7 @@ gu_texture_new_overflow={
 }
 gu_debug_view_pieces={
 "type": "bool",
-"value": null
+"value": false
 }
 gu_camera_altitude_uv_scale_threshold={
 "type": "float",
@@ -478,7 +478,7 @@ gu_ground_heightmap_displ={
 }
 gu_debug_texture_overflow={
 "type": "bool",
-"value": false
+"value": true
 }
 gu_debug_uv_scale_per_texture={
 "type": "bool",

@@ -40,6 +40,7 @@ const global_shader_param_camera_altitude_from_terrain := "gu_camera_altitude_fr
 const global_shader_param_camera_pos := "gu_camera_pos"
 const global_shader_param_player_pos := "gu_player_pos"
 const global_shader_param_player_altitude_from_terrain := "gu_player_altitude_from_terrain"
+const global_shader_param_player_debug_ground_uv_scale := "gu_debug_uv_scale_per_texture"
 const global_shader_param_player_debug_texture_overflow := "gu_debug_texture_overflow"
 const global_shader_param_player_texture_overflow_size := "gu_texture_overflow_size"
 const global_shader_param_player_splatmap_overflow_size := "gu_splatmap_blending_size"
