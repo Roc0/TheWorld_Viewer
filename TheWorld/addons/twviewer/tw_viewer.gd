@@ -514,6 +514,9 @@ func custom_ready():
 	log_debug("custom_ready done")
 	_is_really_ready = true
 
+func client_status() -> int:
+	return _client_status
+
 func get_world_camera() -> Camera3D:
 	var gdn_viewver = GDN_viewer()
 	if (gdn_viewver != null):

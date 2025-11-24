@@ -68,8 +68,8 @@ var num_flushed_quadrant : String
 var num_active_chunks : int
 var process_durations_mcs : String
 var num_process_locked : int
-var _client_status : String
-var _clientstatus : int = tw_const.clientstatus_uninitialized
+var _client_status_str : String
+var _client_status : int = tw_const.clientstatus_uninitialized
 var debug_draw_mode : String
 var chunk_debug_mode  : String = ""
 var cam_chunk_pos : String = ""
@@ -146,11 +146,15 @@ func init():
 	#visible = false
 	$UI/MessageContainer/Message.add_theme_color_override("font_color", Color(251.0 / 255.0, 206.0 / 255.0, 177.0 / 255.0))
 	#$UI/MessageContainer/Message.text = "Deploying world ..."
+	
 	_config_file_name = ""
-	while(_config_file_name == ""):
+	while(_config_file_name == "" and not TWViewer().client_status() <= Globals.Constants.clientstatus_error):
 		_config_file_name = TWViewer().GDN_globals().get_config_filename(0)
+	if _client_status <= Globals.Constants.clientstatus_error:
+		return
 	print(str("_config_file_name", "=", _config_file_name))
-	#var config = ConfigFile.new()
+		#var config = ConfigFile.new()
+	
 	var _err = _config.load(_config_file_name)
 	_initial_camera_position_in_world = _config.get_value(tw_const.param_group_camera, tw_const.param_key_initial_camera_pos)
 	var initial_camera_ypr : Variant = _config.get_value(tw_const.param_group_camera, tw_const.param_key_initial_camera_ypr)
@@ -162,8 +166,8 @@ func init():
 		
 	var result = TWViewer().GDN_globals().connect("tw_status_changed", Callable(self, "_on_tw_status_changed")) == 0
 	log_debug(str("signal tw_status_changed connected (result=", result, ")"))
-	_clientstatus = get_clientstatus()
-	_client_status = tw_const.status_to_string(_clientstatus)
+	_client_status = get_clientstatus()
+	_client_status_str = tw_const.status_to_string(_client_status)
 	_ball_pos_info_line_index = TWViewer().add_info_panel_external_line("", 0)
 	_player_info_line_1_index = TWViewer().add_info_panel_external_line("", 0)
 	_player_info_line_2_index = TWViewer().add_info_panel_external_line("", 0)
@@ -177,8 +181,8 @@ func _on_tw_status_changed(old_client_status : int, new_client_status : int) -> 
 		save_current_position(-1)
 		#$UI/MessageContainer/Message.text = "Undeploying world ..."
 			
-	_clientstatus = new_client_status
-	_client_status = Globals.Constants.status_to_string(new_client_status)
+	_client_status = new_client_status
+	_client_status_str = Globals.Constants.status_to_string(new_client_status)
 	var old_client_status_str : String = Globals.Constants.status_to_string(old_client_status)
 	var new_client_status_str : String = Globals.Constants.status_to_string(new_client_status)
 	log_debug(str("_on_tw_status_changed ", old_client_status_str, "(", old_client_status, ") ==> ", new_client_status_str, "(", new_client_status, ")"))
@@ -192,8 +196,8 @@ func _input(event):
 		get_tree().get_root().propagate_notification(NOTIFICATION_WM_CLOSE_REQUEST)
 		log_debug("ESC pressed...")
 		
-	_clientstatus = get_clientstatus()
-	if _clientstatus < Globals.Constants.clientstatus_session_initialized:
+	_client_status = get_clientstatus()
+	if _client_status < Globals.Constants.clientstatus_session_initialized:
 		return
 		
 	if event is InputEventKey and event.is_action_pressed("ui_toggle_fullscreen"):
@@ -325,7 +329,7 @@ func _process(_delta):
 		enter_world()
 		world_initialized = true
 
-	if _clientstatus < Globals.Constants.clientstatus_session_initialized:
+	if _client_status < Globals.Constants.clientstatus_session_initialized:
 		return
 	
 	var tw_viewer = TWViewer()
@@ -372,7 +376,7 @@ func _process(_delta):
 		#scene_initialized = true
 	
 	#if scene_initialized && !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
-	if !post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
+	if !post_world_deploy_initialized && _client_status >= Globals.Constants.clientstatus_world_deployed:
 		
 		if _initial_camera_position_in_world != null:
 			var space_state = get_world_3d().direct_space_state
@@ -403,7 +407,7 @@ func _process(_delta):
 		post_world_deploy_initialized = true
 	
 	#if scene_initialized && post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
-	if post_world_deploy_initialized && _clientstatus >= Globals.Constants.clientstatus_world_deployed:
+	if post_world_deploy_initialized && _client_status >= Globals.Constants.clientstatus_world_deployed:
 		ball_pos = TWViewer().GDN_viewer().global_pos_to_world_transform($Test/TestBall.global_transform.origin).origin
 		tw_viewer.set_info_panel_external_value("Ball pos: (" + str(snapped(ball_pos.x, 0.01)) + ", " + str(snapped(ball_pos.y, 0.01)) + ", " + str(snapped(ball_pos.z, 0.01)) + ")", _ball_pos_info_line_index)
 		_player_pos = TWViewer().GDN_viewer().global_pos_to_world_transform($Player/Player.global_transform.origin).origin

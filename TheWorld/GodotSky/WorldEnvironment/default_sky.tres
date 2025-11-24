@@ -28,11 +28,11 @@ domain_warp_fractal_lacunarity = 5.0
 domain_warp_fractal_gain = 2.0
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_dmhbf"]
-invert = true
-seamless = true
-seamless_blend_skirt = 0.401
-color_ramp = SubResource("Gradient_t43f0")
 noise = SubResource("FastNoiseLite_bopgb")
+color_ramp = SubResource("Gradient_t43f0")
+seamless = true
+invert = true
+seamless_blend_skirt = 0.401
 
 [sub_resource type="Gradient" id="Gradient_vtmka"]
 interpolation_mode = 2
@@ -47,10 +47,10 @@ fractal_gain = 2.397
 fractal_weighted_strength = 1.0
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_lxafx"]
+noise = SubResource("FastNoiseLite_w5yig")
+color_ramp = SubResource("Gradient_vtmka")
 seamless = true
 seamless_blend_skirt = 0.061
-color_ramp = SubResource("Gradient_vtmka")
-noise = SubResource("FastNoiseLite_w5yig")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_s44jw"]
 shader = ExtResource("1_m15bb")
