@@ -1,9 +1,8 @@
-del /Q C:\Users\Riccardo\AppData\Roaming\Godot\app_userdata\TheWorld\Cache\maps\TestMap03\ST-4.000000_SZ-2049\L-0\*.mesh
-del /Q D:\TheWorld\Client\TheWorld_MapManager\Data\Cache\maps\TestMap03\ST-4.000000_SZ-2049\L-0\*.mesh
-del /Q D:\TheWorld\Client\TheWorld_MapManager\Data\Cache\maps\TestMap03\ST-4.000000_SZ-2049\L-0\Work\*.mesh
-del /Q D:\TheWorld\Client\TheWorld_MapManager\Data\DBJson\maps\TestMap03\ST-4.000000_SZ-2049\L-0\*.json
+@echo off
 
-del /Q C:\Users\Riccardo\AppData\Roaming\Godot\app_userdata\TheWorld\Cache\maps\TestMap03\ST-2.000000_SZ-2049\L-0\*.mesh
-del /Q D:\TheWorld\Client\TheWorld_MapManager\Data\Cache\maps\TestMap03\ST-2.000000_SZ-2049\L-0\*.mesh
-del /Q D:\TheWorld\Client\TheWorld_MapManager\Data\Cache\maps\TestMap03\ST-2.000000_SZ-2049\L-0\Work\*.mesh
-del /Q D:\TheWorld\Client\TheWorld_MapManager\Data\DBJson\maps\TestMap03\ST-2.000000_SZ-2049\L-0\*.json
+set curpath=%~dp0
+cd /D %curpath%
+
+call ClearMap.cmd TestMap04
+
+pause
