@@ -546,7 +546,7 @@ offset_bottom = 2.0
 
 [node name="GDN_TW_MapViewport" type="GDN_TheWorld_MapViewport" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer"]
 handle_input_locally = false
-size = Vector2i(2, 2)
+size = Vector2i(1089, 589)
 render_target_update_mode = 0
 
 [node name="GDN_TW_MapCamera" type="GDN_TheWorld_MapCamera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer/GDN_TW_MapViewport"]
@@ -554,14 +554,12 @@ scale = Vector2(0.5, 0.5)
 enabled = false
 zoom = Vector2(0.5, 0.5)
 
-[node name="GDN_TW_Map" type="GDN_TheWorld_Map" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer/GDN_TW_MapViewport"]
-
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(0.860207, -0.168007, 0.481475, 0, 0.944169, 0.329462, -0.509946, -0.283405, 0.812181, 9422, 3019.62, 28710)
+transform = Transform3D(0.8602067, -0.16800746, 0.48147473, 0, 0.944169, 0.3294616, -0.5099455, -0.2834051, 0.8121805, 9422, 3019.62, 28710)
 current = true
 near = 15.3493
-far = 18677.7
+far = 30000.0
 
 [node name="PostProcessingUnderWaterEffect" type="ColorRect" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
 material = SubResource("ShaderMaterial_epqem")
