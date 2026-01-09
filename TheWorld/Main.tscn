@@ -559,7 +559,7 @@ camera_tracking_offset = Vector3(0, 5, 10)
 transform = Transform3D(0.8602067, -0.16800746, 0.48147473, 0, 0.944169, 0.3294616, -0.5099455, -0.2834051, 0.8121805, 9422, 3019.62, 28710)
 current = true
 near = 15.3493
-far = 30000.0
+far = 18677.707
 
 [node name="PostProcessingUnderWaterEffect" type="ColorRect" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
 material = SubResource("ShaderMaterial_epqem")
