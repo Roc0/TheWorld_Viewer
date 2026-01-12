@@ -23,8 +23,8 @@ const float c_max_ground_uv_scale_per_texture = 80.0;
 // ***************
 global uniform sampler2D gu_terrain_quad_border_distance : source_color;
 
-global uniform sampler2DArray gu_ground_albedo_displ_array : source_color;
-global uniform sampler2DArray gu_ground_normal_roughness_array;
+global uniform sampler2DArray gu_ground_albedo_displ_array : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
+global uniform sampler2DArray gu_ground_normal_roughness_array : hint_normal, filter_linear_mipmap_anisotropic, repeat_enable;
 global uniform sampler2D gu_ground_base_values_array;
 //global uniform sampler2DArray gu_ground_ao_array : hint_default_white, filter_linear_mipmap, repeat_enable;
 global uniform vec4 gu_ground_albedo_modifier : source_color = vec4(1.0, 1.0, 1.0, 1.0);
@@ -206,7 +206,7 @@ vec4 texture_layer(sampler2DArray _tex, vec3 _uv) {
 	return texture(_tex, _uv);
 }
 
-vec4 fetch_texture_albedo_displ(vec2 uv, float ground_texture_layer, float base_scale_uv, vec3 base_albedo, float base_scale_ao) {
+vec4 fetch_texture_albedo_displ(vec2 uv, float ground_texture_layer, float base_scale_uv, vec3 base_albedo, float base_scale_displ) {
 	//base_scale_uv = 2.0;		// DEBUGUV
 	//base_albedo = vec3(1.0);	// DEBUGUV
 	//base_scale_ao = 1.0;		// DEBUGUV
@@ -226,7 +226,7 @@ vec4 fetch_texture_albedo_displ(vec2 uv, float ground_texture_layer, float base_
 	//vec3 uv_layer = vec3(uv, ground_texture_layer);
 	vec4 pixel = texture_layer(gu_ground_albedo_displ_array, uv_layer);
 	pixel.rgb = pixel.rgb * base_albedo;
-	pixel.a = pixel.a * base_scale_ao;
+	pixel.a = pixel.a * base_scale_displ;
 	return pixel;
 }
 
@@ -240,14 +240,14 @@ vec4 fetch_texture_normal_roughness(vec2 uv, float ground_texture_layer, float b
 	return pixel;
 }
 
-void fetch_base_values0(float ground_texture_layer, out vec3 base_albedo, out float unused_value) {
+void fetch_base_values0(float ground_texture_layer, out vec3 base_albedo, out float base_scale_displ) {
 	vec2 pixel_index = vec2(ground_texture_layer, 0.0);	// rangex from 0 to max texture-index (0-based) on the x side
 	pixel_index += vec2(0.5);				// we need to center the pixel: rangex from 0.5 to max texture-index (0-based) + 0.5 on the x side
 	vec2 pixel_uv = pixel_index / vec2(textureSize(gu_ground_base_values_array, 0));	// normalized UV to be in the range 0/1
 	vec4 base_values0 = texture(gu_ground_base_values_array, pixel_uv);
 	//vec4 base_values0 = vec4(1.0, 1.0, 1.0, 1.0);		// DEBUG
 	base_albedo = base_values0.rgb;
-	unused_value = base_values0.a * 16.0;
+	base_scale_displ = base_values0.a * 255.0;
 }
 
 void fetch_base_values1(float ground_texture_layer, out float base_scale_ao, out float base_scale_normal, out float base_scale_roughness, out float base_scale_uv) {
@@ -280,25 +280,25 @@ vec4 texture_ad_nr(int splatmap_layer,
 	float base_scale_roughness;
 	float base_scale_uv;
 	vec3 base_albedo;
-	float unused_value;
+	float base_scale_displ;
 
 	if (splatmap_layer == 0) {
 		if (north_border_pixel && west_border_pixel && u_north_west_ground_layers.x >= 0.0 && u_north_ground_layers.x >= 0.0) {
 			if (north_west_border_pixel) {
-				fetch_base_values0(u_north_west_ground_layers.x, base_albedo, unused_value);
+				fetch_base_values0(u_north_west_ground_layers.x, base_albedo, base_scale_displ);
 				fetch_base_values1(u_north_west_ground_layers.x, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-				vec4 north_west_ad = fetch_texture_albedo_displ(uv, u_north_west_ground_layers.x, base_scale_uv, base_albedo, base_scale_ao);
+				vec4 north_west_ad = fetch_texture_albedo_displ(uv, u_north_west_ground_layers.x, base_scale_uv, base_albedo, base_scale_displ);
 				vec4 north_west_nr = fetch_texture_normal_roughness(uv, u_north_west_ground_layers.x, base_scale_uv, base_scale_roughness);
 
 				normal_map_scale = base_scale_normal;
 				out_nr = north_west_nr;
 				return north_west_ad;
 			} else {
-				fetch_base_values0(u_north_ground_layers.x, base_albedo, unused_value);
+				fetch_base_values0(u_north_ground_layers.x, base_albedo, base_scale_displ);
 				fetch_base_values1(u_north_ground_layers.x, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-				vec4 north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.x, base_scale_uv, base_albedo, base_scale_ao);
+				vec4 north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.x, base_scale_uv, base_albedo, base_scale_displ);
 				vec4 north_nr = fetch_texture_normal_roughness(uv, u_north_ground_layers.x, base_scale_uv, base_scale_roughness);
 
 				normal_map_scale = base_scale_normal;
@@ -308,10 +308,10 @@ vec4 texture_ad_nr(int splatmap_layer,
 		}
 
 		if (north_border_pixel && u_north_ground_layers.x >= 0.0) {
-			fetch_base_values0(u_north_ground_layers.x, base_albedo, unused_value);
+			fetch_base_values0(u_north_ground_layers.x, base_albedo, base_scale_displ);
 			fetch_base_values1(u_north_ground_layers.x, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-			vec4 north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.x, base_scale_uv, base_albedo, base_scale_ao);
+			vec4 north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.x, base_scale_uv, base_albedo, base_scale_displ);
 			vec4 north_nr = fetch_texture_normal_roughness(uv, u_north_ground_layers.x, base_scale_uv, base_scale_roughness);
 
 			normal_map_scale = base_scale_normal;
@@ -320,10 +320,10 @@ vec4 texture_ad_nr(int splatmap_layer,
 		}
 
 		if (west_border_pixel && u_west_ground_layers.x >= 0.0) {
-			fetch_base_values0(u_west_ground_layers.x, base_albedo, unused_value);
+			fetch_base_values0(u_west_ground_layers.x, base_albedo, base_scale_displ);
 			fetch_base_values1(u_west_ground_layers.x, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-			vec4 west_ad = fetch_texture_albedo_displ(uv, u_west_ground_layers.x, base_scale_uv, base_albedo, base_scale_ao);
+			vec4 west_ad = fetch_texture_albedo_displ(uv, u_west_ground_layers.x, base_scale_uv, base_albedo, base_scale_displ);
 			vec4 west_nr = fetch_texture_normal_roughness(uv, u_west_ground_layers.x, base_scale_uv, base_scale_roughness);
 
 			normal_map_scale = base_scale_normal;
@@ -332,12 +332,12 @@ vec4 texture_ad_nr(int splatmap_layer,
 		}
 
 		if (u_ground_layers.x >= 0.0) {
-			fetch_base_values0(u_ground_layers.x, base_albedo, unused_value);
+			fetch_base_values0(u_ground_layers.x, base_albedo, base_scale_displ);
 			fetch_base_values1(u_ground_layers.x, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
 			normal_map_scale = base_scale_normal;
 			out_nr = fetch_texture_normal_roughness(uv, u_ground_layers.x, base_scale_uv, base_scale_roughness);
-			return fetch_texture_albedo_displ(uv, u_ground_layers.x, base_scale_uv, base_albedo, base_scale_ao);
+			return fetch_texture_albedo_displ(uv, u_ground_layers.x, base_scale_uv, base_albedo, base_scale_displ);
 		} else {
 			normal_map_scale = 1.0;
 			out_nr = vec4(1.0, 1.0, 1.0, 1.0);
@@ -346,20 +346,20 @@ vec4 texture_ad_nr(int splatmap_layer,
 	} else if (splatmap_layer == 1) {
 		if (north_border_pixel && west_border_pixel && u_north_west_ground_layers.y >= 0.0 && u_north_ground_layers.y >= 0.0) {
 			if (north_west_border_pixel) {
-				fetch_base_values0(u_north_west_ground_layers.y, base_albedo, unused_value);
+				fetch_base_values0(u_north_west_ground_layers.y, base_albedo, base_scale_displ);
 				fetch_base_values1(u_north_west_ground_layers.y, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-				vec4 north_west_ad = fetch_texture_albedo_displ(uv, u_north_west_ground_layers.y, base_scale_uv, base_albedo, base_scale_ao);
+				vec4 north_west_ad = fetch_texture_albedo_displ(uv, u_north_west_ground_layers.y, base_scale_uv, base_albedo, base_scale_displ);
 				vec4 north_west_nr = fetch_texture_normal_roughness(uv, u_north_west_ground_layers.y, base_scale_uv, base_scale_roughness);
 
 				normal_map_scale = base_scale_normal;
 				out_nr = north_west_nr;
 				return north_west_ad;
 			} else {
-				fetch_base_values0(u_north_ground_layers.y, base_albedo, unused_value);
+				fetch_base_values0(u_north_ground_layers.y, base_albedo, base_scale_displ);
 				fetch_base_values1(u_north_ground_layers.y, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-				vec4 north_west_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.y, base_scale_uv, base_albedo, base_scale_ao);
+				vec4 north_west_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.y, base_scale_uv, base_albedo, base_scale_displ);
 				vec4 north_west_nr = fetch_texture_normal_roughness(uv, u_north_ground_layers.y, base_scale_uv, base_scale_roughness);
 
 				normal_map_scale = base_scale_normal;
@@ -369,10 +369,10 @@ vec4 texture_ad_nr(int splatmap_layer,
 		}
 
 		if (north_border_pixel && u_north_ground_layers.y >= 0.0) {
-			fetch_base_values0(u_north_ground_layers.y, base_albedo, unused_value);
+			fetch_base_values0(u_north_ground_layers.y, base_albedo, base_scale_displ);
 			fetch_base_values1(u_north_ground_layers.y, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-			vec4 north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.y, base_scale_uv, base_albedo, base_scale_ao);
+			vec4 north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.y, base_scale_uv, base_albedo, base_scale_displ);
 			vec4 north_nr = fetch_texture_normal_roughness(uv, u_north_ground_layers.y, base_scale_uv, base_scale_roughness);
 
 			normal_map_scale = base_scale_normal;
@@ -381,10 +381,10 @@ vec4 texture_ad_nr(int splatmap_layer,
 		}
 
 		if (west_border_pixel && u_west_ground_layers.y >= 0.0) {
-			fetch_base_values0(u_west_ground_layers.y, base_albedo, unused_value);
+			fetch_base_values0(u_west_ground_layers.y, base_albedo, base_scale_displ);
 			fetch_base_values1(u_west_ground_layers.y, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-			vec4 west_ad = fetch_texture_albedo_displ(uv, u_west_ground_layers.y, base_scale_uv, base_albedo, base_scale_ao);
+			vec4 west_ad = fetch_texture_albedo_displ(uv, u_west_ground_layers.y, base_scale_uv, base_albedo, base_scale_displ);
 			vec4 west_nr = fetch_texture_normal_roughness(uv, u_west_ground_layers.y, base_scale_uv, base_scale_roughness);
 
 			normal_map_scale = base_scale_normal;
@@ -393,12 +393,12 @@ vec4 texture_ad_nr(int splatmap_layer,
 		}
 
 		if (u_ground_layers.y >= 0.0) {
-			fetch_base_values0(u_ground_layers.y, base_albedo, unused_value);
+			fetch_base_values0(u_ground_layers.y, base_albedo, base_scale_displ);
 			fetch_base_values1(u_ground_layers.y, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
 			normal_map_scale = base_scale_normal;
 			out_nr = fetch_texture_normal_roughness(uv, u_ground_layers.y, base_scale_uv, base_scale_roughness);
-			return fetch_texture_albedo_displ(uv, u_ground_layers.y, base_scale_uv, base_albedo, base_scale_ao);
+			return fetch_texture_albedo_displ(uv, u_ground_layers.y, base_scale_uv, base_albedo, base_scale_displ);
 		} else {
 			normal_map_scale = 1.0;
 			out_nr = vec4(1.0, 1.0, 1.0, 1.0);
@@ -407,20 +407,20 @@ vec4 texture_ad_nr(int splatmap_layer,
 	} else if (splatmap_layer == 2) {
 		if (north_border_pixel && west_border_pixel && u_north_west_ground_layers.z >= 0.0 && u_north_ground_layers.y >= 0.0) {
 			if (north_west_border_pixel) {
-				fetch_base_values0(u_north_west_ground_layers.z, base_albedo, unused_value);
+				fetch_base_values0(u_north_west_ground_layers.z, base_albedo, base_scale_displ);
 				fetch_base_values1(u_north_west_ground_layers.z, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-				vec4 north_west_ad = fetch_texture_albedo_displ(uv, u_north_west_ground_layers.z, base_scale_uv, base_albedo, base_scale_ao);
+				vec4 north_west_ad = fetch_texture_albedo_displ(uv, u_north_west_ground_layers.z, base_scale_uv, base_albedo, base_scale_displ);
 				vec4 north_west_nr = fetch_texture_normal_roughness(uv, u_north_west_ground_layers.z, base_scale_uv, base_scale_roughness);
 
 				normal_map_scale = base_scale_normal;
 				out_nr = north_west_nr;
 				return north_west_ad;
 			} else {
-				fetch_base_values0(u_north_ground_layers.z, base_albedo, unused_value);
+				fetch_base_values0(u_north_ground_layers.z, base_albedo, base_scale_displ);
 				fetch_base_values1(u_north_ground_layers.z, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-				vec4 north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.z, base_scale_uv, base_albedo, base_scale_ao);
+				vec4 north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.z, base_scale_uv, base_albedo, base_scale_displ);
 				vec4 north_nr = fetch_texture_normal_roughness(uv, u_north_ground_layers.z, base_scale_uv, base_scale_roughness);
 
 				normal_map_scale = base_scale_normal;
@@ -430,10 +430,10 @@ vec4 texture_ad_nr(int splatmap_layer,
 		}
 
 		if (north_border_pixel && u_north_ground_layers.z >= 0.0) {
-			fetch_base_values0(u_north_ground_layers.z, base_albedo, unused_value);
+			fetch_base_values0(u_north_ground_layers.z, base_albedo, base_scale_displ);
 			fetch_base_values1(u_north_ground_layers.z, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-			vec4 north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.z, base_scale_uv, base_albedo, base_scale_ao);
+			vec4 north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.z, base_scale_uv, base_albedo, base_scale_displ);
 			vec4 north_nr = fetch_texture_normal_roughness(uv, u_north_ground_layers.z, base_scale_uv, base_scale_roughness);
 
 			normal_map_scale = base_scale_normal;
@@ -442,10 +442,10 @@ vec4 texture_ad_nr(int splatmap_layer,
 		}
 
 		if (west_border_pixel && u_west_ground_layers.z >= 0.0) {
-			fetch_base_values0(u_west_ground_layers.z, base_albedo, unused_value);
+			fetch_base_values0(u_west_ground_layers.z, base_albedo, base_scale_displ);
 			fetch_base_values1(u_west_ground_layers.z, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-			vec4 west_ad = fetch_texture_albedo_displ(uv, u_west_ground_layers.z, base_scale_uv, base_albedo, base_scale_ao);
+			vec4 west_ad = fetch_texture_albedo_displ(uv, u_west_ground_layers.z, base_scale_uv, base_albedo, base_scale_displ);
 			vec4 west_nr = fetch_texture_normal_roughness(uv, u_west_ground_layers.z, base_scale_uv, base_scale_roughness);
 
 			normal_map_scale = base_scale_normal;
@@ -454,12 +454,12 @@ vec4 texture_ad_nr(int splatmap_layer,
 		}
 
 		if (u_ground_layers.z >= 0.0) {
-			fetch_base_values0(u_ground_layers.z, base_albedo, unused_value);
+			fetch_base_values0(u_ground_layers.z, base_albedo, base_scale_displ);
 			fetch_base_values1(u_ground_layers.z, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
 			normal_map_scale = base_scale_normal;
 			out_nr = fetch_texture_normal_roughness(uv, u_ground_layers.z, base_scale_uv, base_scale_roughness);
-			return fetch_texture_albedo_displ(uv, u_ground_layers.z, base_scale_uv, base_albedo, base_scale_ao);
+			return fetch_texture_albedo_displ(uv, u_ground_layers.z, base_scale_uv, base_albedo, base_scale_displ);
 		} else {
 			normal_map_scale = 1.0;
 			out_nr = vec4(1.0, 1.0, 1.0, 1.0);
@@ -468,20 +468,20 @@ vec4 texture_ad_nr(int splatmap_layer,
 	} else {
 		if (north_border_pixel && west_border_pixel && u_north_west_ground_layers.a >= 0.0 && u_north_ground_layers.y >= 0.0) {
 			if (north_west_border_pixel) {
-				fetch_base_values0(u_north_west_ground_layers.a, base_albedo, unused_value);
+				fetch_base_values0(u_north_west_ground_layers.a, base_albedo, base_scale_displ);
 				fetch_base_values1(u_north_west_ground_layers.a, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-				vec4 north_west_ad = fetch_texture_albedo_displ(uv, u_north_west_ground_layers.a, base_scale_uv, base_albedo, base_scale_ao);
+				vec4 north_west_ad = fetch_texture_albedo_displ(uv, u_north_west_ground_layers.a, base_scale_uv, base_albedo, base_scale_displ);
 				vec4 north_west_nr = fetch_texture_normal_roughness(uv, u_north_west_ground_layers.a, base_scale_uv, base_scale_roughness);
 
 				normal_map_scale = base_scale_normal;
 				out_nr = north_west_nr;
 				return north_west_ad;
 			} else {
-				fetch_base_values0(u_north_ground_layers.a, base_albedo, unused_value);
+				fetch_base_values0(u_north_ground_layers.a, base_albedo, base_scale_displ);
 				fetch_base_values1(u_north_ground_layers.a, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-				vec4 north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.a, base_scale_uv, base_albedo, base_scale_ao);
+				vec4 north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.a, base_scale_uv, base_albedo, base_scale_displ);
 				vec4 north_nr = fetch_texture_normal_roughness(uv, u_north_ground_layers.a, base_scale_uv, base_scale_roughness);
 
 				normal_map_scale = base_scale_normal;
@@ -491,10 +491,10 @@ vec4 texture_ad_nr(int splatmap_layer,
 		}
 
 		if (north_border_pixel && u_north_ground_layers.a >= 0.0) {
-			fetch_base_values0(u_north_ground_layers.a, base_albedo, unused_value);
+			fetch_base_values0(u_north_ground_layers.a, base_albedo, base_scale_displ);
 			fetch_base_values1(u_north_ground_layers.a, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-			vec4 north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.a, base_scale_uv, base_albedo, base_scale_ao);
+			vec4 north_ad = fetch_texture_albedo_displ(uv, u_north_ground_layers.a, base_scale_uv, base_albedo, base_scale_displ);
 			vec4 north_nr = fetch_texture_normal_roughness(uv, u_north_ground_layers.a, base_scale_uv, base_scale_roughness);
 
 			normal_map_scale = base_scale_normal;
@@ -506,10 +506,10 @@ vec4 texture_ad_nr(int splatmap_layer,
 		vec4 west_nr = vec4(0.0, 0.0, 0.0, 0.0);
 		bool west_border_pixel_fetched = false;
 		if (west_border_pixel && u_west_ground_layers.a >= 0.0) {
-			fetch_base_values0(u_west_ground_layers.a, base_albedo, unused_value);
+			fetch_base_values0(u_west_ground_layers.a, base_albedo, base_scale_displ);
 			fetch_base_values1(u_west_ground_layers.a, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
-			vec4 west_ad = fetch_texture_albedo_displ(uv, u_west_ground_layers.a, base_scale_uv, base_albedo, base_scale_ao);
+			vec4 west_ad = fetch_texture_albedo_displ(uv, u_west_ground_layers.a, base_scale_uv, base_albedo, base_scale_displ);
 			vec4 west_nr = fetch_texture_normal_roughness(uv, u_west_ground_layers.a, base_scale_uv, base_scale_roughness);
 
 			normal_map_scale = base_scale_normal;
@@ -518,12 +518,12 @@ vec4 texture_ad_nr(int splatmap_layer,
 		}
 
 		if (u_ground_layers.a >= 0.0) {
-			fetch_base_values0(u_ground_layers.a, base_albedo, unused_value);
+			fetch_base_values0(u_ground_layers.a, base_albedo, base_scale_displ);
 			fetch_base_values1(u_ground_layers.a, base_scale_ao, base_scale_normal, base_scale_roughness, base_scale_uv);
 
 			normal_map_scale = base_scale_normal;
 			out_nr = fetch_texture_normal_roughness(uv, u_ground_layers.a, base_scale_uv, base_scale_roughness);
-			return fetch_texture_albedo_displ(uv, u_ground_layers.a, base_scale_uv, base_albedo, base_scale_ao);
+			return fetch_texture_albedo_displ(uv, u_ground_layers.a, base_scale_uv, base_albedo, base_scale_displ);
 		} else {
 			normal_map_scale = 1.0;
 			out_nr = vec4(1.0, 1.0, 1.0, 1.0);
@@ -1466,8 +1466,8 @@ void fragment()
 	if (pixel_type == texture_pixel)
 	{
 		ROUGHNESS = roughness_computed;
-		AO = ao_computed;
-		AO_LIGHT_AFFECT = ao_light_affect;
+		//AO = ao_computed;
+		//AO_LIGHT_AFFECT = ao_light_affect;
 		NORMAL_MAP = normal_computed;
 		NORMAL_MAP_DEPTH = ground_normal_scale;
 		NORMAL = normal_computed;	// ?????
