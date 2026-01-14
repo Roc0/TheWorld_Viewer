@@ -1,5 +1,6 @@
 shader_type spatial;
-render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_lambert, specular_toon;
+//render_mode blend_mix, depth_draw_opaque, cull_back, /*diffuse_lambert,*/ diffuse_burley, /*specular_toon*/ specular_schlick_ggx;
+render_mode blend_mix, depth_draw_opaque, cull_back, /*diffuse_lambert,*/ diffuse_toon, specular_toon, skip_vertex_transform;
 //render_mode unshaded;		// DEBUG
 
 #include "res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc"
@@ -641,19 +642,16 @@ void vertex() {
 	bool show_chunks = gu_show_chunks;
 	uint num_vertices_per_chunk = u_num_vertices_per_chunk;
 
-	vec3 vertex_in = VERTEX;
+	vec3 vertex_modelspace_in = VERTEX;
 
-	vec4 vertex_world_pos = vec4(0.0, 0.0, 0.0, 0.0);
-	{
-		// VERTEX coords are local to the chunk (because the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need to trasform in world coord to abstract from chunk
-		vertex_world_pos = MODEL_MATRIX * vec4(vertex_in, 1);
-	}
+	// VERTEX coords are local to the chunk (because the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need to trasform in world coord to abstract from chunk
+	vec4 vertex_worldspace_in = MODEL_MATRIX * vec4(vertex_modelspace_in, 1);
 
 	vec2 vertex_cell_coords_in_textures = vec2(0.0, 0.0);
 	vec2 uv_quadrant = vec2(0.0, 0.0);
 	{
 		// to calculate coords of the vertex local to the quadrant we use affine inverse matrix of the global trasform of the quadtree
-		vec4 vertex_local_to_quadrant_pos = terrain_inverse_transform * vertex_world_pos;		// vertex_local_to_quadrant_pos ranges from 0 to quadrant_size (f.i. 4096)
+		vec4 vertex_local_to_quadrant_pos = terrain_inverse_transform * vertex_worldspace_in;		// vertex_local_to_quadrant_pos ranges from 0 to quadrant_size (f.i. 4096)
 		// to get correct value from the textures (in the range 0 / max size in local coord) we need to consider the step
 		// (dividing by it): in the textures heigths/normals are adjacent but in global/local coords are separated by the step
 		// ***  after next line vertex_cell_coords_in_textures ranges from 0 to heightmap size - 1 (heightmap size vertices per
@@ -676,8 +674,8 @@ void vertex() {
 		uv_quadrant = vertex_cell_coords_in_textures / vec2(textureSize(u_terrain_heightmap, 0));
 	}
 
-	vec3 vertex_with_h = vertex_in;
-	vec4 vertex_world_pos_with_h = vertex_world_pos;
+	vec3 vertex_modelspace_with_h = vertex_modelspace_in;
+	vec4 vertex_worldspace_with_h = vertex_worldspace_in;
 	{
 		float h = get_height(u_terrain_heightmap, u_terrain_height, uv_quadrant);		// Height displacement from heigthmap
 		bool force_height_0 = u_force_height_0;
@@ -688,15 +686,15 @@ void vertex() {
 		}
 		//force_height_0 = true;		// DEBUG
 		if (force_height_0) {													// Needed to bake globalmap
-			vertex_with_h.y = 0.0;
-			vertex_world_pos_with_h.y = 0.0;
+			vertex_modelspace_with_h.y = 0.0;
+			vertex_worldspace_with_h.y = 0.0;
 		} else {
-			vertex_with_h.y = h;
-			vertex_world_pos_with_h.y = h;
+			vertex_modelspace_with_h.y = h;
+			vertex_worldspace_with_h.y = h;
 		}
 	}
 
-	vec3 normal_computed = get_normal(u_terrain_normalmap, u_terrain_normal_basis, uv_quadrant);
+	//vec3 normal_computed = get_normal(u_terrain_normalmap, u_terrain_normal_basis, uv_quadrant);
 
 	vec2 uv_chunk = UV;
 	float lod = -1.0;
@@ -717,12 +715,12 @@ void vertex() {
 			else
 			{
 				if (vertex_col == 0) {	// vertex_row is > 0
-					step_between_vertices_in_current_chunk = floor(vertex_in.z / float(vertex_row));
+					step_between_vertices_in_current_chunk = floor(vertex_modelspace_in.z / float(vertex_row));
 				} else {	// vertex_col is > 0
-					step_between_vertices_in_current_chunk = floor(vertex_in.x / float(vertex_col));
+					step_between_vertices_in_current_chunk = floor(vertex_modelspace_in.x / float(vertex_col));
 				}
 				chunk_size = step_between_vertices_in_current_chunk * float(num_vertices_per_chunk - uint(1));
-				uv_chunk = vertex_in.xz / vec2(chunk_size);
+				uv_chunk = vertex_modelspace_in.xz / vec2(chunk_size);
 			}
 		}
 
@@ -740,8 +738,8 @@ void vertex() {
 		}
 	}
 
-	float distance_from_camera = distance(vertex_world_pos_with_h.xyz, camera_pos);
-	float distance_from_vertical_of_camera_on_terrain = distance(vertex_world_pos_with_h.xyz, vec3(camera_pos.x, camera_pos.y - camera_altitude_from_terrain, camera_pos.z));
+	float distance_from_camera = distance(vertex_worldspace_with_h.xyz, camera_pos);
+	float distance_from_vertical_of_camera_on_terrain = distance(vertex_worldspace_with_h.xyz, vec3(camera_pos.x, camera_pos.y - camera_altitude_from_terrain, camera_pos.z));
 
 	vec4 splat = texture(u_terrain_splatmap, uv_quadrant);
 
@@ -761,19 +759,25 @@ void vertex() {
 	//     Test PBR
 	//********************************************************************************************************************
 	/*vec2 uv_texture = uv_quadrant * uv1_scale.xy + uv1_offset.xy;
-	vertex_with_h.y += texture(texture_displacement, uv_texture).r * heightmap_scale;*/
+	vertex_modelspace_with_h.y += texture(texture_displacement, uv_texture).r * heightmap_scale;*/
 	//********************************************************************************************************************
 	//     Test PBR
 	//********************************************************************************************************************
 
 // Output
-	VERTEX = vertex_with_h;
-	NORMAL = normal_computed;
+	VERTEX = vertex_modelspace_with_h;
+	//NORMAL = normal_computed;
 	UV = uv_chunk;
 	UV2 = uv_quadrant;
 
+	// Using skip_vertex_transform we need to manually transform VERTEX, NORMAL, BINORMAL and TANGENT form model space to view (camera) space
+	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	NORMAL = normalize((MODELVIEW_MATRIX * vec4(NORMAL, 0.0)).xyz);
+	BINORMAL = normalize((MODELVIEW_MATRIX * vec4(BINORMAL, 0.0)).xyz);
+	TANGENT = normalize((MODELVIEW_MATRIX * vec4(TANGENT, 0.0)).xyz);
+
 // Varyings
-	v_vertex_world_pos = vertex_world_pos_with_h;
+	v_vertex_world_pos = vertex_worldspace_with_h;
 	v_vertex_cell_coords_in_textures = vertex_cell_coords_in_textures;
 	v_splat = splat;
 	v_tint0 = tint0;
