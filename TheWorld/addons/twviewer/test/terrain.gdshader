@@ -87,7 +87,7 @@ uniform float u_uv_wire_width = 0.003;
 //uniform float u_wire_smoothness : hint_range(0.0, 0.1) = 0.01;
 
 uniform sampler2D u_terrain_heightmap;
-//uniform sampler2D u_terrain_normalmap;
+uniform sampler2D u_terrain_normalmap;
 //uniform sampler2D u_terrain_globalmap : source_color;
 uniform vec4 u_ground_uv_scale_per_texture = vec4(1.000000, 1.000000, 1.000000, 1.000000);	// actually used as float, only first coord is used assuming same scaling in all textures
 
@@ -169,7 +169,7 @@ uniform sampler2D texture_displacement : hint_default_black, filter_linear_mipma
 //********************************************************************************************************************
 
 // Varyings
-varying vec4 v_vertex_world_pos;
+varying vec4 v_vertex_worldspace;
 varying vec2 v_vertex_cell_coords_in_textures;
 varying vec4 v_splat;
 varying vec3 v_tint0;
@@ -252,7 +252,10 @@ vec4 fetch_texture_normal_roughness(vec2 uv, float ground_texture_layer, float b
 	//base_scale_roughness = 1.0;	// DEBUGUV
 	vec3 uv_layer = vec3(uv * base_scale_uv, ground_texture_layer);
 	//vec3 uv_layer = vec3(uv, ground_texture_layer);
-	vec4 pixel = texture_layer(gu_ground_normal_roughness_array, uv_layer);
+	vec4 pixel;
+	pixel = texture_layer(gu_ground_normal_roughness_array, uv_layer);
+	pixel.xyz = fma(pixel.xzy, vec3(2.0), vec3(-1.0));
+	pixel.xyz = normalize(pixel.xyz);
 	pixel.a = pixel.a * base_scale_roughness;
 	return pixel;
 }
@@ -646,6 +649,11 @@ const vec3 lod_colors[10] = {
 	vec3(0.0, 0.0, 0.0)			// GDN_TheWorld_Globals::g_color_black
 };
 
+void remove_vertex(float f)
+{
+	f = 0.0 / 0.0;
+}
+
 void vertex() {
 
 	//vec3 camera_pos = gu_camera_pos;
@@ -662,18 +670,22 @@ void vertex() {
 	bool show_chunks = gu_show_chunks;
 	uint num_vertices_per_chunk = u_num_vertices_per_chunk;
 
+	vec2 heightmapSize = vec2(textureSize(u_terrain_heightmap, i_texture_lod_zero));		// Power of 2 + 1 (f.i. 1025, 2049)
+	
 	vec3 vertex_modelspace_in = VERTEX;
 
 	// VERTEX coords are local to the chunk (because the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need to trasform in world coord to abstract from chunk
 	vec4 vertex_worldspace_in = MODEL_MATRIX * vec4(vertex_modelspace_in, 1);
 
 	// to calculate coords of the vertex local to the quadrant we use affine inverse matrix of the global trasform of the quadtree
-	vec4 vertex_local_to_quadrant_pos = terrain_inverse_transform * vertex_worldspace_in;		// vertex_local_to_quadrant_pos ranges from 0 to quadrant_size (f.i. 4096)
+	vec4 vertex_local_to_quadrant_pos = terrain_inverse_transform * vertex_worldspace_in;		// vertex_local_to_quadrant_pos ranges from 0 to quadrant_size (f.i. 2048, 4096)
+															//if (vertex_local_to_quadrant_pos.x == 0.0 || vertex_local_to_quadrant_pos.x == 4096.0 || vertex_local_to_quadrant_pos.z == 0.0 || vertex_local_to_quadrant_pos.z == 4096.0) {vertex_local_to_quadrant_pos.x = 0.0 / 0.0;}	// DEBUG
 	// to get correct value from the textures (in the range 0 / max size in local coord) we need to consider the step
 	// (dividing by it): in the textures heigths/normals are adjacent but in global/local coords are separated by the step
 	// ***  after next line vertex_cell_coords_in_textures ranges from 0 to heightmap size - 1 (heightmap size vertices per
 	// size of quadrant - f.i. 2049) so it is an index of the pixel in heightmap/normalmap/splatmap etc. texture ***
-	vec2 vertex_cell_coords_in_textures = vertex_local_to_quadrant_pos.xz / vec2(grid_step);	// vertex_cell_coords_in_textures ranges from 0 to heightmap size - 1 (f.i. 1023 or 2047)
+	vec2 vertex_cell_coords_in_textures = vertex_local_to_quadrant_pos.xz / vec2(grid_step);	// vertex_cell_coords_in_textures ranges from 0 to heightmap size - 1 (f.i. 1024 or 2048)
+															//if (vertex_cell_coords_in_textures.x == 2048.0) {vertex_cell_coords_in_textures.x = 0.0 / 0.0;};
 	// Moreover must add a half-offset so that we sample the center of pixels, otherwise bilinear filtering of the textures
 	// will give us mixed results (#183): as we fetch pixels from textures with UV which is a percentage value ranging from
 	// 0.0 to 1.0 we have to convert our index (vertex_cell_coords_in_textures) in percentage; without summing vec2(0.5)
@@ -685,16 +697,16 @@ void vertex() {
 	// (remember tha UV is a percentage that approximate to a vertex index) avoiding linear interpolation.
 	// look at https://gamedev.stackexchange.com/questions/46963/how-to-avoid-texture-bleeding-in-a-texture-atlas
 	// and https://learn.microsoft.com/it-it/windows/win32/direct3d9/directly-mapping-texels-to-pixels?redirectedfrom=MSDN
-	v_vertex_cell_coords_in_textures = vertex_cell_coords_in_textures;
+	v_vertex_cell_coords_in_textures = vertex_cell_coords_in_textures;		// vertex_cell_coords_in_textures ranges from 0 to heightmap size - 1 ((f.i. 1024 or 2048) counting heightmap size vertices (f.i. 1025, 2049)
 	vertex_cell_coords_in_textures += vec2(0.5);	// IMPORTANT: now vertex_cell_coords_in_textures ranges from 0.5
 													// to (heightmap size - 1) + 0.5 with increment of 1.0 between each coord
 	// Normalized UV to be in the range 0/1
-	vec2 uv_quadrant = vertex_cell_coords_in_textures / vec2(textureSize(u_terrain_heightmap, 0));
+	vec2 quadrant_uv = vertex_cell_coords_in_textures / heightmapSize;
 
 	vec3 vertex_modelspace_with_h = vertex_modelspace_in;
 	vec4 vertex_worldspace_with_h = vertex_worldspace_in;
 	{
-		float h = get_height(u_terrain_heightmap, u_terrain_height, uv_quadrant);		// Height displacement from heigthmap
+		float h = get_height(u_terrain_heightmap, u_terrain_height, quadrant_uv);		// Height displacement from heigthmap
 		bool force_height_0 = u_force_height_0;
 		if (!force_height_0) {
 			if (gu_force_height_0 > 0) {
@@ -711,7 +723,7 @@ void vertex() {
 		}
 	}
 
-	vec2 uv_chunk = UV;
+	vec2 chunk_uv = UV;
 	float chunk_texture_lod = -1.0;
 	if (!test_quadrant)
 	{
@@ -721,11 +733,11 @@ void vertex() {
 
 		float step_between_vertices_in_current_chunk = -1000000000.0;
 		float chunk_size = -1000000000.0;
-		uv_chunk = vec2(0.0, 0.0);
+		chunk_uv = vec2(0.0, 0.0);
 		{
 			if (vertex_col == 0 && vertex_row == 0)
 			{
-				uv_chunk = vec2(0.0, 0.0);
+				chunk_uv = vec2(0.0, 0.0);
 			}
 			else
 			{
@@ -735,7 +747,7 @@ void vertex() {
 					step_between_vertices_in_current_chunk = floor(vertex_modelspace_in.x / float(vertex_col));
 				}
 				chunk_size = step_between_vertices_in_current_chunk * float(num_vertices_per_chunk - uint(1));
-				uv_chunk = vertex_modelspace_in.xz / vec2(chunk_size);
+				chunk_uv = vertex_modelspace_in.xz / vec2(chunk_size);
 			}
 		}
 
@@ -756,27 +768,35 @@ void vertex() {
 	float distance_from_camera = distance(vertex_worldspace_with_h.xyz, camera_pos);
 	float distance_from_vertical_of_camera_on_terrain = distance(vertex_worldspace_with_h.xyz, vec3(camera_pos.x, camera_pos.y - camera_altitude_from_terrain, camera_pos.z));
 
-	//vec3 normal_computed = get_normal(u_terrain_normalmap, u_terrain_normal_basis, uv_quadrant);
-	vec3 normal_computed = compute_normal(u_terrain_heightmap, v_vertex_cell_coords_in_textures, grid_step);
+	vec3 normal_computed = get_normal(u_terrain_normalmap, u_terrain_normal_basis, quadrant_uv);
+	//vec3 normal_computed = compute_normal(u_terrain_heightmap, v_vertex_cell_coords_in_textures, grid_step, u_terrain_height);
 
-	vec4 splat = textureLod(u_terrain_splatmap, uv_quadrant, f_texture_lod_zero);
+	vec4 splat = textureLod(u_terrain_splatmap, quadrant_uv, f_texture_lod_zero);
+	//float slope_vertical_factor = 4.0;
+	//float slope_flat_factor = 1.0;
+	//float dirt_on_rocks_factor = 2.0;
+	//float high_elevation_factor = 4.0;
+	//float low_elevation_factor = 2.0;
+	//float min_heigth;
+	//float max_heigth;
+	//vec4 splat = compute_splat(u_terrain_heightmap, v_vertex_cell_coords_in_textures, grid_step, u_terrain_height, normal_computed, slope_vertical_factor, slope_flat_factor, dirt_on_rocks_factor, high_elevation_factor, low_elevation_factor, min_heigth, max_heigth);
 
-	vec3 tint0 = vec3(0.0, 0.0, 0.0);
-	vec3 tint1 = vec3(0.0, 0.0, 0.0);
-	vec3 tint2 = vec3(0.0, 0.0, 0.0);
-	vec3 tint3 = vec3(0.0, 0.0, 0.0);
-	{
-		vec4 tint = textureLod(u_terrain_colormap, uv_quadrant, f_texture_lod_zero);
+	vec3 tint0 = vec3(1.0, 1.0, 1.0);
+	vec3 tint1 = vec3(1.0, 1.0, 1.0);
+	vec3 tint2 = vec3(1.0, 1.0, 1.0);
+	vec3 tint3 = vec3(1.0, 1.0, 1.0);
+	/*{
+		vec4 tint = textureLod(u_terrain_colormap, quadrant_uv, f_texture_lod_zero);
 		tint0 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.x);	// decreasing u_colormap_opacity_per_texture dimensions approximates vector tint (u_terrain_colormap texel) to white: each dimnesion (1-4) acts
 		tint1 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.y);	// on the corresponding bump_map (1-4). More precisely u_colormap_opacity_per_texture.(x-w) must be in the interval 0-1, if 0 the function returns
 		tint2 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.z);	// vec3(1.0) if 1 (default value) the function returns tint.rgb
 		tint3 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.w);
-	}
+	}*/
 
 	//********************************************************************************************************************
 	//     Test PBR
 	//********************************************************************************************************************
-	/*vec2 uv_texture = uv_quadrant * uv1_scale.xy + uv1_offset.xy;
+	/*vec2 uv_texture = quadrant_uv * uv1_scale.xy + uv1_offset.xy;
 	vertex_modelspace_with_h.y += texture(texture_displacement, uv_texture).r * heightmap_scale;*/
 	//********************************************************************************************************************
 	//     Test PBR
@@ -785,8 +805,8 @@ void vertex() {
 // Output
 	VERTEX = vertex_modelspace_with_h;
 	NORMAL = normal_computed;
-	UV = uv_chunk;
-	UV2 = uv_quadrant;
+	UV = chunk_uv;
+	UV2 = quadrant_uv;
 
 	// Using skip_vertex_transform we need to manually transform VERTEX, NORMAL, BINORMAL and TANGENT form model space to view (camera) space
 	VERTEX = (MODELVIEW_MATRIX * vec4(VERTEX, 1.0)).xyz;
@@ -795,7 +815,7 @@ void vertex() {
 	TANGENT = normalize((MODELVIEW_MATRIX * vec4(TANGENT, 0.0)).xyz);
 
 // Varyings
-	v_vertex_world_pos = vertex_worldspace_with_h;
+	v_vertex_worldspace = vertex_worldspace_with_h;
 	v_splat = splat;
 	v_tint0 = tint0;
 	v_tint1 = tint1;
@@ -814,7 +834,7 @@ void fragment()
 	uint num_vertices_per_chunk = u_num_vertices_per_chunk;
 	float editmode_selected = u_editmode_selected;
 	//bool triplanar = u_triplanar;
-	bool triplanar = false;
+	bool triplanar = false;		// fortemente buggato: da verificare
 	//uint piecing_threshold_factor = u_piecing_threshold_factor;
 	float piece_size = gu_piece_size;
 	//float scale_per_texture_factor = u_scale_per_texture_factor;
@@ -824,7 +844,7 @@ void fragment()
 	//float camera_altitude_uv_scale_threshold = gu_camera_altitude_uv_scale_threshold;
 	bool need_blending = u_need_blending;
 	bool grid_on = u_grid_on;
-	vec2 mouse_hit_uv_quadrant = u_mouse_hit_uv_quadrant;
+	vec2 mouse_hit_in_quadrant_uv = u_mouse_hit_uv_quadrant;
 	float mouse_hit_radius = u_mouse_hit_radius;
 	bool force_height_0 = u_force_height_0;
 	if (!force_height_0) {
@@ -832,18 +852,19 @@ void fragment()
 			force_height_0 = true;
 		}
 	}
-
+	
+	vec2 heightmapSize = vec2(textureSize(u_terrain_heightmap, i_texture_lod_zero));
 
 // Input from Vertex
 	vec3 vertex_in = VERTEX;
-	vec2 uv_chunk = UV;
-	vec2 uv_quadrant = UV2;
+	vec2 chunk_uv = UV;
+	vec2 quadrant_uv = UV2;
 
 	//float grid_step = floor(v_grid_step);
 
 // Varyings
-	vec2 vertex_cell_coords_in_textures = floor(v_vertex_cell_coords_in_textures);
-	vec4 vertex_world_pos = v_vertex_world_pos;
+	//vec2 vertex_cell_coords_in_textures = floor(v_vertex_cell_coords_in_textures);
+	vec4 vertex_worldspace = v_vertex_worldspace;
 	float distance_from_camera = v_distance_from_camera;
 	float distance_from_vertical_of_camera_on_terrain = v_distance_from_vertical_of_camera_on_terrain;
 	vec4 splat_pixel_in = v_splat;
@@ -852,17 +873,15 @@ void fragment()
 	float quad_line_thickness = 0.05;
 
 	vec3 albedo_computed = vec3(0.0, 0.0, 0.0);
-	float roughness_computed = 1.0;
 	float ground_normal_scale = gu_ground_normal_scale;
 	float ao_computed = 0.0;
 	float ao_light_affect = 0.0;
 	//float ao_light_affect_computed = 0.0;
+	float roughness_computed = 1.0;
 
 	// Terrain normals, tangents and binormals
-	vec3 normal_computed, tanget_computed, binormal_computed;
+	vec3 normal_computed, tanget_computed, binormal_computed, ground_normal_computed;
 	{
-		//normal_computed = compute_normal(u_terrain_heightmap, vertex_cell_coords_in_textures, grid_step);
-		//normal_computed = get_normal(u_terrain_normalmap, u_terrain_normal_basis, uv_quadrant);
 		normal_computed = NORMAL;
 		tanget_computed = normalize(cross(normal_computed, vec3(0.0, 0.0, 1.0)));
 		binormal_computed = normalize(cross(normal_computed, tanget_computed));
@@ -877,7 +896,7 @@ void fragment()
 	const int show_chunk_pixel = 3;
 	int pixel_type = texture_pixel;
 	{
-		if (editmode_selected > 0.0 && is_on_the_border(uv_quadrant, u_quad_border_line_thickness)) {
+		if (editmode_selected > 0.0 && is_on_the_border(quadrant_uv, u_quad_border_line_thickness)) {
 			pixel_type = editmode_border_pixel;
 		} else {
 			// Show wireframe and need blending management
@@ -1003,12 +1022,13 @@ void fragment()
 			}
 		}
 
-		//ground_uv_scale_per_texture = 1.0;		// DEBUGUV
-		//ground_uv_scale_per_texture = 20.0;		// DEBUGUV
+		//ground_uv_scale_per_texture = 1.0;		// DEBUGUV	UV not modified
+		//ground_uv_scale_per_texture = 30.0;		// DEBUGUV
 
-		vec3 base_ground_texture_uv = vec3(uv_quadrant.x, vertex_world_pos.y * MODEL_MATRIX[1][1], uv_quadrant.y);
-		vec3 near_ground_texture_uv = base_ground_texture_uv * ground_uv_scale_per_texture;
-		ground_texture_uv = near_ground_texture_uv;
+		vec3 base_ground_texture_uv = vec3(quadrant_uv.x, vertex_worldspace.y * MODEL_MATRIX[1][1], quadrant_uv.y);
+		//vec3 base_ground_texture_uv = vec3(quadrant_uv.x, vertex_worldspace.y, quadrant_uv.y);
+		vec3 modified_ground_texture_uv = base_ground_texture_uv * ground_uv_scale_per_texture;
+		ground_texture_uv = modified_ground_texture_uv;
 	}
 
 	//
@@ -1021,25 +1041,25 @@ void fragment()
 	bool north_west_border_pixel = false;
 	if (pixel_type == texture_pixel)
 	{
-		float distance_texel = texture(gu_terrain_quad_border_distance, uv_quadrant).x;
+		float distance_texel = texture(gu_terrain_quad_border_distance, quadrant_uv).x;
 		float distance_from_border = distance_texel * gu_texture_overflow_size;
 
-		if (is_on_upper_border(uv_quadrant, distance_from_border)) {
+		if (is_on_upper_border(quadrant_uv, distance_from_border)) {
 			north_border_pixel = true;
 		}
-		if (is_on_left_border(uv_quadrant, distance_from_border)) {
+		if (is_on_left_border(quadrant_uv, distance_from_border)) {
 			west_border_pixel = true;
 		}
-		/*if (is_on_lower_border(uv_quadrant, distance_from_border)) {
+		/*if (is_on_lower_border(quadrant_uv, distance_from_border)) {
 			south_border_pixel = true;
 		}*/
-		/*if (is_on_right_border(uv_quadrant, distance_from_border)) {
+		/*if (is_on_right_border(quadrant_uv, distance_from_border)) {
 			east_border_pixel = true;
 		}*/
 
 		if (north_border_pixel && west_border_pixel)
 		{
-			if (uv_quadrant.x > (uv_quadrant.y - distance_from_border / 6.0)) {
+			if (quadrant_uv.x > (quadrant_uv.y - distance_from_border / 6.0)) {
 				//west_border_pixel = false;
 			} else {
 				//north_border_pixel = false;
@@ -1054,24 +1074,24 @@ void fragment()
 	if (north_border_pixel || west_border_pixel) {
 		if (north_border_pixel) {
 			if (north_west_border_pixel) {
-				//vec2 pixel_uv = vec2(uv_quadrant.y, 0.5);
+				//vec2 pixel_uv = vec2(quadrant_uv.y, 0.5);
 				//splat_pixel_computed = texture(u_west_border_splatmap, pixel_uv);
 				splat_pixel_computed = u_north_west_corner_splatmap_texel;
 			} else {
-				vec2 pixel_uv = vec2(uv_quadrant.x, 0.5);
+				vec2 pixel_uv = vec2(quadrant_uv.x, 0.5);
 				splat_pixel_computed = texture(u_north_border_splatmap, pixel_uv);
 			}
 		}
 		else {
-			vec2 pixel_uv = vec2(uv_quadrant.y, 0.5);
+			vec2 pixel_uv = vec2(quadrant_uv.y, 0.5);
 			splat_pixel_computed = texture(u_west_border_splatmap, pixel_uv);
 		}
 		/*if (west_border_pixel) {
-			vec2 pixel_uv = vec2(uv_quadrant.y, 0.5);
+			vec2 pixel_uv = vec2(quadrant_uv.y, 0.5);
 			splat_pixel_computed = texture(u_west_border_splatmap, pixel_uv);
 		}
 		else {
-			vec2 pixel_uv = vec2(uv_quadrant.x, 0.5);
+			vec2 pixel_uv = vec2(quadrant_uv.x, 0.5);
 			splat_pixel_computed = texture(u_north_border_splatmap, pixel_uv);
 		}*/
 	}
@@ -1214,7 +1234,7 @@ void fragment()
 			roughness_computed = roughness_computed * ground_roughness_scale;
 
 			vec3 ground_normal = (w.r * normal0 + w.g * normal1 + w.b * normal2 + w.a * normal3) / w_sum;
-			normal_computed = normalize(ground_normal);	// DEBUGRIC
+			ground_normal_computed = normalize(ground_normal);	// DEBUGRIC
 
 			const float max_distance_for_normal_scale = 10000.0;
 			if (distance_from_camera > max_distance_for_normal_scale)
@@ -1269,12 +1289,12 @@ void fragment()
 		// DEBUG: wisualize pieces
 
 		// Highlight grid inside grid radius
-		if (mouse_hit_uv_quadrant != vec2(-1)) {
-			float half_texel_size = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
-			vec2 uv_begin_texel = uv_quadrant - vec2(half_texel_size);
+		if (mouse_hit_in_quadrant_uv != vec2(-1)) {
+			float half_texel_size = 0.5 / heightmapSize.x;
+			vec2 uv_begin_texel = quadrant_uv - vec2(half_texel_size);
 			vec2 distance_from_vertex =	fract(vec2(uv_begin_texel.x / (half_texel_size * 2.0), uv_begin_texel.y / (half_texel_size * 2.0)));
 			float grid_radius = mouse_hit_radius * 5.0;
-			if (grid_radius != 0.0 && distance(mouse_hit_uv_quadrant, uv_quadrant) < grid_radius)
+			if (grid_radius != 0.0 && distance(mouse_hit_in_quadrant_uv, quadrant_uv) < grid_radius)
 			{
 				if (distance_from_vertex.x < quad_line_thickness || (1.0 - distance_from_vertex.x) < quad_line_thickness
 					|| distance_from_vertex.y < quad_line_thickness || (1.0 - distance_from_vertex.y) < quad_line_thickness) {
@@ -1287,7 +1307,7 @@ void fragment()
 				}
 			}
 
-			if (mouse_hit_radius != 0.0 && distance(mouse_hit_uv_quadrant, uv_quadrant) < mouse_hit_radius) {
+			if (mouse_hit_radius != 0.0 && distance(mouse_hit_in_quadrant_uv, quadrant_uv) < mouse_hit_radius) {
 				vec3 mouse_hit_albedo = apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
 				albedo_computed = mix(albedo_computed, mouse_hit_albedo, 0.3);
 			}
@@ -1296,7 +1316,7 @@ void fragment()
 		// Show grid management
 		if (grid_on) {
 			float half_texel_size_in_uv_coords = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
-			vec2 uv_begin_texel = uv_quadrant - vec2(half_texel_size_in_uv_coords);	// assuming uv is in the center of a texel for each fragment
+			vec2 uv_begin_texel = quadrant_uv - vec2(half_texel_size_in_uv_coords);	// assuming uv is in the center of a texel for each fragment
 			vec2 distance_of_current_fragment_from_grid_vertex = fract(vec2(uv_begin_texel.x / (half_texel_size_in_uv_coords * 2.0), uv_begin_texel.y / (half_texel_size_in_uv_coords * 2.0)));
 			if (distance_of_current_fragment_from_grid_vertex.x < quad_line_thickness || (1.0 - distance_of_current_fragment_from_grid_vertex.x) < quad_line_thickness
 				|| distance_of_current_fragment_from_grid_vertex.y < quad_line_thickness || (1.0 - distance_of_current_fragment_from_grid_vertex.y) < quad_line_thickness) {
@@ -1343,13 +1363,13 @@ void fragment()
 
 		float chunk_border_line_thickness = 0.005;
 
-		if (editmode_selected > 0.0 && is_on_the_border(uv_quadrant, quad_line_thickness)) {
+		if (editmode_selected > 0.0 && is_on_the_border(quadrant_uv, quad_line_thickness)) {
 			albedo_computed = apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
 		} else {
-			if (mouse_hit_uv_quadrant != vec2(-1) && distance(mouse_hit_uv_quadrant, uv_quadrant) < mouse_hit_radius) {
+			if (mouse_hit_in_quadrant_uv != vec2(-1) && distance(mouse_hit_in_quadrant_uv, quadrant_uv) < mouse_hit_radius) {
 				albedo_computed = apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
 			} else {
-				if (is_on_the_border(uv_quadrant, chunk_border_line_thickness) || is_on_the_border(uv_chunk, chunk_border_line_thickness)) {
+				if (is_on_the_border(quadrant_uv, chunk_border_line_thickness) || is_on_the_border(chunk_uv, chunk_border_line_thickness)) {
 					albedo_computed = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
 				} else {
 					if (quadrant_texture_lod >= 0.0 && quadrant_texture_lod <= 8.0) {
@@ -1377,9 +1397,9 @@ void fragment()
 		//need_blending_west = false;		// DEBUG
 		float uv_wire_width = u_uv_wire_width;
 		float uv_border_wire_width = uv_wire_width * 3.0;
-		float half_texel_size_in_uv_coords = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
+		float half_texel_size_in_uv_coords = 0.5 / heightmapSize.x;
 
-		if (uv_quadrant.x < (half_texel_size_in_uv_coords + uv_border_wire_width))					// check left border of quadrant
+		if (quadrant_uv.x < (half_texel_size_in_uv_coords + uv_border_wire_width))					// check left border of quadrant
 		{
 			// pixel on left border of quadrant
 			if (need_blending_west) {
@@ -1389,7 +1409,7 @@ void fragment()
 				albedo_computed = u_wireframe_border_color.rgb;
 			}
 		}
-		else if (uv_quadrant.y < (half_texel_size_in_uv_coords + uv_border_wire_width))				// check top border of quadrant
+		else if (quadrant_uv.y < (half_texel_size_in_uv_coords + uv_border_wire_width))				// check top border of quadrant
 		{
 			// pixel on top border of quadrant
 			if (need_blending_north) {
@@ -1399,7 +1419,7 @@ void fragment()
 				albedo_computed = u_wireframe_border_color.rgb;
 			}
 		}
-		else if ((1.0 - uv_quadrant.x) < (half_texel_size_in_uv_coords + uv_border_wire_width))		// check right border of quadrant
+		else if ((1.0 - quadrant_uv.x) < (half_texel_size_in_uv_coords + uv_border_wire_width))		// check right border of quadrant
 		{
 			// pixel on right border of quadrant
 			if (need_blending_east) {
@@ -1409,7 +1429,7 @@ void fragment()
 				albedo_computed = u_wireframe_border_color.rgb;
 			}
 		}
-		else if  ((1.0 - uv_quadrant.y) < (half_texel_size_in_uv_coords + uv_border_wire_width))	// check bottom border of quadrant
+		else if  ((1.0 - quadrant_uv.y) < (half_texel_size_in_uv_coords + uv_border_wire_width))	// check bottom border of quadrant
 		{
 			// pixel on bottom border of quadrant
 			if (need_blending_south) {
@@ -1422,7 +1442,7 @@ void fragment()
 		else
 		{
 			float uv_distance_from_vertices = 1.0 / float(num_vertices_per_chunk - uint(1));
-			vec2 uv_distance_from_previous_vertex = fract(uv_chunk / vec2(uv_distance_from_vertices)) * vec2(uv_distance_from_vertices);
+			vec2 uv_distance_from_previous_vertex = fract(chunk_uv / vec2(uv_distance_from_vertices)) * vec2(uv_distance_from_vertices);
 			vec2 uv_distance_from_next_vertex = vec2(uv_distance_from_vertices) - uv_distance_from_previous_vertex;
 			if ((uv_distance_from_previous_vertex.x < (half_texel_size_in_uv_coords + uv_wire_width)) || (uv_distance_from_previous_vertex.y < (half_texel_size_in_uv_coords + uv_wire_width))
 				|| (uv_distance_from_next_vertex.x < (half_texel_size_in_uv_coords + uv_wire_width)) || (uv_distance_from_next_vertex.y < (half_texel_size_in_uv_coords + uv_wire_width)))
@@ -1444,12 +1464,12 @@ void fragment()
 				}
 			}
 		}
-		/*if (uv_chunk.x >= 0.1 && uv_chunk.x <= 0.2) {			// DEBUG
+		/*if (chunk_uv.x >= 0.1 && chunk_uv.x <= 0.2) {			// DEBUG
 			albedo_computed = vec3(0.0, 1.0, 0.0);				// DEBUG
 		} else {												// DEBUG
 			albedo_computed = vec3(0.0, 0.0, 1.0);				// DEBUG
 		}														// DEBUG*/
-		/*if (uv_quadrant.x >= 0.1 && uv_quadrant.x <= 0.2) {	// DEBUG
+		/*if (quadrant_uv.x >= 0.1 && quadrant_uv.x <= 0.2) {	// DEBUG
 			albedo_computed = vec3(0.0, 1.0, 0.0);				// DEBUG
 		} else {												// DEBUG
 			albedo_computed = vec3(0.0, 0.0, 1.0);				// DEBUG
@@ -1459,7 +1479,7 @@ void fragment()
 	//
 	// Highlight quadrant if requested
 	//
-	if (gu_highlight_hit_quadrant && mouse_hit_uv_quadrant != vec2(-1) && (mouse_hit_uv_quadrant.x >= 0.0 && mouse_hit_uv_quadrant.x <= 1.0 && mouse_hit_uv_quadrant.y >= 0.0 && mouse_hit_uv_quadrant.y <= 1.0))
+	if (gu_highlight_hit_quadrant && mouse_hit_in_quadrant_uv != vec2(-1) && (mouse_hit_in_quadrant_uv.x >= 0.0 && mouse_hit_in_quadrant_uv.x <= 1.0 && mouse_hit_in_quadrant_uv.y >= 0.0 && mouse_hit_in_quadrant_uv.y <= 1.0))
 	{
 		/*float shine = abs(sin(TIME * u_shine_speed));
 		float start_smoothness = 0.05;
@@ -1516,9 +1536,9 @@ void fragment()
 		}
 
 		ROUGHNESS = roughness_computed;
-		//AO = ao_computed;
-		//AO_LIGHT_AFFECT = ao_light_affect;
-		NORMAL_MAP = normal_computed;
+		AO = ao_computed;
+		AO_LIGHT_AFFECT = ao_light_affect;
+		NORMAL_MAP = ground_normal_computed;
 		NORMAL_MAP_DEPTH = ground_normal_scale;
 	}
 
@@ -1526,7 +1546,7 @@ void fragment()
 	//     Test PBR
 	//********************************************************************************************************************
 	/*{
-		vec2 base_uv = uv_quadrant;
+		vec2 base_uv = quadrant_uv;
 
 		//{
 		//	// Height: Enabled

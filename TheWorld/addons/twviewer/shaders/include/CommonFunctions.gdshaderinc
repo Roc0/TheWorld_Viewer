@@ -59,6 +59,12 @@ float get_height(sampler2D heightmap, float terrain_height, vec2 uv)
 	return textureLod(heightmap, uv, lod).r * terrain_height;
 }
 
+float fetch_height(sampler2D heightmap, float terrain_height, ivec2 _index)
+{
+	int i_texture_lod = 0;
+	return texelFetch(heightmap, _index, i_texture_lod).r * terrain_height;
+}
+
 vec3 get_normal(sampler2D normalmap, mat3 terrain_normal_basis, vec2 uv)
 {
 	float lod = 0.0;
@@ -68,28 +74,94 @@ vec3 get_normal(sampler2D normalmap, mat3 terrain_normal_basis, vec2 uv)
 	return normalize(n);
 }
 
-vec3 compute_normal(sampler2D heightmap, vec2 vertex_cell_coords_in_textures, float grid_step)
+/*vec3 compute_normal(sampler2D heightmap, vec2 vertex_cell_coords_in_textures, float grid_step, float terrain_height)
 {
-		const vec3 offsets = vec3(0, 1, 2);
-		ivec2 index[4];
-		index[0] = ivec2(vertex_cell_coords_in_textures + offsets.xy);
-		index[1] = ivec2(vertex_cell_coords_in_textures + offsets.yy);
-		index[2] = ivec2(vertex_cell_coords_in_textures + offsets.yx);
-		index[3] = ivec2(vertex_cell_coords_in_textures + offsets.xx);
+	const vec3 offsets = vec3(0, 1, 2);
+	ivec2 _index[4];
+	_index[0] = ivec2(vertex_cell_coords_in_textures + offsets.xy);
+	_index[1] = ivec2(vertex_cell_coords_in_textures + offsets.yy);
+	_index[2] = ivec2(vertex_cell_coords_in_textures + offsets.yx);
+	_index[3] = ivec2(vertex_cell_coords_in_textures + offsets.xx);
 
-		int i_texture_lod = 0;
+	float h[4];
 
-		float h[4];
-		h[3] = texelFetch(heightmap, index[3], i_texture_lod).r; // 0 (0, 0)
-		h[2] = texelFetch(heightmap, index[2], i_texture_lod).r; // 1 (1, 0)
-		h[0] = texelFetch(heightmap, index[0], i_texture_lod).r; // 2 (0, 1)
-		
-		return normalize(vec3(h[3] - h[2], grid_step, h[3] - h[0]));
+	h[3] = fetch_height(heightmap, terrain_height, _index[3]);	// 0 (0, 0)
+	h[2] = fetch_height(heightmap, terrain_height, _index[2]);	// 1 (1, 0)
+	h[0] = fetch_height(heightmap, terrain_height, _index[0]);	// 2 (0, 1)
+	
+	return normalize(vec3(h[3] - h[2], grid_step, h[3] - h[0]));
+}*/
+
+vec3 compute_normal(sampler2D heightmap, vec2 vertex_cell_coords_in_textures, float grid_step, float terrain_height)
+{
+	int lod = 0;
+	vec2 heightmapSize = vec2(textureSize(heightmap, lod));
+	ivec2 _index = ivec2(vertex_cell_coords_in_textures);
+	float h;
+	float right_h;
+	float fore_h;
+	if (distance(vertex_cell_coords_in_textures.x, heightmapSize.x - 1.0) < 1.0) {
+		h = fetch_height(heightmap, terrain_height, _index - ivec2(1, 0));
+		right_h = fetch_height(heightmap, terrain_height, _index);
+		fore_h = fetch_height(heightmap, terrain_height, _index - ivec2(1, -1));
+	} else {
+		if (distance(vertex_cell_coords_in_textures.y, heightmapSize.y - 1.0) < 1.0) {
+			h = fetch_height(heightmap, terrain_height, _index - ivec2(0, 1));
+			right_h = fetch_height(heightmap, terrain_height, _index - ivec2(-1, 1));
+			fore_h = fetch_height(heightmap, terrain_height, _index);
+		} else {
+			h = fetch_height(heightmap, terrain_height, _index);
+			right_h = fetch_height(heightmap, terrain_height, _index + ivec2(1, 0));
+			fore_h = fetch_height(heightmap, terrain_height, _index + ivec2(0, 1));
+		}
+	}
+	//h = fetch_height(heightmap, terrain_height, _index);
+	//right_h = fetch_height(heightmap, terrain_height, _index + ivec2(1, 0));
+	//fore_h = fetch_height(heightmap, terrain_height, _index + ivec2(0, 1));
+	return normalize(vec3(h - right_h, grid_step, h - fore_h));
 }
 
 vec3 get_normal_1(sampler2D tex, vec2 uv)
 {
 	return unpack_normal(texture(tex, uv));
+}
+
+float lerp_f(float a, float b, float t)
+{
+	return a + (t * (b - a));
+}
+
+vec4 compute_splat(sampler2D heightmap, vec2 vertex_cell_coords_in_textures, float grid_step, float terrain_height, vec3 _normal,
+					float slope_vertical_factor, float slope_flat_factor, float dirt_on_rocks_factor, float high_elevation_factor, float low_elevation_factor, float min_heigth, float max_heigth)
+{
+	// u_slope_vertical_factor, u_slope_flat_factor, u_dirt_on_rocks_factor, u_high_elevation_factor, u_low_elevation_factor, u_min_heigth, u_max_heigth
+
+	//vec2 uv = UV;
+	//float h = get_height(TEXTURE, u_terrain_height, uv);
+	float h = fetch_height(heightmap, terrain_height, ivec2(vertex_cell_coords_in_textures));
+	
+	//vec3 _normal = get_normal_1(u_terrain_normalmap, uv);
+	float slope = (slope_vertical_factor * (1.0 - _normal.y)) - slope_flat_factor;
+	float rocks_amount = clamp(slope, 0.0, 1.0);
+	float dirt_amount = clamp(rocks_amount * dirt_on_rocks_factor, 0.0, 1.0);
+	float high_elevation_amount = high_elevation_factor * ((h - min_heigth) / (max_heigth - min_heigth)) - low_elevation_factor;
+	high_elevation_amount = clamp(high_elevation_amount, 0.0, 1.0);
+	float low_elevation_amount = 1.0 - high_elevation_amount;
+	
+	vec4 splat_pixel;
+	
+	splat_pixel.r = low_elevation_amount;
+	splat_pixel.r = lerp_f(splat_pixel.r, 0.0, high_elevation_amount);
+	splat_pixel.r = lerp_f(splat_pixel.r, 0.0, dirt_amount);
+	splat_pixel.r = lerp_f(splat_pixel.r, 0.0, rocks_amount);
+	splat_pixel.g = high_elevation_amount;
+	splat_pixel.g = lerp_f(splat_pixel.g, 0.0, dirt_amount);
+	splat_pixel.g = lerp_f(splat_pixel.g, 0.0, rocks_amount);
+	splat_pixel.b = dirt_amount;
+	splat_pixel.b = lerp_f(splat_pixel.b, 0.0, rocks_amount);
+	splat_pixel.a = rocks_amount;
+	
+	return splat_pixel;
 }
 
 bool is_on_the_border(vec2 uv, float distance_from_border)
@@ -99,11 +171,6 @@ bool is_on_the_border(vec2 uv, float distance_from_border)
 	} else {
 		return true;
 	}
-}
-
-float lerp_f(float a, float b, float t)
-{
-	return a + (t * (b - a));
 }
 
 vec4 encode_height_to_viewport(float h)
