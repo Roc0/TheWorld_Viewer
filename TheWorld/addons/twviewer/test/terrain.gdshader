@@ -87,7 +87,7 @@ uniform float u_uv_wire_width = 0.003;
 //uniform float u_wire_smoothness : hint_range(0.0, 0.1) = 0.01;
 
 uniform sampler2D u_terrain_heightmap;
-uniform sampler2D u_terrain_normalmap;
+//uniform sampler2D u_terrain_normalmap;
 //uniform sampler2D u_terrain_globalmap : source_color;
 uniform vec4 u_ground_uv_scale_per_texture = vec4(1.000000, 1.000000, 1.000000, 1.000000);	// actually used as float, only first coord is used assuming same scaling in all textures
 
@@ -254,7 +254,7 @@ vec4 fetch_texture_normal_roughness(vec2 uv, float ground_texture_layer, float b
 	//vec3 uv_layer = vec3(uv, ground_texture_layer);
 	vec4 pixel;
 	pixel = texture_layer(gu_ground_normal_roughness_array, uv_layer);
-	pixel.xyz = fma(pixel.xzy, vec3(2.0), vec3(-1.0));
+	//pixel.xyz = fma(pixel.xzy, vec3(2.0), vec3(-1.0));	// Boh!
 	pixel.xyz = normalize(pixel.xyz);
 	pixel.a = pixel.a * base_scale_roughness;
 	return pixel;
@@ -768,8 +768,8 @@ void vertex() {
 	float distance_from_camera = distance(vertex_worldspace_with_h.xyz, camera_pos);
 	float distance_from_vertical_of_camera_on_terrain = distance(vertex_worldspace_with_h.xyz, vec3(camera_pos.x, camera_pos.y - camera_altitude_from_terrain, camera_pos.z));
 
-	vec3 normal_computed = get_normal(u_terrain_normalmap, u_terrain_normal_basis, quadrant_uv);
-	//vec3 normal_computed = compute_normal(u_terrain_heightmap, v_vertex_cell_coords_in_textures, grid_step, u_terrain_height);
+	//vec3 normal_computed = get_normal(u_terrain_normalmap, u_terrain_normal_basis, quadrant_uv);
+	vec3 normal_computed = compute_normal(u_terrain_heightmap, v_vertex_cell_coords_in_textures, grid_step, u_terrain_height);
 
 	vec4 splat = textureLod(u_terrain_splatmap, quadrant_uv, f_texture_lod_zero);
 	//float slope_vertical_factor = 4.0;
@@ -875,8 +875,7 @@ void fragment()
 	vec3 albedo_computed = vec3(0.0, 0.0, 0.0);
 	float ground_normal_scale = gu_ground_normal_scale;
 	float ao_computed = 0.0;
-	float ao_light_affect = 0.0;
-	//float ao_light_affect_computed = 0.0;
+	float ao_light_affect_computed = 0.0;
 	float roughness_computed = 1.0;
 
 	// Terrain normals, tangents and binormals
@@ -1234,7 +1233,7 @@ void fragment()
 			roughness_computed = roughness_computed * ground_roughness_scale;
 
 			vec3 ground_normal = (w.r * normal0 + w.g * normal1 + w.b * normal2 + w.a * normal3) / w_sum;
-			ground_normal_computed = normalize(ground_normal);	// DEBUGRIC
+			ground_normal_computed = normalize(ground_normal);
 
 			const float max_distance_for_normal_scale = 10000.0;
 			if (distance_from_camera > max_distance_for_normal_scale)
@@ -1251,9 +1250,10 @@ void fragment()
 			ao_computed = (w.r * ao.r + w.g * ao.g + w.b * ao.b + w.a * ao.a) / w_sum;;
 			float ground_ao_light_affect = gu_ground_ao_light_affect;
 			if (ground_ao_light_affect == 0.0)
-				ground_ao_light_affect = 0.01;
+				ground_ao_light_affect = 0.000001;
 			float max_view_distance = 40000.0 * ground_ao_light_affect;
-			ao_light_affect = (distance_from_camera / max_view_distance) / 2.0;
+			//ao_light_affect_computed = clamp(0.0, 1.0, max_view_distance / distance_from_camera);
+			ao_light_affect_computed = smoothstep(0.0, max_view_distance, distance_from_camera);
 		}
 
 		/*{
@@ -1537,7 +1537,7 @@ void fragment()
 
 		ROUGHNESS = roughness_computed;
 		AO = ao_computed;
-		AO_LIGHT_AFFECT = ao_light_affect;
+		AO_LIGHT_AFFECT = ao_light_affect_computed;
 		NORMAL_MAP = ground_normal_computed;
 		NORMAL_MAP_DEPTH = ground_normal_scale;
 	}
