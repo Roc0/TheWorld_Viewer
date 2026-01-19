@@ -6,14 +6,14 @@ render_mode blend_mix, depth_draw_opaque, cull_back, /*diffuse_lambert,*/ diffus
 #include "res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc"
 
 // consts
-const vec3 apricot_color = vec3(1.0, 0.749, 0.0);
-const vec3 orange_color = vec3(0.77, 0.53, 0.11);
-const vec3 red_salmon_color = vec3(0.980, 0.502, 0.447);
-const float ground_uv_scale_horiz_threshold = 5000.0;	//15000.0;
-const float ground_uv_scale_vert_threshold = 100.0;
+const vec3 c_apricot_color = vec3(1.0, 0.749, 0.0);
+const vec3 c_orange_color = vec3(0.77, 0.53, 0.11);
+const vec3 c_red_salmon_color = vec3(0.980, 0.502, 0.447);
+const float c_ground_uv_scale_horiz_threshold = 5000.0;	//15000.0;
+const float c_ground_uv_scale_vert_threshold = 100.0;
 const float c_max_ground_uv_scale_per_texture = 80.0;
-const float f_texture_lod_zero = 0.0;
-const int i_texture_lod_zero = 0;
+const float c_f_texture_lod_zero = 0.0;
+const int c_i_texture_lod_zero = 0;
 
 //const vec3 vectors[3] = {
 //	vec3(1.0, 0.0 ,0.0),
@@ -264,8 +264,8 @@ void fetch_base_values0(float ground_texture_layer, out vec3 base_albedo, out fl
 {
 	vec2 pixel_index = vec2(ground_texture_layer, 0.0);	// rangex from 0 to max texture-index (0-based) on the x side
 	pixel_index += vec2(0.5);				// we need to center the pixel: rangex from 0.5 to max texture-index (0-based) + 0.5 on the x side
-	vec2 pixel_uv = pixel_index / vec2(textureSize(gu_ground_base_values_array, i_texture_lod_zero));	// normalized UV to be in the range 0/1
-	vec4 base_values0 = textureLod(gu_ground_base_values_array, pixel_uv, f_texture_lod_zero);
+	vec2 pixel_uv = pixel_index / vec2(textureSize(gu_ground_base_values_array, c_i_texture_lod_zero));	// normalized UV to be in the range 0/1
+	vec4 base_values0 = textureLod(gu_ground_base_values_array, pixel_uv, c_f_texture_lod_zero);
 	//vec4 base_values0 = vec4(1.0, 1.0, 1.0, 1.0);		// DEBUG
 	base_albedo = base_values0.rgb;
 	base_scale_displ = base_values0.a * 255.0;
@@ -275,10 +275,10 @@ void fetch_base_values1(float ground_texture_layer, out float base_scale_ao, out
 {
 	vec2 pixel_index = vec2(ground_texture_layer, 1.0);	// rangex from 0 to max texture-index (0-based) on the x side
 	pixel_index += vec2(0.5);				// we need to center the pixel: rangex from 0.5 to max texture-index (0-based) + 0.5 on the x side
-	vec2 pixel_uv = pixel_index / vec2(textureSize(gu_ground_base_values_array, i_texture_lod_zero));	// normalized UV to be in the range 0/1
+	vec2 pixel_uv = pixel_index / vec2(textureSize(gu_ground_base_values_array, c_i_texture_lod_zero));	// normalized UV to be in the range 0/1
 	//pixel_uv = vec2(0.65625, 0.75);		// DEBUG	10.5 / 16 e 1.5 / 2
 	//pixel_uv = vec2(0.71875, 0.75);		// DEBUG	11.5 / 16 e 1.5 / 2
-	vec4 base_values1 = textureLod(gu_ground_base_values_array, pixel_uv, f_texture_lod_zero);
+	vec4 base_values1 = textureLod(gu_ground_base_values_array, pixel_uv, c_f_texture_lod_zero);
 	//vec4 base_values1 = vec4(1.0, 1.0, 1.0, 1.0);		// DEBUG
 	//base_values1.g = gu_debug_float0;	// DEBUG
 	base_scale_ao = base_values1.r * 255.0;
@@ -670,7 +670,7 @@ void vertex() {
 	bool show_chunks = gu_show_chunks;
 	uint num_vertices_per_chunk = u_num_vertices_per_chunk;
 
-	vec2 heightmapSize = vec2(textureSize(u_terrain_heightmap, i_texture_lod_zero));		// Power of 2 + 1 (f.i. 1025, 2049)
+	vec2 heightmapSize = vec2(textureSize(u_terrain_heightmap, c_i_texture_lod_zero));		// Power of 2 + 1 (f.i. 1025, 2049)
 	
 	vec3 vertex_modelspace_in = VERTEX;
 
@@ -771,7 +771,7 @@ void vertex() {
 	//vec3 normal_computed = get_normal(u_terrain_normalmap, u_terrain_normal_basis, quadrant_uv);
 	vec3 normal_computed = compute_normal(u_terrain_heightmap, v_vertex_cell_coords_in_textures, grid_step, u_terrain_height);
 
-	vec4 splat = textureLod(u_terrain_splatmap, quadrant_uv, f_texture_lod_zero);
+	vec4 splat = textureLod(u_terrain_splatmap, quadrant_uv, c_f_texture_lod_zero);
 	//float slope_vertical_factor = 4.0;
 	//float slope_flat_factor = 1.0;
 	//float dirt_on_rocks_factor = 2.0;
@@ -786,7 +786,7 @@ void vertex() {
 	vec3 tint2 = vec3(1.0, 1.0, 1.0);
 	vec3 tint3 = vec3(1.0, 1.0, 1.0);
 	/*{
-		vec4 tint = textureLod(u_terrain_colormap, quadrant_uv, f_texture_lod_zero);
+		vec4 tint = textureLod(u_terrain_colormap, quadrant_uv, c_f_texture_lod_zero);
 		tint0 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.x);	// decreasing u_colormap_opacity_per_texture dimensions approximates vector tint (u_terrain_colormap texel) to white: each dimnesion (1-4) acts
 		tint1 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.y);	// on the corresponding bump_map (1-4). More precisely u_colormap_opacity_per_texture.(x-w) must be in the interval 0-1, if 0 the function returns
 		tint2 = mix(vec3(1.0), tint.rgb, u_colormap_opacity_per_texture.z);	// vec3(1.0) if 1 (default value) the function returns tint.rgb
@@ -853,7 +853,7 @@ void fragment()
 		}
 	}
 	
-	vec2 heightmapSize = vec2(textureSize(u_terrain_heightmap, i_texture_lod_zero));
+	vec2 heightmapSize = vec2(textureSize(u_terrain_heightmap, c_i_texture_lod_zero));
 
 // Input from Vertex
 	vec3 vertex_in = VERTEX;
@@ -932,9 +932,9 @@ void fragment()
 		{
 			pieces_from_camera_piece = -1;
 
-			if (distance_from_vertical_of_camera_on_terrain < ground_uv_scale_horiz_threshold)
+			if (distance_from_vertical_of_camera_on_terrain < c_ground_uv_scale_horiz_threshold)
 			{
-				if (camera_altitude_from_terrain >= 0.0 && camera_altitude_from_terrain < ground_uv_scale_vert_threshold)
+				if (camera_altitude_from_terrain >= 0.0 && camera_altitude_from_terrain < c_ground_uv_scale_vert_threshold)
 				{
 					vec3 fragment_world_pos = (INV_VIEW_MATRIX * vec4(vertex_in, 1.0)).xyz;
 					int camera_piece_x = int(floor(CAMERA_POSITION_WORLD.x / piece_size));
@@ -999,9 +999,9 @@ void fragment()
 						ground_uv_scale_per_texture *= uv5;
 					}
 				}
-				else if (camera_altitude_from_terrain <= ground_uv_scale_vert_threshold * 2.0)
+				else if (camera_altitude_from_terrain <= c_ground_uv_scale_vert_threshold * 2.0)
 				{
-					if (distance_from_vertical_of_camera_on_terrain < (ground_uv_scale_horiz_threshold / 2.0))
+					if (distance_from_vertical_of_camera_on_terrain < (c_ground_uv_scale_horiz_threshold / 2.0))
 					{
 						ground_uv_scale_per_texture = 5.0;
 					}
@@ -1010,11 +1010,11 @@ void fragment()
 						ground_uv_scale_per_texture = 3.0;
 					}
 				}
-				else if (camera_altitude_from_terrain <= ground_uv_scale_vert_threshold * 3.0)
+				else if (camera_altitude_from_terrain <= c_ground_uv_scale_vert_threshold * 3.0)
 				{
 					ground_uv_scale_per_texture = 3.0;
 				}
-				else if (camera_altitude_from_terrain <= ground_uv_scale_vert_threshold * 4.0)
+				else if (camera_altitude_from_terrain <= c_ground_uv_scale_vert_threshold * 4.0)
 				{
 					ground_uv_scale_per_texture = 2.0;
 				}
@@ -1165,7 +1165,7 @@ void fragment()
 			/*vec3 red = vec3(1.0, 0.0, 0.0);
 			vec3 green = vec3(0.0, 1.0, 0.0);
 			vec3 blue = vec3(0.0, 0.0, 1.0);
-			vec3 yellow = apricot_color;
+			vec3 yellow = c_apricot_color;
 			if (north_border_pixel)	{
 				ab0.rgb = red;
 				ab1.rgb = red;
@@ -1302,13 +1302,13 @@ void fragment()
 						&& (distance_from_vertex.y < quad_line_thickness || (1.0 - distance_from_vertex.y) < quad_line_thickness)) {
 						albedo_computed = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
 					} else {
-						albedo_computed = apricot_color;	// GDN_TheWorld_Globals::g_color_yellow_apricot
+						albedo_computed = c_apricot_color;	// GDN_TheWorld_Globals::g_color_yellow_apricot
 					}
 				}
 			}
 
 			if (mouse_hit_radius != 0.0 && distance(mouse_hit_in_quadrant_uv, quadrant_uv) < mouse_hit_radius) {
-				vec3 mouse_hit_albedo = apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
+				vec3 mouse_hit_albedo = c_apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
 				albedo_computed = mix(albedo_computed, mouse_hit_albedo, 0.3);
 			}
 		}
@@ -1324,7 +1324,7 @@ void fragment()
 					&& (distance_of_current_fragment_from_grid_vertex.y < quad_line_thickness || (1.0 - distance_of_current_fragment_from_grid_vertex.y) < quad_line_thickness)) {
 					albedo_computed = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
 				} else {
-					albedo_computed = apricot_color;	// GDN_TheWorld_Globals::g_color_yellow_apricot
+					albedo_computed = c_apricot_color;	// GDN_TheWorld_Globals::g_color_yellow_apricot
 				}
 			}
 			vec2 g_uv0 = fract(ground_texture_uv.xz);
@@ -1342,9 +1342,9 @@ void fragment()
 	//
 	if (pixel_type == editmode_border_pixel) {
 		if (gu_hold_blending)
-			albedo_computed = red_salmon_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
+			albedo_computed = c_red_salmon_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
 		else
-			albedo_computed = apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
+			albedo_computed = c_apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
 	}
 
 	//
@@ -1364,10 +1364,10 @@ void fragment()
 		float chunk_border_line_thickness = 0.005;
 
 		if (editmode_selected > 0.0 && is_on_the_border(quadrant_uv, quad_line_thickness)) {
-			albedo_computed = apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
+			albedo_computed = c_apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
 		} else {
 			if (mouse_hit_in_quadrant_uv != vec2(-1) && distance(mouse_hit_in_quadrant_uv, quadrant_uv) < mouse_hit_radius) {
-				albedo_computed = apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
+				albedo_computed = c_apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
 			} else {
 				if (is_on_the_border(quadrant_uv, chunk_border_line_thickness) || is_on_the_border(chunk_uv, chunk_border_line_thickness)) {
 					albedo_computed = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
@@ -1484,11 +1484,11 @@ void fragment()
 		/*float shine = abs(sin(TIME * u_shine_speed));
 		float start_smoothness = 0.05;
 		float smooth_shine = mix(start_smoothness, u_highlight_quadrant_smoothness, shine);
-		vec3 shine_color = apricot_color;
+		vec3 shine_color = c_apricot_color;
 		if (gu_hold_blending)
-			shine_color = red_salmon_color;
+			shine_color = c_red_salmon_color;
 		albedo_computed = mix(albedo_computed, shine_color.rgb, smooth_shine);*/
-		albedo_computed = mix(albedo_computed, orange_color, u_highlight_quadrant_smoothness);
+		albedo_computed = mix(albedo_computed, c_orange_color, u_highlight_quadrant_smoothness);
 		//METALLIC = 1.0; // 0.0 (no metallic) to 1.0 (full metallic)
 	}
 
