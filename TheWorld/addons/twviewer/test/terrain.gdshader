@@ -1,3 +1,9 @@
+// TODO
+// * set new uniforms
+// * transform global uniforms in uniforms
+// * update water.gdshader
+// * update test_quadrant.gd
+
 shader_type spatial;
 //render_mode blend_mix, depth_draw_opaque, cull_back, /*diffuse_lambert,*/ diffuse_burley, /*specular_toon*/ specular_schlick_ggx;
 render_mode blend_mix, depth_draw_opaque, cull_back, /*diffuse_lambert,*/ diffuse_toon, specular_toon, skip_vertex_transform;
@@ -15,17 +21,83 @@ const float c_max_ground_uv_scale_per_texture = 80.0;
 const float c_f_texture_lod_zero = 0.0;
 const int c_i_texture_lod_zero = 0;
 
+// ***********
+// Limitations
+// ***********
+// * max 64 ground texture
+// * max 3 optimization level increments	es: if u_optlvl_increment=2 optimization level can be 0 (num_optlvl_inc=0), 2 (num_optlvl_inc=1), 4 (num_optlvl_inc=2), 6 (num_optlvl_inc=3)
+// * max 625 quadrants (1 + 12 *2)
+
+// ************
+// new uniforms
+// ************
+// already set
+// not set yet
+uniform vec2 u_grid_pos;					// pos of the left-most, top-most quadrant of the grid: the position of the verrtex with the less x and z coords
+uniform uint u_optlvl_increment = 2;		// increment value with which the optimization level can grow according to quadrant params
+uniform uint u_num_quadrants_per_grid_size;// num quadrant per size in the heightmap grid
+uniform sampler2D u_quadrant_control_1;		//texture FORMAT_RF, one texel for each quardant (row * column) with dim = u_num_quadrants_per_size * u_num_quadrants_per_size
+											// * num_optlvl_inc					2 bit	range 0/3
+											// * low-level texture	index		6 bit	range 0/63	(for a max of 64 ground texture)
+											// * high-level texture index		6 bit	range 0/63	(for a max of 64 ground texture)
+											// * dirt texture index				6 bit	range 0/63	(for a max of 64 ground texture)
+											// * rock texture index			6 bit	range 0/63	(for a max of 64 ground texture)
+											// * reserved						6 bit
+
+uniform sampler2D u_quadrant_control_2;		// texture FORMAT_RGBAF, one texel for each quardant (row * column) with dim = u_num_quadrants_per_size * u_num_quadrants_per_size
+											// * high_elevation_factor	(R)		32 bits
+											// * low_elevation_factor (G)		32 bits
+											// * min_heigth (B)					32 bits
+											// * max_heigth (A)					32 bits
+
+uniform sampler2D u_quadrant_control_3;		// texture FORMAT_RGBAF, one texel for each quardant (row * column) with dim = u_num_quadrants_per_size * u_num_quadrants_per_size
+											// * slope_vertical_factor (R)		32 bits
+											// * slope_flat_factor (G)			32 bits
+											// * dirt_on_rocks_factor (B)		32 bits
+											// * reserved (A)					32 bits
+uniform sampler2DArray u_heightmap_array_optlvl_inc_0;	// texture array FORMAT_RH, flat texture array (one texture for each quadrant - row * column) with dim = u_num_quadrants_per_size * u_num_quadrants_per_size, for each layer: one texel for each vertex (row * column), 16 bit	range -65504/+65504
+uniform sampler2DArray u_heightmap_array_optlvl_inc_1;	// texture array same as above
+uniform sampler2DArray u_heightmap_array_optlvl_inc_2;	// texture array same as above
+uniform sampler2DArray u_heightmap_array_optlvl_inc_3;	// texture array same as above
+uniform sampler2DArray u_vertex_control_array_optlvl_inc_0;	// texture array FORMAT_RF, flat texture array (one texture for each quadrant - row * column) with dim = u_num_quadrants_per_size * u_num_quadrants_per_size, for each layer: one texel for each vertex (row * column)
+															// * hole						1 bit	range 0/1	false/true
+															// * navigation				1 bit	range 0/1	false/true
+															// * custom texture 1 valid	1 bit	range 0/1	false/true
+															// * custom texture 2 valid	1 bit	range 0/1	false/true
+															// * custom texture 3 valid	1 bit	range 0/1	false/true
+															// * custom texture 4 valid	1 bit	range 0/1	false/true
+															// * custom texture 1 index	6 bit	range 0/63	(per un massimo di 64 ground texture)
+															// * custom texture 2 index	6 bit	range 0/63	(per un massimo di 64 ground texture)
+															// * custom texture 3 index	6 bit	range 0/63	(per un massimo di 64 ground texture)
+															// * custom texture 4 index	6 bit	range 0/63	(per un massimo di 64 ground texture)
+															// * reserved					2 bit
+
+uniform sampler2DArray u_vertex_control_array_optlvl_inc_1;	// texture array same as above
+uniform sampler2DArray u_vertex_control_array_optlvl_inc_2;	// texture array same as above
+uniform sampler2DArray u_vertex_control_array_optlvl_inc_3;	// texture array same as above
+
 //const vec3 vectors[3] = {
 //	vec3(1.0, 0.0 ,0.0),
 //	vec3(0.0, 1.0 ,0.0),
 //	vec3(0.0, 0.0 ,1.0)
 //};
 
+// ************************
+// only in test_quadrant.gd
+// ************************
+uniform bool u_test_quadrant = false;
+uniform bool u_test_quadrant_show_wireframe = false;
+
+// ***************
+// not set in code
+// ***************
+//uniform float u_shine_speed : hint_range(0.1, 10) = 1.5;
+uniform float u_highlight_quadrant_smoothness : hint_range(0.1, 1.0) = 0.2;
+
 // ***************
 // global uniforms
 // ***************
 global uniform sampler2D gu_terrain_quad_border_distance : source_color;
-
 global uniform sampler2DArray gu_ground_albedo_displ_array : source_color, filter_linear_mipmap_anisotropic, repeat_enable;
 global uniform sampler2DArray gu_ground_normal_roughness_array : hint_normal, filter_linear_mipmap_anisotropic, repeat_enable;
 global uniform sampler2D gu_ground_base_values_array;
@@ -35,7 +107,6 @@ global uniform float gu_ground_roughness_scale : hint_range(0.0, 1.0) = 1.0;
 global uniform float gu_ground_normal_scale : hint_range(1.0, 16.0, 0.1) = 3.0;
 global uniform float gu_ground_ao_light_affect : hint_range(0.0, 1.0, 0.01) = 0.0;
 //global uniform float gu_ground_heightmap_displ : hint_range(0.0, 5.0, 0.001) = 0.0;	//=3.871;
-
 global uniform float gu_texture_overflow_size = 0.3;
 //global uniform bool gu_texture_new_overflow = false;
 //global uniform float gu_grid_step;
@@ -47,7 +118,6 @@ global uniform bool gu_show_need_blending = false;
 global uniform int gu_force_height_0 = -1;
 global uniform bool gu_highlight_hit_quadrant = false;
 global uniform bool gu_hold_blending = false;
-
 global uniform float gu_piece_size = 200;
 global uniform bool gu_debug_view_pieces = false;
 //global uniform float gu_debug_float0 = 40.0;
@@ -58,19 +128,13 @@ global uniform bool gu_debug_view_pieces = false;
 //global uniform float gu_debug_float5 = 6.0;
 global uniform bool gu_debug_texture_overflow = false;
 global uniform bool gu_debug_uv_scale_per_texture = false;
-
 //global uniform float gu_camera_altitude_uv_scale_threshold = 6000.0;
 global uniform float gu_camera_distance_uv_scale_threshold = 10000.0;
 
 // ********
 // uniforms
 // ********
-uniform bool u_test_quadrant = false;
-uniform bool u_test_quadrant_show_wireframe = false;
-
-//uniform float u_shine_speed : hint_range(0.1, 10) = 1.5;
-uniform float u_highlight_quadrant_smoothness : hint_range(0.1, 1.0) = 0.2;
-
+uniform float u_grid_step_optlvl_zero = 2;	// step in WUs between vertices at optimization level zero that is at greater resolution of the chunk
 uniform bool u_need_blending = false;
 uniform bool u_need_blending_north = false;
 uniform bool u_need_blending_south = false;
@@ -114,7 +178,7 @@ uniform sampler2D u_north_border_splatmap;
 uniform sampler2D u_west_border_splatmap;
 
 uniform mat4 u_terrain_inverse_transform;
-uniform float u_grid_step = 2;
+//uniform float u_grid_step = 2;		// replaced by u_grid_step_optlvl_zero
 uniform uint u_optimization_level = 0;
 uniform uint u_num_vertices_per_chunk;
 uniform sampler2D u_terrain_splatmap;
@@ -665,7 +729,7 @@ void vertex() {
 	bool test_quadrant = u_test_quadrant;
 	mat4 terrain_inverse_transform = u_terrain_inverse_transform;
 	uint optimization_level = u_optimization_level;
-	float grid_step = u_grid_step * pow(2.0, float(optimization_level));
+	float grid_step = u_grid_step_optlvl_zero * pow(2.0, float(optimization_level));
 	//v_grid_step = grid_step;
 	bool show_chunks = gu_show_chunks;
 	uint num_vertices_per_chunk = u_num_vertices_per_chunk;
