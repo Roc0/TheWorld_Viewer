@@ -36,7 +36,7 @@ const int c_i_texture_lod_zero = 0;
 uniform vec2 u_grid_pos;					// pos of the left-most, top-most quadrant of the grid: the position of the verrtex with the less x and z coords
 uniform uint u_optlvl_increment = 2;		// increment value with which the optimization level can grow according to quadrant params
 uniform uint u_num_quadrants_per_grid_size;// num quadrant per size in the heightmap grid
-uniform sampler2D u_quadrant_control_1;		//texture FORMAT_RF, one texel for each quardant (row * column) with dim = u_num_quadrants_per_size * u_num_quadrants_per_size
+uniform sampler2D u_grid_control_1;		//texture FORMAT_RF, one texel for each quardant (row * column) with dim = u_num_quadrants_per_size * u_num_quadrants_per_size
 											// * num_optlvl_inc					2 bit	range 0/3
 											// * low-level texture	index		6 bit	range 0/63	(for a max of 64 ground texture)
 											// * high-level texture index		6 bit	range 0/63	(for a max of 64 ground texture)
@@ -44,22 +44,23 @@ uniform sampler2D u_quadrant_control_1;		//texture FORMAT_RF, one texel for each
 											// * rock texture index			6 bit	range 0/63	(for a max of 64 ground texture)
 											// * reserved						6 bit
 
-uniform sampler2D u_quadrant_control_2;		// texture FORMAT_RGBAF, one texel for each quardant (row * column) with dim = u_num_quadrants_per_size * u_num_quadrants_per_size
+uniform sampler2D u_grid_control_2;		// texture FORMAT_RGBAF, one texel for each quardant (row * column) with dim = u_num_quadrants_per_size * u_num_quadrants_per_size
 											// * high_elevation_factor	(R)		32 bits
 											// * low_elevation_factor (G)		32 bits
 											// * min_heigth (B)					32 bits
 											// * max_heigth (A)					32 bits
 
-uniform sampler2D u_quadrant_control_3;		// texture FORMAT_RGBAF, one texel for each quardant (row * column) with dim = u_num_quadrants_per_size * u_num_quadrants_per_size
+uniform sampler2D u_grid_control_3;		// texture FORMAT_RGBAF, one texel for each quardant (row * column) with dim = u_num_quadrants_per_size * u_num_quadrants_per_size
 											// * slope_vertical_factor (R)		32 bits
 											// * slope_flat_factor (G)			32 bits
 											// * dirt_on_rocks_factor (B)		32 bits
-											// * reserved (A)					32 bits
+											// * heightmap_index (A)			10 bits		range 0/1023
+											// * reserved (A)					22 bits
 uniform sampler2DArray u_heightmap_array_optlvl_inc_0;	// texture array FORMAT_RH, flat texture array (one texture for each quadrant - row * column) with dim = u_num_quadrants_per_size * u_num_quadrants_per_size, for each layer: one texel for each vertex (row * column), 16 bit	range -65504/+65504
 uniform sampler2DArray u_heightmap_array_optlvl_inc_1;	// texture array same as above
 uniform sampler2DArray u_heightmap_array_optlvl_inc_2;	// texture array same as above
 uniform sampler2DArray u_heightmap_array_optlvl_inc_3;	// texture array same as above
-uniform sampler2DArray u_vertex_control_array_optlvl_inc_0;	// texture array FORMAT_RF, flat texture array (one texture for each quadrant - row * column) with dim = u_num_quadrants_per_size * u_num_quadrants_per_size, for each layer: one texel for each vertex (row * column)
+//uniform sampler2DArray u_vertex_control_array_optlvl_inc_0;	// texture array FORMAT_RF, flat texture array (one texture for each quadrant - row * column) with dim = u_num_quadrants_per_size * u_num_quadrants_per_size, for each layer: one texel for each vertex (row * column)
 															// * hole						1 bit	range 0/1	false/true
 															// * navigation				1 bit	range 0/1	false/true
 															// * custom texture 1 valid	1 bit	range 0/1	false/true
