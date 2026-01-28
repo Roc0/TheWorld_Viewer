@@ -54,8 +54,8 @@ uniform sampler2D u_grid_control_3;		// texture FORMAT_RGBAF, one texel for each
 											// * slope_vertical_factor (R)		32 bits
 											// * slope_flat_factor (G)			32 bits
 											// * dirt_on_rocks_factor (B)		32 bits
-											// * heightmap_index (A)			10 bits		range 0/1023
 											// * reserved (A)					22 bits
+											// * heightmap_index (A)			10 bits		range 0/1023
 uniform sampler2DArray u_heightmap_array_optlvl_inc_0;	// texture array FORMAT_RH, flat texture array (one texture for each quadrant - row * column) with dim = u_num_quadrants_per_size * u_num_quadrants_per_size, for each layer: one texel for each vertex (row * column), 16 bit	range -65504/+65504
 uniform sampler2DArray u_heightmap_array_optlvl_inc_1;	// texture array same as above
 uniform sampler2DArray u_heightmap_array_optlvl_inc_2;	// texture array same as above
