@@ -4,6 +4,7 @@
 *Log.txt
 *_log.*.txt
 *_Log.*.txt
+*.pdb
 
 # Godot-specific ignores
 .import/
