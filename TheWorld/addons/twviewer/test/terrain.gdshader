@@ -56,6 +56,7 @@ uniform sampler2D u_grid_control_3;		// texture FORMAT_RGBAF, one texel for each
 											// * dirt_on_rocks_factor (B)		32 bits
 											// * reserved (A)					22 bits
 											// * heightmap_index (A)			10 bits		range 0/1023
+//uniform sampler2D u_heightmap_array[841];
 uniform sampler2DArray u_heightmap_array_optlvl_inc_0;	// texture array FORMAT_RH, flat texture array (one texture for each quadrant - row * column) with dim = u_num_quadrants_per_size * u_num_quadrants_per_size, for each layer: one texel for each vertex (row * column), 16 bit	range -65504/+65504
 uniform sampler2DArray u_heightmap_array_optlvl_inc_1;	// texture array same as above
 uniform sampler2DArray u_heightmap_array_optlvl_inc_2;	// texture array same as above
@@ -719,8 +720,8 @@ void remove_vertex(float f)
 	f = 0.0 / 0.0;
 }
 
-void vertex() {
-
+void vertex()
+{
 	//vec3 camera_pos = gu_camera_pos;
 	vec3 camera_pos = MAIN_CAM_INV_VIEW_MATRIX[3].xyz;
 	float camera_altitude_from_terrain = u_override_camera_altitude_from_terrain;
