@@ -132,9 +132,9 @@ float lerp_f(float a, float b, float t)
 }
 
 vec4 compute_splat(sampler2D heightmap, vec2 vertex_cell_coords_in_textures, float grid_step, float terrain_height, vec3 _normal,
-					float slope_vertical_factor, float slope_flat_factor, float dirt_on_rocks_factor, float high_elevation_factor, float low_elevation_factor, float min_heigth, float max_heigth)
+					float slope_vertical_factor, float slope_flat_factor, float dirt_on_rocks_factor, float high_elevation_factor, float low_elevation_factor, float min_height, float max_height)
 {
-	// u_slope_vertical_factor, u_slope_flat_factor, u_dirt_on_rocks_factor, u_high_elevation_factor, u_low_elevation_factor, u_min_heigth, u_max_heigth
+	// u_slope_vertical_factor, u_slope_flat_factor, u_dirt_on_rocks_factor, u_high_elevation_factor, u_low_elevation_factor, u_min_height, u_max_height
 
 	//vec2 uv = UV;
 	//float h = get_height(TEXTURE, u_terrain_height, uv);
@@ -144,7 +144,7 @@ vec4 compute_splat(sampler2D heightmap, vec2 vertex_cell_coords_in_textures, flo
 	float slope = (slope_vertical_factor * (1.0 - _normal.y)) - slope_flat_factor;
 	float rocks_amount = clamp(slope, 0.0, 1.0);
 	float dirt_amount = clamp(rocks_amount * dirt_on_rocks_factor, 0.0, 1.0);
-	float high_elevation_amount = high_elevation_factor * ((h - min_heigth) / (max_heigth - min_heigth)) - low_elevation_factor;
+	float high_elevation_amount = high_elevation_factor * ((h - min_height) / (max_height - min_height)) - low_elevation_factor;
 	high_elevation_amount = clamp(high_elevation_amount, 0.0, 1.0);
 	float low_elevation_amount = 1.0 - high_elevation_amount;
 	

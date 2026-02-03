@@ -47,8 +47,8 @@ const int c_i_texture_lod_zero = 0;
 //uniform sampler2D u_grid_control_2;		// texture FORMAT_RGBAF, one texel for each quardant (row * column) with dim = u_num_quadrants_per_size * u_num_quadrants_per_size
 											// * high_elevation_factor	(R)		32 bits
 											// * low_elevation_factor (G)		32 bits
-											// * min_heigth (B)					32 bits
-											// * max_heigth (A)					32 bits
+											// * min_height (B)					32 bits
+											// * max_height (A)					32 bits
 
 //uniform sampler2D u_grid_control_3;		// texture FORMAT_RGBAF, one texel for each quardant (row * column) with dim = u_num_quadrants_per_size * u_num_quadrants_per_size
 											// * slope_vertical_factor (R)		32 bits
@@ -114,7 +114,7 @@ global uniform float gu_texture_overflow_size = 0.3;
 //global uniform float gu_grid_step;
 global uniform float gu_camera_altitude_from_terrain = -1;
 global uniform bool gu_show_chunks = false;
-global uniform bool gu_show_wireframe = false;
+uniform bool u_show_wireframe = false;
 global uniform bool gu_show_need_blending = false;
 //global uniform vec3 gu_camera_pos = vec3(0.000000, 0.000000, 0.000000);
 global uniform int gu_force_height_0 = -1;
@@ -153,8 +153,12 @@ uniform float u_uv_wire_width = 0.003;
 //uniform float u_wire_smoothness : hint_range(0.0, 0.1) = 0.01;
 
 uniform sampler2D u_terrain_heightmap;
-//uniform sampler2D u_terrain_normalmap;
+uniform sampler2D u_terrain_heightmap_border_rows;	// row0 = north border of the heightmap (x growing), row1 = south border of the heightmap (x growing), row2 = west border of the heightmap (z growing), row3 = east border of the heightmap (z growing)
+
+uniform sampler2D u_terrain_normalmap;
+
 //uniform sampler2D u_terrain_globalmap : source_color;
+
 uniform vec4 u_ground_uv_scale_per_texture = vec4(1.000000, 1.000000, 1.000000, 1.000000);	// actually used as float, only first coord is used assuming same scaling in all textures
 
 //uniform float u_scale_per_texture_factor = 1;
@@ -175,16 +179,17 @@ uniform vec4 u_west_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000
 uniform vec4 u_north_west_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
 //uniform vec4 u_south_east_ground_layers = vec4(-1.000000, -1.000000, -1.000000, -1.000000);
 
-uniform vec4 u_north_west_corner_splatmap_texel;
-uniform sampler2D u_north_border_splatmap;
-uniform sampler2D u_west_border_splatmap;
-
 uniform mat4 u_terrain_inverse_transform;
 //uniform float u_grid_step = 2;		// replaced by u_grid_step_optlvl_zero
 uniform uint u_optimization_level = 0;
 uniform uint u_num_vertices_per_chunk;
+
 uniform sampler2D u_terrain_splatmap;
-uniform sampler2D u_terrain_colormap;
+uniform vec4 u_north_west_corner_splatmap_texel;
+uniform sampler2D u_north_border_splatmap;
+uniform sampler2D u_west_border_splatmap;
+
+//uniform sampler2D u_terrain_colormap;
 
 uniform mat3 u_terrain_normal_basis;
 uniform float u_terrain_height = 1.0;	// NOTSET
@@ -194,6 +199,14 @@ uniform bool u_force_height_0 = false;
 uniform vec4 u_colormap_opacity_per_texture = vec4(1.0, 1.0, 1.0, 1.0);	// NOTSET
 
 uniform float u_override_camera_altitude_from_terrain = -2.0;
+
+uniform float u_splat_slope_vertical_factor = 4.0;
+uniform float u_splat_slope_flat_factor = 1.0;
+uniform float u_splat_dirt_on_rocks_factor = 2.0;
+uniform float u_splat_high_elevation_factor = 4.0;
+uniform float u_splat_low_elevation_factor = 2.0;
+uniform float u_splat_min_height = 0.0;
+uniform float u_splat_max_height = 0.0;
 
 //********************************************************************************************************************
 //     Test PBR
@@ -747,7 +760,7 @@ void vertex()
 	vec4 vertex_local_to_quadrant_pos = terrain_inverse_transform * vertex_worldspace_in;		// vertex_local_to_quadrant_pos ranges from 0 to quadrant_size (f.i. 2048, 4096)
 															//if (vertex_local_to_quadrant_pos.x == 0.0 || vertex_local_to_quadrant_pos.x == 4096.0 || vertex_local_to_quadrant_pos.z == 0.0 || vertex_local_to_quadrant_pos.z == 4096.0) {vertex_local_to_quadrant_pos.x = 0.0 / 0.0;}	// DEBUG
 	// to get correct value from the textures (in the range 0 / max size in local coord) we need to consider the step
-	// (dividing by it): in the textures heigths/normals are adjacent but in global/local coords are separated by the step
+	// (dividing by it): in the textures heights/normals are adjacent but in global/local coords are separated by the step
 	// ***  after next line vertex_cell_coords_in_textures ranges from 0 to heightmap size - 1 (heightmap size vertices per
 	// size of quadrant - f.i. 2049) so it is an index of the pixel in heightmap/normalmap/splatmap etc. texture ***
 	vec2 vertex_cell_coords_in_textures = vertex_local_to_quadrant_pos.xz / vec2(grid_step);	// vertex_cell_coords_in_textures ranges from 0 to heightmap size - 1 (f.i. 1024 or 2048)
@@ -772,7 +785,7 @@ void vertex()
 	vec3 vertex_modelspace_with_h = vertex_modelspace_in;
 	vec4 vertex_worldspace_with_h = vertex_worldspace_in;
 	{
-		float h = get_height(u_terrain_heightmap, u_terrain_height, quadrant_uv);		// Height displacement from heigthmap
+		float h = get_height(u_terrain_heightmap, u_terrain_height, quadrant_uv);		// Height displacement from heightmap
 		bool force_height_0 = u_force_height_0;
 		if (!force_height_0) {
 			if (gu_force_height_0 > 0) {
@@ -834,18 +847,34 @@ void vertex()
 	float distance_from_camera = distance(vertex_worldspace_with_h.xyz, camera_pos);
 	float distance_from_vertical_of_camera_on_terrain = distance(vertex_worldspace_with_h.xyz, vec3(camera_pos.x, camera_pos.y - camera_altitude_from_terrain, camera_pos.z));
 
-	//vec3 normal_computed = get_normal(u_terrain_normalmap, u_terrain_normal_basis, quadrant_uv);
-	vec3 normal_computed = compute_normal(u_terrain_heightmap, v_vertex_cell_coords_in_textures, grid_step, u_terrain_height);
+	vec3 normal_computed;
+	normal_computed = get_normal(u_terrain_normalmap, u_terrain_normal_basis, quadrant_uv);
+	//normal_computed = compute_normal(u_terrain_heightmap, v_vertex_cell_coords_in_textures, grid_step, u_terrain_height);
 
-	vec4 splat = textureLod(u_terrain_splatmap, quadrant_uv, c_f_texture_lod_zero);
-	//float slope_vertical_factor = 4.0;
-	//float slope_flat_factor = 1.0;
-	//float dirt_on_rocks_factor = 2.0;
-	//float high_elevation_factor = 4.0;
-	//float low_elevation_factor = 2.0;
-	//float min_heigth;
-	//float max_heigth;
-	//vec4 splat = compute_splat(u_terrain_heightmap, v_vertex_cell_coords_in_textures, grid_step, u_terrain_height, normal_computed, slope_vertical_factor, slope_flat_factor, dirt_on_rocks_factor, high_elevation_factor, low_elevation_factor, min_heigth, max_heigth);
+	vec4 splat;
+	bool splat_computed = false;
+	if (splat_computed)
+	{
+		float splat_slope_vertical_factor = u_splat_slope_vertical_factor;
+		float splat_slope_flat_factor = u_splat_slope_flat_factor;
+		float splat_dirt_on_rocks_factor = u_splat_dirt_on_rocks_factor;
+		float splat_high_elevation_factor = u_splat_high_elevation_factor;
+		float splat_low_elevation_factor = u_splat_low_elevation_factor;
+		float splat_min_height = u_splat_min_height;
+		float splat_max_height = u_splat_max_height;
+		//float splat_slope_vertical_factor = 4.0;
+		//float splat_slope_flat_factor = 1.0;
+		//float splat_dirt_on_rocks_factor = 2.0;
+		//float splat_high_elevation_factor = 4.0;
+		//float splat_low_elevation_factor = 2.0;
+		//float splat_min_height = 0.0;
+		//float splat_max_height = 0.0;
+		splat = compute_splat(u_terrain_heightmap, v_vertex_cell_coords_in_textures, grid_step, u_terrain_height, normal_computed, splat_slope_vertical_factor, splat_slope_flat_factor, splat_dirt_on_rocks_factor, splat_high_elevation_factor, splat_low_elevation_factor, splat_min_height, splat_max_height);
+	}
+	else
+	{
+		splat = textureLod(u_terrain_splatmap, quadrant_uv, c_f_texture_lod_zero);
+	}
 
 	vec3 tint0 = vec3(1.0, 1.0, 1.0);
 	vec3 tint1 = vec3(1.0, 1.0, 1.0);
@@ -974,7 +1003,7 @@ void fragment()
 			} else {
 				wireframe = need_blending;
 				if (!wireframe)
-					wireframe = gu_show_wireframe;
+					wireframe = u_show_wireframe;
 			}
 
 			if (wireframe)
