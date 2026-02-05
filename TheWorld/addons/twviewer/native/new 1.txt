@@ -1,2 +1,0 @@
-2026-01-26 14:44:25.941 DEBUG [24972] [godot::GDN_TheWorld_Globals::debugPrint@375] DEBUG - Quadrants : 841, cached map memory : 0.408068 GB, cached image memory : 1.900172 GB (resized cached image memory : 1.849342 GB)
-2026-01-26 15:09:34.156 DEBUG [24972] [godot::GDN_TheWorld_Globals::debugPrint@375] DEBUG - Quadrants : 841, cached map memory : 1.041686 GB, cached image memory : 2.348139 GB (resized cached image memory : 1.839830 GB)

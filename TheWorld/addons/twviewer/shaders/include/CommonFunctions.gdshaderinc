@@ -1,3 +1,7 @@
+const int c_north_quadrant_border_row = 0;	// North / Top Quadrant
+const int c_south_quadrant_border_row = 1;	// South / Bottom Quadrant
+const int c_west_quadrant_border_row = 2;	// West / Left Quadrant
+const int c_east_quadrant_border_row = 3;	// East / Right Quadrant
 
 bool is_on_upper_border(vec2 uv, float distance_from_border)
 {
@@ -55,21 +59,21 @@ vec4 pack_normal(vec3 n, float a)
 
 float get_height(sampler2D heightmap, float terrain_height, vec2 uv)
 {
-	float lod = 0.0;
-	return textureLod(heightmap, uv, lod).r * terrain_height;
+	float f_lod_zero = 0.0;
+	return textureLod(heightmap, uv, f_lod_zero).r * terrain_height;
 }
 
 float fetch_height(sampler2D heightmap, float terrain_height, ivec2 _index)
 {
-	int i_texture_lod = 0;
-	return texelFetch(heightmap, _index, i_texture_lod).r * terrain_height;
+	int i_lod_zero = 0;
+	return texelFetch(heightmap, _index, i_lod_zero).r * terrain_height;
 }
 
 vec3 get_normal(sampler2D normalmap, mat3 terrain_normal_basis, vec2 uv)
 {
-	float lod = 0.0;
+	float f_lod_zero = 0.0;
 	// Need to use terrain_normal_basis to handle scaling.
-	vec3 n = terrain_normal_basis * unpack_normal(textureLod(normalmap, uv, lod));
+	vec3 n = terrain_normal_basis * unpack_normal(textureLod(normalmap, uv, f_lod_zero));
 	//vec3 n = unpack_normal(texture(normalmap, uv));
 	return normalize(n);
 }
@@ -92,33 +96,51 @@ vec3 get_normal(sampler2D normalmap, mat3 terrain_normal_basis, vec2 uv)
 	return normalize(vec3(h[3] - h[2], grid_step, h[3] - h[0]));
 }*/
 
-vec3 compute_normal(sampler2D heightmap, vec2 vertex_cell_coords_in_textures, float grid_step, float terrain_height)
+vec3 compute_normal(sampler2D heightmap, vec2 vertex_cell_coords_in_textures, sampler2D heightmap_border_rows, vec2 vertex_cell_coords_in_heightmap_optlvl_zero, float grid_step, float terrain_height, bool use_external_borders)
 {
-	int lod = 0;
-	vec2 heightmapSize = vec2(textureSize(heightmap, lod));
+	// vertex_cell_coords_in_textures is a 0-based index of the pixel in the heightmap and it ranges from 0 to heightmapSize - 1 (f.i. 1024 or 2048)
+	int lod_zero = 0;
+	vec2 heightmapSize = vec2(textureSize(heightmap, lod_zero));		// number of vertices per size of the texture f.i. 1025 or 2049 assuming each quadrant size 1024 or 2048
 	ivec2 _index = ivec2(vertex_cell_coords_in_textures);
+	ivec2 _index_optlvl_zero = ivec2(vertex_cell_coords_in_heightmap_optlvl_zero);
 	float h;
 	float right_h;
-	float fore_h;
+	float bottom_h;
 	if (distance(vertex_cell_coords_in_textures.x, heightmapSize.x - 1.0) < 1.0) {
-		h = fetch_height(heightmap, terrain_height, _index - ivec2(1, 0));
-		right_h = fetch_height(heightmap, terrain_height, _index);
-		fore_h = fetch_height(heightmap, terrain_height, _index - ivec2(1, -1));
+		// the pixel is in the right edge of the heightmap
+		if (use_external_borders) {
+			h = fetch_height(heightmap, terrain_height, _index);
+			right_h = texelFetch(heightmap_border_rows, ivec2(_index_optlvl_zero.y, c_east_quadrant_border_row), lod_zero).r;
+			if (distance(vertex_cell_coords_in_textures.y, heightmapSize.y - 1.0) < 1.0) {
+				// the pixel is in the bottom/right corner of the heightmap
+				bottom_h = texelFetch(heightmap_border_rows, ivec2(_index_optlvl_zero.x, c_south_quadrant_border_row), lod_zero).r;
+			} else {
+				bottom_h = fetch_height(heightmap, terrain_height, _index + ivec2(0, 1));
+			}
+		} else {
+			h = fetch_height(heightmap, terrain_height, _index - ivec2(1, 0));
+			right_h = fetch_height(heightmap, terrain_height, _index);
+			bottom_h = fetch_height(heightmap, terrain_height, _index - ivec2(1, -1));
+		}
 	} else {
 		if (distance(vertex_cell_coords_in_textures.y, heightmapSize.y - 1.0) < 1.0) {
-			h = fetch_height(heightmap, terrain_height, _index - ivec2(0, 1));
-			right_h = fetch_height(heightmap, terrain_height, _index - ivec2(-1, 1));
-			fore_h = fetch_height(heightmap, terrain_height, _index);
+			// the pixel is in the bottom edge of the heightmap but not in the bottom/right corner of the heightmap
+			if (use_external_borders) {
+				h = fetch_height(heightmap, terrain_height, _index);
+				right_h = fetch_height(heightmap, terrain_height, _index + ivec2(1, 0));
+				bottom_h = texelFetch(heightmap_border_rows, ivec2(_index_optlvl_zero.x, c_south_quadrant_border_row), lod_zero).r;
+			} else {
+				h = fetch_height(heightmap, terrain_height, _index - ivec2(0, 1));
+				right_h = fetch_height(heightmap, terrain_height, _index - ivec2(-1, 1));
+				bottom_h = fetch_height(heightmap, terrain_height, _index);
+			}
 		} else {
 			h = fetch_height(heightmap, terrain_height, _index);
 			right_h = fetch_height(heightmap, terrain_height, _index + ivec2(1, 0));
-			fore_h = fetch_height(heightmap, terrain_height, _index + ivec2(0, 1));
+			bottom_h = fetch_height(heightmap, terrain_height, _index + ivec2(0, 1));
 		}
 	}
-	//h = fetch_height(heightmap, terrain_height, _index);
-	//right_h = fetch_height(heightmap, terrain_height, _index + ivec2(1, 0));
-	//fore_h = fetch_height(heightmap, terrain_height, _index + ivec2(0, 1));
-	return normalize(vec3(h - right_h, grid_step, h - fore_h));
+	return normalize(vec3(h - right_h, grid_step, h - bottom_h));
 }
 
 vec3 get_normal_1(sampler2D tex, vec2 uv)

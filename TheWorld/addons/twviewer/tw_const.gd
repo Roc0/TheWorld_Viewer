@@ -63,8 +63,12 @@ static func status_to_string(status : int) -> String:
 		return clientstatus_str_session_initialized
 	elif status == clientstatus_world_deploy_in_progress:
 		return clientstatus_str_world_deploy_in_progress
+	elif status == clientstatus_minimal_world_deployed:
+		return clientstatus_str_minimal_world_deployed
 	elif status == clientstatus_world_deployed:
 		return clientstatus_str_world_deployed
+	elif status == clientstatus_world_undeploy_in_progress:
+		return clientstatus_str_world_undeploy_in_progress
 	else:
 		return ""
 		

@@ -5,9 +5,10 @@
 // * update test_quadrant.gd
 
 shader_type spatial;
-//render_mode blend_mix, depth_draw_opaque, cull_back, /*diffuse_lambert,*/ diffuse_burley, /*specular_toon*/ specular_schlick_ggx;
-render_mode blend_mix, depth_draw_opaque, cull_back, /*diffuse_lambert,*/ diffuse_toon, specular_toon, skip_vertex_transform;
-//render_mode unshaded;		// DEBUG
+//render_mode blend_mix, depth_draw_opaque, cull_back, /*diffuse_lambert,*/ diffuse_burley, /*specular_toon*/ specular_schlick_ggx, skip_vertex_transform;
+//render_mode blend_mix, depth_draw_opaque, cull_back, /*diffuse_lambert,*/ diffuse_toon, specular_toon, skip_vertex_transform;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_toon, specular_toon, skip_vertex_transform;
+//render_mode unshaded, skip_vertex_transform;		// DEBUG
 
 #include "res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc"
 
@@ -143,7 +144,8 @@ uniform bool u_need_blending_south = false;
 uniform bool u_need_blending_east = false;
 uniform bool u_need_blending_west = false;
 
-uniform vec4 u_wireframe_albedo : source_color = vec4(0.0, 1.0, 0.0, 1.0);	// green
+uniform vec4 u_wireframe_background_albedo : source_color = vec4(0.0, 1.0, 0.0, 1.0);	// green
+uniform vec4 u_wireframe_lines_albedo : source_color = vec4(1.0, 0.0, 0.0, 1.0);	// red
 uniform vec4 u_need_blending_albedo : source_color = vec4(0.0, 0.0, 1.0, 1.0);	// blue
 uniform vec4 u_selected_albedo : source_color = vec4(0.0, 0.0, 1.0, 1.0);	// green
 uniform vec4 u_wireframe_border_color : source_color = vec4(0.0, 0.0, 0.0, 1.0);	// black
@@ -154,6 +156,10 @@ uniform float u_uv_wire_width = 0.003;
 
 uniform sampler2D u_terrain_heightmap;
 uniform sampler2D u_terrain_heightmap_border_rows;	// row0 = north border of the heightmap (x growing), row1 = south border of the heightmap (x growing), row2 = west border of the heightmap (z growing), row3 = east border of the heightmap (z growing)
+//const int c_north_quadrant_border_row = 0;	// North / Top Quadrant
+//const int c_south_quadrant_border_row = 1;	// South / Bottom Quadrant
+//const int c_west_quadrant_border_row = 2;		// West / Left Quadrant
+//const int c_east_quadrant_border_row = 3;		// East / Right Quadrant
 
 uniform sampler2D u_terrain_normalmap;
 
@@ -249,7 +255,7 @@ uniform sampler2D texture_displacement : hint_default_black, filter_linear_mipma
 
 // Varyings
 varying vec4 v_vertex_worldspace;
-varying vec2 v_vertex_cell_coords_in_textures;
+varying vec2 v_vertex_cell_coords_in_heightmap;
 varying vec4 v_splat;
 varying vec3 v_tint0;
 varying vec3 v_tint1;
@@ -733,6 +739,53 @@ void remove_vertex(float f)
 	f = 0.0 / 0.0;
 }
 
+vec3 compute_normal_1(sampler2D heightmap, vec2 vertex_cell_coords_in_textures, sampler2D heightmap_border_rows, vec2 vertex_cell_coords_in_heightmap_optlvl_zero, float grid_step, float terrain_height, bool use_external_borders)
+{
+	// vertex_cell_coords_in_textures is a 0-based index of the pixel in the heightmap and it ranges from 0 to heightmapSize - 1 (f.i. 1024 or 2048)
+	int lod_zero = 0;
+	vec2 heightmapSize = vec2(textureSize(heightmap, lod_zero));		// number of vertices per size of the texture f.i. 1025 or 2049 assuming each quadrant size 1024 or 2048
+	ivec2 _index = ivec2(vertex_cell_coords_in_textures);
+	ivec2 _index_optlvl_zero = ivec2(vertex_cell_coords_in_heightmap_optlvl_zero);
+	float h;
+	float right_h;
+	float bottom_h;
+	if (distance(vertex_cell_coords_in_textures.x, heightmapSize.x - 1.0) < 1.0) {
+		// the pixel is in the right edge of the heightmap
+		if (use_external_borders) {
+			h = fetch_height(heightmap, terrain_height, _index);
+			right_h = texelFetch(heightmap_border_rows, ivec2(_index_optlvl_zero.y, c_east_quadrant_border_row), lod_zero).r;
+			if (distance(vertex_cell_coords_in_textures.y, heightmapSize.y - 1.0) < 1.0) {
+				// the pixel is in the bottom/right corner of the heightmap
+				bottom_h = texelFetch(heightmap_border_rows, ivec2(_index_optlvl_zero.x, c_south_quadrant_border_row), lod_zero).r;
+			} else {
+				bottom_h = fetch_height(heightmap, terrain_height, _index + ivec2(0, 1));
+			}
+		} else {
+			h = fetch_height(heightmap, terrain_height, _index - ivec2(1, 0));
+			right_h = fetch_height(heightmap, terrain_height, _index);
+			bottom_h = fetch_height(heightmap, terrain_height, _index - ivec2(1, -1));
+		}
+	} else {
+		if (distance(vertex_cell_coords_in_textures.y, heightmapSize.y - 1.0) < 1.0) {
+			// the pixel is in the bottom edge of the heightmap but not in the bottom/right corner of the heightmap
+			if (use_external_borders) {
+				h = fetch_height(heightmap, terrain_height, _index);
+				right_h = fetch_height(heightmap, terrain_height, _index + ivec2(1, 0));
+				bottom_h = texelFetch(heightmap_border_rows, ivec2(_index_optlvl_zero.x, c_south_quadrant_border_row), lod_zero).r;
+			} else {
+				h = fetch_height(heightmap, terrain_height, _index - ivec2(0, 1));
+				right_h = fetch_height(heightmap, terrain_height, _index - ivec2(-1, 1));
+				bottom_h = fetch_height(heightmap, terrain_height, _index);
+			}
+		} else {
+			h = fetch_height(heightmap, terrain_height, _index);
+			right_h = fetch_height(heightmap, terrain_height, _index + ivec2(1, 0));
+			bottom_h = fetch_height(heightmap, terrain_height, _index + ivec2(0, 1));
+		}
+	}
+	return normalize(vec3(h - right_h, grid_step, h - bottom_h));
+}
+
 void vertex()
 {
 	//vec3 camera_pos = gu_camera_pos;
@@ -745,7 +798,6 @@ void vertex()
 	mat4 terrain_inverse_transform = u_terrain_inverse_transform;
 	uint optimization_level = u_optimization_level;
 	float grid_step = u_grid_step_optlvl_zero * pow(2.0, float(optimization_level));
-	//v_grid_step = grid_step;
 	bool show_chunks = gu_show_chunks;
 	uint num_vertices_per_chunk = u_num_vertices_per_chunk;
 
@@ -757,17 +809,19 @@ void vertex()
 	vec4 vertex_worldspace_in = MODEL_MATRIX * vec4(vertex_modelspace_in, 1);
 
 	// to calculate coords of the vertex local to the quadrant we use affine inverse matrix of the global trasform of the quadtree
-	vec4 vertex_local_to_quadrant_pos = terrain_inverse_transform * vertex_worldspace_in;		// vertex_local_to_quadrant_pos ranges from 0 to quadrant_size (f.i. 2048, 4096)
-															//if (vertex_local_to_quadrant_pos.x == 0.0 || vertex_local_to_quadrant_pos.x == 4096.0 || vertex_local_to_quadrant_pos.z == 0.0 || vertex_local_to_quadrant_pos.z == 4096.0) {vertex_local_to_quadrant_pos.x = 0.0 / 0.0;}	// DEBUG
+	vec4 vertex_local_to_quadrant_pos = terrain_inverse_transform * vertex_worldspace_in;		// vertex_local_to_quadrant_pos ranges from 0 to quadrant_size (f.i. 2048, 4096) and is a 0-based index of the vertex in the quadrant
+	
 	// to get correct value from the textures (in the range 0 / max size in local coord) we need to consider the step
 	// (dividing by it): in the textures heights/normals are adjacent but in global/local coords are separated by the step
-	// ***  after next line vertex_cell_coords_in_textures ranges from 0 to heightmap size - 1 (heightmap size vertices per
-	// size of quadrant - f.i. 2049) so it is an index of the pixel in heightmap/normalmap/splatmap etc. texture ***
-	vec2 vertex_cell_coords_in_textures = vertex_local_to_quadrant_pos.xz / vec2(grid_step);	// vertex_cell_coords_in_textures ranges from 0 to heightmap size - 1 (f.i. 1024 or 2048)
-															//if (vertex_cell_coords_in_textures.x == 2048.0) {vertex_cell_coords_in_textures.x = 0.0 / 0.0;};
+	// ***  after next line vertex_cell_coords_in_heightmap ranges from 0 to heightmapSize - 1 (heightmapSize vertices per
+	// size of quadrant - f.i. 1025 or 2049) so it is a 0-based index of the pixel in heightmap/normalmap/splatmap etc. texture ***
+	vec2 vertex_cell_coords_in_heightmap = vertex_local_to_quadrant_pos.xz / vec2(grid_step);	// vertex_cell_coords_in_heightmap ranges from 0 to heightmapSize - 1 (f.i. 1024 or 2048) 0-based index of the pixel in heightmap/normalmap/splatmap
+	
+	vec2 vertex_cell_coords_in_heightmap_optlvl_zero = vertex_local_to_quadrant_pos.xz / vec2(u_grid_step_optlvl_zero);
+	
 	// Moreover must add a half-offset so that we sample the center of pixels, otherwise bilinear filtering of the textures
 	// will give us mixed results (#183): as we fetch pixels from textures with UV which is a percentage value ranging from
-	// 0.0 to 1.0 we have to convert our index (vertex_cell_coords_in_textures) in percentage; without summing vec2(0.5)
+	// 0.0 to 1.0 we have to convert our index (vertex_cell_coords_in_heightmap) in percentage; without summing vec2(0.5)
 	// first index 0 would be 0.0 and we could have next indices summing 1 / heightmap size with the second index being
 	// 1 / heightmap size and the last index being (heightmap size - 1) / heightmap size. In this way transforming percentages
 	// index we touch the exact point where our pixel start and where the previous texture pixel ends so the engine, not knowing
@@ -776,11 +830,9 @@ void vertex()
 	// (remember tha UV is a percentage that approximate to a vertex index) avoiding linear interpolation.
 	// look at https://gamedev.stackexchange.com/questions/46963/how-to-avoid-texture-bleeding-in-a-texture-atlas
 	// and https://learn.microsoft.com/it-it/windows/win32/direct3d9/directly-mapping-texels-to-pixels?redirectedfrom=MSDN
-	v_vertex_cell_coords_in_textures = vertex_cell_coords_in_textures;		// vertex_cell_coords_in_textures ranges from 0 to heightmap size - 1 ((f.i. 1024 or 2048) counting heightmap size vertices (f.i. 1025, 2049)
-	vertex_cell_coords_in_textures += vec2(0.5);	// IMPORTANT: now vertex_cell_coords_in_textures ranges from 0.5
-													// to (heightmap size - 1) + 0.5 with increment of 1.0 between each coord
 	// Normalized UV to be in the range 0/1
-	vec2 quadrant_uv = vertex_cell_coords_in_textures / heightmapSize;
+	vec2 quadrant_uv = (vertex_cell_coords_in_heightmap + vec2(0.5)) / heightmapSize;	// IMPORTANT: to get correct we must range UV vertex_cell_coords_in_heightmap from 0.5 to (heightmap size - 1) + 0.5 
+																						// with increment of 1.0 between each coord than we subdivide by the size of the heightmap 
 
 	vec3 vertex_modelspace_with_h = vertex_modelspace_in;
 	vec4 vertex_worldspace_with_h = vertex_worldspace_in;
@@ -847,13 +899,23 @@ void vertex()
 	float distance_from_camera = distance(vertex_worldspace_with_h.xyz, camera_pos);
 	float distance_from_vertical_of_camera_on_terrain = distance(vertex_worldspace_with_h.xyz, vec3(camera_pos.x, camera_pos.y - camera_altitude_from_terrain, camera_pos.z));
 
+	bool _compute_normal = false;
+	bool _compute_splat = false;
+
 	vec3 normal_computed;
-	normal_computed = get_normal(u_terrain_normalmap, u_terrain_normal_basis, quadrant_uv);
-	//normal_computed = compute_normal(u_terrain_heightmap, v_vertex_cell_coords_in_textures, grid_step, u_terrain_height);
+	if (_compute_normal)
+	{
+		bool use_external_borders = true;
+		normal_computed = compute_normal_1(u_terrain_heightmap, vertex_cell_coords_in_heightmap, u_terrain_heightmap_border_rows, vertex_cell_coords_in_heightmap_optlvl_zero, grid_step, u_terrain_height, use_external_borders);
+	}
+	else
+	{
+		normal_computed = get_normal(u_terrain_normalmap, u_terrain_normal_basis, quadrant_uv);
+	}
+	//normal_computed = normalize(vec3(1.0, 1.0, 1.0));		// DEBUG
 
 	vec4 splat;
-	bool splat_computed = false;
-	if (splat_computed)
+	if (_compute_splat)
 	{
 		float splat_slope_vertical_factor = u_splat_slope_vertical_factor;
 		float splat_slope_flat_factor = u_splat_slope_flat_factor;
@@ -862,19 +924,20 @@ void vertex()
 		float splat_low_elevation_factor = u_splat_low_elevation_factor;
 		float splat_min_height = u_splat_min_height;
 		float splat_max_height = u_splat_max_height;
-		//float splat_slope_vertical_factor = 4.0;
-		//float splat_slope_flat_factor = 1.0;
-		//float splat_dirt_on_rocks_factor = 2.0;
-		//float splat_high_elevation_factor = 4.0;
-		//float splat_low_elevation_factor = 2.0;
-		//float splat_min_height = 0.0;
-		//float splat_max_height = 0.0;
-		splat = compute_splat(u_terrain_heightmap, v_vertex_cell_coords_in_textures, grid_step, u_terrain_height, normal_computed, splat_slope_vertical_factor, splat_slope_flat_factor, splat_dirt_on_rocks_factor, splat_high_elevation_factor, splat_low_elevation_factor, splat_min_height, splat_max_height);
+		//splat_slope_vertical_factor = 4.0;	// DEBUG
+		//splat_slope_flat_factor = 1.0;		// DEBUG
+		//splat_dirt_on_rocks_factor = 2.0;		// DEBUG
+		//splat_high_elevation_factor = 4.0;	// DEBUG
+		//splat_low_elevation_factor = 2.0;		// DEBUG
+		//splat_min_height = 0.0;				// DEBUG
+		//splat_max_height = 0.0;				// DEBUG
+		splat = compute_splat(u_terrain_heightmap, vertex_cell_coords_in_heightmap, grid_step, u_terrain_height, normal_computed, splat_slope_vertical_factor, splat_slope_flat_factor, splat_dirt_on_rocks_factor, splat_high_elevation_factor, splat_low_elevation_factor, splat_min_height, splat_max_height);
 	}
 	else
 	{
 		splat = textureLod(u_terrain_splatmap, quadrant_uv, c_f_texture_lod_zero);
 	}
+	//splat = vec4(1.0);	// DEBUG
 
 	vec3 tint0 = vec3(1.0, 1.0, 1.0);
 	vec3 tint1 = vec3(1.0, 1.0, 1.0);
@@ -910,7 +973,9 @@ void vertex()
 	TANGENT = normalize((MODELVIEW_MATRIX * vec4(TANGENT, 0.0)).xyz);
 
 // Varyings
+	v_vertex_cell_coords_in_heightmap = vertex_cell_coords_in_heightmap;		// vertex_cell_coords_in_heightmap ranges from 0 to heightmapSize - 1 ((f.i. 1024 or 2048) counting heightmap size vertices (f.i. 1025, 2049) ==> 0-based index of the pixel in the heightmap etc.
 	v_vertex_worldspace = vertex_worldspace_with_h;
+	//v_grid_step = grid_step;
 	v_splat = splat;
 	v_tint0 = tint0;
 	v_tint1 = tint1;
@@ -958,7 +1023,7 @@ void fragment()
 	//float grid_step = floor(v_grid_step);
 
 // Varyings
-	//vec2 vertex_cell_coords_in_textures = floor(v_vertex_cell_coords_in_textures);
+	//vec2 vertex_cell_coords_in_heightmap = floor(v_vertex_cell_coords_in_heightmap);
 	vec4 vertex_worldspace = v_vertex_worldspace;
 	float distance_from_camera = v_distance_from_camera;
 	float distance_from_vertical_of_camera_on_terrain = v_distance_from_vertical_of_camera_on_terrain;
@@ -976,6 +1041,30 @@ void fragment()
 	// Terrain normals, tangents and binormals
 	vec3 normal_computed, tanget_computed, binormal_computed, ground_normal_computed;
 	{
+		/*		// DEBUG
+		{
+			// 1. Calcola la dimensione del pixel per campionare i vicini
+			vec2 texel_size = 1.0 / heightmapSize;
+			texel_size *= 0.001;
+			float height_scale = 1.0;
+			
+			// 2. Campionamento manuale (Central Difference)
+			// Usiamo textureLod(..., 0.0) per evitare artefatti da mipmap ai bordi
+			float h_l = textureLod(u_terrain_heightmap, quadrant_uv + vec2(-texel_size.x, 0.0), 0.0).r;
+			float h_r = textureLod(u_terrain_heightmap, quadrant_uv + vec2(texel_size.x, 0.0), 0.0).r;
+			float h_u = textureLod(u_terrain_heightmap, quadrant_uv + vec2(0.0, -texel_size.y), 0.0).r;
+			float h_d = textureLod(u_terrain_heightmap, quadrant_uv + vec2(0.0, texel_size.y), 0.0).r;
+	
+			// 3. Ricostruzione della Normale
+			// Il fattore 2.0 serve per bilanciare il campionamento centrale
+			vec3 normal;
+			normal.x = (h_l - h_r) * height_scale;
+			normal.z = (h_u - h_d) * height_scale;
+			normal.y = 2.0 * texel_size.x; // Regola l'intensità in base alla scala del mondo
+			
+			NORMAL = normalize(normal);
+		}
+		*/		// DEBUG
 		normal_computed = NORMAL;
 		tanget_computed = normalize(cross(normal_computed, vec3(0.0, 0.0, 1.0)));
 		binormal_computed = normalize(cross(normal_computed, tanget_computed));
@@ -1144,12 +1233,12 @@ void fragment()
 		if (is_on_left_border(quadrant_uv, distance_from_border)) {
 			west_border_pixel = true;
 		}
-		/*if (is_on_lower_border(quadrant_uv, distance_from_border)) {
-			south_border_pixel = true;
-		}*/
-		/*if (is_on_right_border(quadrant_uv, distance_from_border)) {
-			east_border_pixel = true;
-		}*/
+		//if (is_on_lower_border(quadrant_uv, distance_from_border)) {
+		//	south_border_pixel = true;
+		//}
+		//if (is_on_right_border(quadrant_uv, distance_from_border)) {
+		//	east_border_pixel = true;
+		//}
 
 		if (north_border_pixel && west_border_pixel)
 		{
@@ -1180,14 +1269,6 @@ void fragment()
 			vec2 pixel_uv = vec2(quadrant_uv.y, 0.5);
 			splat_pixel_computed = texture(u_west_border_splatmap, pixel_uv);
 		}
-		/*if (west_border_pixel) {
-			vec2 pixel_uv = vec2(quadrant_uv.y, 0.5);
-			splat_pixel_computed = texture(u_west_border_splatmap, pixel_uv);
-		}
-		else {
-			vec2 pixel_uv = vec2(quadrant_uv.x, 0.5);
-			splat_pixel_computed = texture(u_north_border_splatmap, pixel_uv);
-		}*/
 	}
 
 
@@ -1321,13 +1402,16 @@ void fragment()
 			float w_sum = (w.r + w.g + w.b + w.a);
 
 			albedo_computed = (w.r * col0.rgb + w.g * col1.rgb + w.b * col2.rgb + w.a * col3.rgb) / w_sum;
+			//albedo_computed = col0.rgb;		// DEBUG
 			albedo_computed = gu_ground_albedo_modifier.rgb * albedo_computed;
 
 			float ground_roughness_scale = gu_ground_roughness_scale;
 			roughness_computed = (w.r * rough.r + w.g * rough.g + w.b * rough.b + w.a * rough.a) / w_sum;
+			//roughness_computed = rough.r;	// DEBUG
 			roughness_computed = roughness_computed * ground_roughness_scale;
 
 			vec3 ground_normal = (w.r * normal0 + w.g * normal1 + w.b * normal2 + w.a * normal3) / w_sum;
+			//ground_normal = normal0;		// DEBUG
 			ground_normal_computed = normalize(ground_normal);
 
 			const float max_distance_for_normal_scale = 10000.0;
@@ -1341,14 +1425,17 @@ void fragment()
 				float normal_scale_increment = abs(ground_normal_scale - 1.0);
 				ground_normal_scale = 1.0 + normal_scale_increment * smoothstep(max_distance_for_normal_scale, 0.0, distance_from_camera);		// smoothstep = 0 if distance_from_camera >= max_distance_for_normal_scale, grows to 1.0 if distance_from_camera decreases to zero
 			}
+			//ground_normal_scale = 1.0;	// DEBUG
 
 			ao_computed = (w.r * ao.r + w.g * ao.g + w.b * ao.b + w.a * ao.a) / w_sum;;
+			//ao_computed = ao.r;		// DEBUG
 			float ground_ao_light_affect = gu_ground_ao_light_affect;
 			if (ground_ao_light_affect == 0.0)
 				ground_ao_light_affect = 0.000001;
 			float max_view_distance = 40000.0 * ground_ao_light_affect;
 			//ao_light_affect_computed = clamp(0.0, 1.0, max_view_distance / distance_from_camera);
 			ao_light_affect_computed = smoothstep(0.0, max_view_distance, distance_from_camera);
+			//ao_light_affect_computed = 0.0;		// DEBUG
 		}
 
 		/*{
@@ -1410,7 +1497,7 @@ void fragment()
 
 		// Show grid management
 		if (grid_on) {
-			float half_texel_size_in_uv_coords = 0.5 / vec2(textureSize(u_terrain_heightmap, 0)).x;
+			float half_texel_size_in_uv_coords = 0.5 / heightmapSize.x;
 			vec2 uv_begin_texel = quadrant_uv - vec2(half_texel_size_in_uv_coords);	// assuming uv is in the center of a texel for each fragment
 			vec2 distance_of_current_fragment_from_grid_vertex = fract(vec2(uv_begin_texel.x / (half_texel_size_in_uv_coords * 2.0), uv_begin_texel.y / (half_texel_size_in_uv_coords * 2.0)));
 			if (distance_of_current_fragment_from_grid_vertex.x < quad_line_thickness || (1.0 - distance_of_current_fragment_from_grid_vertex.x) < quad_line_thickness
@@ -1493,6 +1580,7 @@ void fragment()
 		float uv_wire_width = u_uv_wire_width;
 		float uv_border_wire_width = uv_wire_width * 3.0;
 		float half_texel_size_in_uv_coords = 0.5 / heightmapSize.x;
+		//uv_border_wire_width = 0.0;
 
 		if (quadrant_uv.x < (half_texel_size_in_uv_coords + uv_border_wire_width))					// check left border of quadrant
 		{
@@ -1543,7 +1631,7 @@ void fragment()
 				|| (uv_distance_from_next_vertex.x < (half_texel_size_in_uv_coords + uv_wire_width)) || (uv_distance_from_next_vertex.y < (half_texel_size_in_uv_coords + uv_wire_width)))
 			{
 				// pixel on a line between vertices
-				albedo_computed = u_wireframe_border_color.rgb;
+				albedo_computed = u_wireframe_lines_albedo.rgb;
 			}
 			else
 			{
@@ -1555,7 +1643,7 @@ void fragment()
 						albedo_computed = u_need_blending_albedo.rgb;
 					}
 				} else {
-					albedo_computed = u_wireframe_albedo.rgb;
+					albedo_computed = u_wireframe_background_albedo.rgb;
 				}
 			}
 		}
