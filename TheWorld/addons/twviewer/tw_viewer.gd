@@ -94,6 +94,7 @@ var _info_label_num_visible_quadrants := ""
 var _info_label_num_empty_quadrants := ""
 var _info_label_num_flushed_quadrants := ""
 var _info_label_num_reloading_quadrants := ""
+var _info_label_num_loading_quadrants := ""
 var _info_label_num_with_collider := ""
 var _info_panel_num_active_chunks := ""
 var _info_panel_num_chunk_splits := ""
@@ -1049,7 +1050,8 @@ func _process(delta):
 		var notInitializedVisibleQuadrants : int = gdn_viewer.get_num_visible_quadrant() - gdn_viewer.get_num_initialized_visible_quadrant()
 		_info_label_num_visible_quadrants = "  Visible: " + str(gdn_viewer.get_num_initialized_visible_quadrant(), ":", gdn_viewer.get_num_visible_quadrant()) + " To Init: " + str(notInitializedVisibleQuadrants) + " Shader: " + str(gdn_viewer.get_num_need_shader_reset_quadrant()) + "/" + str(gdn_viewer.get_num_need_shader_update_quadrant()) + "\n"
 		_info_label_num_empty_quadrants = "  Empty: " + str(gdn_viewer.get_num_empty_quadrant())
-		_info_label_num_flushed_quadrants = "  Flushed: " + str(gdn_viewer.get_num_flushed_quadrant())
+		_info_label_num_flushed_quadrants = "  Flushed: " + str(gdn_viewer.get_num_flushed_quadrant()) + "\n"
+		_info_label_num_loading_quadrants = "  Loading: " + str(gdn_viewer.get_num_loading_quadrant())
 		_info_label_num_reloading_quadrants = "  Reloading: " + str(gdn_viewer.get_num_reloading_quadrant()) + "\n"
 		_info_label_num_with_collider = "  Collider: " + str(gdn_viewer.get_num_quadrant_with_enabled_collider()) + "/" + str(gdn_viewer.get_num_quadrant_with_collider()) + " (H " + str(gdn_viewer.get_num_quadrant_with_hires_collider()) + " / L " + str(gdn_viewer.get_num_quadrant_with_lowres_collider()) + ")"
 		_info_panel_num_active_chunks = "  Active: " + str(gdn_viewer.get_num_active_chunks()) + " "
@@ -1120,6 +1122,7 @@ func _process(delta):
 		+ _info_label_num_visible_quadrants \
 		+ _info_label_num_empty_quadrants \
 		+ _info_label_num_flushed_quadrants \
+		+ _info_label_num_loading_quadrants \
 		+ _info_label_num_reloading_quadrants \
 		+ _info_label_num_with_collider
 		
