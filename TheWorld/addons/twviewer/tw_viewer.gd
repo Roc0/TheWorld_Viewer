@@ -116,6 +116,9 @@ var _info_panel_camera_projection := ""
 
 var _initial_level : int = 0
 
+var _camera3d_current_pos : Vector3
+var _camera3d_current_yaw_pitch_roll_radiant : Vector3
+
 #@export_category("TWViewer")
 
 var _loading_screen_changed := true
@@ -259,14 +262,14 @@ func _set_camera_param_initial_alt_forced(initial_alt_forced : float):
 func _get_camera_param_initial_alt_forced() -> float:
 	return _camera_param_initial_alt_forced
 
-var _camera_param_initial_yaw_pitch_roll_changed := true
-@export var _camera_param_initial_yaw_pitch_roll : Vector3 = Vector3(-139.0, -7.0, 0.0):
-	get = _get_camera_param_initial_yaw_pitch_roll, set = _set_camera_param_initial_yaw_pitch_roll
-func _set_camera_param_initial_yaw_pitch_roll(initial_yaw_pitch_roll : Vector3):
-	_camera_param_initial_yaw_pitch_roll = initial_yaw_pitch_roll
-	_camera_param_initial_yaw_pitch_roll_changed = true
-func _get_camera_param_initial_yaw_pitch_roll():
-	return _camera_param_initial_yaw_pitch_roll
+var _camera_param_initial_yaw_pitch_roll_deg_changed := true
+@export var _camera_param_initial_yaw_pitch_roll_deg : Vector3 = Vector3(-139.0, -7.0, 0.0):
+	get = _get_camera_param_initial_yaw_pitch_roll_deg, set = _set_camera_param_initial_yaw_pitch_roll_deg
+func _set_camera_param_initial_yaw_pitch_roll_deg(initial_yaw_pitch_roll_deg : Vector3):
+	_camera_param_initial_yaw_pitch_roll_deg = initial_yaw_pitch_roll_deg
+	_camera_param_initial_yaw_pitch_roll_deg_changed = true
+func _get_camera_param_initial_yaw_pitch_roll_deg():
+	return _camera_param_initial_yaw_pitch_roll_deg
 
 @export_group("Shader Params", "_shader_param")
 
@@ -596,8 +599,9 @@ func _input(event):
 
 func init_world() -> void:
 	log_debug("Initializing world...")
-	GDN_viewer().deploy_world(_camera_param_initial_pos.x, _camera_param_initial_pos.y, _camera_param_initial_pos.z, _camera_param_initial_alt_forced, _camera_param_initial_yaw_pitch_roll.x, _camera_param_initial_yaw_pitch_roll.y, _camera_param_initial_yaw_pitch_roll.z, _initial_level, -1 , -1)
-	#_camera_param_initial_yaw_pitch_roll_changed = true
+	log_debug(str("  Pos: ", _camera_param_initial_pos, ", YPR: ", _camera_param_initial_yaw_pitch_roll_deg))
+	GDN_viewer().deploy_world(_camera_param_initial_pos.x, _camera_param_initial_pos.y, _camera_param_initial_pos.z, _camera_param_initial_alt_forced, _camera_param_initial_yaw_pitch_roll_deg.x, _camera_param_initial_yaw_pitch_roll_deg.y, _camera_param_initial_yaw_pitch_roll_deg.z, _initial_level, -1 , -1)
+	#_camera_param_initial_yaw_pitch_roll_deg_changed = true
 	log_debug("World initialization completed...")
 	undeploy_request_logged = false
 
@@ -605,6 +609,8 @@ func deinit_world() -> void:
 	if not undeploy_request_logged:
 		log_debug("Sending undeploy world request...")
 		undeploy_request_logged = true
+		_set_camera_param_initial_pos(_camera3d_current_pos)
+		_set_camera_param_initial_yaw_pitch_roll_deg(Vector3(rad_to_deg(_camera3d_current_yaw_pitch_roll_radiant.x), rad_to_deg(_camera3d_current_yaw_pitch_roll_radiant.y), rad_to_deg(_camera3d_current_yaw_pitch_roll_radiant.z)))
 	GDN_viewer().undeploy_world()
 	#log_debug("World de-initialization completed...")
 
@@ -917,41 +923,43 @@ func _process(delta):
 				#var gizmos := []
 				#gizmos = camera.get_gizmos()
 				#print(str("gizmos=",gizmos.size()))
+				log_debug(str("Pos changed - Pos: ", camera.global_transform.origin))
 			_camera_param_initial_pos_changed = false
 	
-	if _camera_param_initial_yaw_pitch_roll_changed:
+	if _camera_param_initial_yaw_pitch_roll_deg_changed:
 		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
 			var camera : Camera3D = null
 			camera = gdn_viewer.get_world_camera()
 			if (camera != null):
 				if camera.has_method("set_yaw"):
-					camera.set_yaw(_camera_param_initial_yaw_pitch_roll.x, false)
+					camera.set_yaw(_camera_param_initial_yaw_pitch_roll_deg.x, false)
 				else:
-					var radiant_yaw : float = (_camera_param_initial_yaw_pitch_roll.x * PI) / 180
+					var radiant_yaw : float = (_camera_param_initial_yaw_pitch_roll_deg.x * PI) / 180
 					var t : Transform3D = camera.global_transform
 					var v : Vector3 = t.basis.get_euler()
 					v.y = radiant_yaw
 					t.basis = Basis.from_euler(v)
 					camera.global_transform = t
 				if camera.has_method("set_pitch"):
-					camera.set_pitch(_camera_param_initial_yaw_pitch_roll.y, false)
+					camera.set_pitch(_camera_param_initial_yaw_pitch_roll_deg.y, false)
 				else:
-					var radiant_pitch : float = (_camera_param_initial_yaw_pitch_roll.y * PI) / 180
+					var radiant_pitch : float = (_camera_param_initial_yaw_pitch_roll_deg.y * PI) / 180
 					var t : Transform3D = camera.global_transform
 					var v : Vector3 = t.basis.get_euler()
 					v.x = radiant_pitch
 					t.basis = Basis.from_euler(v)
 					camera.global_transform = t
 				if camera.has_method("set_roll"):
-					camera.set_roll(_camera_param_initial_yaw_pitch_roll.z, false)
+					camera.set_roll(_camera_param_initial_yaw_pitch_roll_deg.z, false)
 				else:
-					var radiant_roll : float = (_camera_param_initial_yaw_pitch_roll.z * PI) / 180
+					var radiant_roll : float = (_camera_param_initial_yaw_pitch_roll_deg.z * PI) / 180
 					var t : Transform3D = camera.global_transform
 					var v : Vector3 = t.basis.get_euler()
 					v.z = radiant_roll
 					t.basis = Basis.from_euler(v)
 					camera.global_transform = t
-			_camera_param_initial_yaw_pitch_roll_changed = false
+				log_debug(str("yaw_pitch_roll changed - YPR: ", _camera_param_initial_yaw_pitch_roll_deg))
+			_camera_param_initial_yaw_pitch_roll_deg_changed = false
 		
 	if Engine.is_editor_hint():
 
@@ -981,9 +989,9 @@ func _process(delta):
 		var camera : Camera3D = null
 		camera = gdn_viewer.get_world_camera()
 		#print(str(camera))
-		var e : Vector3 
-		if camera != null:
-			e = camera.global_transform.basis.get_euler()
+		#var e : Vector3 
+		#if camera != null:
+		#	e = camera.global_transform.basis.get_euler()
 		var camera2d : Camera2D = null
 		camera2d = gdn_viewer.get_map_camera()
 		var viewer_custom_camera = get_tree().get_first_node_in_group(tw_constants.custom_cameras_group)
@@ -1023,8 +1031,11 @@ func _process(delta):
 				camera_pos_in_map = camera.get_camera_world_transform().origin
 			else:
 				camera_pos_in_map = camera.global_transform.origin
-			_info_panel_camera_rot = "  Rot: " + str(camera.global_transform.basis.get_euler()) + "\n"
-			_info_panel_camera_pos = "  Pos: " + str(camera.global_transform.origin) + "\n"
+			_camera3d_current_pos = camera.global_transform.origin
+			var v : Vector3 = camera.global_transform.basis.get_euler()
+			_camera3d_current_yaw_pitch_roll_radiant = Vector3(v.y, v.x, v.z)
+			#_info_panel_camera_rot = "  YPR: " + str(rad_to_deg(_camera3d_current_yaw_pitch_roll_radiant.y), ", ", rad_to_deg(_camera3d_current_yaw_pitch_roll_radiant.x), ", ", rad_to_deg(_camera3d_current_yaw_pitch_roll_radiant.z)) + "\n"
+			_info_panel_camera_pos = "  Pos: " + str(_camera3d_current_pos) + "\n"
 			_info_panel_camera_pos_in_map = "  Pos in map: " + str(camera_pos_in_map) + "\n"
 			var camera_velocity : float = 0
 			if (camera.has_method("get_velocity")):
@@ -1774,9 +1785,14 @@ static func apply_dpi_scale(root: Control, dpi_scale: float):
 func _apply_changes():
 	_logger.debug("_apply_changes")
 	_logger.debug(str("_apply_changes: _init_done=", _init_done, " _info_panel=", _info_panel))
-
-	print_variables_to_restore()	
 	
+	print_variables_to_restore()
+	
+	_set_camera_param_initial_pos(_camera3d_current_pos)
+	_set_camera_param_initial_yaw_pitch_roll_deg(Vector3(rad_to_deg(_camera3d_current_yaw_pitch_roll_radiant.x), rad_to_deg(_camera3d_current_yaw_pitch_roll_radiant.y), rad_to_deg(_camera3d_current_yaw_pitch_roll_radiant.z)))
+	
+	log_debug(str("_apply_changes done - Pos: ", _camera_param_initial_pos, ", YPR: ", _camera_param_initial_yaw_pitch_roll_deg))
+
 	#remove_info_panel()
 	#_init_done = false	# force restore_init to be executed
 	#_info_panel_added_to_editor_overlay = false	# force _info_panel to be added to overlay

@@ -39,4 +39,3 @@ static func get_for(owner: Object) -> HT_LoggerBase:
 	if OS.is_stdout_verbose():
 		return HT_LoggerVerbose.new(context)
 	return HT_LoggerBase.new(context)
-
