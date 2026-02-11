@@ -117,7 +117,7 @@ var _info_panel_camera_projection := ""
 var _initial_level : int = 0
 
 var _camera3d_current_pos : Vector3
-var _camera3d_current_yaw_pitch_roll_radiant : Vector3
+var _camera3d_current_yaw_pitch_roll_rad : Vector3
 
 #@export_category("TWViewer")
 
@@ -610,7 +610,7 @@ func deinit_world() -> void:
 		log_debug("Sending undeploy world request...")
 		undeploy_request_logged = true
 		_set_camera_param_initial_pos(_camera3d_current_pos)
-		_set_camera_param_initial_yaw_pitch_roll_deg(Vector3(rad_to_deg(_camera3d_current_yaw_pitch_roll_radiant.x), rad_to_deg(_camera3d_current_yaw_pitch_roll_radiant.y), rad_to_deg(_camera3d_current_yaw_pitch_roll_radiant.z)))
+		_set_camera_param_initial_yaw_pitch_roll_deg(Vector3(rad_to_deg(_camera3d_current_yaw_pitch_roll_rad.x), rad_to_deg(_camera3d_current_yaw_pitch_roll_rad.y), rad_to_deg(_camera3d_current_yaw_pitch_roll_rad.z)))
 	GDN_viewer().undeploy_world()
 	#log_debug("World de-initialization completed...")
 
@@ -717,12 +717,15 @@ func _process(delta):
 			_world_editor_param_max_depth_quad_changed = false
 
 		if _world_editor_param_info_panel_visibility_changed:
-			#print(str("DEBUG _info_panel=", _info_panel, " visible=", _world_editor_param_info_visible))
+			log_debug(str("DEBUG _info_panel=", _info_panel, " visible=", _world_editor_param_info_panel_visible))
 			if _info_panel != null:
 				_info_panel.visible = _world_editor_param_info_panel_visible
 				gdn_viewer.set_info_panel_visible(_info_panel.visible)
-				#print(str("_info_panel_visible=", _info_panel.visible))
-			_world_editor_param_info_panel_visibility_changed = false
+				log_debug(str("DEBUG _info_panel_visible=", _info_panel.visible))
+				_world_editor_param_info_panel_visibility_changed = false
+			else:
+				if not _world_editor_param_info_panel_visible:
+					_world_editor_param_info_panel_visibility_changed = false
 
 		if _world_editor_param_edit_panel_visibility_changed:
 			if gdn_viewer.has_method("set_edit_mode"):
@@ -1033,8 +1036,8 @@ func _process(delta):
 				camera_pos_in_map = camera.global_transform.origin
 			_camera3d_current_pos = camera.global_transform.origin
 			var v : Vector3 = camera.global_transform.basis.get_euler()
-			_camera3d_current_yaw_pitch_roll_radiant = Vector3(v.y, v.x, v.z)
-			#_info_panel_camera_rot = "  YPR: " + str(rad_to_deg(_camera3d_current_yaw_pitch_roll_radiant.y), ", ", rad_to_deg(_camera3d_current_yaw_pitch_roll_radiant.x), ", ", rad_to_deg(_camera3d_current_yaw_pitch_roll_radiant.z)) + "\n"
+			_camera3d_current_yaw_pitch_roll_rad = Vector3(v.y, v.x, v.z)
+			#_info_panel_camera_rot = "  YPR: " + str(rad_to_deg(_camera3d_current_yaw_pitch_roll_rad.y), ", ", rad_to_deg(_camera3d_current_yaw_pitch_roll_rad.x), ", ", rad_to_deg(_camera3d_current_yaw_pitch_roll_rad.z)) + "\n"
 			_info_panel_camera_pos = "  Pos: " + str(_camera3d_current_pos) + "\n"
 			_info_panel_camera_pos_in_map = "  Pos in map: " + str(camera_pos_in_map) + "\n"
 			var camera_velocity : float = 0
@@ -1789,7 +1792,7 @@ func _apply_changes():
 	print_variables_to_restore()
 	
 	_set_camera_param_initial_pos(_camera3d_current_pos)
-	_set_camera_param_initial_yaw_pitch_roll_deg(Vector3(rad_to_deg(_camera3d_current_yaw_pitch_roll_radiant.x), rad_to_deg(_camera3d_current_yaw_pitch_roll_radiant.y), rad_to_deg(_camera3d_current_yaw_pitch_roll_radiant.z)))
+	_set_camera_param_initial_yaw_pitch_roll_deg(Vector3(rad_to_deg(_camera3d_current_yaw_pitch_roll_rad.x), rad_to_deg(_camera3d_current_yaw_pitch_roll_rad.y), rad_to_deg(_camera3d_current_yaw_pitch_roll_rad.z)))
 	
 	log_debug(str("_apply_changes done - Pos: ", _camera_param_initial_pos, ", YPR: ", _camera_param_initial_yaw_pitch_roll_deg))
 
