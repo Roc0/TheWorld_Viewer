@@ -736,9 +736,8 @@ func test_subvieport(node : Node) -> void:
 	_sprite.texture = _viewport.get_texture()
 
 func save_current_position(viewpoint : int) -> void:
-	var camera : Camera3D = null
+	var camera : Camera3D = TWViewer().get_world_camera()
 	var gdn_viewer = TWViewer().GDN_viewer()
-	camera = TWViewer().get_world_camera()
 	if camera != null && camera.has_method("get_yaw") && camera.has_method("get_pitch") && camera.has_method("get_roll"):
 		#var config = ConfigFile.new()
 		#@warning_ignore("unused_variable")
