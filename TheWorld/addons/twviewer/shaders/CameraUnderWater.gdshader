@@ -13,6 +13,7 @@ varying vec3 v_world_camera;
 
 void vertex() {
 	POSITION = vec4(VERTEX, 1.0);	// Setting POSITION we tell godot to use coord as is and avoid automatic transformation to clip space before passing to the GPU. VERTEX coord are in local space.
+	//v_world_camera = MAIN_CAM_INV_VIEW_MATRIX[3].xyz;
 	v_world_camera = CAMERA_POSITION_WORLD;
 }
 
@@ -44,12 +45,12 @@ void fragment() {
 		ROUGHNESS = normal_roughness.a;
 	}
 
-	/*if (gu_camera_on_sea) {
+	if (gu_camera_on_sea) {
 		ALBEDO = vec3(1.0, 0.0, 0.0);
 	} else {
 		ALBEDO = vec3(0.0, 1.0, 0.0);
 	}
-	if (gu_camera_under_water > 0.0) {
+	/*if (gu_camera_under_water > 0.0) {
 		ALBEDO = vec3(1.0, 0.0, 0.0);
 	} else {
 		ALBEDO = vec3(0.0, 1.0, 0.0);
@@ -58,6 +59,6 @@ void fragment() {
 		ALBEDO = vec3(0.0, 0.0, 1.0);
 	} else {
 		ALBEDO = vec3(1.0, 0.0, 0.0);
-	}
-	ALPHA = 0.8;*/
+	}*/
+	//ALPHA = 0.8;
 }

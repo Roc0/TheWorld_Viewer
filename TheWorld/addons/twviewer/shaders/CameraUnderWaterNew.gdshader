@@ -27,6 +27,7 @@ varying vec3 v_world_camera;
 
 void vertex() {
 	UV = UV * uv1_scale.xy + uv1_offset.xy;
+	//v_world_camera = MAIN_CAM_INV_VIEW_MATRIX[3].xyz;
 	v_world_camera = CAMERA_POSITION_WORLD;
 }
 

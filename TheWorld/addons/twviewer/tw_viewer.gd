@@ -117,6 +117,7 @@ var _info_panel_camera_projection := ""
 var _initial_level : int = 0
 
 var _camera3d_current_pos : Vector3
+var _camera3d_current_pos_in_map : Vector3
 var _camera3d_current_yaw_pitch_roll_rad : Vector3
 
 #@export_category("TWViewer")
@@ -465,10 +466,6 @@ func _ready():
 func custom_ready():
 	_logger.debug("custom_ready")
 	
-	# debugric
-	#if Engine.is_editor_hint():
-	#	return
-
 	_exit_status = EXIT_STATUS_RUNNING
 	
 	#if !Engine.is_editor_hint():
@@ -609,7 +606,7 @@ func deinit_world() -> void:
 	if not undeploy_request_logged:
 		log_debug("Sending undeploy world request...")
 		undeploy_request_logged = true
-		_set_camera_param_initial_pos(_camera3d_current_pos)
+		_set_camera_param_initial_pos(_camera3d_current_pos_in_map)
 		_set_camera_param_initial_yaw_pitch_roll_deg(Vector3(rad_to_deg(_camera3d_current_yaw_pitch_roll_rad.x), rad_to_deg(_camera3d_current_yaw_pitch_roll_rad.y), rad_to_deg(_camera3d_current_yaw_pitch_roll_rad.z)))
 	GDN_viewer().undeploy_world()
 	#log_debug("World de-initialization completed...")
@@ -915,53 +912,54 @@ func _process(delta):
 
 	if _camera_param_initial_pos_changed:
 		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
-			var camera : Camera3D = null
-			camera = gdn_viewer.get_world_camera()
-			if (camera != null):
+			var realSceneCamera : Camera3D = null
+			realSceneCamera = gdn_viewer.get_world_camera()
+			if (realSceneCamera != null):
 				if Engine.is_editor_hint():
-					camera.global_transform.origin = _camera_param_initial_pos
+					realSceneCamera.global_transform.origin = _camera_param_initial_pos
 				else:
-					var t : Transform3D = Transform3D(camera.global_transform.basis, _camera_param_initial_pos)
-					camera.set_camera_world_transform(t)
+					var t : Transform3D = Transform3D(realSceneCamera.global_transform.basis, _camera_param_initial_pos)
+					# ERRORE _camera_param_initial_pos deve essere sempre in world coordinate e quindi ottenuto tramite la custom camera
+					realSceneCamera.set_camera_world_transform(t)
 				#var gizmos := []
 				#gizmos = camera.get_gizmos()
 				#print(str("gizmos=",gizmos.size()))
-				log_debug(str("Pos changed - Pos: ", camera.global_transform.origin))
+				#log_debug(str("Pos changed - Pos: ", camera.global_transform.origin))
 			_camera_param_initial_pos_changed = false
 	
 	if _camera_param_initial_yaw_pitch_roll_deg_changed:
 		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
-			var camera : Camera3D = null
-			camera = gdn_viewer.get_world_camera()
-			if (camera != null):
-				if camera.has_method("set_yaw"):
-					camera.set_yaw(_camera_param_initial_yaw_pitch_roll_deg.x, false)
+			var realSceneCamera : Camera3D = null
+			realSceneCamera = gdn_viewer.get_world_camera()
+			if (realSceneCamera != null):
+				if realSceneCamera.has_method("set_yaw"):
+					realSceneCamera.set_yaw(_camera_param_initial_yaw_pitch_roll_deg.x, false)
 				else:
 					var radiant_yaw : float = (_camera_param_initial_yaw_pitch_roll_deg.x * PI) / 180
-					var t : Transform3D = camera.global_transform
+					var t : Transform3D = realSceneCamera.global_transform
 					var v : Vector3 = t.basis.get_euler()
 					v.y = radiant_yaw
 					t.basis = Basis.from_euler(v)
-					camera.global_transform = t
-				if camera.has_method("set_pitch"):
-					camera.set_pitch(_camera_param_initial_yaw_pitch_roll_deg.y, false)
+					realSceneCamera.global_transform = t
+				if realSceneCamera.has_method("set_pitch"):
+					realSceneCamera.set_pitch(_camera_param_initial_yaw_pitch_roll_deg.y, false)
 				else:
 					var radiant_pitch : float = (_camera_param_initial_yaw_pitch_roll_deg.y * PI) / 180
-					var t : Transform3D = camera.global_transform
+					var t : Transform3D = realSceneCamera.global_transform
 					var v : Vector3 = t.basis.get_euler()
 					v.x = radiant_pitch
 					t.basis = Basis.from_euler(v)
-					camera.global_transform = t
-				if camera.has_method("set_roll"):
-					camera.set_roll(_camera_param_initial_yaw_pitch_roll_deg.z, false)
+					realSceneCamera.global_transform = t
+				if realSceneCamera.has_method("set_roll"):
+					realSceneCamera.set_roll(_camera_param_initial_yaw_pitch_roll_deg.z, false)
 				else:
 					var radiant_roll : float = (_camera_param_initial_yaw_pitch_roll_deg.z * PI) / 180
-					var t : Transform3D = camera.global_transform
+					var t : Transform3D = realSceneCamera.global_transform
 					var v : Vector3 = t.basis.get_euler()
 					v.z = radiant_roll
 					t.basis = Basis.from_euler(v)
-					camera.global_transform = t
-				log_debug(str("yaw_pitch_roll changed - YPR: ", _camera_param_initial_yaw_pitch_roll_deg))
+					realSceneCamera.global_transform = t
+				#log_debug(str("yaw_pitch_roll changed - YPR: ", _camera_param_initial_yaw_pitch_roll_deg))
 			_camera_param_initial_yaw_pitch_roll_deg_changed = false
 		
 	if Engine.is_editor_hint():
@@ -989,15 +987,11 @@ func _process(delta):
 		var tot_element_to_initialize : int = GDN_globals().get_tot_element_to_initialize()
 		var num_element_initialized : int = GDN_globals().get_num_element_initialized()
 		_info_panel_status = "Status: " + tw_constants.status_to_string(_client_status) + " (" + str(num_element_initialized) + "/"+ str(tot_element_to_initialize) + ")" + "\n"
-		var camera : Camera3D = null
-		camera = gdn_viewer.get_world_camera()
-		#print(str(camera))
-		#var e : Vector3 
-		#if camera != null:
-		#	e = camera.global_transform.basis.get_euler()
+		var realSceneCamera : Camera3D = gdn_viewer.get_world_camera()
 		var camera2d : Camera2D = null
 		camera2d = gdn_viewer.get_map_camera()
 		var viewer_custom_camera = get_tree().get_first_node_in_group(tw_constants.custom_cameras_group)
+		#var viewer_custom_camera = gdn_viewer.get_custom_camera()	# same as above
 		var update_quads1_duration : int = gdn_viewer.get_update_quads1_duration()
 		var update_quads2_duration : int = gdn_viewer.get_update_quads2_duration()
 		var update_quads3_duration : int = gdn_viewer.get_update_quads3_duration()
@@ -1028,21 +1022,17 @@ func _process(delta):
 		#+ " UM " + String(viewer.get_update_material_params_duration()) \
 		####+ " RQ " + String(viewer.get_refresh_quads_duration()) \
 		#+ " T " + String(viewer.get_mouse_track_hit_duration()) + "\n"
-		if camera != null:
-			var camera_pos_in_map : Vector3
-			if camera.has_method("get_camera_world_transform"):
-				camera_pos_in_map = camera.get_camera_world_transform().origin
-			else:
-				camera_pos_in_map = camera.global_transform.origin
-			_camera3d_current_pos = camera.global_transform.origin
-			var v : Vector3 = camera.global_transform.basis.get_euler()
+		if realSceneCamera != null:
+			_camera3d_current_pos_in_map = viewer_custom_camera.get_camera_world_transform().origin
+			_camera3d_current_pos = realSceneCamera.global_transform.origin
+			var v : Vector3 = realSceneCamera.global_transform.basis.get_euler()
 			_camera3d_current_yaw_pitch_roll_rad = Vector3(v.y, v.x, v.z)
 			#_info_panel_camera_rot = "  YPR: " + str(rad_to_deg(_camera3d_current_yaw_pitch_roll_rad.y), ", ", rad_to_deg(_camera3d_current_yaw_pitch_roll_rad.x), ", ", rad_to_deg(_camera3d_current_yaw_pitch_roll_rad.z)) + "\n"
 			_info_panel_camera_pos = "  Pos: " + str(_camera3d_current_pos) + "\n"
-			_info_panel_camera_pos_in_map = "  Pos in map: " + str(camera_pos_in_map) + "\n"
+			_info_panel_camera_pos_in_map = "  Pos in map: " + str(_camera3d_current_pos_in_map) + "\n"
 			var camera_velocity : float = 0
-			if (camera.has_method("get_velocity")):
-				camera_velocity = camera.get_velocity()
+			if (realSceneCamera.has_method("get_velocity")):
+				camera_velocity = realSceneCamera.get_velocity()
 			_info_panel_camera_velocity = "  Velocity: " + str(snapped(camera_velocity, 0.1)) + "m/s " + str(snapped((camera_velocity * 60 * 60) / 1000, 0.1)) + "km/h"
 		if camera2d != null:
 			var camera2d_pos_in_map : Vector2
@@ -1791,7 +1781,7 @@ func _apply_changes():
 	
 	print_variables_to_restore()
 	
-	_set_camera_param_initial_pos(_camera3d_current_pos)
+	_set_camera_param_initial_pos(_camera3d_current_pos_in_map)
 	_set_camera_param_initial_yaw_pitch_roll_deg(Vector3(rad_to_deg(_camera3d_current_yaw_pitch_roll_rad.x), rad_to_deg(_camera3d_current_yaw_pitch_roll_rad.y), rad_to_deg(_camera3d_current_yaw_pitch_roll_rad.z)))
 	
 	log_debug(str("_apply_changes done - Pos: ", _camera_param_initial_pos, ", YPR: ", _camera_param_initial_yaw_pitch_roll_deg))

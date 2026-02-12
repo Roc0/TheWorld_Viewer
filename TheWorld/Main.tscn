@@ -473,16 +473,16 @@ script = ExtResource("15_6btyd")
 
 [node name="TWViewer" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape"]
 script = ExtResource("3_yxvy6")
-_world_param_depth_quad = 12
-_world_param_cache_quad = 2
+_world_param_depth_quad = 2
+_world_param_cache_quad = 0
+_world_param_max_depth_quad = 2
 _world_param_info_panel_visible = true
 _world_param_deploy_world = false
 _world_editor_param_depth_quad = 2
 _world_editor_param_max_depth_quad = 2
 _world_editor_param_info_panel_visible = true
-_world_editor_param_deploy_world = true
-_camera_param_initial_pos = Vector3(29612, 8.919495, 27066)
-_camera_param_initial_yaw_pitch_roll_deg = Vector3(48.53821, -19.03123, 0)
+_camera_param_initial_pos = Vector3(29588, 123.66139, 27076)
+_camera_param_initial_yaw_pitch_roll_deg = Vector3(121.788284, -18.781229, 0)
 _shader_param_ao_light_affect = 0.1
 _shader_param_debug_float0 = 45.0
 _shader_param_cam_alt_uv_threshold = 6000.0
@@ -565,6 +565,7 @@ near = 100.0
 far = 30000.0
 
 [node name="PostProcessingUnderWaterEffect" type="ColorRect" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
+visible = false
 material = SubResource("ShaderMaterial_epqem")
 anchors_preset = 15
 anchor_right = 1.0
