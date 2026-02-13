@@ -72,14 +72,15 @@ func _process(delta: float):
 	# debugric
 	#return
 	
+	#_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done, ", _close_requested=", _close_requested))
 	if !_viewer_init_done && !_close_requested:
 		#_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done))
 		_viewer = find_node_by_name(tw_const.tw_viewer_node_name)
 		#_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done, ", TWViewer=", _viewer, ", _viewer.has_method(is_ready)=", _viewer.has_method("is_ready"), ", _viewer.is_ready()=", _viewer.is_ready()))
 		if _viewer != null && _viewer.has_method("is_ready") && _viewer.is_ready():
-			_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done, " initializing ..."))
-			_viewer.custom_ready()
-			_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done, " custom_ready done"))
+			_logger.debug(str("_process: initializing viewer ..."))
+			_viewer.init_viewer()
+			_logger.debug(str("_process: init_viewer done"))
 			
 			#if Engine.is_editor_hint():
 			var editor_interface := get_editor_interface()

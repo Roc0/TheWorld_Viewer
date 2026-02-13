@@ -128,7 +128,7 @@ var _loading_screen_changed := true
 func _set_loading_screen(loading_screen : bool):
 	_loading_screen = loading_screen
 	_loading_screen_changed = true
-
+	
 var _full_world_deploy_changed := true
 @export var _full_world_deploy : bool = true:
 	set = _set_full_world_deploy
@@ -459,37 +459,24 @@ func _init():
 func _ready():
 	_logger.debug("_ready")
 	if !Engine.is_editor_hint():
-		custom_ready()
+		init_viewer()
+	else:
+		_set_world_editor_param_deploy_world(false)		# needed to uncheck deploy world in editor at startup
 	_is_ready = true
 	#log_debug("_ready done")
 	
-func custom_ready():
-	_logger.debug("custom_ready")
+func init_viewer():
+	log_debug("init_viewer")
 	
 	_exit_status = EXIT_STATUS_RUNNING
 	
 	#if !Engine.is_editor_hint():
 	#	get_tree().set_auto_accept_quit(false)
 	
-	if Engine.is_editor_hint():
-		_set_world_editor_param_deploy_world(false)
-		#_depth_quad = 1
-		#_cache_quad = 0
-		# #_depth_quad = 0
-		# #_cache_quad = 0
-		#_debug_mode = 0
-		#_camera_param_initial_pos = Vector3(0, 2200, 0)
-		#_camera_param_initial_alt_forced = 0
-		#_camera_param_initial_yaw_pitch_roll = Vector3(-139.0, -7.0, 0.0)
-		#_shader_param_ground_uv_scale = 150.0
-		#_shader_param_depth_blending = true
-		#_shader_param_tile_reduction = true
-	else:
+	if not Engine.is_editor_hint():
 		_set_world_param_deploy_world(true)
-		#_depth_quad = 3
-		#_cache_quad = 1
-		##_depth_quad = 0
-		##_cache_quad = 0
+	#else:
+	#	_set_world_editor_param_deploy_world(false)
 	
 	# everything done here has to be undone in _exit_tree
 	
@@ -512,7 +499,7 @@ func custom_ready():
 
 	_client_status = get_clientstatus()
 	
-	log_debug("custom_ready done")
+	log_debug("init_viewer done")
 	_is_really_ready = true
 
 func client_status() -> int:
@@ -644,6 +631,8 @@ func _process(delta):
 		if _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
 			if _client_status < tw_constants.clientstatus_world_undeploy_in_progress:
 				if (!_deinit_in_progress):
+					log_debug(str("_process: EXIT_STATUS_UNDEPLOYWORLD_REQUIRED"))
+					_set_world_editor_param_deploy_world(false)
 					deinit_world()
 					#_deinit_in_progress = true
 			#else:
@@ -665,7 +654,7 @@ func _process(delta):
 			_exit_status = EXIT_STATUS_QUITTING
 			force_app_to_quit()
 		return
-	
+
 	var gdn_viewer = GDN_viewer()
 	var gdn_main = GDN_main()
 	
@@ -877,6 +866,7 @@ func _process(delta):
 					_world_editor_param_deploy_world_changed = false
 			else:
 				if _client_status >= tw_constants.clientstatus_world_deployed && _client_status < tw_constants.clientstatus_world_undeploy_in_progress:
+					log_debug(str("_process: _world_editor_param_deploy_world_changed"))
 					deinit_world()
 					_world_editor_param_deploy_world_changed = false
 	else:
@@ -1157,6 +1147,7 @@ func activate_shutdown():
 		if _info_panel != null:
 			_info_panel.queue_free()
 			_info_panel = null
+		_set_world_editor_param_deploy_world(false)
 		_exit_status = EXIT_STATUS_QUITTING
 	else:
 		#_exit_status = EXIT_STATUS_PREDEINIT_REQUIRED
