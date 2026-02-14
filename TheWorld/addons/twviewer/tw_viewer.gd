@@ -34,7 +34,7 @@ var _logger = HT_Logger.get_for(self)
 var _plugin_tree_entered := false
 var _init_done : bool = false
 var _is_ready : bool = false
-var _is_really_ready : bool = false
+var _is_initialized : bool = false
 var _transform_changed : bool = false
 var _visibility_changed : bool = false
 
@@ -469,14 +469,16 @@ func init_viewer():
 	log_debug("init_viewer")
 	
 	_exit_status = EXIT_STATUS_RUNNING
-	
+	_is_ready = true
+	_quitting = false
+
 	#if !Engine.is_editor_hint():
 	#	get_tree().set_auto_accept_quit(false)
 	
 	if not Engine.is_editor_hint():
 		_set_world_param_deploy_world(true)
 	#else:
-	#	_set_world_editor_param_deploy_world(false)
+	#	_set_world_editor_param_deploy_world(false)		# eliminated to avoid undeploy on save project data action (CTRL-S)
 	
 	# everything done here has to be undone in _exit_tree
 	
@@ -500,7 +502,7 @@ func init_viewer():
 	_client_status = get_clientstatus()
 	
 	log_debug("init_viewer done")
-	_is_really_ready = true
+	_is_initialized = true
 
 func client_status() -> int:
 	return _client_status
@@ -605,6 +607,8 @@ func _process(delta):
 	# debugric
 	#if Engine.is_editor_hint():
 	#	return
+	
+	#log_debug(str("_process: _exit_status=", _exit_status, " _client_status=", _client_status, " _world_editor_param_deploy_world_changed=", _world_editor_param_deploy_world_changed, " _world_editor_param_deploy_world=", _world_editor_param_deploy_world))
 	
 	var gdn_globals = GDN_globals()
 
@@ -862,10 +866,14 @@ func _process(delta):
 				if _client_status == tw_constants.clientstatus_session_initialized:
 					init_world()
 					_world_editor_param_deploy_world_changed = false
+				elif _client_status == tw_constants.clientstatus_uninitialized:
+					init_viewer()
 				elif _client_status >= tw_constants.clientstatus_world_deploy_in_progress:
 					_world_editor_param_deploy_world_changed = false
 			else:
-				if _client_status >= tw_constants.clientstatus_world_deployed && _client_status < tw_constants.clientstatus_world_undeploy_in_progress:
+				# changed from tw_constants.clientstatus_world_deployed
+				if _client_status >= tw_constants.clientstatus_world_deploy_in_progress \
+				 && _client_status < tw_constants.clientstatus_world_undeploy_in_progress:
 					log_debug(str("_process: _world_editor_param_deploy_world_changed"))
 					deinit_world()
 					_world_editor_param_deploy_world_changed = false
@@ -1136,7 +1144,7 @@ func _notification(_what):
 			activate_shutdown()
 
 func activate_shutdown():
-	log_debug("Quit request")
+	log_debug("activate_shutdown")
 	if Engine.is_editor_hint():
 		_is_ready = false	
 		pre_deinit()
@@ -1175,8 +1183,10 @@ func init_gdn_viewer() -> bool:
 		GDN_globals().connect_to_server()
 		log_debug(str("server connected"))
 
-		var result = GDN_globals().connect("tw_status_changed", Callable(self, "_on_tw_status_changed"))
-		log_debug(str("signal tw_status_changed connected (result=", result, ")"))
+		var result
+		if (!GDN_globals().is_connected("tw_status_changed", Callable(self, "_on_tw_status_changed"))):
+			result = GDN_globals().connect("tw_status_changed", Callable(self, "_on_tw_status_changed"))
+			log_debug(str("signal tw_status_changed connected (result=", result, ")"))
 
 		printTerrainDimensions()
 
@@ -1244,8 +1254,8 @@ func deinit():
 		if gdn_viewer != null:
 			gdn_viewer.disconnect("tw_quadrant_selected_for_edit", Callable(self, "_on_tw_quadrant_selected_for_edit"))
 			log_debug(str("signal tw_quadrant_selected_for_edit disconnected"))
-		GDN_globals().disconnect("tw_status_changed", Callable(self, "_on_tw_status_changed"))
-		log_debug(str("signal tw_status_changed disconnected"))
+		#GDN_globals().disconnect("tw_status_changed", Callable(self, "_on_tw_status_changed"))
+		#log_debug(str("signal tw_status_changed disconnected"))
 		GDN_globals().disconnect_from_server()
 		GDN_main().deinit()
 		_init_done = false
@@ -1498,6 +1508,16 @@ func rotate_drawing_mode():
 	if gdn_viewer != null && gdn_viewer.has_method("rotate_drawing_mode"):
 		gdn_viewer.rotate_drawing_mode()
 
+func destroy_info_panel():
+	var info_panel = find_node_by_name("InfoPanel")
+	if info_panel != null:
+		_logger.debug(str("InfoPanel found, removing it ..."))
+		info_panel.name = "_InfoPanel"
+		var parent = info_panel.get_parent()
+		if parent != null:
+			parent.remove_child(info_panel)
+		info_panel.queue_free()
+
 func create_info_panel():
 	var label : Label
 	var hseparator : HSeparator
@@ -1506,7 +1526,7 @@ func create_info_panel():
 	clear_info_panel_closing_labels()
 	
 	if _info_panel != null:
-		return
+		destroy_info_panel()
 	
 	#_info_panel = PanelContainer.new()
 	_info_panel = tw_info_container.new()
@@ -1689,8 +1709,8 @@ func set_size_info_panel():
 func is_ready() -> bool:
 	return _is_ready
 
-func is_really_ready() -> bool:
-	return _is_really_ready
+func is_initialized() -> bool:
+	return _is_initialized
 
 func get_or_create_edit_mode_ui_control() -> Control:
 	var control : Control = null
@@ -1757,14 +1777,6 @@ func restore_init():
 	_exit_status = EXIT_STATUS_RUNNING
 	_plugin_tree_entered = true
 	_is_ready = true
-	var info_panel = find_node_by_name("InfoPanel")
-	if info_panel != null:
-		_logger.debug(str("InfoPanel found, removing it ..."))
-		info_panel.name = "_InfoPanel"
-		var parent = info_panel.get_parent()
-		if parent != null:
-			parent.remove_child(info_panel)
-		info_panel.queue_free()
 	create_info_panel()
 	
 	print_variables_to_restore()

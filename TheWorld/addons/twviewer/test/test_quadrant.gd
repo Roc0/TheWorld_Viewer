@@ -88,7 +88,7 @@ func _process(delta):
 		_material.shader = shader
 
 		_viewer = find_node_by_name(tw_constants.tw_viewer_node_name)
-		if _viewer != null and _viewer.has_method("is_ready") and _viewer.is_ready() and _viewer.is_really_ready():
+		if _viewer != null and _viewer.has_method("is_ready") and _viewer.is_ready() and _viewer.is_initialized():
 			_initialized = true
 			_logger.debug(str("Test Quadrant Initialized - pos=", _pos_index.x, ",", _pos_index.y, " (", _pos.x, ",", _pos.y, ")"))
 	

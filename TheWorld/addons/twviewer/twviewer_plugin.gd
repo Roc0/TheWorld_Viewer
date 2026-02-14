@@ -1,8 +1,6 @@
 @tool
 extends EditorPlugin
 
-var quitting : bool = false
-
 const TWViewer = preload("./tw_viewer.gd")
 const TWTestQuadrant = preload("./test/test_quadrant.gd")
 var TWTestQuadrant_array : Array = []
@@ -57,7 +55,7 @@ func _enter_tree():
 	#add_autoload_singleton(AUTOLOAD_NAME, AUTOLOAD_SCRIPT)
 
 func _exit_tree():
-	if not quitting:
+	if not _close_requested:
 		_logger.debug("_exit_tree")
 	
 	remove_custom_type("TWTestQuadrant")
@@ -72,6 +70,12 @@ func _process(delta: float):
 	# debugric
 	#return
 	
+	var clientstatus : int = 0
+	clientstatus = get_clientstatus()
+	if _close_requested and clientstatus > tw_const.clientstatus_uninitialized and clientstatus <= tw_const.clientstatus_world_deployed:
+		_logger.debug("_process: quit request cancelled")
+		_close_requested = false	# world reinizialized despite _close_requested (set at NOTIFICATION_WM_CLOSE_REQUEST) probably pressed cancel to save data on quitting message box we need to invalidate _close_requested
+
 	#_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done, ", _close_requested=", _close_requested))
 	if !_viewer_init_done && !_close_requested:
 		#_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done))
@@ -119,9 +123,6 @@ func _process(delta: float):
 			for node in nodes:
 				add_test_quadrant_to_array(node)
 	
-	var clientstatus : int = 0
-	clientstatus = get_clientstatus()
-
 	#print(_world_initialized)
 	if _viewer != null && clientstatus >= tw_const.clientstatus_session_initialized && !_world_initialized:
 		#_viewer.GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.y, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
@@ -278,8 +279,7 @@ func _notification(_what):
 	#log_debug(str("_notification: ", self.name, " ", self.get_path(), " ", _what))
 	
 	if (_what == NOTIFICATION_WM_CLOSE_REQUEST):
-		quitting = true
-		_logger.debug("_notification: NOTIFICATION_WM_CLOSE_REQUEST ")
+		_logger.debug("_notification: NOTIFICATION_WM_CLOSE_REQUEST: quitting")
 		_close_requested = true
 
 func _apply_changes():
