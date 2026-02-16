@@ -12,7 +12,7 @@
 [ext_resource type="Material" uid="uid://dee4mdtcckm70" path="res://addons/twviewer/test/m_sea.tres" id="6_32vc6"]
 [ext_resource type="PackedScene" uid="uid://v6sfi8k7dr7o" path="res://player.tscn" id="6_wlxwp"]
 [ext_resource type="Script" uid="uid://k4r3ry2g7lwa" path="res://addons/twviewer/test/test_quadrant.gd" id="7_7uq48"]
-[ext_resource type="Shader" uid="uid://5ugxy0k7uppi" path="res://addons/twviewer/shaders/CameraUnderWaterNew.gdshader" id="7_yrlpt"]
+[ext_resource type="Shader" uid="uid://5ugxy0k7uppi" path="res://addons/twviewer/shaders/CameraUnderWater.gdshader" id="7_yrlpt"]
 [ext_resource type="Shader" uid="uid://cyvho8b2wcb8d" path="res://utils/GaussianBlurEffectPostProcess.gdshader" id="9_2dtkh"]
 [ext_resource type="Shader" uid="uid://h5kcbfu71fyx" path="res://addons/twviewer/test/test_shader_1.tres" id="9_hvx40"]
 [ext_resource type="Shader" uid="uid://cibkd718c8ggt" path="res://addons/twviewer/shaders/CameraUnderWaterPostProcess.gdshader" id="10_qu85c"]
@@ -353,16 +353,7 @@ shader_parameter/color_strength = 0.16
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6alpk"]
 render_priority = 0
 shader = ExtResource("7_yrlpt")
-shader_parameter/albedo = Color(0.054902, 0.117647, 0.478431, 1)
-shader_parameter/point_size = 1.0
-shader_parameter/roughness = 1.0
-shader_parameter/metallic_texture_channel = Vector4(0, 0, 0, 0)
-shader_parameter/specular = 0.5
-shader_parameter/metallic = 0.0
-shader_parameter/uv1_scale = Vector3(1, 1, 1)
-shader_parameter/uv1_offset = Vector3(0, 0, 0)
-shader_parameter/uv2_scale = Vector3(1, 1, 1)
-shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/u_under_water_albedo = Color(0.056, 0.119, 0.48, 1)
 
 [sub_resource type="QuadMesh" id="QuadMesh_y8qsi"]
 material = SubResource("ShaderMaterial_6alpk")
@@ -509,8 +500,9 @@ _world_param_deploy_world = false
 _world_editor_param_depth_quad = 2
 _world_editor_param_max_depth_quad = 2
 _world_editor_param_info_panel_visible = true
-_camera_param_initial_pos = Vector3(-35442, 362.257, -10510)
-_camera_param_initial_yaw_pitch_roll_deg = Vector3(25.674301, -11.883907, 0)
+_world_editor_param_deploy_world = true
+_camera_param_initial_pos = Vector3(-35658, -46.594673, -10740)
+_camera_param_initial_yaw_pitch_roll_deg = Vector3(-73.325516, -4.7043977, 0)
 _shader_param_ao_light_affect = 0.1
 _shader_param_debug_float0 = 45.0
 _shader_param_cam_alt_uv_threshold = 6000.0

@@ -6,27 +6,35 @@ render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_burley, specular_sc
 global uniform bool gu_camera_on_sea = false;
 global uniform float gu_camera_under_water = -1;
 
-uniform vec4 albedo : source_color = vec4(0.056, 0.119, 0.48, 1.0);
-uniform sampler2D texture_albedo : source_color, filter_linear_mipmap, repeat_enable;
-uniform float point_size : hint_range(0.1, 128.0, 0.1);
+uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
+uniform sampler2D NORMAL_ROUGHNESS_TEXTURE : hint_normal_roughness_texture, filter_linear_mipmap;
 
-uniform float roughness : hint_range(0.0, 1.0);
-uniform sampler2D texture_metallic : hint_default_white, filter_linear_mipmap, repeat_enable;
-uniform vec4 metallic_texture_channel;
-uniform sampler2D texture_roughness : hint_roughness_r, filter_linear_mipmap, repeat_enable;
+uniform vec4 u_albedo : source_color = vec4(0.11, 0.07, 0.25, 1.0);	// vec4(0.056, 0.119, 0.48, 1.0);
+uniform sampler2D u_texture_albedo : source_color, filter_linear_mipmap, repeat_enable;
+uniform float u_point_size : hint_range(0.1, 128.0, 0.1);
 
-uniform float specular : hint_range(0.0, 1.0, 0.01);
-uniform float metallic : hint_range(0.0, 1.0, 0.01);
+uniform float u_roughness : hint_range(0.0, 1.0);
+uniform sampler2D u_texture_metallic : hint_default_white, filter_linear_mipmap, repeat_enable;
+uniform vec4 u_metallic_texture_channel;
+uniform sampler2D u_texture_roughness : hint_roughness_r, filter_linear_mipmap, repeat_enable;
 
-uniform vec3 uv1_scale;
-uniform vec3 uv1_offset;
-uniform vec3 uv2_scale;
-uniform vec3 uv2_offset;
+uniform float u_specular : hint_range(0.0, 1.0, 0.01);
+uniform float u_metallic : hint_range(0.0, 1.0, 0.01);
+
+uniform vec3 u_uv1_scale;
+uniform vec3 u_uv1_offset;
+uniform vec3 u_uv2_scale;
+uniform vec3 u_uv2_offset;
+
+uniform vec2 u_speed = vec2(0.03, 0.04);
+uniform float u_wave_strength = 3.0;
+uniform float u_color_strength = 0.16;
+uniform sampler2D u_noise_distorsion : repeat_enable;
 
 varying vec3 v_world_camera;
 
 void vertex() {
-	UV = UV * uv1_scale.xy + uv1_offset.xy;
+	UV = UV * u_uv1_scale.xy + u_uv1_offset.xy;
 	//v_world_camera = MAIN_CAM_INV_VIEW_MATRIX[3].xyz;
 	v_world_camera = CAMERA_POSITION_WORLD;
 }
@@ -49,19 +57,25 @@ void fragment() {
 	if (under_water) {
 		vec2 base_uv = UV;
 
-		vec4 albedo_tex = texture(texture_albedo, base_uv);
-		ALBEDO = albedo.rgb * albedo_tex.rgb;
+		vec4 albedo_tex = texture(u_texture_albedo, base_uv);
+		ALBEDO = u_albedo.rgb * albedo_tex.rgb;
 
-		float metallic_tex = dot(texture(texture_metallic, base_uv), metallic_texture_channel);
-		METALLIC = metallic_tex * metallic;
-		SPECULAR = specular;
+		float metallic_tex = dot(texture(u_texture_metallic, base_uv), u_metallic_texture_channel);
+		METALLIC = metallic_tex * u_metallic;
+		SPECULAR = u_specular;
 
 		vec4 roughness_texture_channel = vec4(1.0, 0.0, 0.0, 0.0);
-		float roughness_tex = dot(texture(texture_roughness, base_uv), roughness_texture_channel);
-		ROUGHNESS = roughness_tex * roughness;
+		float roughness_tex = dot(texture(u_texture_roughness, base_uv), roughness_texture_channel);
+		ROUGHNESS = roughness_tex * u_roughness;
 
 		ALPHA = 0.8;
 	} else {
-		ALPHA = 0.0;
+		//ALPHA = 0.0;	// Lines below are an alternative to ALPHA = 0.0
+		vec4 screen_color = texture(SCREEN_TEXTURE, SCREEN_UV);
+		ALBEDO = screen_color.rgb;
+		ALPHA = screen_color.a;
+		vec4 normal_roughness = texture(NORMAL_ROUGHNESS_TEXTURE, SCREEN_UV);
+		NORMAL_MAP = normal_roughness.rgb;
+		ROUGHNESS = normal_roughness.a;
 	}
 }

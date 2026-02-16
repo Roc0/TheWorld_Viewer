@@ -988,7 +988,8 @@ func _process(delta):
 			var camera_velocity : float = 0
 			if (realSceneCamera.has_method("get_velocity")):
 				camera_velocity = realSceneCamera.get_velocity()
-			_info_panel_camera_velocity = "  Velocity: " + str(snapped(camera_velocity, 0.1)) + "m/s " + str(snapped((camera_velocity * 60 * 60) / 1000, 0.1)) + "km/h"
+			var camera_under_water := "S" if viewer_custom_camera.is_camera_under_water() else "N"
+			_info_panel_camera_velocity = "  Velocity: " + str(snapped(camera_velocity, 0.1)) + "m/s " + str(snapped((camera_velocity * 60 * 60) / 1000, 0.1)) + "km/h" + " Und Wtr: " + camera_under_water
 		if camera2d != null:
 			var camera2d_pos_in_map : Vector2
 			if camera2d.has_method("get_camera_world_transform"):
@@ -1523,10 +1524,12 @@ func create_info_panel():
 	var hseparator : HSeparator
 	var vseparator : VSeparator
 
+	_logger.debug("Creating InfoPanel ...")
+	
 	clear_info_panel_closing_labels()
 	
 	if _info_panel != null:
-		destroy_info_panel()
+		remove_info_panel()
 	
 	#_info_panel = PanelContainer.new()
 	_info_panel = tw_info_container.new()
