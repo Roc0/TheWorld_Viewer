@@ -15,7 +15,7 @@
 [ext_resource type="Shader" uid="uid://5ugxy0k7uppi" path="res://addons/twviewer/shaders/CameraUnderWater.gdshader" id="7_yrlpt"]
 [ext_resource type="Shader" uid="uid://cyvho8b2wcb8d" path="res://utils/GaussianBlurEffectPostProcess.gdshader" id="9_2dtkh"]
 [ext_resource type="Shader" uid="uid://h5kcbfu71fyx" path="res://addons/twviewer/test/test_shader_1.tres" id="9_hvx40"]
-[ext_resource type="Shader" uid="uid://cibkd718c8ggt" path="res://addons/twviewer/shaders/CameraUnderWaterPostProcess.gdshader" id="10_qu85c"]
+[ext_resource type="Shader" uid="uid://cibkd718c8ggt" path="res://addons/twviewer/shaders/obs_CameraUnderWaterPostProcess.gdshader" id="10_qu85c"]
 [ext_resource type="PackedScene" uid="uid://caqxfqurbp3ku" path="res://assets/scenes/pine_tree.tscn" id="11_fbf05"]
 [ext_resource type="PackedScene" uid="uid://dvnha0bqryjll" path="res://assets/scenes/maple_tree.tscn" id="11_kq4xa"]
 [ext_resource type="PackedScene" uid="uid://bltmr2xgs8nq1" path="res://assets/scenes/small_rock.tscn" id="12_ffcy8"]
@@ -500,8 +500,9 @@ _world_param_deploy_world = false
 _world_editor_param_depth_quad = 2
 _world_editor_param_max_depth_quad = 2
 _world_editor_param_info_panel_visible = true
-_camera_param_initial_pos = Vector3(-35658, -46.594673, -10740)
-_camera_param_initial_yaw_pitch_roll_deg = Vector3(-73.325516, -4.7044005, 0)
+_world_editor_param_deploy_world = true
+_camera_param_initial_pos = Vector3(-26767.914, -0.0029900372, -14657.92)
+_camera_param_initial_yaw_pitch_roll_deg = Vector3(67.17446, -6.954373, 0)
 _shader_param_ao_light_affect = 0.1
 _shader_param_debug_float0 = 45.0
 _shader_param_cam_alt_uv_threshold = 6000.0
@@ -570,7 +571,7 @@ offset_bottom = 2.0
 
 [node name="GDN_TW_MapViewport" type="GDN_TheWorld_MapViewport" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer"]
 handle_input_locally = false
-size = Vector2i(1089, 589)
+size = Vector2i(1089, 542)
 render_target_update_mode = 0
 
 [node name="GDN_TW_MapCamera" type="GDN_TheWorld_MapCamera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer/GDN_TW_MapViewport"]
@@ -585,7 +586,7 @@ current = true
 near = 100.0
 far = 30000.0
 
-[node name="PostProcessingUnderWaterEffect" type="ColorRect" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
+[node name="obs_PostProcessingUnderWaterEffect" type="ColorRect" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
 visible = false
 material = SubResource("ShaderMaterial_epqem")
 anchors_preset = 15
@@ -595,7 +596,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="PostProcessingUnderWaterOverride" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
+[node name="obs_PostProcessingUnderWaterOverride" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
 transform = Transform3D(-0.998846, 9.31322e-10, 0.0480178, -0.0130341, 0.962454, -0.27113, -0.046215, -0.271443, -0.961344, 8708.38, -3216.03, -11328.1)
 visible = false
 mesh = SubResource("QuadMesh_y8qsi")

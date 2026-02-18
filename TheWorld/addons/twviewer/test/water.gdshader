@@ -111,7 +111,7 @@ void vertex() {
 	// heigth of waves only if camera is below end_camera_altitude_for_waves
 	if (CAMERA_POSITION_WORLD.y - flat_sea_height < end_camera_altitude_for_waves || u_generate_global_map) {
 		// sea height in range 0.0 / 1.0 from noise texture moving uv with vertex global position and time
-		float height = texture(gu_sea_wave, (v_world_pos.xz / gu_sea_noise_scale) + (shader_time * gu_sea_time_scale * gu_sea_rough_factor)).r;
+		float height = textureLod(gu_sea_wave, (v_world_pos.xz / gu_sea_noise_scale) + (shader_time * gu_sea_time_scale * gu_sea_rough_factor), 0).r;
 
 		// Attenuation of waves height when camera is between start_camera_altitude_for_waves_attenuation (max waves height) and end_camera_altitude_for_waves (null waves height)
 		float scale = gu_sea_height_scale * gu_sea_rough_factor;
@@ -225,6 +225,7 @@ void fragment() {
 		float deep_sea_alpha = 0.9;
 		// alpha runs from shallow_sea_alpha to deep_sea_alpha: deep_sea_alpha when v_sea_depth is greater than start_transparent_sea_depth, shallow_sea_alpha when v_sea_depth is 0 or less (terrain above sea)
 		alpha = shallow_sea_alpha + ((deep_sea_alpha - shallow_sea_alpha) / start_transparent_sea_depth) * transparent_sea_depth;
+		//alpha = 1.0;
 	}
 
 	float __depth_tex = texture(DEPTH_TEXTURE, SCREEN_UV).r;
