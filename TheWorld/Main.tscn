@@ -499,7 +499,6 @@ _world_param_deploy_world = false
 _world_editor_param_depth_quad = 2
 _world_editor_param_max_depth_quad = 2
 _world_editor_param_info_panel_visible = true
-_world_editor_param_edit_panel_visible = true
 _camera_param_initial_pos = Vector3(4228, 741.3102, 42754)
 _camera_param_initial_yaw_pitch_roll_deg = Vector3(-89.21535, -35.95576, 0)
 _shader_param_ao_light_affect = 0.1

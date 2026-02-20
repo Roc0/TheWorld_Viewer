@@ -84,6 +84,7 @@ var _info_panel_camera_rot := ""
 var _info_panel_camera_pos := ""
 var _info_panel_camera_pos_in_map := ""
 var _info_panel_camera_velocity := ""
+var _info_panel_camera_und_water := ""
 var _info_panel_camera2d_pos := ""
 var _info_panel_camera2d_pos_in_map := ""
 var _info_map_quadrants := ""
@@ -989,7 +990,8 @@ func _process(delta):
 			if (realSceneCamera.has_method("get_velocity")):
 				camera_velocity = realSceneCamera.get_velocity()
 			var camera_under_water := "S" if viewer_custom_camera.is_camera_under_water() else "N"
-			_info_panel_camera_velocity = "  Velocity: " + str(snapped(camera_velocity, 0.1)) + "m/s " + str(snapped((camera_velocity * 60 * 60) / 1000, 0.1)) + "km/h" + " Und Wtr: " + camera_under_water
+			_info_panel_camera_velocity = "  Velocity: " + str(snapped(camera_velocity, 0.1)) + "m/s " + str(snapped((camera_velocity * 60 * 60) / 1000, 0.1)) + "km/h" + " Delay: " + str(snapped((gdn_viewer.get_delay_degree()), 0.1)) + "\n"
+			_info_panel_camera_und_water = " Under Water: " + camera_under_water
 		if camera2d != null:
 			var camera2d_pos_in_map : Vector2
 			if camera2d.has_method("get_camera_world_transform"):
@@ -1071,7 +1073,8 @@ func _process(delta):
 		+ _info_panel_camera_rot \
 		+ _info_panel_camera_pos \
 		+ _info_panel_camera_pos_in_map \
-		+ _info_panel_camera_velocity
+		+ _info_panel_camera_velocity \
+		+ _info_panel_camera_und_water
 		
 		_info_panel_camera2d_label.text = "Camera2D (Map Mode)\n" \
 		+ _info_panel_camera2d_pos \
