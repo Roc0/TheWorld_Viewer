@@ -95,7 +95,7 @@ uniform bool u_test_quadrant_show_wireframe = false;
 // not set in code
 // ***************
 //uniform float u_shine_speed : hint_range(0.1, 10) = 1.5;
-uniform float u_highlight_quadrant_smoothness : hint_range(0.1, 1.0) = 0.2;
+uniform float u_highlight_quadrant_smoothness : hint_range(0.1, 1.0) = 0.4;
 
 // ***************
 // global uniforms
@@ -198,7 +198,7 @@ uniform sampler2D u_west_border_splatmap;
 //uniform sampler2D u_terrain_colormap;
 
 uniform mat3 u_terrain_normal_basis;
-uniform float u_terrain_height = 1.0;	// NOTSET
+uniform float u_terrain_height_scale = 1.0;	// NOTSET
 uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
 uniform bool u_force_height_0 = false;
 
@@ -837,7 +837,7 @@ void vertex()
 	vec3 vertex_modelspace_with_h = vertex_modelspace_in;
 	vec4 vertex_worldspace_with_h = vertex_worldspace_in;
 	{
-		float h = get_height(u_terrain_heightmap, u_terrain_height, quadrant_uv);		// Height displacement from heightmap
+		float h = get_height(u_terrain_heightmap, u_terrain_height_scale, quadrant_uv);		// Height displacement from heightmap
 		bool force_height_0 = u_force_height_0;
 		if (!force_height_0) {
 			if (gu_force_height_0 > 0) {
@@ -906,7 +906,7 @@ void vertex()
 	if (_compute_normal)
 	{
 		bool use_external_borders = true;
-		normal_computed = compute_normal_1(u_terrain_heightmap, vertex_cell_coords_in_heightmap, u_terrain_heightmap_border_rows, vertex_cell_coords_in_heightmap_optlvl_zero, grid_step, u_terrain_height, use_external_borders);
+		normal_computed = compute_normal_1(u_terrain_heightmap, vertex_cell_coords_in_heightmap, u_terrain_heightmap_border_rows, vertex_cell_coords_in_heightmap_optlvl_zero, grid_step, u_terrain_height_scale, use_external_borders);
 	}
 	else
 	{
@@ -931,7 +931,7 @@ void vertex()
 		//splat_low_elevation_factor = 2.0;		// DEBUG
 		//splat_min_height = 0.0;				// DEBUG
 		//splat_max_height = 0.0;				// DEBUG
-		splat = compute_splat(u_terrain_heightmap, vertex_cell_coords_in_heightmap, grid_step, u_terrain_height, normal_computed, splat_slope_vertical_factor, splat_slope_flat_factor, splat_dirt_on_rocks_factor, splat_high_elevation_factor, splat_low_elevation_factor, splat_min_height, splat_max_height);
+		splat = compute_splat(u_terrain_heightmap, vertex_cell_coords_in_heightmap, grid_step, u_terrain_height_scale, normal_computed, splat_slope_vertical_factor, splat_slope_flat_factor, splat_dirt_on_rocks_factor, splat_high_elevation_factor, splat_low_elevation_factor, splat_min_height, splat_max_height);
 	}
 	else
 	{
@@ -1028,7 +1028,7 @@ void fragment()
 	float distance_from_camera = v_distance_from_camera;
 	float distance_from_vertical_of_camera_on_terrain = v_distance_from_vertical_of_camera_on_terrain;
 	vec4 splat_pixel_in = v_splat;
-	float quadrant_texture_lod = v_chunk_texture_lod;
+	float chunk_texture_lod = v_chunk_texture_lod;
 
 	float quad_line_thickness = 0.05;
 
@@ -1097,7 +1097,7 @@ void fragment()
 
 			if (wireframe)
 				pixel_type = wireframe_pixel;
-			else if (quadrant_texture_lod >= 0.0)
+			else if (chunk_texture_lod >= 0.0)
 				pixel_type = show_chunk_pixel;
 		}
 	}
@@ -1534,14 +1534,14 @@ void fragment()
 	//
 	if (pixel_type == show_chunk_pixel)
 	{
-		//quadrant_texture_lod = floor(quadrant_texture_lod);
-		float f = floor(quadrant_texture_lod);
-		float c = ceil(quadrant_texture_lod);
-		if ((quadrant_texture_lod - f) > (c - quadrant_texture_lod) ) {
-			quadrant_texture_lod = c;
+		/*float f = floor(chunk_texture_lod);
+		float c = ceil(chunk_texture_lod);
+		if ((chunk_texture_lod - f) > (c - chunk_texture_lod) ) {
+			chunk_texture_lod = c;
 		} else {
-			quadrant_texture_lod = f;
-		}
+			chunk_texture_lod = f;
+		}*/
+		chunk_texture_lod = round(chunk_texture_lod);
 
 		float chunk_border_line_thickness = 0.005;
 
@@ -1554,8 +1554,8 @@ void fragment()
 				if (is_on_the_border(quadrant_uv, chunk_border_line_thickness) || is_on_the_border(chunk_uv, chunk_border_line_thickness)) {
 					albedo_computed = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
 				} else {
-					if (quadrant_texture_lod >= 0.0 && quadrant_texture_lod <= 8.0) {
-						albedo_computed = lod_colors[int(quadrant_texture_lod)];
+					if (chunk_texture_lod >= 0.0 && chunk_texture_lod <= 8.0) {
+						albedo_computed = lod_colors[int(chunk_texture_lod)];
 					} else {
 						albedo_computed = lod_colors[9];
 					}

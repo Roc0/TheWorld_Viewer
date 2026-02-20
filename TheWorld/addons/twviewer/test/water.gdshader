@@ -1,6 +1,15 @@
 shader_type spatial;
 render_mode blend_mix, cull_back;
 
+const vec3 c_apricot_color = vec3(1.0, 0.749, 0.0);
+const vec3 c_orange_color = vec3(0.77, 0.53, 0.11);
+const vec3 c_red_salmon_color = vec3(0.980, 0.502, 0.447);
+const float c_ground_uv_scale_horiz_threshold = 5000.0;	//15000.0;
+const float c_ground_uv_scale_vert_threshold = 100.0;
+const float c_max_ground_uv_scale_per_texture = 80.0;
+const float c_f_texture_lod_zero = 0.0;
+const int c_i_texture_lod_zero = 0;
+
 global uniform float gu_time = 0;
 global uniform bool gu_show_chunks = false;
 global uniform float gu_camera_altitude_from_terrain;
@@ -17,13 +26,16 @@ global uniform float gu_sea_end_camera_altitude_for_waves = 1000.0;
 global uniform float gu_sea_start_camera_altitude_for_waves_attenuation = 200.0;
 global uniform float gu_sea_start_terrain_depth_for_waves_attenuation = 50.0;
 global uniform float gu_sea_scale_offset_threshold = 20.0;
+global uniform bool gu_highlight_hit_quadrant = false;
 
 global uniform int gu_force_height_0 = -1;
 
-uniform float u_terrain_height = 1.0;	// NOTSET
+uniform float u_highlight_quadrant_smoothness : hint_range(0.1, 1.0) = 0.4;
+
+uniform float u_terrain_height_scale = 1.0;	// NOTSET
 uniform sampler2D u_terrain_heightmap;
 uniform uint u_optimization_level = 0;
-uniform float u_grid_step = 2.0;
+uniform float u_grid_step_optlvl_zero = 2.0;
 uniform float u_editmode_selected = 0;
 uniform bool u_grid_on = false;
 uniform float u_quad_border_line_thickness = 0.005;
@@ -71,7 +83,7 @@ uniform vec4 u_color_shallow : source_color = vec4(1.0, 1.0, 1.0, 1.0);	// vec4(
 
 // Varying variables
 varying vec3 v_world_pos;
-varying float v_lod;
+varying float v_chunk_texture_lod;
 varying float v_sea_depth;
 
 #include "res://addons/twviewer/shaders/include/CommonFunctions.gdshaderinc"
@@ -81,8 +93,13 @@ float fresnel(float amount, vec3 normal, vec3 view)
 	return pow((1.0 - clamp(dot(normalize(normal), normalize(view)), 0.0, 1.0 )), amount);
 }
 
-void vertex() {
+void vertex()
+{
+	vec3 vertex_modelspace_in = VERTEX;
+
 	float shader_time = gu_time;	// TIME
+
+	vec2 heightmapSize = vec2(textureSize(u_terrain_heightmap, c_i_texture_lod_zero));		// Power of 2 + 1 (f.i. 1025, 2049)
 
 	// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need
 	// to trasform them in world coord to abstract from chunk
@@ -98,11 +115,11 @@ void vertex() {
 	vec4 vertex_local_to_quadrant_pos = u_terrain_inverse_transform * vertex_world_pos;
 	UV = vertex_local_to_quadrant_pos.xz / vec2(u_quadrant_size);		// mapping of vertex_local_to_quadrant_pos in current quadrant from 0.0 (start of the quadrant) to 1.0 (end of the quadrant)
 
-	vec2 vertex_cell_coords_in_textures = vertex_local_to_quadrant_pos.xz / vec2(u_grid_step * pow(2.0, float(u_optimization_level)));
+	vec2 vertex_cell_coords_in_textures = vertex_local_to_quadrant_pos.xz / vec2(u_grid_step_optlvl_zero * pow(2.0, float(u_optimization_level)));
 	vertex_cell_coords_in_textures += vec2(0.5);	// IMPORTANT: now vertex_cell_coords_in_textures ranges from 0.5
 													// to (heightmap size - 1) + 0.5 with increment of 1.0 between each coord
 	vec2 terrain_uv = vertex_cell_coords_in_textures / vec2(textureSize(u_terrain_heightmap, 0));
-	float terrain_vertex_hight = get_height(u_terrain_heightmap, u_terrain_height, terrain_uv);		// Height displacement from heigthmap
+	float terrain_vertex_hight = get_height(u_terrain_heightmap, u_terrain_height_scale, terrain_uv);		// Height displacement from heigthmap
 
 	float end_camera_altitude_for_waves = gu_sea_end_camera_altitude_for_waves;
 	float start_camera_altitude_for_waves_attenuation = gu_sea_start_camera_altitude_for_waves_attenuation;
@@ -164,15 +181,20 @@ void vertex() {
 	//VERTEX.y = 0.0;		// DEBUG
 	//VERTEX.y = 1000.0;	// DEBUG
 
+	vec2 chunk_uv = vec2(0.0, 0.0);
 	float lod = -1.0;
 	if (gu_show_chunks && !u_generate_global_map) {
+		/*
 		// SETTING UV2 (mapping of the VERTEX in current chunk) and lod of current chunk
 		int vertex_col = int(floor(mod(float(VERTEX_ID), float(u_num_vertices_per_chunk))));		// vertex_col ranges from 0 to u_num_vertices_per_chunk - 1
 		int vertex_row = int(floor(float(VERTEX_ID) / float(u_num_vertices_per_chunk)));			// vertex_row ranges from 0 to u_num_vertices_per_chunk - 1
 		float step_between_vertices_in_current_mesh = -1.0;
 		if ((vertex_col == 0 && vertex_row == 0) || (vertex_col == 0 && vertex_row == int(u_num_vertices_per_chunk - uint(1)))
-			|| (vertex_col == int(u_num_vertices_per_chunk - uint(1)) && vertex_row == 0) || (vertex_col == int(u_num_vertices_per_chunk - uint(1)) && vertex_row == int(u_num_vertices_per_chunk - uint(1)))) {
-		} else {
+			|| (vertex_col == int(u_num_vertices_per_chunk - uint(1)) && vertex_row == 0) || (vertex_col == int(u_num_vertices_per_chunk - uint(1)) && vertex_row == int(u_num_vertices_per_chunk - uint(1))))
+		{
+		}
+		else
+		{
 			// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk
 			if (vertex_col == 0) {	// vertex_row is > 0
 				step_between_vertices_in_current_mesh = floor(VERTEX.z / float(vertex_row));	// in world units
@@ -188,8 +210,41 @@ void vertex() {
 			UV2 = VERTEX.xz / vec2(chunk_size);		// mapping of the VERTEX in current chunk from 0.0 (start of the chunk) to 1.0 (end of the chunk)
 			lod = log2(step_between_vertices_in_current_mesh) - 1.0;
 		}
+		*/
+		int vertex_col = int(floor(mod(float(VERTEX_ID), float(u_num_vertices_per_chunk))));		// vertex_col ranges from 0 to u_num_vertices_per_chunk - 1
+		int vertex_row = int(floor(float(VERTEX_ID) / float(u_num_vertices_per_chunk)));			// vertex_row ranges from 0 to u_num_vertices_per_chunk - 1
+		float step_between_vertices_in_current_chunk = -1000000000.0;
+		float chunk_size = -1000000000.0;
+		{
+			if (vertex_col == 0 && vertex_row == 0)
+			{
+				chunk_uv = vec2(0.0, 0.0);
+			}
+			else
+			{
+				if (vertex_col == 0) {	// vertex_row is > 0
+					step_between_vertices_in_current_chunk = floor(vertex_modelspace_in.z / float(vertex_row));
+				} else {	// vertex_col is > 0
+					step_between_vertices_in_current_chunk = floor(vertex_modelspace_in.x / float(vertex_col));
+				}
+				chunk_size = step_between_vertices_in_current_chunk * float(u_num_vertices_per_chunk - uint(1));
+				chunk_uv = vertex_modelspace_in.xz / vec2(chunk_size);
+			}
+		}
+
+		if ((vertex_col == 0 && vertex_row == 0) || (vertex_col == 0 && vertex_row == int(u_num_vertices_per_chunk - uint(1)))
+			|| (vertex_col == int(u_num_vertices_per_chunk - uint(1)) && vertex_row == 0) || (vertex_col == int(u_num_vertices_per_chunk - uint(1)) && vertex_row == int(u_num_vertices_per_chunk - uint(1))))
+		{
+			lod = 99.0;
+		}
+		else
+		{
+			lod = log2(step_between_vertices_in_current_chunk) - 1.0;
+		}
 	}
-	v_lod = lod;
+
+	UV2 = chunk_uv;
+	v_chunk_texture_lod = lod;
 }
 
 void fragment() {
@@ -223,9 +278,10 @@ void fragment() {
 		float transparent_sea_depth = clamp(v_sea_depth, 0, start_transparent_sea_depth);
 		float shallow_sea_alpha = 0.4;
 		float deep_sea_alpha = 0.9;
-		// alpha runs from shallow_sea_alpha to deep_sea_alpha: deep_sea_alpha when v_sea_depth is greater than start_transparent_sea_depth, shallow_sea_alpha when v_sea_depth is 0 or less (terrain above sea)
+		// alpha ranges from shallow_sea_alpha to deep_sea_alpha: deep_sea_alpha when v_sea_depth is greater than start_transparent_sea_depth, shallow_sea_alpha when v_sea_depth is 0 or less (terrain above sea)
 		alpha = shallow_sea_alpha + ((deep_sea_alpha - shallow_sea_alpha) / start_transparent_sea_depth) * transparent_sea_depth;
-		//alpha = 1.0;
+		//alpha = 0.9;														// DEBUG
+		//if (v_sea_depth < start_transparent_sea_depth) alpha = 1.0;		// DEBUG
 	}
 
 	float __depth_tex = texture(DEPTH_TEXTURE, SCREEN_UV).r;
@@ -316,41 +372,56 @@ void fragment() {
 		alpha = 1.0;
 	}
 
+	if (u_editmode_selected > 0.0 && is_on_the_border(UV, u_quad_border_line_thickness)) {
+		surface_color = c_apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
+		alpha = 1.0; 
+		metallic = 1.0;
+		roughness = 1.0;
+	} else {
+		float lod = v_chunk_texture_lod;
+		//lod = -1.0;		// DEBUG
+		if (lod >= 0.0)
+		{
+			lod = round(lod);
+			float chunk_border_line_thickness = 0.005;
+
+			if (u_mouse_hit_uv_quadrant != vec2(-1) && distance(u_mouse_hit_uv_quadrant, UV) < u_mouse_hit_radius) {
+				surface_color = c_apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
+			} else {
+				if (is_on_the_border(UV, chunk_border_line_thickness) || is_on_the_border(UV2, chunk_border_line_thickness)) {
+					//albedo_out = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
+					surface_color = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
+				} else {
+					if (lod >= 0.0 && lod <= 8.0) {
+						surface_color = lod_colors[int(lod)];
+					} else {
+						surface_color = lod_colors[9];
+					}
+				}
+			}
+			alpha = 1.0; 
+			metallic = 1.0;
+			roughness = 1.0;
+		}
+	}
+	
+	if (gu_highlight_hit_quadrant && u_mouse_hit_uv_quadrant != vec2(-1) && (u_mouse_hit_uv_quadrant.x >= 0.0 && u_mouse_hit_uv_quadrant.x <= 1.0 && u_mouse_hit_uv_quadrant.y >= 0.0 && u_mouse_hit_uv_quadrant.y <= 1.0))
+	{
+		surface_color = c_apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
+		surface_color = mix(surface_color, c_orange_color, u_highlight_quadrant_smoothness);
+		alpha = 1.0; 
+		metallic = 1.0;
+		roughness = 1.0;
+	}
+
 	ALBEDO = surface_color;
 	METALLIC = metallic;
 	ROUGHNESS = roughness;
 	NORMAL_MAP = normal_blend;
 	ALPHA = alpha;
 
-	float lod = v_lod;
-	if (lod >= 0.0) {
-		float f = floor(lod);
-		float c = ceil(lod);
-		if ((lod - f) > (c - lod) ) {
-			lod = c;
-		} else {
-			lod = f;
-		}
-
-		float chunk_border_line_thickness = 0.005;
-
-		if (u_editmode_selected > 0.0 && is_on_the_border(UV, u_quad_border_line_thickness)) {
-			ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
-		} else {
-			if (u_mouse_hit_uv_quadrant != vec2(-1) && distance(u_mouse_hit_uv_quadrant, UV) < u_mouse_hit_radius) {
-				ALBEDO = vec3(1.0, 0.749, 0.0);		// GDN_TheWorld_Globals::g_color_yellow_apricot
-			} else {
-				if (is_on_the_border(UV, chunk_border_line_thickness) || is_on_the_border(UV2, chunk_border_line_thickness)) {
-					//albedo_out = vec3(1.0, 1.0, 1.0);		// GDN_TheWorld_Globals::g_color_white
-					ALBEDO = vec3(0.0, 0.0, 0.0);		// GDN_TheWorld_Globals::g_color_black
-				} else {
-					if (lod >= 0.0 && lod <= 8.0) {
-						ALBEDO = lod_colors[int(lod)];
-					} else {
-						ALBEDO = lod_colors[9];
-					}
-				}
-			}
-		}
-	}
+	//if (u_editmode_selected > 0.0) ALPHA = 0.2;		// DEBUG
+	//if (v_chunk_texture_lod >= 0.0) ALPHA = 0.2;		// DEBUG
+	//if (u_generate_global_map) ALPHA = 0.2;		// DEBUG
+	//if (gu_show_chunks) ALPHA = 1.0;		// DEBUG
 }

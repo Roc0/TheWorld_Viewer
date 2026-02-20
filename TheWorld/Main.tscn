@@ -492,17 +492,16 @@ script = ExtResource("15_6btyd")
 
 [node name="TWViewer" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape"]
 script = ExtResource("3_yxvy6")
-_world_param_depth_quad = 4
-_world_param_cache_quad = 0
-_world_param_max_depth_quad = 4
+_world_param_depth_quad = 12
+_world_param_cache_quad = 2
 _world_param_info_panel_visible = true
 _world_param_deploy_world = false
 _world_editor_param_depth_quad = 2
 _world_editor_param_max_depth_quad = 2
 _world_editor_param_info_panel_visible = true
-_world_editor_param_deploy_world = true
-_camera_param_initial_pos = Vector3(-26767.914, -0.0029900372, -14657.92)
-_camera_param_initial_yaw_pitch_roll_deg = Vector3(67.17446, -6.954373, 0)
+_world_editor_param_edit_panel_visible = true
+_camera_param_initial_pos = Vector3(4228, 741.3102, 42754)
+_camera_param_initial_yaw_pitch_roll_deg = Vector3(-89.21535, -35.95576, 0)
 _shader_param_ao_light_affect = 0.1
 _shader_param_debug_float0 = 45.0
 _shader_param_cam_alt_uv_threshold = 6000.0
@@ -571,7 +570,7 @@ offset_bottom = 2.0
 
 [node name="GDN_TW_MapViewport" type="GDN_TheWorld_MapViewport" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer"]
 handle_input_locally = false
-size = Vector2i(1089, 542)
+size = Vector2i(1089, 589)
 render_target_update_mode = 0
 
 [node name="GDN_TW_MapCamera" type="GDN_TheWorld_MapCamera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer/GDN_TW_MapViewport"]
