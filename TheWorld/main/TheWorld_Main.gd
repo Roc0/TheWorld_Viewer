@@ -160,7 +160,7 @@ func init():
 	var initial_camera_ypr : Variant = _config.get_value(tw_const.param_group_camera, tw_const.param_key_initial_camera_ypr)
 	if _initial_camera_position_in_world != null and initial_camera_ypr != null:
 		TWViewer()._set_camera_param_initial_pos(_initial_camera_position_in_world)
-		TWViewer()._set_camera_param_initial_yaw_pitch_roll(initial_camera_ypr)
+		TWViewer()._set_camera_param_initial_yaw_pitch_roll_deg(initial_camera_ypr)
 	_initial_player_pos_in_world = _config.get_value(tw_const.param_group_player, tw_const.param_key_player_pos)
 	_initial_player_basis_in_world = _config.get_value(tw_const.param_group_player, tw_const.param_key_player_basis)
 		
@@ -736,9 +736,8 @@ func test_subvieport(node : Node) -> void:
 	_sprite.texture = _viewport.get_texture()
 
 func save_current_position(viewpoint : int) -> void:
-	var camera : Camera3D = null
+	var camera : Camera3D = TWViewer().get_world_camera()
 	var gdn_viewer = TWViewer().GDN_viewer()
-	camera = TWViewer().get_world_camera()
 	if camera != null && camera.has_method("get_yaw") && camera.has_method("get_pitch") && camera.has_method("get_roll"):
 		#var config = ConfigFile.new()
 		#@warning_ignore("unused_variable")
@@ -779,7 +778,7 @@ func load_position(viewpoint : int) -> void:
 	var camera_ypr_in_map : Variant = _config.get_value(tw_const.param_group_camera, param_key_camera_ypr)
 	if camera_position_in_map != null and camera_ypr_in_map != null:
 		TWViewer()._set_camera_param_initial_pos(camera_position_in_map)
-		TWViewer()._set_camera_param_initial_yaw_pitch_roll(camera_ypr_in_map)
+		TWViewer()._set_camera_param_initial_yaw_pitch_roll_deg(camera_ypr_in_map)
 		Globals.activate_loading_screen(null)
 	
 func read_shift_ctrl_alt() -> void:

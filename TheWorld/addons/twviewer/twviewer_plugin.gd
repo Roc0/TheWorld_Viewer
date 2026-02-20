@@ -1,8 +1,6 @@
 @tool
 extends EditorPlugin
 
-var quitting : bool = false
-
 const TWViewer = preload("./tw_viewer.gd")
 const TWTestQuadrant = preload("./test/test_quadrant.gd")
 var TWTestQuadrant_array : Array = []
@@ -38,10 +36,9 @@ var _edit_mode_ui_control : Control = null
 
 var _close_requested : bool = false
 
-var _config_file_name : String = ""
 var _config := ConfigFile.new()
-var _viewpoint_to_save : int = 0
-var _viewpoint_to_load : int = 0
+var _viewpoint_to_save : int = -1
+var _viewpoint_to_load : int = -1
 
 #const AUTOLOAD_NAME = "Globals"
 #const AUTOLOAD_SCRIPT = "res://addons/twviewer/init/Globals.gd"
@@ -58,7 +55,7 @@ func _enter_tree():
 	#add_autoload_singleton(AUTOLOAD_NAME, AUTOLOAD_SCRIPT)
 
 func _exit_tree():
-	if not quitting:
+	if not _close_requested:
 		_logger.debug("_exit_tree")
 	
 	remove_custom_type("TWTestQuadrant")
@@ -73,14 +70,21 @@ func _process(delta: float):
 	# debugric
 	#return
 	
+	var clientstatus : int = 0
+	clientstatus = get_clientstatus()
+	if _close_requested and clientstatus > tw_const.clientstatus_uninitialized and clientstatus <= tw_const.clientstatus_world_deployed:
+		_logger.debug("_process: quit request cancelled")
+		_close_requested = false	# world reinizialized despite _close_requested (set at NOTIFICATION_WM_CLOSE_REQUEST) probably pressed cancel to save data on quitting message box we need to invalidate _close_requested
+
+	#_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done, ", _close_requested=", _close_requested))
 	if !_viewer_init_done && !_close_requested:
 		#_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done))
 		_viewer = find_node_by_name(tw_const.tw_viewer_node_name)
 		#_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done, ", TWViewer=", _viewer, ", _viewer.has_method(is_ready)=", _viewer.has_method("is_ready"), ", _viewer.is_ready()=", _viewer.is_ready()))
 		if _viewer != null && _viewer.has_method("is_ready") && _viewer.is_ready():
-			_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done, " initializing ..."))
-			_viewer.custom_ready()
-			_logger.debug(str("_process: _viewer_init_done=", _viewer_init_done, " custom_ready done"))
+			_logger.debug(str("_process: initializing viewer ..."))
+			_viewer.init_viewer()
+			_logger.debug(str("_process: init_viewer done"))
 			
 			#if Engine.is_editor_hint():
 			var editor_interface := get_editor_interface()
@@ -119,27 +123,29 @@ func _process(delta: float):
 			for node in nodes:
 				add_test_quadrant_to_array(node)
 	
-	var clientstatus : int = 0
-	clientstatus = get_clientstatus()
-
 	#print(_world_initialized)
 	if _viewer != null && clientstatus >= tw_const.clientstatus_session_initialized && !_world_initialized:
 		#_viewer.GDN_viewer().reset_initial_world_viewer_pos(initialViewerPos.x, initialViewerPos.y, initialViewerPos.z, initialCameraDistanceFromTerrain, initialLevel, -1 , -1)
-		_config_file_name = _viewer.GDN_globals().get_config_filename(0)
-		var _err = _config.load(_config_file_name)
-		print(str("_config_file_name=", _config_file_name, " load=", _err))
 		_world_initialized = true
 		
 	if not _world_initialized:
 		return
 
-	if _viewpoint_to_save != 0 and _camera != null and _config_file_name != "" and clientstatus == tw_const.clientstatus_world_deployed:
-		tw_const.save_current_position(_viewpoint_to_save, _camera, _config, _config_file_name)
-		_viewpoint_to_save = 0
+	if _viewpoint_to_save >= 0:
+		var view := _viewpoint_to_save
+		_viewpoint_to_save = -1
+		if clientstatus == tw_const.clientstatus_world_deployed or clientstatus == tw_const.clientstatus_minimal_world_deployed:
+			_logger.debug(str("Saving View Point ", view))
+			_viewer.save_current_camera_position(view)
+			_logger.debug(str("Saved View Point ", view))
 
-	if _viewpoint_to_load != 0 and _camera != null and clientstatus == tw_const.clientstatus_world_deployed:
-		tw_const.load_position(_viewpoint_to_load, _config, _viewer)
-		_viewpoint_to_load = 0
+	if _viewpoint_to_load >= 0:
+		var view := _viewpoint_to_load
+		_viewpoint_to_load = -1
+		if clientstatus == tw_const.clientstatus_world_deployed or clientstatus == tw_const.clientstatus_minimal_world_deployed:
+			_logger.debug(str("Loading View Point ", view))
+			_viewer.load_camera_position(view)
+			_logger.debug(str("Loaded View Point ", view))
 		
 	if _camera != null and _camera.current:
 		var n : Node = get_tree().get_first_node_in_group(tw_const.custom_cameras_group)
@@ -214,12 +220,10 @@ func _forward_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:
 		tw_const.check_viewpoint_input(p_event, dict)
 		_viewpoint_to_save = dict['viewpoint_to_save']
 		_viewpoint_to_load = dict['viewpoint_to_load']
-		#if _viewpoint_to_save != 0:
-		#	print(str("_viewpoint_to_save=", _viewpoint_to_save))
-		#	_viewpoint_to_save = 0
-		#if _viewpoint_to_load != 0:
-		#	print(str("_viewpoint_to_load=", _viewpoint_to_load))
-		#	_viewpoint_to_load = 0
+		#if _viewpoint_to_save >= 0:
+		#	_logger.debug(str("_viewpoint_to_save=", _viewpoint_to_save))
+		#if _viewpoint_to_load >= 0:
+		#	_logger.debug(str("_viewpoint_to_load=", _viewpoint_to_load))
 		
 		#print(str("_forward_3d_gui_input: keycode=", p_event.keycode))
 		if p_event.keycode == KEY_ALT:
@@ -252,7 +256,7 @@ func _forward_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:
 		if p_event.is_pressed() && p_event.keycode == KEY_I && _alt_pressed:
 			if _viewer != null && _viewer.has_method("toggle_info_panel_visibility"):
 				_viewer.toggle_info_panel_visibility()
-			
+
 		if p_event.is_pressed() && p_event.keycode == KEY_T && _alt_pressed:
 			if _viewer != null && _viewer.has_method("toggle_track_mouse"):
 				_viewer.toggle_track_mouse()
@@ -261,7 +265,7 @@ func _forward_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:
 			if _viewer != null && _viewer.has_method("toggle_edit_mode"):
 				_viewer.toggle_edit_mode()
 
-		if p_event.is_pressed() && p_event.keycode == KEY_SPACE && _alt_pressed:
+		if p_event.is_pressed() && p_event.keycode == KEY_SPACE && (_alt_pressed or _ctrl_pressed):
 			if _viewer != null && _viewer.has_method("toggle_quadrant_selected"):
 				_viewer.toggle_quadrant_selected()
 
@@ -275,8 +279,7 @@ func _notification(_what):
 	#log_debug(str("_notification: ", self.name, " ", self.get_path(), " ", _what))
 	
 	if (_what == NOTIFICATION_WM_CLOSE_REQUEST):
-		quitting = true
-		_logger.debug("_notification: NOTIFICATION_WM_CLOSE_REQUEST ")
+		_logger.debug("_notification: NOTIFICATION_WM_CLOSE_REQUEST: quitting")
 		_close_requested = true
 
 func _apply_changes():

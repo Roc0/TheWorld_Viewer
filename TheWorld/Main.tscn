@@ -1,4 +1,4 @@
-[gd_scene load_steps=81 format=4 uid="uid://c4ukh1kw4impi"]
+[gd_scene load_steps=85 format=4 uid="uid://c4ukh1kw4impi"]
 
 [ext_resource type="Script" uid="uid://ds0w181xwdnps" path="res://main/TheWorld_Main.gd" id="1_760ml"]
 [ext_resource type="Script" uid="uid://b44gm8obypjmm" path="res://main.gd" id="1_tdbos"]
@@ -12,10 +12,10 @@
 [ext_resource type="Material" uid="uid://dee4mdtcckm70" path="res://addons/twviewer/test/m_sea.tres" id="6_32vc6"]
 [ext_resource type="PackedScene" uid="uid://v6sfi8k7dr7o" path="res://player.tscn" id="6_wlxwp"]
 [ext_resource type="Script" uid="uid://k4r3ry2g7lwa" path="res://addons/twviewer/test/test_quadrant.gd" id="7_7uq48"]
-[ext_resource type="Shader" uid="uid://5ugxy0k7uppi" path="res://addons/twviewer/shaders/CameraUnderWaterNew.gdshader" id="7_yrlpt"]
+[ext_resource type="Shader" uid="uid://5ugxy0k7uppi" path="res://addons/twviewer/shaders/CameraUnderWater.gdshader" id="7_yrlpt"]
 [ext_resource type="Shader" uid="uid://cyvho8b2wcb8d" path="res://utils/GaussianBlurEffectPostProcess.gdshader" id="9_2dtkh"]
 [ext_resource type="Shader" uid="uid://h5kcbfu71fyx" path="res://addons/twviewer/test/test_shader_1.tres" id="9_hvx40"]
-[ext_resource type="Shader" uid="uid://cibkd718c8ggt" path="res://addons/twviewer/shaders/CameraUnderWaterPostProcess.gdshader" id="10_qu85c"]
+[ext_resource type="Shader" uid="uid://cibkd718c8ggt" path="res://addons/twviewer/shaders/obs_CameraUnderWaterPostProcess.gdshader" id="10_qu85c"]
 [ext_resource type="PackedScene" uid="uid://caqxfqurbp3ku" path="res://assets/scenes/pine_tree.tscn" id="11_fbf05"]
 [ext_resource type="PackedScene" uid="uid://dvnha0bqryjll" path="res://assets/scenes/maple_tree.tscn" id="11_kq4xa"]
 [ext_resource type="PackedScene" uid="uid://bltmr2xgs8nq1" path="res://assets/scenes/small_rock.tscn" id="12_ffcy8"]
@@ -36,44 +36,6 @@
 [ext_resource type="Texture2D" uid="uid://di8gac727vfwy" path="res://assets/test/Rock037_1K-PNG/Rock037_1K-PNG_NormalGL.png" id="30_ny7u2"]
 [ext_resource type="Texture2D" uid="uid://bdxduox1bsc3w" path="res://assets/test/Rock037_1K-PNG/Rock037_1K-PNG_Roughness.png" id="31_x3yn0"]
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_xl13w"]
-shading_mode = 0
-vertex_color_use_as_albedo = true
-albedo_color = Color(1, 0, 0, 1)
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_kfft6"]
-_surfaces = [{
-"aabb": AABB(0, 0, 0, 1, 1, 1),
-"attribute_data": PackedByteArray("/wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP8="),
-"format": 34359742473,
-"index_count": 28,
-"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAQABQAFAAYABgAHAAcABAAAAAQAAQAFAAIABgADAAcAAAACAAEAAwA="),
-"material": SubResource("StandardMaterial3D_xl13w"),
-"primitive": 1,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 8,
-"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPwAAgD8AAAAAAACAPwAAgD8AAIA/AAAAAAAAgD8AAIA/")
-}]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_brhhl"]
-shading_mode = 0
-vertex_color_use_as_albedo = true
-albedo_color = Color(1, 0, 0, 1)
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_4lakm"]
-_surfaces = [{
-"aabb": AABB(0, 0, 0, 1, 1, 1),
-"attribute_data": PackedByteArray("/wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP8="),
-"format": 34359742473,
-"index_count": 28,
-"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAQABQAFAAYABgAHAAcABAAAAAQAAQAFAAIABgADAAcAAAACAAEAAwA="),
-"material": SubResource("StandardMaterial3D_brhhl"),
-"primitive": 1,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 8,
-"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPwAAgD8AAAAAAACAPwAAgD8AAIA/AAAAAAAAgD8AAIA/")
-}]
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_u8oof"]
 shading_mode = 0
 vertex_color_use_as_albedo = true
@@ -87,25 +49,6 @@ _surfaces = [{
 "index_count": 28,
 "index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAQABQAFAAYABgAHAAcABAAAAAQAAQAFAAIABgADAAcAAAACAAEAAwA="),
 "material": SubResource("StandardMaterial3D_u8oof"),
-"primitive": 1,
-"uv_scale": Vector4(0, 0, 0, 0),
-"vertex_count": 8,
-"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPwAAgD8AAAAAAACAPwAAgD8AAIA/AAAAAAAAgD8AAIA/")
-}]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8rvpv"]
-shading_mode = 0
-vertex_color_use_as_albedo = true
-albedo_color = Color(1, 0.752941, 0.796078, 1)
-
-[sub_resource type="ArrayMesh" id="ArrayMesh_8ciaf"]
-_surfaces = [{
-"aabb": AABB(0, 0, 0, 1, 1, 1),
-"attribute_data": PackedByteArray("/8DL///Ay///wMv//8DL///Ay///wMv//8DL///Ay/8="),
-"format": 34359742473,
-"index_count": 28,
-"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAQABQAFAAYABgAHAAcABAAAAAQAAQAFAAIABgADAAcAAAACAAEAAwA="),
-"material": SubResource("StandardMaterial3D_8rvpv"),
 "primitive": 1,
 "uv_scale": Vector4(0, 0, 0, 0),
 "vertex_count": 8,
@@ -302,6 +245,91 @@ _surfaces = [{
 "vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/")
 }]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o7g6l"]
+albedo_color = Color(0.98039216, 0.5019608, 0.44705883, 1)
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_vi5kq"]
+_surfaces = [{
+"aabb": AABB(0, 0, 0, 1, 1, 1),
+"attribute_data": PackedByteArray("+oBy//qAcv/6gHL/+oBy//qAcv/6gHL/+oBy//qAcv8="),
+"format": 34359742473,
+"index_count": 28,
+"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAQABQAFAAYABgAHAAcABAAAAAQAAQAFAAIABgADAAcAAAACAAEAAwA="),
+"material": SubResource("StandardMaterial3D_o7g6l"),
+"primitive": 1,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPwAAgD8AAAAAAACAPwAAgD8AAIA/AAAAAAAAgD8AAIA/")
+}]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_5mkgo"]
+albedo_color = Color(0, 0, 1, 1)
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_3ccbu"]
+_surfaces = [{
+"aabb": AABB(0, 0, 0, 1, 1, 1),
+"attribute_data": PackedByteArray("AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8="),
+"format": 34359742473,
+"index_count": 28,
+"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAQABQAFAAYABgAHAAcABAAAAAQAAQAFAAIABgADAAcAAAACAAEAAwA="),
+"material": SubResource("StandardMaterial3D_5mkgo"),
+"primitive": 1,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPwAAgD8AAAAAAACAPwAAgD8AAIA/AAAAAAAAgD8AAIA/")
+}]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ny7u2"]
+albedo_color = Color(0.62352943, 0.16862746, 0.40784314, 1)
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_x3yn0"]
+_surfaces = [{
+"aabb": AABB(0, 0, 0, 1, 1, 1),
+"attribute_data": PackedByteArray("nyto/58raP+fK2j/nyto/58raP+fK2j/nyto/58raP8="),
+"format": 34359742473,
+"index_count": 28,
+"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAQABQAFAAYABgAHAAcABAAAAAQAAQAFAAIABgADAAcAAAACAAEAAwA="),
+"material": SubResource("StandardMaterial3D_ny7u2"),
+"primitive": 1,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPwAAgD8AAAAAAACAPwAAgD8AAIA/AAAAAAAAgD8AAIA/")
+}]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1w2xm"]
+albedo_color = Color(0.56078434, 0.7372549, 0.56078434, 1)
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_gngx1"]
+_surfaces = [{
+"aabb": AABB(0, 0, 0, 1, 1, 1),
+"attribute_data": PackedByteArray("j7yP/4+8j/+PvI//j7yP/4+8j/+PvI//j7yP/4+8j/8="),
+"format": 34359742473,
+"index_count": 28,
+"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAQABQAFAAYABgAHAAcABAAAAAQAAQAFAAIABgADAAcAAAACAAEAAwA="),
+"material": SubResource("StandardMaterial3D_1w2xm"),
+"primitive": 1,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPwAAgD8AAAAAAACAPwAAgD8AAIA/AAAAAAAAgD8AAIA/")
+}]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jt61w"]
+albedo_color = Color(1, 0, 0, 1)
+
+[sub_resource type="ArrayMesh" id="ArrayMesh_v8qla"]
+_surfaces = [{
+"aabb": AABB(0, 0, 0, 1, 1, 1),
+"attribute_data": PackedByteArray("/wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP8="),
+"format": 34359742473,
+"index_count": 28,
+"index_data": PackedByteArray("AAABAAEAAgACAAMAAwAAAAQABQAFAAYABgAHAAcABAAAAAQAAQAFAAIABgADAAcAAAACAAEAAwA="),
+"material": SubResource("StandardMaterial3D_jt61w"),
+"primitive": 1,
+"uv_scale": Vector4(0, 0, 0, 0),
+"vertex_count": 8,
+"vertex_data": PackedByteArray("AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAACAPwAAAAAAAIA/AAAAAAAAAAAAAIA/AAAAAAAAgD8AAAAAAACAPwAAgD8AAAAAAACAPwAAgD8AAIA/AAAAAAAAgD8AAIA/")
+}]
+
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_yuqyb"]
 noise_type = 2
 frequency = 0.0018
@@ -325,16 +353,7 @@ shader_parameter/color_strength = 0.16
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_6alpk"]
 render_priority = 0
 shader = ExtResource("7_yrlpt")
-shader_parameter/albedo = Color(0.054902, 0.117647, 0.478431, 1)
-shader_parameter/point_size = 1.0
-shader_parameter/roughness = 1.0
-shader_parameter/metallic_texture_channel = Vector4(0, 0, 0, 0)
-shader_parameter/specular = 0.5
-shader_parameter/metallic = 0.0
-shader_parameter/uv1_scale = Vector3(1, 1, 1)
-shader_parameter/uv1_offset = Vector3(0, 0, 0)
-shader_parameter/uv2_scale = Vector3(1, 1, 1)
-shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/u_under_water_albedo = Color(0.056, 0.119, 0.48, 1)
 
 [sub_resource type="QuadMesh" id="QuadMesh_y8qsi"]
 material = SubResource("ShaderMaterial_6alpk")
@@ -479,8 +498,9 @@ _world_param_info_panel_visible = true
 _world_param_deploy_world = false
 _world_editor_param_depth_quad = 2
 _world_editor_param_max_depth_quad = 2
-_camera_param_initial_pos = Vector3(9420.22, 3019.62, 28709.9)
-_camera_param_initial_yaw_pitch_roll = Vector3(30.6602, -19.2361, 0)
+_world_editor_param_info_panel_visible = true
+_camera_param_initial_pos = Vector3(4228, 741.3102, 42754)
+_camera_param_initial_yaw_pitch_roll_deg = Vector3(-89.21535, -35.95576, 0)
 _shader_param_ao_light_affect = 0.1
 _shader_param_debug_float0 = 45.0
 _shader_param_cam_alt_uv_threshold = 6000.0
@@ -490,10 +510,7 @@ _shader_param_cam_dist_uv_threshold = 10000.0
 perfparam_threshold_cache_heights = 15000.0
 
 [node name="GDN_TW_WorldViewer" type="GDN_TheWorld_Viewer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
-metadata/debug_wirecube_mesh_lod_5 = SubResource("ArrayMesh_kfft6")
-metadata/debug_wirecube_mesh_lod_6 = SubResource("ArrayMesh_4lakm")
 metadata/debug_wirecube_mesh_lod_3 = SubResource("ArrayMesh_inpye")
-metadata/debug_wirecube_mesh_lod_4 = SubResource("ArrayMesh_8ciaf")
 metadata/debug_wirecube_mesh_lod_0 = SubResource("ArrayMesh_2k8ve")
 metadata/debug_wirecube_mesh_lod_1 = SubResource("ArrayMesh_445ek")
 metadata/debug_wirecube_mesh_lod_2 = SubResource("ArrayMesh_morco")
@@ -504,6 +521,11 @@ metadata/debug_wiresquare_mesh_lod_4 = SubResource("ArrayMesh_hfhpw")
 metadata/debug_wiresquare_mesh_lod_0 = SubResource("ArrayMesh_prsjq")
 metadata/debug_wiresquare_mesh_lod_1 = SubResource("ArrayMesh_cx5y7")
 metadata/debug_wiresquare_mesh_lod_2 = SubResource("ArrayMesh_l1tm6")
+metadata/debug_wirecube_mesh_lod_4 = SubResource("ArrayMesh_vi5kq")
+metadata/debug_wirecube_mesh_lod_5 = SubResource("ArrayMesh_3ccbu")
+metadata/debug_wirecube_mesh_lod_6 = SubResource("ArrayMesh_x3yn0")
+metadata/debug_wirecube_mesh_lod_7 = SubResource("ArrayMesh_gngx1")
+metadata/debug_wirecube_mesh_lod_8 = SubResource("ArrayMesh_v8qla")
 
 [node name="CompassContainer" type="CenterContainer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_WorldViewer"]
 auto_translate_mode = 1
@@ -557,12 +579,13 @@ zoom = Vector2(0.5, 0.5)
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
 camera_tracking_offset = Vector3(0, 5, 10)
-transform = Transform3D(0.8602067, -0.16800746, 0.48147473, 0, 0.944169, 0.3294616, -0.5099455, -0.2834051, 0.8121805, 9422, 3019.62, 28710)
+transform = Transform3D(0.99999607, -0.00013494746, 0.0027975547, 0, 0.9988386, 0.048181623, -0.0028008076, -0.048181437, 0.99883467, 33350, -390.44254, 30054)
 current = true
-near = 15.3493
-far = 18677.707
+near = 100.0
+far = 30000.0
 
-[node name="PostProcessingUnderWaterEffect" type="ColorRect" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
+[node name="obs_PostProcessingUnderWaterEffect" type="ColorRect" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
+visible = false
 material = SubResource("ShaderMaterial_epqem")
 anchors_preset = 15
 anchor_right = 1.0
@@ -571,7 +594,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="PostProcessingUnderWaterOverride" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
+[node name="obs_PostProcessingUnderWaterOverride" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
 transform = Transform3D(-0.998846, 9.31322e-10, 0.0480178, -0.0130341, 0.962454, -0.27113, -0.046215, -0.271443, -0.961344, 8708.38, -3216.03, -11328.1)
 visible = false
 mesh = SubResource("QuadMesh_y8qsi")

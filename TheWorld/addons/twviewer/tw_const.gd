@@ -75,110 +75,109 @@ static func status_to_string(status : int) -> String:
 static func check_viewpoint_input(event : InputEventKey, dict : Dictionary)-> void:
 	if event is InputEventKey && event.is_pressed():
 		if event.keycode == KEY_1:
-			if (event.ctrl_pressed and not Engine.is_editor_hint()) or (event.shift_pressed and Engine.is_editor_hint()):
+			if (event.ctrl_pressed and not Engine.is_editor_hint()) or (event.ctrl_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_save'] == -1:
 					dict['viewpoint_to_save'] = 1
-			elif event.alt_pressed:
+			elif (event.alt_pressed and not Engine.is_editor_hint()) or (event.alt_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_load'] == -1:
 					dict['viewpoint_to_load'] = 1
 		elif event.keycode == KEY_2:
-			if (event.ctrl_pressed and not Engine.is_editor_hint()) or (event.shift_pressed and Engine.is_editor_hint()):
+			if (event.ctrl_pressed and not Engine.is_editor_hint()) or (event.ctrl_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_save'] == -1:
 					dict['viewpoint_to_save'] = 2
-			elif event.alt_pressed:
+			elif (event.alt_pressed and not Engine.is_editor_hint()) or (event.alt_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_load'] == -1:
 					dict['viewpoint_to_load'] = 2
 		elif event.keycode == KEY_3:
-			if (event.ctrl_pressed and not Engine.is_editor_hint()) or (event.shift_pressed and Engine.is_editor_hint()):
+			if (event.ctrl_pressed and not Engine.is_editor_hint()) or (event.ctrl_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_save'] == -1:
 					dict['viewpoint_to_save'] = 3
-			elif event.alt_pressed:
+			elif (event.alt_pressed and not Engine.is_editor_hint()) or (event.alt_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_load'] == -1:
 					dict['viewpoint_to_load'] = 3
 		elif event.keycode == KEY_4:
-			if (event.ctrl_pressed and not Engine.is_editor_hint()) or (event.shift_pressed and Engine.is_editor_hint()):
+			if (event.ctrl_pressed and not Engine.is_editor_hint()) or (event.ctrl_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_save'] == -1:
 					dict['viewpoint_to_save'] = 4
-			elif event.alt_pressed:
+			elif (event.alt_pressed and not Engine.is_editor_hint()) or (event.alt_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_load'] == -1:
 					dict['viewpoint_to_load'] = 4
 		elif event.keycode == KEY_5:
-			if (event.ctrl_pressed and not Engine.is_editor_hint()) or (event.shift_pressed and Engine.is_editor_hint()):
+			if (event.ctrl_pressed and not Engine.is_editor_hint()) or (event.ctrl_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_save'] == -1:
 					dict['viewpoint_to_save'] = 5
-			elif event.alt_pressed:
+			elif (event.alt_pressed and not Engine.is_editor_hint()) or (event.alt_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_load'] == -1:
 					dict['viewpoint_to_load'] = 5
 		elif event.keycode == KEY_6:
-			if (event.ctrl_pressed and not Engine.is_editor_hint()) or (event.shift_pressed and Engine.is_editor_hint()):
+			if (event.ctrl_pressed and not Engine.is_editor_hint()) or (event.ctrl_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_save'] == -1:
 					dict['viewpoint_to_save'] = 6
-			elif event.alt_pressed:
+			elif (event.alt_pressed and not Engine.is_editor_hint()) or (event.alt_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_load'] == -1:
 					dict['viewpoint_to_load'] = 6
 		elif event.keycode == KEY_7:
-			if (event.ctrl_pressed and not Engine.is_editor_hint()) or (event.shift_pressed and Engine.is_editor_hint()):
+			if (event.ctrl_pressed and not Engine.is_editor_hint()) or (event.ctrl_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_save'] == -1:
 					dict['viewpoint_to_save'] = 7
-			elif event.alt_pressed:
+			elif (event.alt_pressed and not Engine.is_editor_hint()) or (event.alt_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_load'] == -1:
 					dict['viewpoint_to_load'] = 7
 		elif event.keycode == KEY_8:
-			if (event.ctrl_pressed and not Engine.is_editor_hint()) or (event.shift_pressed and Engine.is_editor_hint()):
+			if (event.ctrl_pressed and not Engine.is_editor_hint()) or (event.ctrl_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_save'] == -1:
 					dict['viewpoint_to_save'] = 8
-			elif event.alt_pressed:
+			elif (event.alt_pressed and not Engine.is_editor_hint()) or (event.alt_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_load'] == -1:
 					dict['viewpoint_to_load'] = 8
 		elif event.keycode == KEY_9:
-			if (event.ctrl_pressed and not Engine.is_editor_hint()) or (event.shift_pressed and Engine.is_editor_hint()):
+			if (event.ctrl_pressed and not Engine.is_editor_hint()) or (event.ctrl_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_save'] == -1:
 					dict['viewpoint_to_save'] = 9
-			elif event.alt_pressed:
+			elif (event.alt_pressed and not Engine.is_editor_hint()) or (event.alt_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_load'] == -1:
 					dict['viewpoint_to_load'] = 9
 		elif event.keycode == KEY_0:
-			if (event.ctrl_pressed and not Engine.is_editor_hint()) or (event.shift_pressed and Engine.is_editor_hint()):
+			if (event.ctrl_pressed and not Engine.is_editor_hint()) or (event.ctrl_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_save'] == -1:
 					dict['viewpoint_to_save'] = 0
-			elif event.alt_pressed:
+			elif (event.alt_pressed and not Engine.is_editor_hint()) or (event.alt_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_load'] == -1:
 					dict['viewpoint_to_load'] = 0
 
-static func save_current_position(viewpoint : int, camera : Camera3D, config : ConfigFile, config_file_name : String) -> void:
-	# Warning this static func does not save player pos / transform
-	if camera != null && camera.has_method("get_yaw") && camera.has_method("get_pitch") && camera.has_method("get_roll"):
-		#var config = ConfigFile.new()
-		#@warning_ignore("unused_variable")
-		#var err = config.load(config_file_name)
-		@warning_ignore("unassigned_variable")
-		var camera_ypr : Vector3
-		camera_ypr.x = camera.get_yaw(false)
-		camera_ypr.y = camera.get_pitch(false)
-		camera_ypr.z = camera.get_roll(false)
-		var param_key_camera_pos := ""
-		var param_key_camera_ypr := ""
-		if viewpoint == 0:
-			param_key_camera_pos = param_key_initial_camera_pos
-			param_key_camera_ypr = param_key_initial_camera_ypr
-		else:
-			param_key_camera_pos = param_key_viewpoint_camera_pos + str(viewpoint)
-			param_key_camera_ypr = param_key_viewpoint_camera_ypr + str(viewpoint)
-		config.set_value(param_group_camera, param_key_camera_pos, camera.global_transform.origin)
-		config.set_value(param_group_camera, param_key_camera_ypr, camera_ypr)
-		config.save(config_file_name)
+#static func save_current_position(viewpoint : int, viewer, config : ConfigFile, config_file_name : String) -> void:
+#	var viewer_custom_camera = viewer.GDN_viewer().get_custom_camera()
+#	# Warning this static func does not save player pos / transform
+#	if viewer_custom_camera != null:
+#		var camera_ypr : Vector3
+#		camera_ypr.x = viewer_custom_camera.get_yaw(false)
+#		camera_ypr.y = viewer_custom_camera.get_pitch(false)
+#		camera_ypr.z = viewer_custom_camera.get_roll(false)
+#		var camera_pos : Vector3 = viewer_custom_camera.get_camera_world_transform().origin
+#		var param_key_camera_pos := ""
+#		var param_key_camera_ypr := ""
+#		if viewpoint == 0:
+#			param_key_camera_pos = param_key_initial_camera_pos
+#			param_key_camera_ypr = param_key_initial_camera_ypr
+#		else:
+#			param_key_camera_pos = param_key_viewpoint_camera_pos + str(viewpoint)
+#			param_key_camera_ypr = param_key_viewpoint_camera_ypr + str(viewpoint)
+#		config.set_value(param_group_camera, param_key_camera_pos, camera_pos)
+#		config.set_value(param_group_camera, param_key_camera_ypr, camera_ypr)
+#		config.save(config_file_name)
 
-static func load_position(viewpoint : int, config : ConfigFile, viewer) -> void:
-	var param_key_camera_pos := ""
-	var param_key_camera_ypr := ""
-	if viewpoint == 0:
-		param_key_camera_pos = param_key_initial_camera_pos
-		param_key_camera_ypr = param_key_initial_camera_ypr
-	else:
-		param_key_camera_pos = param_key_viewpoint_camera_pos + str(viewpoint)
-		param_key_camera_ypr = param_key_viewpoint_camera_ypr + str(viewpoint)
-	var camera_position : Variant = config.get_value(param_group_camera, param_key_camera_pos)
-	var camera_ypr : Variant = config.get_value(param_group_camera, param_key_camera_ypr)
-	if camera_position != null and camera_ypr != null:
-		viewer._set_camera_param_initial_pos(camera_position)
-		viewer._set_camera_param_initial_yaw_pitch_roll(camera_ypr)
+#static func load_position(viewpoint : int, viewer, config : ConfigFile, config_file_name : String) -> void:
+#	var param_key_camera_pos := ""
+#	var param_key_camera_ypr := ""
+#	if viewpoint == 0:
+#		param_key_camera_pos = param_key_initial_camera_pos
+#		param_key_camera_ypr = param_key_initial_camera_ypr
+#	else:
+#		param_key_camera_pos = param_key_viewpoint_camera_pos + str(viewpoint)
+#		param_key_camera_ypr = param_key_viewpoint_camera_ypr + str(viewpoint)
+#	var _err = config.load(config_file_name)
+#	var camera_position : Variant = config.get_value(param_group_camera, param_key_camera_pos)
+#	var camera_ypr : Variant = config.get_value(param_group_camera, param_key_camera_ypr)
+#	if camera_position != null and camera_ypr != null:
+#		viewer._set_camera_param_initial_pos(camera_position)
+#		viewer._set_camera_param_initial_yaw_pitch_roll(camera_ypr)

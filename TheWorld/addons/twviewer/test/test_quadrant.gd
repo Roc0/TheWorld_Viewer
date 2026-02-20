@@ -88,7 +88,7 @@ func _process(delta):
 		_material.shader = shader
 
 		_viewer = find_node_by_name(tw_constants.tw_viewer_node_name)
-		if _viewer != null and _viewer.has_method("is_ready") and _viewer.is_ready() and _viewer.is_really_ready():
+		if _viewer != null and _viewer.has_method("is_ready") and _viewer.is_ready() and _viewer.is_initialized():
 			_initialized = true
 			_logger.debug(str("Test Quadrant Initialized - pos=", _pos_index.x, ",", _pos_index.y, " (", _pos.x, ",", _pos.y, ")"))
 	
@@ -227,27 +227,27 @@ func render():
 	
 		var tex : ImageTexture
 		
-		var image : Image = gdn_viewer.get_quadrant_heightmap_image()
+		var image : Image = gdn_viewer.get_test_quadrant_heightmap_image()
 		if image != null:
 			tex = ImageTexture.create_from_image(image)
 			mat.set_shader_parameter("u_terrain_heightmap", tex)
 
-		image = gdn_viewer.get_quadrant_normalmap_image()
+		image = gdn_viewer.get_test_quadrant_normalmap_image()
 		if image != null:
 			tex = ImageTexture.create_from_image(image)
 			mat.set_shader_parameter("u_terrain_normalmap", tex)
 
-		image = gdn_viewer.get_quadrant_splatmap_image()
+		image = gdn_viewer.get_test_quadrant_splatmap_image()
 		if image != null:
 			tex = ImageTexture.create_from_image(image)
 			mat.set_shader_parameter("u_terrain_splatmap", tex)
 
-		image = gdn_viewer.get_quadrant_globalmap_image()
+		image = gdn_viewer.get_test_quadrant_globalmap_image()
 		if image != null:
 			tex = ImageTexture.create_from_image(image)
 			mat.set_shader_parameter("u_terrain_globalmap", tex)
 
-		image = gdn_viewer.get_quadrant_colormap_image()
+		image = gdn_viewer.get_test_quadrant_colormap_image()
 		if image != null:
 			tex = ImageTexture.create_from_image(image)
 			mat.set_shader_parameter("u_terrain_colormap", tex)
@@ -326,7 +326,7 @@ func render():
 		mat.set_shader_parameter("u_tile_reduction_per_texture", v4)
 		_logger.debug(str("u_tile_reduction_per_texture = ", v4))
 		
-		gdn_viewer.clear_quadrant_data()
+		gdn_viewer.clear_test_quadrant_data()
 		
 		#return
 		if name == "TWTestQuadrant1":
