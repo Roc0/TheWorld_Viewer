@@ -1,4 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=7 format=3 uid="uid://ch42hf5ir8pan"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://ch42hf5ir8pan"]
 
 [ext_resource type="Shader" uid="uid://du2aov4xxgkft" path="res://assets/materials/leaves.gdshader" id="1_hlncd"]
 [ext_resource type="Texture2D" uid="uid://tdfs1rcytlkv" path="res://assets/textures/branch_tree/t_pine_branch.png" id="2_yef44"]

@@ -524,29 +524,20 @@ func _exit_tree():
 		_logger.debug(str("_exit_tree _init_done=", _init_done, ", quitting=", _quitting))
 	
 	if _init_done:
-		pre_deinit()
-		var can_deinit : bool = false
-		while(can_deinit == false):
-			can_deinit = can_deinit()
-		deinit()
+		#_set_camera_param_initial_pos(_camera3d_current_pos_in_map)
+		#_set_camera_param_initial_yaw_pitch_roll_deg(Vector3(rad_to_deg(_camera3d_current_yaw_pitch_roll_rad.x), rad_to_deg(_camera3d_current_yaw_pitch_roll_rad.y), rad_to_deg(_camera3d_current_yaw_pitch_roll_rad.z)))
+		
+		#pre_deinit()
+		#var can_deinit : bool = false
+		#while(can_deinit == false):
+		#	can_deinit = can_deinit()
+		#deinit()
+		#_set_world_editor_param_deploy_world(false)
 
 		if _info_panel != null:
 			_info_panel.queue_free()
 			_info_panel = null
 
-		#var gdn_main : Node = GDN_main()
-		#if gdn_main != null:
-		#	#var parent = gdn_main.get_parent()
-		#	#if parent != null:
-		#	#	parent.remove_child(gdn_main)
-		#	gdn_main.queue_free()
-		
-		#_gdn_main_instance = null
-		
-		#_is_ready = false
-	
-	#queue_free()
-	
 	_plugin_tree_entered = false
 
 func _input(event):

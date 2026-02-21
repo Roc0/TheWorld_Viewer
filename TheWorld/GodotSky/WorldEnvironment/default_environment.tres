@@ -1,4 +1,4 @@
-[gd_resource type="Environment" load_steps=2 format=3 uid="uid://wwq6f40kybqq"]
+[gd_resource type="Environment" format=3 uid="uid://wwq6f40kybqq"]
 
 [ext_resource type="Sky" uid="uid://bq7217qbtqsdc" path="res://GodotSky/WorldEnvironment/default_sky.tres" id="1_o86xx"]
 

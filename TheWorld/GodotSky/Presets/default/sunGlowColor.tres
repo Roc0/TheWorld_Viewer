@@ -1,4 +1,4 @@
-[gd_resource type="GradientTexture1D" load_steps=2 format=3 uid="uid://c04hwtwd421t"]
+[gd_resource type="GradientTexture1D" format=3 uid="uid://c04hwtwd421t"]
 
 [sub_resource type="Gradient" id="Gradient_03x5b"]
 offsets = PackedFloat32Array(0.443182, 0.566343, 0.660194)

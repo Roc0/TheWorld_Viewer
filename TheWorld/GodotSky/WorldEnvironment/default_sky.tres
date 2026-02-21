@@ -1,4 +1,4 @@
-[gd_resource type="Sky" load_steps=14 format=3 uid="uid://bq7217qbtqsdc"]
+[gd_resource type="Sky" format=3 uid="uid://bq7217qbtqsdc"]
 
 [ext_resource type="Shader" uid="uid://brs38w4rnfupn" path="res://GodotSky/Shaders/GodotSky.gdshader" id="1_m15bb"]
 [ext_resource type="Texture2D" uid="uid://dnj6ylyuxc6w3" path="res://GodotSky/Textures/scatteringLUT.HDR" id="2_egvtl"]

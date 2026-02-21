@@ -1,4 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=7 format=3 uid="uid://d2xjhxoho6gkv"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://d2xjhxoho6gkv"]
 
 [ext_resource type="Shader" uid="uid://u8o3yfgk4q1v" path="res://assets/models/maple_tree/leaves_wind.gdshader" id="1_n484g"]
 [ext_resource type="Texture2D" uid="uid://rnfmd3jd4p7m" path="res://assets/models/maple_tree/maple_tree_3.png" id="2_gpbrp"]

@@ -280,7 +280,9 @@ void fragment() {
 		float deep_sea_alpha = 0.9;
 		// alpha ranges from shallow_sea_alpha to deep_sea_alpha: deep_sea_alpha when v_sea_depth is greater than start_transparent_sea_depth, shallow_sea_alpha when v_sea_depth is 0 or less (terrain above sea)
 		alpha = shallow_sea_alpha + ((deep_sea_alpha - shallow_sea_alpha) / start_transparent_sea_depth) * transparent_sea_depth;
-		//alpha = 0.9;														// DEBUG
+		//alpha = 1.0;														// DEBUG
+		//metallic = 1.0;													// DEBUG
+		//roughness = 0.0;													// DEBUG
 		//if (v_sea_depth < start_transparent_sea_depth) alpha = 1.0;		// DEBUG
 	}
 
