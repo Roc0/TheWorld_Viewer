@@ -34,6 +34,7 @@ uniform float u_highlight_quadrant_smoothness : hint_range(0.1, 1.0) = 0.4;
 
 uniform float u_terrain_height_scale = 1.0;	// NOTSET
 uniform sampler2D u_terrain_heightmap;
+uniform uint u_extra_vertices_on_heightmap = 0;
 uniform uint u_optimization_level = 0;
 uniform float u_grid_step_optlvl_zero = 2.0;
 uniform float u_editmode_selected = 0;
@@ -99,7 +100,8 @@ void vertex()
 
 	float shader_time = gu_time;	// TIME
 
-	vec2 heightmapSize = vec2(textureSize(u_terrain_heightmap, c_i_texture_lod_zero));		// Power of 2 + 1 (f.i. 1025, 2049)
+	vec2 heightmapSize = vec2(textureSize(u_terrain_heightmap, c_i_texture_lod_zero));		// Power of 2 + 1 (f.i. 1025, 2049) + 2 * extra neighbour border on each side
+	vec2 quadrantHeightmapSize = heightmapSize - vec2(float(u_extra_vertices_on_heightmap)) * 2.0;	// to have the size of the heightmap who map on the quadrant we have to subtract the extra neighbour border texel
 
 	// VERTEX coords are local to the chunk (as the material is applied to the mesh which is tied to the chunk) so they start from the beginning of the chunk: we need
 	// to trasform them in world coord to abstract from chunk
@@ -114,11 +116,12 @@ void vertex()
 	// to calculate coords of the vertex local to the quadrant we use affine inverse matrix of the global trasform of the quadtree
 	vec4 vertex_local_to_quadrant_pos = u_terrain_inverse_transform * vertex_world_pos;
 	UV = vertex_local_to_quadrant_pos.xz / vec2(u_quadrant_size);		// mapping of vertex_local_to_quadrant_pos in current quadrant from 0.0 (start of the quadrant) to 1.0 (end of the quadrant)
+	//UV = vertex_local_to_quadrant_pos.xz / quadrantHeightmapSize;		// mapping of vertex_local_to_quadrant_pos in current quadrant from 0.0 (start of the quadrant) to 1.0 (end of the quadrant)
 
-	vec2 vertex_cell_coords_in_textures = vertex_local_to_quadrant_pos.xz / vec2(u_grid_step_optlvl_zero * pow(2.0, float(u_optimization_level)));
-	vertex_cell_coords_in_textures += vec2(0.5);	// IMPORTANT: now vertex_cell_coords_in_textures ranges from 0.5
+	vec2 vertex_cell_coords_in_heightmap = vertex_local_to_quadrant_pos.xz / vec2(u_grid_step_optlvl_zero * pow(2.0, float(u_optimization_level))) + vec2(float(u_extra_vertices_on_heightmap));
+	vertex_cell_coords_in_heightmap += vec2(0.5);	// IMPORTANT: now vertex_cell_coords_in_heightmap ranges from 0.5
 													// to (heightmap size - 1) + 0.5 with increment of 1.0 between each coord
-	vec2 terrain_uv = vertex_cell_coords_in_textures / vec2(textureSize(u_terrain_heightmap, 0));
+	vec2 terrain_uv = vertex_cell_coords_in_heightmap / heightmapSize;
 	float terrain_vertex_hight = get_height(u_terrain_heightmap, u_terrain_height_scale, terrain_uv);		// Height displacement from heigthmap
 
 	float end_camera_altitude_for_waves = gu_sea_end_camera_altitude_for_waves;

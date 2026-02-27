@@ -462,7 +462,8 @@ func _ready():
 	if !Engine.is_editor_hint():
 		init_viewer()
 	else:
-		_set_world_editor_param_deploy_world(false)		# needed to uncheck deploy world in editor at startup
+		_set_world_editor_param_deploy_world(false)			# needed to uncheck deploy world in editor at startup
+		_set_world_editor_param_edit_panel_visible(false)	# needed to uncheck edit panel visible in editor at startup
 	_is_ready = true
 	#log_debug("_ready done")
 	

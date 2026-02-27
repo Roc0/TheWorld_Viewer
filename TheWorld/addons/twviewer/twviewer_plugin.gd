@@ -138,6 +138,7 @@ func _process(delta: float):
 			_logger.debug(str("Saving View Point ", view))
 			_viewer.save_current_camera_position(view)
 			_logger.debug(str("Saved View Point ", view))
+			_viewer.GDN_viewer().set_hud_message("Viewpoint " + str(view) + " saved!", 3000)
 
 	if _viewpoint_to_load >= 0:
 		var view := _viewpoint_to_load
@@ -146,6 +147,7 @@ func _process(delta: float):
 			_logger.debug(str("Loading View Point ", view))
 			_viewer.load_camera_position(view)
 			_logger.debug(str("Loaded View Point ", view))
+			_viewer.GDN_viewer().set_hud_message("Viewpoint " + str(view) + " loaded!", 3000)
 		
 	if _camera != null and _camera.current:
 		var n : Node = get_tree().get_first_node_in_group(tw_const.custom_cameras_group)
