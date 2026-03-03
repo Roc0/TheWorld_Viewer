@@ -155,14 +155,13 @@ uniform float u_uv_wire_width = 0.003;
 //uniform float u_wire_smoothness : hint_range(0.0, 0.1) = 0.01;
 
 uniform sampler2D u_terrain_heightmap;
-uniform sampler2D u_terrain_heightmap_border_rows;	// row0 = north border of the heightmap (x growing), row1 = south border of the heightmap (x growing), row2 = west border of the heightmap (z growing), row3 = east border of the heightmap (z growing)
 uniform uint u_extra_vertices_on_heightmap = 0;
 //const int c_north_quadrant_border_row = 0;	// North / Top Quadrant
 //const int c_south_quadrant_border_row = 1;	// South / Bottom Quadrant
 //const int c_west_quadrant_border_row = 2;		// West / Left Quadrant
 //const int c_east_quadrant_border_row = 3;		// East / Right Quadrant
 
-uniform sampler2D u_terrain_normalmap;
+//uniform sampler2D u_terrain_normalmap;
 
 //uniform sampler2D u_terrain_globalmap : source_color;
 
@@ -192,7 +191,7 @@ uniform uint u_optimization_level = 0;
 //uniform uint u_num_vertices_per_quadrant;	// power of 2 + 1
 uniform uint u_num_vertices_per_chunk;		// power of 2 + 1
 
-uniform sampler2D u_terrain_splatmap;
+//uniform sampler2D u_terrain_splatmap;
 uniform vec4 u_north_west_corner_splatmap_texel;
 uniform sampler2D u_north_border_splatmap;
 uniform sampler2D u_west_border_splatmap;
@@ -743,84 +742,7 @@ void remove_vertex(float f)
 	f = 0.0 / 0.0;
 }
 
-vec3 compute_normal_1(sampler2D heightmap, vec2 vertex_cell_coords_in_heightmap, uint extra_vertices_on_heightmap, sampler2D heightmap_border_rows, vec2 vertex_cell_coords_in_heightmap_optlvl_zero, float grid_step, float terrain_height, bool use_external_borders)
-{
-	float left_h;
-	float right_h;
-	float top_h;
-	float bottom_h;
-	ivec2 _index;
-
-	/*if (extra_vertices_on_heightmap > 0u)
-	{
-		_index = ivec2(vertex_cell_coords_in_heightmap);
-		left_h = fetch_height(heightmap, terrain_height, _index + ivec2(-1, 0));
-		right_h = fetch_height(heightmap, terrain_height, _index + ivec2(1, 0));
-		top_h = fetch_height(heightmap, terrain_height, _index + ivec2(0, -1));
-		bottom_h = fetch_height(heightmap, terrain_height, _index + ivec2(0, 1));
-		return normalize(vec3(left_h - right_h, 2.0 * grid_step, top_h - bottom_h));
-	}
-	else
-	{
-		int lod_zero = 0;
-		vec2 heightmapSize = vec2(textureSize(heightmap, lod_zero));		// number of vertices per size of the texture f.i. 1025 or 2049 assuming each quadrant size 1024 or 2048
-	
-	}*/
-	
-
-	/*_index = ivec2(vertex_cell_coords_in_heightmap);
-	h = fetch_height(heightmap, terrain_height, _index);
-	right_h = fetch_height(heightmap, terrain_height, _index + ivec2(1, 0));
-	bottom_h = fetch_height(heightmap, terrain_height, _index + ivec2(0, 1));
-	return normalize(vec3(h - right_h, grid_step, h - bottom_h));*/
-	
-	
-	
-	
-	float h;
-	// vertex_cell_coords_in_heightmap is a 0-based index of the pixel in the heightmap and it ranges from 0 to heightmapSize - 1 (f.i. 1024 or 2048)
-	int lod_zero = 0;
-	vec2 heightmapSize = vec2(textureSize(heightmap, lod_zero));		// number of vertices per size of the texture f.i. 1025 or 2049 assuming each quadrant size 1024 or 2048
-	_index = ivec2(vertex_cell_coords_in_heightmap);
-	ivec2 _index_optlvl_zero = ivec2(vertex_cell_coords_in_heightmap_optlvl_zero);
-	if (distance(vertex_cell_coords_in_heightmap.x, heightmapSize.x - 1.0) < 1.0) {
-		// the pixel is in the right edge of the heightmap
-		if (use_external_borders) {
-			h = fetch_height(heightmap, terrain_height, _index);
-			right_h = texelFetch(heightmap_border_rows, ivec2(_index_optlvl_zero.y, c_east_quadrant_border_row), lod_zero).r;
-			if (distance(vertex_cell_coords_in_heightmap.y, heightmapSize.y - 1.0) < 1.0) {
-				// the pixel is in the bottom/right corner of the heightmap
-				bottom_h = texelFetch(heightmap_border_rows, ivec2(_index_optlvl_zero.x, c_south_quadrant_border_row), lod_zero).r;
-			} else {
-				bottom_h = fetch_height(heightmap, terrain_height, _index + ivec2(0, 1));
-			}
-		} else {
-			h = fetch_height(heightmap, terrain_height, _index - ivec2(1, 0));
-			right_h = fetch_height(heightmap, terrain_height, _index);
-			bottom_h = fetch_height(heightmap, terrain_height, _index - ivec2(1, -1));
-		}
-	} else {
-		if (distance(vertex_cell_coords_in_heightmap.y, heightmapSize.y - 1.0) < 1.0) {
-			// the pixel is in the bottom edge of the heightmap but not in the bottom/right corner of the heightmap
-			if (use_external_borders) {
-				h = fetch_height(heightmap, terrain_height, _index);
-				right_h = fetch_height(heightmap, terrain_height, _index + ivec2(1, 0));
-				bottom_h = texelFetch(heightmap_border_rows, ivec2(_index_optlvl_zero.x, c_south_quadrant_border_row), lod_zero).r;
-			} else {
-				h = fetch_height(heightmap, terrain_height, _index - ivec2(0, 1));
-				right_h = fetch_height(heightmap, terrain_height, _index - ivec2(-1, 1));
-				bottom_h = fetch_height(heightmap, terrain_height, _index);
-			}
-		} else {
-			h = fetch_height(heightmap, terrain_height, _index);
-			right_h = fetch_height(heightmap, terrain_height, _index + ivec2(1, 0));
-			bottom_h = fetch_height(heightmap, terrain_height, _index + ivec2(0, 1));
-		}
-	}
-	return normalize(vec3(h - right_h, grid_step, h - bottom_h));
-}
-
-vec3 compute_normal_2(sampler2D heightmap, vec2 heightmap_uv, uint extra_vertices_on_heightmap, float grid_step, float terrain_height)
+vec3 compute_normal_2(float vertex_height, sampler2D heightmap, vec2 heightmap_uv, uint extra_vertices_on_heightmap, float grid_step, float terrain_height)
 {
 	float h;
 	float left_h;
@@ -829,55 +751,69 @@ vec3 compute_normal_2(sampler2D heightmap, vec2 heightmap_uv, uint extra_vertice
 	float bottom_h;
 	
 	vec2 quadrantHeightmapSize = vec2(textureSize(heightmap, c_i_texture_lod_zero)) - vec2(float(extra_vertices_on_heightmap)) * 2.0;
+	//quadrantHeightmapSize = vec2(2049.0);
 	float grid_size_wu = (quadrantHeightmapSize.x - 1.0) * grid_step;
-	float grid_step_uv = 1.0 / (quadrantHeightmapSize.x - 1.0);
-	float dx_uv = 1.0 / (grid_size_wu * 16.0);
+	//grid_size_wu = 4096.0;
+	float grid_step_uv = 1.0 / (quadrantHeightmapSize.x - 1.0);	// step in UV between vertices
+	//grid_step_uv = 1.0 / 2048.0;
+																														//float dx_uv = 1.0 / (grid_size_wu * 16.0);
+	float step_coeff = 1.0;
+	float dx_uv = grid_step_uv / step_coeff;
+	float dx_wu = (grid_step / step_coeff) * 1.0;
 
-	h = get_height(heightmap, terrain_height, heightmap_uv);
+	//h = get_height(heightmap, terrain_height, heightmap_uv);
+	h = vertex_height;
 
-	if (extra_vertices_on_heightmap > 0u || (1.0 - heightmap_uv.x > grid_step_uv && 1.0 - heightmap_uv.y > grid_step_uv))	// if we have extra vertices on border or we are far from right and bottom border we can fectch left and bottom heights
+	if (extra_vertices_on_heightmap > 0u)	// if we have extra vertices on border we can fectch right/left and up/bottom heights
 	{
-		//left_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(-dx_uv, 0));
+		//return vec3(0.0, 1.0, 0.0);
+		left_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(-dx_uv, 0));
 		right_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(dx_uv, 0));
-		//top_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(0, -dx_uv));
+		top_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(0, -dx_uv));
 		bottom_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(0, dx_uv));
-		//return normalize(vec3(left_h - right_h, 2.0 * dx_uv, top_h - bottom_h));
-		//vec3 dxR
-		return normalize(vec3(h - right_h, dx_uv, h - bottom_h));
+		return normalize(vec3(left_h - right_h, 2.0 * dx_wu, top_h - bottom_h));	
 	}
 	else
 	{
-		if (1.0 - heightmap_uv.x > grid_step_uv && 1.0 - heightmap_uv.y <= grid_step_uv)		// we are near the bottom border but not near the right border
+		if (1.0 - heightmap_uv.x > grid_step_uv && 1.0 - heightmap_uv.y > grid_step_uv)	// if we have extra vertices on border or we are far from right and bottom border we can fectch left and bottom heights
 		{
 			right_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(dx_uv, 0));
-			top_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(0, -dx_uv));
-			return normalize(vec3(h - top_h, dx_uv, h - right_h));
-		}
-		else if (1.0 - heightmap_uv.x <= grid_step_uv && 1.0 - heightmap_uv.y > grid_step_uv)	// we are near the right border but not near the bottom border
-		{
-			left_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(-dx_uv, 0));
 			bottom_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(0, dx_uv));
-			return normalize(vec3(h - bottom_h, dx_uv, h - left_h));
+			return normalize(vec3(h - right_h, dx_wu, h - bottom_h));
 		}
 		else
-		{																						// we are near the right border and near the bottom border
-			left_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(-dx_uv, 0));
-			top_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(0, -dx_uv));
-			return normalize(vec3(h - left_h, dx_uv, h - top_h));
+		{
+			if (1.0 - heightmap_uv.x > grid_step_uv && 1.0 - heightmap_uv.y <= grid_step_uv)		// we are near the bottom border but not near the right border
+			{
+				right_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(dx_uv, 0));
+				top_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(0, -dx_uv));
+				return normalize(vec3(h - top_h, dx_wu, h - right_h));
+			}
+			else if (1.0 - heightmap_uv.x <= grid_step_uv && 1.0 - heightmap_uv.y > grid_step_uv)	// we are near the right border but not near the bottom border
+			{
+				left_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(-dx_uv, 0));
+				bottom_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(0, dx_uv));
+				return normalize(vec3(h - bottom_h, dx_wu, h - left_h));
+			}
+			else
+			{																						// we are near the right border and near the bottom border
+				left_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(-dx_uv, 0));
+				top_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(0, -dx_uv));
+				return normalize(vec3(h - left_h, dx_wu, h - top_h));
+			}
 		}
 	}
 	
 }
 
-vec4 compute_splat_1(sampler2D heightmap, vec2 heightmap_uv, float grid_step, float terrain_height, vec3 _normal,
+vec4 compute_splat_1(float vertex_height, sampler2D heightmap, vec2 heightmap_uv, float grid_step, float terrain_height, vec3 _normal,
 					float slope_vertical_factor, float slope_flat_factor, float dirt_on_rocks_factor, float high_elevation_factor, float low_elevation_factor, float min_height, float max_height)
 {
 	// u_slope_vertical_factor, u_slope_flat_factor, u_dirt_on_rocks_factor, u_high_elevation_factor, u_low_elevation_factor, u_min_height, u_max_height
 
-	float h = get_height(heightmap, terrain_height, heightmap_uv);
-	//float h = fetch_height(heightmap, terrain_height, ivec2(vertex_cell_coords_in_textures));
+	//float h = get_height(heightmap, terrain_height, heightmap_uv);
+	float h = vertex_height;
 	
-	//vec3 _normal = get_normal_1(u_terrain_normalmap, uv);
 	float slope = (slope_vertical_factor * (1.0 - _normal.y)) - slope_flat_factor;
 	float rocks_amount = clamp(slope, 0.0, 1.0);
 	float dirt_amount = clamp(rocks_amount * dirt_on_rocks_factor, 0.0, 1.0);
@@ -917,7 +853,7 @@ void vertex()
 	uint num_vertices_per_chunk = u_num_vertices_per_chunk;
 
 	vec2 heightmapSize = vec2(textureSize(u_terrain_heightmap, c_i_texture_lod_zero));				// Power of 2 + 1 (f.i. 1025, 2049) + 2 * extra neighbour border on each side
-	vec2 quadrantHeightmapSize = heightmapSize - vec2(float(u_extra_vertices_on_heightmap)) * 2.0;	// to have the size of the heightmap who map on the quadrant we have to subtract the extra neighbour border texel
+	vec2 quadrantHeightmapSize = heightmapSize - vec2(float(u_extra_vertices_on_heightmap)) * 2.0;	// to have the size of the part of the heightmap that maps on the quadrant we have to subtract the extra neighbour border texels (left/right/up/down)
 	
 	vec3 vertex_modelspace_in = VERTEX;
 
@@ -925,16 +861,14 @@ void vertex()
 	vec4 vertex_worldspace_in = MODEL_MATRIX * vec4(vertex_modelspace_in, 1);
 
 	// to calculate coords of the vertex local to the quadrant we use affine inverse matrix of the global trasform of the quadtree
-	vec4 vertex_local_to_quadrant_pos = terrain_inverse_transform * vertex_worldspace_in;		// vertex_local_to_quadrant_pos ranges from 0 to quadrant_size (f.i. 2048, 4096) and is a 0-based index of the vertex in the quadrant
+	vec4 vertex_local_to_quadrant_pos = terrain_inverse_transform * vertex_worldspace_in;		// vertex_local_to_quadrant_pos ranges from 0 to quadrant size (f.i. 2048, 4096) and is a 0-based index of the vertex in the quadrant
 	
 	// to get correct value from the textures (in the range 0 / max size in local coord) we need to consider the step
 	// (dividing by it): in the textures heights/normals are adjacent but in global/local coords are separated by the step
-	// ***  after next line vertex_cell_coords_in_heightmap ranges from 0 to heightmapSize - 1 (heightmapSize vertices per
+	// ***  after next line vertex_cell_coords_in_heightmap ranges from 0 to heightmapSize - 1 - extra vertices * 2 (heightmapSize vertices per
 	// size of quadrant - f.i. 1025 or 2049) so it is a 0-based index of the pixel in heightmap/normalmap/splatmap etc. texture ***
 	vec2 vertex_cell_coords_in_heightmap = vertex_local_to_quadrant_pos.xz / vec2(grid_step) + vec2(float(u_extra_vertices_on_heightmap));	// vertex_cell_coords_in_heightmap ranges from 0 to heightmapSize - 1 (f.i. 1024 or 2048) 0-based index of the pixel in heightmap/normalmap/splatmap
 	vec2 vertex_cell_coords_in_quadrant = vertex_local_to_quadrant_pos.xz / vec2(grid_step);	// vertex_cell_coords_in_heightmap ranges from 0 to heightmapSize - 1 (f.i. 1024 or 2048) 0-based index of the pixel in heightmap/normalmap/splatmap
-	
-	vec2 vertex_cell_coords_in_heightmap_optlvl_zero = vertex_local_to_quadrant_pos.xz / vec2(u_grid_step_optlvl_zero) + vec2(float(u_extra_vertices_on_heightmap));
 	
 	// Moreover must add a half-offset so that we sample the center of pixels, otherwise bilinear filtering of the textures
 	// will give us mixed results (#183): as we fetch pixels from textures with UV which is a percentage value ranging from
@@ -954,8 +888,9 @@ void vertex()
 	
 	vec3 vertex_modelspace_with_h = vertex_modelspace_in;
 	vec4 vertex_worldspace_with_h = vertex_worldspace_in;
+	float vertex_height;
 	{
-		float h = get_height(u_terrain_heightmap, u_terrain_height_scale, heightmap_uv);		// Height displacement from heightmap
+		vertex_height = get_height(u_terrain_heightmap, u_terrain_height_scale, heightmap_uv);		// Height displacement from heightmap
 		bool force_height_0 = u_force_height_0;
 		if (!force_height_0) {
 			if (gu_force_height_0 > 0) {
@@ -967,8 +902,8 @@ void vertex()
 			vertex_modelspace_with_h.y = 0.0;
 			vertex_worldspace_with_h.y = 0.0;
 		} else {
-			vertex_modelspace_with_h.y = h;
-			vertex_worldspace_with_h.y = h;
+			vertex_modelspace_with_h.y = vertex_height;
+			vertex_worldspace_with_h.y = vertex_height;
 		}
 	}
 
@@ -1023,13 +958,11 @@ void vertex()
 	vec3 normal_computed;
 	if (_compute_normal)
 	{
-		bool use_external_borders = true;
-		//normal_computed = compute_normal_1(u_terrain_heightmap, vertex_cell_coords_in_heightmap, u_extra_vertices_on_heightmap, u_terrain_heightmap_border_rows, vertex_cell_coords_in_heightmap_optlvl_zero, grid_step, u_terrain_height_scale, use_external_borders);
-		normal_computed = compute_normal_2(u_terrain_heightmap, heightmap_uv, u_extra_vertices_on_heightmap, grid_step, u_terrain_height_scale);
+		normal_computed = compute_normal_2(vertex_height, u_terrain_heightmap, heightmap_uv, u_extra_vertices_on_heightmap, grid_step, u_terrain_height_scale);
 	}
 	else
 	{
-		normal_computed = get_normal(u_terrain_normalmap, u_terrain_normal_basis, quadrant_uv);
+		//normal_computed = get_normal(u_terrain_normalmap, u_terrain_normal_basis, quadrant_uv);
 	}
 	//normal_computed = normalize(vec3(1.0, 1.0, 1.0));		// DEBUG
 
@@ -1048,13 +981,14 @@ void vertex()
 		//splat_dirt_on_rocks_factor = 2.0;		// DEBUG
 		//splat_high_elevation_factor = 4.0;	// DEBUG
 		//splat_low_elevation_factor = 2.0;		// DEBUG
-		//splat_min_height = 0.0;				// DEBUG
-		//splat_max_height = 0.0;				// DEBUG
-		splat = compute_splat_1(u_terrain_heightmap, heightmap_uv, grid_step, u_terrain_height_scale, normal_computed, splat_slope_vertical_factor, splat_slope_flat_factor, splat_dirt_on_rocks_factor, splat_high_elevation_factor, splat_low_elevation_factor, splat_min_height, splat_max_height);
+		//splat_min_height = 1547.23;			// DEBUG
+		//splat_max_height = 4202.34;			// DEBUG
+		//vec3 _normal = normalize((MODELVIEW_MATRIX * vec4(normal_computed, 0.0)).xyz);
+		splat = compute_splat_1(vertex_height, u_terrain_heightmap, heightmap_uv, grid_step, u_terrain_height_scale, normal_computed, splat_slope_vertical_factor, splat_slope_flat_factor, splat_dirt_on_rocks_factor, splat_high_elevation_factor, splat_low_elevation_factor, splat_min_height, splat_max_height);
 	}
 	else
 	{
-		splat = textureLod(u_terrain_splatmap, quadrant_uv, c_f_texture_lod_zero);
+		//splat = textureLod(u_terrain_splatmap, quadrant_uv, c_f_texture_lod_zero);
 	}
 	//splat = vec4(1.0);	// DEBUG
 
@@ -1845,7 +1779,10 @@ void fragment()
 		NORMAL_MAP = ground_normal_computed;
 		NORMAL_MAP_DEPTH = ground_normal_scale;
 	}
-
+	
+	//ALBEDO = v_splat.rgb;	// DEBUG
+	//ALBEDO = normal_computed;	// DEBUG
+	
 	//********************************************************************************************************************
 	//     Test PBR
 	//********************************************************************************************************************
