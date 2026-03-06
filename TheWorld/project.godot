@@ -12,11 +12,15 @@ config_version=5
 
 general/accessibility_support=2
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="TheWorld"
 run/main_scene="res://StartingScene.tscn"
-config/features=PackedStringArray("4.5", "Forward Plus")
+config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
@@ -249,6 +253,10 @@ ui_toggle_map_grid={
 3d_physics/layer_1="Terrain"
 3d_physics/layer_2="Player"
 3d_physics/layer_3="Objects"
+
+[physics]
+
+3d/physics_engine="Jolt Physics"
 
 [shader_globals]
 

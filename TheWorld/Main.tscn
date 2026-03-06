@@ -1,4 +1,4 @@
-[gd_scene load_steps=85 format=4 uid="uid://c4ukh1kw4impi"]
+[gd_scene format=4 uid="uid://c4ukh1kw4impi"]
 
 [ext_resource type="Script" uid="uid://ds0w181xwdnps" path="res://main/TheWorld_Main.gd" id="1_760ml"]
 [ext_resource type="Script" uid="uid://b44gm8obypjmm" path="res://main.gd" id="1_tdbos"]
@@ -453,10 +453,10 @@ material = SubResource("ShaderMaterial_b1hol")
 flip_faces = true
 size = Vector2(2, 2)
 
-[node name="RootNode" type="Node3D"]
+[node name="RootNode" type="Node3D" unique_id=818267819]
 script = ExtResource("1_tdbos")
 
-[node name="TheWorld_Main_Control" type="Control" parent="."]
+[node name="TheWorld_Main_Control" type="Control" parent="." unique_id=1737435626]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -464,7 +464,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="TheWorld_Main_Container" type="SubViewportContainer" parent="TheWorld_Main_Control"]
+[node name="TheWorld_Main_Container" type="SubViewportContainer" parent="TheWorld_Main_Control" unique_id=2024129940]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -473,43 +473,43 @@ grow_horizontal = 2
 grow_vertical = 2
 stretch = true
 
-[node name="TheWorld_Main_SubViewport" type="SubViewport" parent="TheWorld_Main_Control/TheWorld_Main_Container"]
+[node name="TheWorld_Main_SubViewport" type="SubViewport" parent="TheWorld_Main_Control/TheWorld_Main_Container" unique_id=1602968874]
 handle_input_locally = false
 size = Vector2i(1152, 648)
 render_target_update_mode = 4
 
-[node name="Environment" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport"]
+[node name="Environment" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport" unique_id=1560017628]
 
-[node name="GodotSky" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/Environment" instance=ExtResource("13_8urof")]
+[node name="GodotSky" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/Environment" unique_id=1770502302 instance=ExtResource("13_8urof")]
 
-[node name="TheWorld_Main" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport"]
+[node name="TheWorld_Main" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport" unique_id=1952387569]
 script = ExtResource("1_760ml")
 
-[node name="debug_running_game_node" type="Node" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main"]
+[node name="debug_running_game_node" type="Node" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main" unique_id=1630867365]
 script = ExtResource("15_6btyd")
 
-[node name="Landscape" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main"]
+[node name="Landscape" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main" unique_id=1238302944]
 
-[node name="TWViewer" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape"]
+[node name="TWViewer" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape" unique_id=342644160]
 script = ExtResource("3_yxvy6")
 _world_param_depth_quad = 12
 _world_param_cache_quad = 2
 _world_param_info_panel_visible = true
 _world_param_deploy_world = false
-_world_editor_param_depth_quad = 2
-_world_editor_param_max_depth_quad = 2
+_world_editor_param_depth_quad = 5
+_world_editor_param_max_depth_quad = 5
 _world_editor_param_info_panel_visible = true
-_camera_param_initial_pos = Vector3(4228, 741.3102, 42754)
-_camera_param_initial_yaw_pitch_roll_deg = Vector3(-89.21535, -35.95576, 0)
+_camera_param_initial_pos = Vector3(-1674, 12531.574, 114276)
+_camera_param_initial_yaw_pitch_roll_deg = Vector3(9.906744, -42.68102, 0)
 _shader_param_ao_light_affect = 0.1
 _shader_param_debug_float0 = 45.0
 _shader_param_cam_alt_uv_threshold = 6000.0
 _shader_param_cam_dist_uv_threshold = 10000.0
 
-[node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
+[node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer" unique_id=1830858842]
 perfparam_threshold_cache_heights = 15000.0
 
-[node name="GDN_TW_WorldViewer" type="GDN_TheWorld_Viewer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
+[node name="GDN_TW_WorldViewer" type="GDN_TheWorld_Viewer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer" unique_id=1843480842]
 metadata/debug_wirecube_mesh_lod_3 = SubResource("ArrayMesh_inpye")
 metadata/debug_wirecube_mesh_lod_0 = SubResource("ArrayMesh_2k8ve")
 metadata/debug_wirecube_mesh_lod_1 = SubResource("ArrayMesh_445ek")
@@ -527,7 +527,7 @@ metadata/debug_wirecube_mesh_lod_6 = SubResource("ArrayMesh_x3yn0")
 metadata/debug_wirecube_mesh_lod_7 = SubResource("ArrayMesh_gngx1")
 metadata/debug_wirecube_mesh_lod_8 = SubResource("ArrayMesh_v8qla")
 
-[node name="CompassContainer" type="CenterContainer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_WorldViewer"]
+[node name="CompassContainer" type="CenterContainer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_WorldViewer" unique_id=1011470408]
 auto_translate_mode = 1
 anchors_preset = 5
 anchor_left = 0.5
@@ -539,13 +539,13 @@ offset_bottom = 28.0
 grow_horizontal = 2
 scale = Vector2(2, 2)
 
-[node name="Pointer" type="Polygon2D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_WorldViewer/CompassContainer"]
+[node name="Pointer" type="Polygon2D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_WorldViewer/CompassContainer" unique_id=915641699]
 modulate = Color(0.0784314, 0.0784314, 0.0784314, 1)
 position = Vector2(48.5, -3)
 color = Color(0.14902, 0.14902, 0.14902, 1)
 polygon = PackedVector2Array(0, 0, -3, -4, 3, -4)
 
-[node name="CompassBar" type="TextureRect" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_WorldViewer/CompassContainer" node_paths=PackedStringArray("parent")]
+[node name="CompassBar" type="TextureRect" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_WorldViewer/CompassContainer" unique_id=246839787 node_paths=PackedStringArray("parent")]
 auto_translate_mode = 1
 texture_repeat = 2
 material = ExtResource("4_skg2b")
@@ -555,36 +555,36 @@ stretch_mode = 3
 script = ExtResource("6_2m3hx")
 parent = NodePath("../../../GDN_TW_Camera")
 
-[node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
+[node name="GDN_TW_Main" type="GDN_TheWorld_MainNode" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer" unique_id=217583998]
 
-[node name="GDN_TW_MapViewer" type="GDN_TheWorld_MapViewer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
+[node name="GDN_TW_MapViewer" type="GDN_TheWorld_MapViewer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer" unique_id=1323443753]
 visible = false
 
-[node name="GDN_TW_MapViewportContainer" type="GDN_TheWorld_MapViewportContainer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer"]
+[node name="GDN_TW_MapViewportContainer" type="GDN_TheWorld_MapViewportContainer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer" unique_id=1392257750]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_right = 2.0
 offset_bottom = 2.0
 
-[node name="GDN_TW_MapViewport" type="GDN_TheWorld_MapViewport" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer"]
+[node name="GDN_TW_MapViewport" type="GDN_TheWorld_MapViewport" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer" unique_id=1975822862]
 handle_input_locally = false
-size = Vector2i(1089, 589)
+size = Vector2i(1151, 540)
 render_target_update_mode = 0
 
-[node name="GDN_TW_MapCamera" type="GDN_TheWorld_MapCamera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer/GDN_TW_MapViewport"]
+[node name="GDN_TW_MapCamera" type="GDN_TheWorld_MapCamera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer/GDN_TW_MapViewport" unique_id=365856543]
 scale = Vector2(0.5, 0.5)
 enabled = false
 zoom = Vector2(0.5, 0.5)
 
-[node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer"]
+[node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer" unique_id=863817696]
 camera_tracking_offset = Vector3(0, 5, 10)
 transform = Transform3D(0.99999607, -0.00013494746, 0.0027975547, 0, 0.9988386, 0.048181623, -0.0028008076, -0.048181437, 0.99883467, 33350, -390.44254, 30054)
 current = true
 near = 100.0
 far = 30000.0
 
-[node name="obs_PostProcessingUnderWaterEffect" type="ColorRect" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
+[node name="obs_PostProcessingUnderWaterEffect" type="ColorRect" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera" unique_id=476492444]
 visible = false
 material = SubResource("ShaderMaterial_epqem")
 anchors_preset = 15
@@ -594,16 +594,16 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="obs_PostProcessingUnderWaterOverride" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera"]
+[node name="obs_PostProcessingUnderWaterOverride" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_Camera" unique_id=832632455]
 transform = Transform3D(-0.998846, 9.31322e-10, 0.0480178, -0.0130341, 0.962454, -0.27113, -0.046215, -0.271443, -0.961344, 8708.38, -3216.03, -11328.1)
 visible = false
 mesh = SubResource("QuadMesh_y8qsi")
 skeleton = NodePath("../../../../../../../..")
 
-[node name="TestQuadrants" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape"]
+[node name="TestQuadrants" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape" unique_id=834783387]
 visible = false
 
-[node name="TWTestQuadrant1" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants"]
+[node name="TWTestQuadrant1" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants" unique_id=1962925827]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6144, 0, 26624)
 skeleton = NodePath("../../../../../../..")
 script = ExtResource("7_7uq48")
@@ -611,7 +611,7 @@ _pos = Vector2(4096, 24576)
 _pos_index = Vector2i(1, 6)
 _points_per_size = 9
 
-[node name="TWTestQuadrant2" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants"]
+[node name="TWTestQuadrant2" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants" unique_id=1274177247]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6144, 0, 30720)
 skeleton = NodePath("../../../../../../..")
 script = ExtResource("7_7uq48")
@@ -619,7 +619,7 @@ _pos = Vector2(4096, 28672)
 _pos_index = Vector2i(1, 7)
 _points_per_size = 513
 
-[node name="TWTestQuadrant3" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants"]
+[node name="TWTestQuadrant3" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants" unique_id=1961280606]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2048, 0, 26624)
 skeleton = NodePath("../../../../../../..")
 script = ExtResource("7_7uq48")
@@ -627,7 +627,7 @@ _pos = Vector2(0, 24576)
 _pos_index = Vector2i(0, 6)
 _points_per_size = 513
 
-[node name="TWTestQuadrant4" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants"]
+[node name="TWTestQuadrant4" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants" unique_id=741294589]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2048, 0, 30720)
 skeleton = NodePath("../../../../../../..")
 script = ExtResource("7_7uq48")
@@ -635,7 +635,7 @@ _pos = Vector2(0, 28672)
 _pos_index = Vector2i(0, 7)
 _points_per_size = 513
 
-[node name="TWTestQuadrant-100-100" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants"]
+[node name="TWTestQuadrant-100-100" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants" unique_id=603902432]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 411648, 0, 411648)
 skeleton = NodePath("../../../../../../..")
 script = ExtResource("7_7uq48")
@@ -643,7 +643,7 @@ _pos = Vector2(409600, 409600)
 _pos_index = Vector2i(100, 100)
 _points_per_size = 513
 
-[node name="TWTestQuadrant-99-100" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants"]
+[node name="TWTestQuadrant-99-100" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants" unique_id=1503519098]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 407552, 0, 411648)
 skeleton = NodePath("../../../../../../..")
 script = ExtResource("7_7uq48")
@@ -651,7 +651,7 @@ _pos = Vector2(405504, 409600)
 _pos_index = Vector2i(99, 100)
 _points_per_size = 513
 
-[node name="TWTestQuadrant-99-99" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants"]
+[node name="TWTestQuadrant-99-99" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants" unique_id=1624074322]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 407552, 0, 407552)
 skeleton = NodePath("../../../../../../..")
 script = ExtResource("7_7uq48")
@@ -659,7 +659,7 @@ _pos = Vector2(405504, 405504)
 _pos_index = Vector2i(99, 99)
 _points_per_size = 513
 
-[node name="TWTestQuadrant-100-99" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants"]
+[node name="TWTestQuadrant-100-99" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants" unique_id=15158925]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 411648, 0, 407552)
 skeleton = NodePath("../../../../../../..")
 script = ExtResource("7_7uq48")
@@ -667,112 +667,112 @@ _pos = Vector2(409600, 405504)
 _pos_index = Vector2i(100, 99)
 _points_per_size = 513
 
-[node name="_Sea-99-100" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants"]
+[node name="_Sea-99-100" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants" unique_id=698917434]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 407552, 0, 411648)
 mesh = SubResource("PlaneMesh_60os2")
 
-[node name="Sea-99-100" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants"]
+[node name="Sea-99-100" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants" unique_id=305474845]
 transform = Transform3D(4096, 0, 0, 0, 40, 0, 0, 0, 4096, 407552, 0, 411648)
 cast_shadow = 0
 mesh = SubResource("QuadMesh_st0eb")
 surface_material_override/0 = ExtResource("6_32vc6")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants"]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestQuadrants" unique_id=1410806139]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9300, 0, 41700)
 mesh = SubResource("PlaneMesh_uaxsv")
 
-[node name="TestMaterials" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape"]
+[node name="TestMaterials" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape" unique_id=990022998]
 visible = false
 
-[node name="TestFloor1_a" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestMaterials"]
+[node name="TestFloor1_a" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestMaterials" unique_id=366454955]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5515.48, 70, 25648.3)
 mesh = SubResource("PlaneMesh_hhcpw")
 skeleton = NodePath("../../../TestModels")
 surface_material_override/0 = ExtResource("21_xrxkg")
 
-[node name="TestFloor1_b" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestMaterials"]
+[node name="TestFloor1_b" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestMaterials" unique_id=1575089008]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5536.17, 69.9835, 25648.3)
 mesh = SubResource("PlaneMesh_hhcpw")
 skeleton = NodePath("../../../TestModels")
 surface_material_override/0 = ExtResource("22_hri7i")
 
-[node name="TestFloor2_a" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestMaterials"]
+[node name="TestFloor2_a" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestMaterials" unique_id=389009102]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5515.48, 70, 25627.5)
 mesh = SubResource("PlaneMesh_hhcpw")
 skeleton = NodePath("../../../TestModels")
 surface_material_override/0 = ExtResource("22_sqvbp")
 
-[node name="TestFloor2_b" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestMaterials"]
+[node name="TestFloor2_b" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestMaterials" unique_id=1329282968]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5536.24, 70, 25627.5)
 mesh = SubResource("PlaneMesh_hhcpw")
 skeleton = NodePath("../../../TestModels")
 surface_material_override/0 = ExtResource("24_w3rk5")
 
-[node name="TestFloor3_a" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestMaterials"]
+[node name="TestFloor3_a" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestMaterials" unique_id=693192884]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5515.48, 70, 25605.9)
 mesh = SubResource("PlaneMesh_hhcpw")
 skeleton = NodePath("../../../TestModels")
 surface_material_override/0 = ExtResource("25_w3rk5")
 
-[node name="TestFloor3_b" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestMaterials"]
+[node name="TestFloor3_b" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestMaterials" unique_id=498173047]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5536.35, 70, 25605.9)
 mesh = SubResource("PlaneMesh_hhcpw")
 skeleton = NodePath("../../../TestModels")
 surface_material_override/0 = SubResource("ShaderMaterial_1w2xm")
 
-[node name="DirectionalLight3D" type="DirectionalLight3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestMaterials"]
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TestMaterials" unique_id=1954437857]
 transform = Transform3D(0.276417, -0.914876, 0.294272, -0.0318396, 0.297316, 0.954248, -0.96051, -0.27314, 0.0530539, 5515.48, 107.202, 25648.3)
 visible = false
 light_color = Color(1, 0.98176, 0.905925, 1)
 
-[node name="WayPoints" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape"]
+[node name="WayPoints" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape" unique_id=920535016]
 
-[node name="Origin" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/WayPoints"]
+[node name="Origin" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/WayPoints" unique_id=162449606]
 visible = false
 mesh = SubResource("SphereMesh_812q2")
 skeleton = NodePath("../../../../../../..")
 
-[node name="WayPoint1" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/WayPoints"]
+[node name="WayPoint1" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/WayPoints" unique_id=968856131]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5500, 5000, 25500)
 visible = false
 mesh = SubResource("SphereMesh_812q2")
 skeleton = NodePath("../../../../../../..")
 
-[node name="WayPoint2" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/WayPoints"]
+[node name="WayPoint2" type="MeshInstance3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/WayPoints" unique_id=644501551]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 780, 5429, 3262)
 visible = false
 mesh = SubResource("SphereMesh_812q2")
 skeleton = NodePath("../../../../../../..")
 
-[node name="Test" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main" instance=ExtResource("5_kid0l")]
+[node name="Test" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main" unique_id=1836482308 instance=ExtResource("5_kid0l")]
 
-[node name="Player" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main" instance=ExtResource("6_wlxwp")]
+[node name="Player" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main" unique_id=1747429940 instance=ExtResource("6_wlxwp")]
 
-[node name="TestModels" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main"]
+[node name="TestModels" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main" unique_id=1195064371]
 
-[node name="maple_tree" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/TestModels" instance=ExtResource("11_kq4xa")]
+[node name="maple_tree" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/TestModels" unique_id=1846107901 instance=ExtResource("11_kq4xa")]
 transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 5515.48, 31, 25648.3)
 
-[node name="pine_tree" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/TestModels" instance=ExtResource("11_fbf05")]
+[node name="pine_tree" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/TestModels" unique_id=1872548511 instance=ExtResource("11_fbf05")]
 transform = Transform3D(4, 0, 0, 0, 4, 0, 0, 0, 4, 5518.08, 31, 25645.5)
 
-[node name="small_rock" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/TestModels" instance=ExtResource("12_ffcy8")]
+[node name="small_rock" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/TestModels" unique_id=1322226174 instance=ExtResource("12_ffcy8")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5514.62, 31, 25652.4)
 
-[node name="large_rock" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/TestModels" instance=ExtResource("13_tf3dr")]
+[node name="large_rock" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/TestModels" unique_id=1294870425 instance=ExtResource("13_tf3dr")]
 transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 5509.65, 31, 25664.9)
 
-[node name="godot_ball" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/TestModels" instance=ExtResource("14_4otfj")]
+[node name="godot_ball" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/TestModels" unique_id=1753409905 instance=ExtResource("14_4otfj")]
 transform = Transform3D(-0.947768, 0, -0.318959, 0, 1, 0, 0.318959, 0, -0.947768, 5526.69, 31, 25651.1)
 
-[node name="UI" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main" instance=ExtResource("4_cjpoh")]
+[node name="UI" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main" unique_id=688479443 instance=ExtResource("4_cjpoh")]
 visible = false
 
-[node name="PostProcessingGreyScaleEffect" type="CanvasLayer" parent="."]
+[node name="PostProcessingGreyScaleEffect" type="CanvasLayer" parent="." unique_id=1052257391]
 visible = false
 follow_viewport_enabled = true
 
-[node name="ColorRect" type="ColorRect" parent="PostProcessingGreyScaleEffect"]
+[node name="ColorRect" type="ColorRect" parent="PostProcessingGreyScaleEffect" unique_id=933195224]
 material = SubResource("ShaderMaterial_eopls")
 anchors_preset = 15
 anchor_right = 1.0
@@ -780,11 +780,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="PostProcessingGaussianBlurEffect" type="CanvasLayer" parent="."]
+[node name="PostProcessingGaussianBlurEffect" type="CanvasLayer" parent="." unique_id=738571514]
 visible = false
 follow_viewport_enabled = true
 
-[node name="ColorRect" type="ColorRect" parent="PostProcessingGaussianBlurEffect"]
+[node name="ColorRect" type="ColorRect" parent="PostProcessingGaussianBlurEffect" unique_id=1003515576]
 material = SubResource("ShaderMaterial_6wri7")
 anchors_preset = 15
 anchor_right = 1.0
@@ -792,7 +792,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="PostProcessingOutLine" type="MeshInstance3D" parent="."]
+[node name="PostProcessingOutLine" type="MeshInstance3D" parent="." unique_id=2146046766]
 transform = Transform3D(0.582015, 0.000569433, -0.813178, -0.303312, 0.927985, -0.21644, 0.754493, 0.372618, 0.540274, 0, 0, -11.381)
 visible = false
 extra_cull_margin = 16384.0

@@ -74,7 +74,7 @@ vec3 get_normal(sampler2D normalmap, mat3 terrain_normal_basis, vec2 uv)
 	float f_lod_zero = 0.0;
 	// Need to use terrain_normal_basis to handle scaling.
 	vec3 n = terrain_normal_basis * unpack_normal(textureLod(normalmap, uv, f_lod_zero));
-	//vec3 n = unpack_normal(texture(normalmap, uv));
+	//n = unpack_normal(texture(normalmap, uv));
 	return normalize(n);
 }
 

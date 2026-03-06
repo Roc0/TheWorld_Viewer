@@ -1,4 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=6 format=3 uid="uid://dee4mdtcckm70"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://dee4mdtcckm70"]
 
 [ext_resource type="Shader" uid="uid://8udcbogmxhol" path="res://addons/twviewer/test/stayathomedevWater.gdshader" id="1_8d0jk"]
 

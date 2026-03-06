@@ -73,7 +73,7 @@ static func status_to_string(status : int) -> String:
 		return ""
 		
 static func check_viewpoint_input(event : InputEventKey, dict : Dictionary)-> void:
-	if event is InputEventKey && event.is_pressed():
+	if event is InputEventKey && ((event.is_pressed() and not Engine.is_editor_hint()) or (event.is_released() and Engine.is_editor_hint())):
 		if event.keycode == KEY_1:
 			if (event.ctrl_pressed and not Engine.is_editor_hint()) or (event.ctrl_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_save'] == -1:
