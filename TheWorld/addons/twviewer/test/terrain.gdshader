@@ -764,7 +764,7 @@ vec3 compute_normal_2(float vertex_height, sampler2D heightmap, vec2 heightmap_u
 	//h = get_height(heightmap, terrain_height, heightmap_uv);
 	h = vertex_height;
 
-	if (extra_vertices_on_heightmap > 0u)	// if we have extra vertices on border we can fectch right/left and up/bottom heights
+	if (extra_vertices_on_heightmap > 0u)	// if we have extra vertices on border we can fetch right/left and up/bottom heights
 	{
 		//return vec3(0.0, 1.0, 0.0);
 		left_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(-dx_uv, 0));
@@ -775,7 +775,7 @@ vec3 compute_normal_2(float vertex_height, sampler2D heightmap, vec2 heightmap_u
 	}
 	else
 	{
-		if (1.0 - heightmap_uv.x > grid_step_uv && 1.0 - heightmap_uv.y > grid_step_uv)	// if we have extra vertices on border or we are far from right and bottom border we can fectch left and bottom heights
+		if (1.0 - heightmap_uv.x > grid_step_uv && 1.0 - heightmap_uv.y > grid_step_uv)	// if we are far from right and bottom border we can fetch left and bottom heights
 		{
 			right_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(dx_uv, 0));
 			bottom_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(0, dx_uv));
