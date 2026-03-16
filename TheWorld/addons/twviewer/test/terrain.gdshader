@@ -198,7 +198,7 @@ uniform sampler2D u_west_border_splatmap;
 
 //uniform sampler2D u_terrain_colormap;
 
-uniform mat3 u_terrain_normal_basis;
+//uniform mat3 u_terrain_normal_basis;
 uniform float u_terrain_height_scale = 1.0;	// NOTSET
 uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
 uniform bool u_force_height_0 = false;
@@ -757,7 +757,7 @@ vec3 compute_normal_2(float vertex_height, sampler2D heightmap, vec2 heightmap_u
 	float grid_step_uv = 1.0 / (quadrantHeightmapSize.x - 1.0);	// step in UV between vertices
 	//grid_step_uv = 1.0 / 2048.0;
 																														//float dx_uv = 1.0 / (grid_size_wu * 16.0);
-	float step_coeff = 1.0;
+	float step_coeff = 1.1;
 	float dx_uv = grid_step_uv / step_coeff;
 	float dx_wu = (grid_step / step_coeff) * 1.0;
 
@@ -1782,6 +1782,7 @@ void fragment()
 	
 	//ALBEDO = v_splat.rgb;	// DEBUG
 	//ALBEDO = normal_computed;	// DEBUG
+	//ALBEDO = splat_pixel_computed.rgb;	// DEBUG
 	
 	//********************************************************************************************************************
 	//     Test PBR
