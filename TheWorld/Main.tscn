@@ -507,6 +507,7 @@ _shader_param_cam_alt_uv_threshold = 6000.0
 _shader_param_cam_dist_uv_threshold = 10000.0
 
 [node name="GDN_TW_Globals" type="GDN_TheWorld_Globals" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer" unique_id=1830858842]
+perfparam_profiler_active = true
 perfparam_threshold_cache_heights = 15000.0
 
 [node name="GDN_TW_WorldViewer" type="GDN_TheWorld_Viewer" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer" unique_id=1843480842]
@@ -569,13 +570,15 @@ offset_bottom = 2.0
 
 [node name="GDN_TW_MapViewport" type="GDN_TheWorld_MapViewport" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer" unique_id=1975822862]
 handle_input_locally = false
-size = Vector2i(1151, 846)
+size = Vector2i(2, 2)
 render_target_update_mode = 0
 
 [node name="GDN_TW_MapCamera" type="GDN_TheWorld_MapCamera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer/GDN_TW_MapViewport" unique_id=365856543]
 scale = Vector2(0.5, 0.5)
 enabled = false
 zoom = Vector2(0.5, 0.5)
+
+[node name="GDN_TW_Map" type="GDN_TheWorld_Map" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer/GDN_TW_MapViewport" unique_id=1562775605]
 
 [node name="GDN_TW_Camera" type="GDN_TheWorld_Camera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer" unique_id=863817696]
 camera_tracking_offset = Vector3(0, 5, 10)
