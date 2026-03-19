@@ -254,10 +254,6 @@ ui_toggle_map_grid={
 3d_physics/layer_2="Player"
 3d_physics/layer_3="Objects"
 
-[physics]
-
-3d/physics_engine="GodotPhysics3D"
-
 [shader_globals]
 
 gu_grid_step={
