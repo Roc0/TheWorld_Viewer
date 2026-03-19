@@ -256,7 +256,7 @@ ui_toggle_map_grid={
 
 [physics]
 
-3d/physics_engine="Jolt Physics"
+3d/physics_engine="GodotPhysics3D"
 
 [shader_globals]
 
