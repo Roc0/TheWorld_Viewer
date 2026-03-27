@@ -107,7 +107,7 @@ global uniform sampler2D gu_ground_base_values_array;
 //global uniform sampler2DArray gu_ground_ao_array : hint_default_white, filter_linear_mipmap, repeat_enable;
 global uniform vec4 gu_ground_albedo_modifier : source_color = vec4(1.0, 1.0, 1.0, 1.0);
 global uniform float gu_ground_roughness_scale : hint_range(0.0, 1.0) = 1.0;
-global uniform float gu_ground_normal_scale : hint_range(1.0, 16.0, 0.1) = 3.0;
+global uniform float gu_ground_normal_scale : hint_range(1.0, 16.0, 0.1) = 1.0;
 global uniform float gu_ground_ao_light_affect : hint_range(0.0, 1.0, 0.01) = 0.0;
 //global uniform float gu_ground_heightmap_displ : hint_range(0.0, 5.0, 0.001) = 0.0;	//=3.871;
 global uniform float gu_texture_overflow_size = 0.3;
@@ -959,6 +959,7 @@ void vertex()
 	if (_compute_normal)
 	{
 		normal_computed = compute_normal_2(vertex_height, u_terrain_heightmap, heightmap_uv, u_extra_vertices_on_heightmap, grid_step, u_terrain_height_scale);
+		//normal_computed = vec3(0.0, 1.0, 0.0);
 	}
 	else
 	{
@@ -1469,28 +1470,32 @@ void fragment()
 			//ground_normal = normal0;		// DEBUG
 			ground_normal_computed = normalize(ground_normal);
 
-			const float max_distance_for_normal_scale = 10000.0;
+			const float max_distance_for_normal_scale = 20000.0;
 			if (distance_from_camera > max_distance_for_normal_scale)
 			{
-				ground_normal_scale = 1.0;
+				ground_normal_scale = 0.0;
 			}
 			else
 			{
 				ground_normal_scale = ground_normal_scale * ((w.r * normal_map_scale0 + w.g * normal_map_scale1 + w.b * normal_map_scale2 + w.a * normal_map_scale3) / w_sum);
 				float normal_scale_increment = abs(ground_normal_scale - 1.0);
-				ground_normal_scale = 1.0 + normal_scale_increment * smoothstep(max_distance_for_normal_scale, 0.0, distance_from_camera);		// smoothstep = 0 if distance_from_camera >= max_distance_for_normal_scale, grows to 1.0 if distance_from_camera decreases to zero
+				//ground_normal_scale = 1.0 + normal_scale_increment * smoothstep(0.0, max_distance_for_normal_scale, distance_from_camera);		// smoothstep = 0 if distance_from_camera >= max_distance_for_normal_scale, grows to 1.0 if distance_from_camera decreases to zero
+				ground_normal_scale = ground_normal_scale * (1.0 - smoothstep(2000.0, max_distance_for_normal_scale, distance_from_camera));		// smoothstep = 0 if distance_from_camera >= max_distance_for_normal_scale, grows to 1.0 if distance_from_camera decreases to zero
+				ground_normal_scale = clamp(ground_normal_scale, 0.0, 1.0);
+				//ground_normal_scale = 1.0;	// DEBUG
 			}
 			//ground_normal_scale = 1.0;	// DEBUG
 
 			ao_computed = (w.r * ao.r + w.g * ao.g + w.b * ao.b + w.a * ao.a) / w_sum;;
 			//ao_computed = ao.r;		// DEBUG
-			float ground_ao_light_affect = gu_ground_ao_light_affect;
+			
+			/*float ground_ao_light_affect = gu_ground_ao_light_affect;
 			if (ground_ao_light_affect == 0.0)
 				ground_ao_light_affect = 0.000001;
+			//ground_ao_light_affect = 1.0;			// DEBUG
 			float max_view_distance = 40000.0 * ground_ao_light_affect;
-			//ao_light_affect_computed = clamp(0.0, 1.0, max_view_distance / distance_from_camera);
 			ao_light_affect_computed = smoothstep(0.0, max_view_distance, distance_from_camera);
-			//ao_light_affect_computed = 0.0;		// DEBUG
+			//ao_light_affect_computed = 0.0;		// DEBUG*/
 		}
 
 		/*{
