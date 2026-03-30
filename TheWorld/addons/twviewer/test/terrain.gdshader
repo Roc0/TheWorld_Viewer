@@ -108,7 +108,7 @@ global uniform sampler2D gu_ground_base_values_array;
 global uniform vec4 gu_ground_albedo_modifier : source_color = vec4(1.0, 1.0, 1.0, 1.0);
 global uniform float gu_ground_roughness_scale : hint_range(0.0, 1.0) = 1.0;
 global uniform float gu_ground_normal_scale : hint_range(1.0, 16.0, 0.1) = 1.0;
-global uniform float gu_ground_ao_light_affect : hint_range(0.0, 1.0, 0.01) = 0.0;
+global uniform float gu_ground_ao_light_affect : hint_range(0.0, 1.0, 0.01) = 1.0;
 //global uniform float gu_ground_heightmap_displ : hint_range(0.0, 5.0, 0.001) = 0.0;	//=3.871;
 global uniform float gu_texture_overflow_size = 0.3;
 //global uniform bool gu_texture_new_overflow = false;
@@ -1489,13 +1489,12 @@ void fragment()
 			ao_computed = (w.r * ao.r + w.g * ao.g + w.b * ao.b + w.a * ao.a) / w_sum;;
 			//ao_computed = ao.r;		// DEBUG
 			
-			/*float ground_ao_light_affect = gu_ground_ao_light_affect;
+			float ground_ao_light_affect = gu_ground_ao_light_affect;
 			if (ground_ao_light_affect == 0.0)
 				ground_ao_light_affect = 0.000001;
-			//ground_ao_light_affect = 1.0;			// DEBUG
-			float max_view_distance = 40000.0 * ground_ao_light_affect;
-			ao_light_affect_computed = smoothstep(0.0, max_view_distance, distance_from_camera);
-			//ao_light_affect_computed = 0.0;		// DEBUG*/
+			float max_view_distance = 5000.0 * ground_ao_light_affect;
+			ao_light_affect_computed = 1.0 - smoothstep(0.0, max_view_distance, distance_from_camera);
+			//ao_light_affect_computed = 0.0;		// DEBUG
 		}
 
 		/*{

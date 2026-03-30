@@ -418,7 +418,7 @@ gu_ground_heightmap_scale={
 }
 gu_ground_ao_light_affect={
 "type": "float",
-"value": 0.1
+"value": 1.0
 }
 gu_texture_overflow_size={
 "type": "float",
