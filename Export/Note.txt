@@ -1,5 +1,6 @@
 - Verificare che godot sia stato compilato con template_release
 - Verificare che TheWorld sia stato compilato in debug|release
+- Verificare che i template relativi alla versione corrente siano stati scaricati (si trovano in %appdata%\godot\export_templates): aprire l'editor e dal menù selezionare "Editor\Manage Export Templates..." quindi se non scaricati eseguire il download
 - Attivare il batch di esport corrispondente al tipo di build vhe vogliamo utilizzare
 - Attivare TheWorld.exe o TheWorld.console.exe da D:\TheWorld\Client\TheWorld
 
