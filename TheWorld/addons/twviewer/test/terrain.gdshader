@@ -137,6 +137,7 @@ global uniform float gu_camera_distance_uv_scale_threshold = 10000.0;
 // ********
 // uniforms
 // ********
+uniform float u_texture_overflow_size_override = -1.0;
 uniform float u_grid_step_optlvl_zero = 2;	// step in WUs between vertices at optimization level zero that is at greater resolution of the chunk
 uniform bool u_need_blending = false;
 uniform bool u_need_blending_north = false;
@@ -1273,6 +1274,8 @@ void fragment()
 	//
 	// Quadrant border pixels management
 	//
+	float local_value_factor = step(0.0, u_texture_overflow_size_override);																			// u_texture_overflow_size_override < 0.0 ? 0.0 : 1.0
+	float texture_overflow_size = u_texture_overflow_size_override * local_value_factor + gu_texture_overflow_size * (1.0 - local_value_factor);	// texture_overflow_size = (u_texture_overflow_size_override < 0.0 ? gu_texture_overflow_size : u_texture_overflow_size)
 	bool north_border_pixel = false;
 	//bool south_border_pixel = false;
 	bool west_border_pixel = false;
@@ -1281,7 +1284,7 @@ void fragment()
 	if (pixel_type == texture_pixel)
 	{
 		float distance_texel = texture(gu_terrain_quad_border_distance, quadrant_uv).x;
-		float distance_from_border = distance_texel * gu_texture_overflow_size;
+		float distance_from_border = distance_texel * texture_overflow_size;
 
 		if (is_on_upper_border(quadrant_uv, distance_from_border)) {
 			north_border_pixel = true;
