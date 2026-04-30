@@ -113,7 +113,6 @@ func _ready():
 	get_tree().set_auto_accept_quit(false)
 
 	init()
-	TWViewer().GDN_viewer().set_anchor_for_origin_shift(self)
 
 	$Test/TestBall.visible = false
 	#$Player/Player.visible = false
@@ -143,6 +142,18 @@ func TWViewer() -> Node3D:
 
 func init():
 	log_debug("init")
+	
+	TWViewer().GDN_viewer().set_anchor_for_origin_shift(self)
+	
+	if Globals.cmdline_arguments.has(tw_const.cmdline_argument_world_depth_quads):
+		var val : String = Globals.cmdline_arguments[tw_const.cmdline_argument_world_depth_quads]
+		if val.is_valid_int():
+			TWViewer()._set_world_param_depth_quad(int(val))
+	if Globals.cmdline_arguments.has(tw_const.cmdline_argument_world_cache_quads):
+		var val : String = Globals.cmdline_arguments[tw_const.cmdline_argument_world_cache_quads]
+		if val.is_valid_int():
+			TWViewer()._set_world_param_cache_quad(int(val))
+	
 	#visible = false
 	$UI/MessageContainer/Message.add_theme_color_override("font_color", Color(251.0 / 255.0, 206.0 / 255.0, 177.0 / 255.0))
 	#$UI/MessageContainer/Message.text = "Deploying world ..."

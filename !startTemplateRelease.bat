@@ -24,7 +24,7 @@ rem RELEASE single OFFICIAL
 rem set executable=..\..\Client\godot\Bin\Godot_v4.6.2-stable_win64.exe
 
 dir %executable%
-set command=%executable% -v %project%
+set command=%executable% -v %project% --WorldDepthQuads=12 --WorldCacheQuads=2
 echo %command%
 call %command% 2>&1 1>log.txt
 rem call %executable% -v %project% %edit% 2>&1 1>log.txt

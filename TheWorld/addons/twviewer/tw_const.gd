@@ -1,3 +1,6 @@
+const cmdline_argument_world_depth_quads := "WorldDepthQuads"
+const cmdline_argument_world_cache_quads := "WorldCacheQuads"
+
 const clientstatus_error := -1
 const clientstatus_str_error := "error"
 const clientstatus_uninitialized := 0
