@@ -121,6 +121,9 @@ var _camera3d_current_pos : Vector3
 var _camera3d_current_pos_in_map : Vector3
 var _camera3d_current_yaw_pitch_roll_rad : Vector3
 
+var _desidered_map_camera_zoom_factor : float = tw_constants.map_camera_initial_zoom_factor
+var _desidered_map_camera_zoom_factor_changed = false
+
 #@export_category("TWViewer")
 
 var _loading_screen_changed := true
@@ -853,6 +856,12 @@ func _process(delta):
 		gdn_viewer.toggle_edit_mode()
 		_edit_panel_visibility_changed = false
 
+	var camera2d : Camera2D = gdn_viewer.get_map_camera()
+
+	if _desidered_map_camera_zoom_factor_changed and camera2d != null and camera2d.initialized():
+		_desidered_map_camera_zoom_factor_changed = false
+		set_map_camera_zoom_factor(_desidered_map_camera_zoom_factor)
+		
 	if Engine.is_editor_hint():
 		if _world_editor_param_deploy_world_changed:
 			if _world_editor_param_deploy_world:
@@ -937,7 +946,6 @@ func _process(delta):
 		var num_element_initialized : int = GDN_globals().get_num_element_initialized()
 		_info_panel_status = "Status: " + tw_constants.status_to_string(_client_status) + " (" + str(num_element_initialized) + "/"+ str(tot_element_to_initialize) + ")" + "\n"
 		var realSceneCamera : Camera3D = gdn_viewer.get_world_camera()
-		var camera2d : Camera2D = gdn_viewer.get_map_camera()
 		var viewer_custom_camera = gdn_viewer.get_custom_camera()
 		#var viewer_custom_camera = get_tree().get_first_node_in_group(tw_constants.custom_cameras_group)	# same as above
 		var update_quads1_duration : int = gdn_viewer.get_update_quads1_duration()
@@ -1399,6 +1407,34 @@ func get_clientstatus() -> int:
 		return status
 	else:
 		return tw_constants.clientstatus_uninitialized
+
+func get_map_camera_zoom_factor() -> float:
+	var gdn_viewer = GDN_viewer()
+	if gdn_viewer == null:
+		return tw_constants.map_camera_initial_zoom_factor
+		
+	var camera2d : Camera2D = gdn_viewer.get_map_camera()
+	if camera2d == null:
+		return tw_constants.map_camera_initial_zoom_factor
+	
+	var zoom : float = camera2d.get_zoom_factor()
+	
+	return zoom
+	
+func set_map_camera_zoom_factor(zoom : float) -> void:
+	var gdn_viewer = GDN_viewer()
+	if gdn_viewer == null:
+		return
+		
+	var camera2d : Camera2D = gdn_viewer.get_map_camera()
+	if camera2d == null:
+		return
+	
+	camera2d.set_zoom_factor(zoom)
+
+func set_desidered_map_camera_zoom_factor(zoom : float) -> void:
+	_desidered_map_camera_zoom_factor = zoom
+	_desidered_map_camera_zoom_factor_changed = true
 
 func printTerrainDimensions() -> void:
 	var num_vertices_per_chunk_side = GDN_globals().get_num_vertices_per_chunk_side()

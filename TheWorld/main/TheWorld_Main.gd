@@ -175,7 +175,10 @@ func init():
 		TWViewer()._set_camera_param_initial_yaw_pitch_roll_deg(initial_camera_ypr)
 	_initial_player_pos_in_world = _config.get_value(tw_const.param_group_player, tw_const.param_key_player_pos)
 	_initial_player_basis_in_world = _config.get_value(tw_const.param_group_player, tw_const.param_key_player_basis)
-		
+	var map_camera_zoom : Variant =  _config.get_value(tw_const.param_group_camera, tw_const.param_key_initial_map_camera_zoom)
+	if (map_camera_zoom != null):
+		TWViewer().set_desidered_map_camera_zoom_factor(map_camera_zoom)
+
 	var result = TWViewer().GDN_globals().connect("tw_status_changed", Callable(self, "_on_tw_status_changed")) == 0
 	log_debug(str("signal tw_status_changed connected (result=", result, ")"))
 	_client_status = get_clientstatus()
@@ -770,6 +773,8 @@ func save_current_position(viewpoint : int) -> void:
 			_config.set_value(tw_const.param_group_player, tw_const.param_key_player_basis, player_map_transform.basis)
 			param_key_camera_pos = tw_const.param_key_initial_camera_pos
 			param_key_camera_ypr = tw_const.param_key_initial_camera_ypr
+			var map_camera_zoom : float = TWViewer().get_map_camera_zoom_factor()
+			_config.set_value(tw_const.param_group_camera, tw_const.param_key_initial_map_camera_zoom, map_camera_zoom)
 		else:
 			param_key_camera_pos = tw_const.param_key_viewpoint_camera_pos + str(viewpoint)
 			param_key_camera_ypr = tw_const.param_key_viewpoint_camera_ypr + str(viewpoint)

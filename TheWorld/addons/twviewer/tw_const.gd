@@ -29,6 +29,7 @@ const tw_gdn_edit_mode_ui_node_name := "GDN_TW_EditModeUI"
 
 const config_file := "user://TheWorldConfig.cfg"
 const param_group_camera := "Camera"
+const param_key_initial_map_camera_zoom := "initial_map_camera_zoom"
 const param_key_initial_camera_pos := "initial_position"
 const param_key_initial_camera_ypr := "initial_ypr"
 const param_key_viewpoint_camera_pos := "viewpoint_position_"
@@ -52,6 +53,8 @@ const global_shader_param_ground_roughness_scale := "gu_ground_roughness_scale"
 const global_shader_param_ground_normal_scale := "gu_ground_normal_scale"
 const global_shader_param_ground_height_displ := "gu_ground_heightmap_displ"
 const global_shader_param_ground_ao_light_affect := "gu_ground_ao_light_affect"
+
+const map_camera_initial_zoom_factor := 0.5
 
 static func status_to_string(status : int) -> String:
 	if status == clientstatus_error:
