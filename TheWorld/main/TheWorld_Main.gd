@@ -149,6 +149,7 @@ func init():
 		var val : String = Globals.cmdline_arguments[tw_const.cmdline_argument_world_depth_quads]
 		if val.is_valid_int():
 			TWViewer()._set_world_param_depth_quad(int(val))
+			TWViewer()._set_world_param_max_depth_quad(int(val))
 	if Globals.cmdline_arguments.has(tw_const.cmdline_argument_world_cache_quads):
 		var val : String = Globals.cmdline_arguments[tw_const.cmdline_argument_world_cache_quads]
 		if val.is_valid_int():

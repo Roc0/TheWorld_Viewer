@@ -138,7 +138,7 @@ func _set_full_world_deploy(full_world_deploy : bool):
 	_full_world_deploy_changed = true
 
 var _debug_mode_changed := true
-@export_enum("Default:0", "Enabled:1", "Disabled:2") var _debug_mode: int = 0:
+@export_enum("Default:-1", "Info:0", "Debug:1", "Verbose:2") var _debug_mode: int = 0:
 	set = _set_debug_mode
 func _set_debug_mode(p_debug_mode : int):
 	_debug_mode = p_debug_mode
@@ -1373,11 +1373,16 @@ func set_debug_mode(debug_mode : int):
 	if globals == null:
 		print("GDN_globals() null")
 		return
-	if !globals.has_method("set_debug_enabled"):
-		print("GDN_globals() does not have method set_debug_enabled")
+	#if !globals.has_method("set_debug_enabled"):
+	#	print("GDN_globals() does not have method set_debug_enabled")
+	#	return
+	#globals.set_debug_enabled(debug_enabled)
+	#log_debug(str("debug mode: ", debug_mode, " ", ("enabled" if debug_mode > 0 else "disabled")))
+	if !globals.has_method("set_debug_level"):
+		print("GDN_globals() does not have method set_debug_level")
 		return
-	globals.set_debug_enabled(debug_enabled)
-	log_debug(str("debug mode: ", debug_mode, " ", ("enabled" if debug_enabled else "disabled")))
+	globals.set_debug_level(debug_mode)
+	log_debug(str("debug mode: ", debug_mode))
 
 func get_clientstatus() -> int:
 	if _init_done:
