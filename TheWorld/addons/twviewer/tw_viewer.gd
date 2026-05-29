@@ -1888,6 +1888,11 @@ func full_world_deploy() -> bool:
 func save_current_camera_position(viewpoint : int) -> void:
 	var gdn_viewer = GDN_viewer()
 	var gdn_globals = GDN_globals()
+	
+	var _build : String = ""
+	if Globals.strict_to_build_mode:
+		_build = "_debug" if (gdn_globals.debug_build()) else "_release"
+
 	#_logger.debug(str(0, " "))
 	var _config_file_name : String = gdn_globals.get_config_filename(0)
 	if gdn_viewer == null or gdn_globals == null or _config_file_name == "":
@@ -1912,8 +1917,13 @@ func save_current_camera_position(viewpoint : int) -> void:
 		var _config := ConfigFile.new()
 		var _err = _config.load(_config_file_name)
 		#_logger.debug(str(3, " ", _err))
+
 		_config.set_value(tw_constants.param_group_camera, param_key_camera_pos, camera_pos)
 		_config.set_value(tw_constants.param_group_camera, param_key_camera_ypr, camera_ypr)
+		_config.set_value(tw_constants.param_group_camera, param_key_camera_pos + _build, camera_pos)
+		_config.set_value(tw_constants.param_group_camera, param_key_camera_ypr + _build, camera_ypr)
+		print("tw_viewer.save_current_camera_position _build=" + _build)
+			
 		_config.save(_config_file_name)
 
 func load_camera_position(viewpoint : int) -> void:
@@ -1925,18 +1935,31 @@ func load_camera_position(viewpoint : int) -> void:
 	#_logger.debug(str(1, " ", _config_file_name))
 	var param_key_camera_pos := ""
 	var param_key_camera_ypr := ""
+
+	var _build : String = ""
+	if Globals.strict_to_build_mode:
+		_build = "_debug" if (gdn_globals.debug_build()) else "_release"
+	print("tw_viewer.load_camera_position _build=" + _build)
+
 	if viewpoint == -1:
 		param_key_camera_pos = tw_constants.param_key_initial_camera_pos
 		param_key_camera_ypr = tw_constants.param_key_initial_camera_ypr
 	else:
 		param_key_camera_pos = tw_constants.param_key_viewpoint_camera_pos + str(viewpoint)
 		param_key_camera_ypr = tw_constants.param_key_viewpoint_camera_ypr + str(viewpoint)
+	
 	var _config := ConfigFile.new()
 	var _err = _config.load(_config_file_name)
 	#_logger.debug(str(2, " ", _err))
-	var camera_position_in_map : Variant = _config.get_value(tw_constants.param_group_camera, param_key_camera_pos)
-	var camera_ypr_in_map : Variant = _config.get_value(tw_constants.param_group_camera, param_key_camera_ypr)
-	#_logger.debug(str(3, " ", param_key_camera_pos, "=", camera_position_in_map, " ", param_key_camera_ypr, "=",camera_ypr_in_map))
+	var camera_position_in_map : Variant = _config.get_value(tw_constants.param_group_camera, param_key_camera_pos + _build)
+	var camera_ypr_in_map : Variant = _config.get_value(tw_constants.param_group_camera, param_key_camera_ypr + _build)
+	_logger.debug(str(3, " ", param_key_camera_pos + _build, "=", camera_position_in_map, " ", param_key_camera_ypr + _build, "=",camera_ypr_in_map))
+
+	if camera_position_in_map == null or camera_ypr_in_map == null:
+		camera_position_in_map = _config.get_value(tw_constants.param_group_camera, param_key_camera_pos)
+		camera_ypr_in_map = _config.get_value(tw_constants.param_group_camera, param_key_camera_ypr)
+		_logger.debug(str(3, " ", param_key_camera_pos, "=", camera_position_in_map, " ", param_key_camera_ypr, "=",camera_ypr_in_map))
+
 	if camera_position_in_map != null and camera_ypr_in_map != null:
 		_set_camera_param_initial_pos(camera_position_in_map)
 		_set_camera_param_initial_yaw_pitch_roll_deg(camera_ypr_in_map)

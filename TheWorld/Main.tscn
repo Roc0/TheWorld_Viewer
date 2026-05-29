@@ -503,6 +503,7 @@ _world_editor_param_info_panel_visible = true
 _camera_param_initial_pos = Vector3(-232896.92, 270.2605, -249365.5)
 _camera_param_initial_yaw_pitch_roll_deg = Vector3(-31.46105, -27.204412, 0)
 _shader_param_ao_light_affect = 0.1
+_shader_param_texture_overflow_size = 0.8
 _shader_param_debug_float0 = 45.0
 _shader_param_cam_alt_uv_threshold = 6000.0
 _shader_param_cam_dist_uv_threshold = 10000.0

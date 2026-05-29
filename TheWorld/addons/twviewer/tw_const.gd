@@ -1,5 +1,6 @@
 const cmdline_argument_world_depth_quads := "WorldDepthQuads"
 const cmdline_argument_world_cache_quads := "WorldCacheQuads"
+const cmdline_argument_strict_to_build_mode := "StrictToBuildMode"
 
 const clientstatus_error := -1
 const clientstatus_str_error := "error"
@@ -150,40 +151,3 @@ static func check_viewpoint_input(event : InputEventKey, dict : Dictionary)-> vo
 			elif (event.alt_pressed and not Engine.is_editor_hint()) or (event.alt_pressed and event.shift_pressed and Engine.is_editor_hint()):
 				if dict['viewpoint_to_load'] == -1:
 					dict['viewpoint_to_load'] = 0
-
-#static func save_current_position(viewpoint : int, viewer, config : ConfigFile, config_file_name : String) -> void:
-#	var viewer_custom_camera = viewer.GDN_viewer().get_custom_camera()
-#	# Warning this static func does not save player pos / transform
-#	if viewer_custom_camera != null:
-#		var camera_ypr : Vector3
-#		camera_ypr.x = viewer_custom_camera.get_yaw(false)
-#		camera_ypr.y = viewer_custom_camera.get_pitch(false)
-#		camera_ypr.z = viewer_custom_camera.get_roll(false)
-#		var camera_pos : Vector3 = viewer_custom_camera.get_camera_world_transform().origin
-#		var param_key_camera_pos := ""
-#		var param_key_camera_ypr := ""
-#		if viewpoint == 0:
-#			param_key_camera_pos = param_key_initial_camera_pos
-#			param_key_camera_ypr = param_key_initial_camera_ypr
-#		else:
-#			param_key_camera_pos = param_key_viewpoint_camera_pos + str(viewpoint)
-#			param_key_camera_ypr = param_key_viewpoint_camera_ypr + str(viewpoint)
-#		config.set_value(param_group_camera, param_key_camera_pos, camera_pos)
-#		config.set_value(param_group_camera, param_key_camera_ypr, camera_ypr)
-#		config.save(config_file_name)
-
-#static func load_position(viewpoint : int, viewer, config : ConfigFile, config_file_name : String) -> void:
-#	var param_key_camera_pos := ""
-#	var param_key_camera_ypr := ""
-#	if viewpoint == 0:
-#		param_key_camera_pos = param_key_initial_camera_pos
-#		param_key_camera_ypr = param_key_initial_camera_ypr
-#	else:
-#		param_key_camera_pos = param_key_viewpoint_camera_pos + str(viewpoint)
-#		param_key_camera_ypr = param_key_viewpoint_camera_ypr + str(viewpoint)
-#	var _err = config.load(config_file_name)
-#	var camera_position : Variant = config.get_value(param_group_camera, param_key_camera_pos)
-#	var camera_ypr : Variant = config.get_value(param_group_camera, param_key_camera_ypr)
-#	if camera_position != null and camera_ypr != null:
-#		viewer._set_camera_param_initial_pos(camera_position)
-#		viewer._set_camera_param_initial_yaw_pitch_roll(camera_ypr)

@@ -145,6 +145,8 @@ func init():
 	
 	TWViewer().GDN_viewer().set_anchor_for_origin_shift(self)
 	
+	if Globals.cmdline_arguments.has(tw_const.cmdline_argument_strict_to_build_mode):
+		Globals.strict_to_build_mode = true
 	if Globals.cmdline_arguments.has(tw_const.cmdline_argument_world_depth_quads):
 		var val : String = Globals.cmdline_arguments[tw_const.cmdline_argument_world_depth_quads]
 		if val.is_valid_int():
@@ -167,12 +169,24 @@ func init():
 	print(str("_config_file_name", "=", _config_file_name))
 		#var config = ConfigFile.new()
 	
+	var _build : String = ""
+	if Globals.strict_to_build_mode:
+		_build = "_debug" if (TWViewer().GDN_globals().debug_build()) else "_release"
+	log_debug(str("init _build=", _build))
+	
 	var _err = _config.load(_config_file_name)
-	_initial_camera_position_in_world = _config.get_value(tw_const.param_group_camera, tw_const.param_key_initial_camera_pos)
-	var initial_camera_ypr : Variant = _config.get_value(tw_const.param_group_camera, tw_const.param_key_initial_camera_ypr)
+	
+	_initial_camera_position_in_world = _config.get_value(tw_const.param_group_camera, tw_const.param_key_initial_camera_pos + _build)
+	var initial_camera_ypr : Variant = _config.get_value(tw_const.param_group_camera, tw_const.param_key_initial_camera_ypr + _build)
+	
+	if _initial_camera_position_in_world == null or initial_camera_ypr == null:
+		_initial_camera_position_in_world = _config.get_value(tw_const.param_group_camera, tw_const.param_key_initial_camera_pos)
+		initial_camera_ypr = _config.get_value(tw_const.param_group_camera, tw_const.param_key_initial_camera_ypr)
+
 	if _initial_camera_position_in_world != null and initial_camera_ypr != null:
 		TWViewer()._set_camera_param_initial_pos(_initial_camera_position_in_world)
 		TWViewer()._set_camera_param_initial_yaw_pitch_roll_deg(initial_camera_ypr)
+		
 	_initial_player_pos_in_world = _config.get_value(tw_const.param_group_player, tw_const.param_key_player_pos)
 	_initial_player_basis_in_world = _config.get_value(tw_const.param_group_player, tw_const.param_key_player_basis)
 	var map_camera_zoom : Variant =  _config.get_value(tw_const.param_group_camera, tw_const.param_key_initial_map_camera_zoom)
@@ -778,21 +792,39 @@ func save_current_position(viewpoint : int) -> void:
 		else:
 			param_key_camera_pos = tw_const.param_key_viewpoint_camera_pos + str(viewpoint)
 			param_key_camera_ypr = tw_const.param_key_viewpoint_camera_ypr + str(viewpoint)
+		
 		_config.set_value(tw_const.param_group_camera, param_key_camera_pos, camera_pos)
 		_config.set_value(tw_const.param_group_camera, param_key_camera_ypr, camera_ypr)
+		var _build : String = "_debug" if (TWViewer().GDN_globals().debug_build()) else "_release"
+		_config.set_value(tw_const.param_group_camera, param_key_camera_pos + _build, camera_pos)
+		_config.set_value(tw_const.param_group_camera, param_key_camera_ypr + _build, camera_ypr)
+		print("TheWorld_Main.save_current_position _build=" + _build)
+		
 		_config.save(_config_file_name)
 
 func load_position(viewpoint : int) -> void:
 	var param_key_camera_pos := ""
 	var param_key_camera_ypr := ""
+	var _build : String = ""
+	
+	if Globals.strict_to_build_mode:
+		_build = "_debug" if (TWViewer().GDN_globals().debug_build()) else "_release"
+	print("TheWorld_Main.load_position _build=" + _build)
+
 	if viewpoint == -1:
 		param_key_camera_pos = tw_const.param_key_initial_camera_pos
 		param_key_camera_ypr = tw_const.param_key_initial_camera_ypr
 	else:
 		param_key_camera_pos = tw_const.param_key_viewpoint_camera_pos + str(viewpoint)
 		param_key_camera_ypr = tw_const.param_key_viewpoint_camera_ypr + str(viewpoint)
-	var camera_position_in_map : Variant = _config.get_value(tw_const.param_group_camera, param_key_camera_pos)
-	var camera_ypr_in_map : Variant = _config.get_value(tw_const.param_group_camera, param_key_camera_ypr)
+	
+	var camera_position_in_map : Variant = _config.get_value(tw_const.param_group_camera, param_key_camera_pos + _build)
+	var camera_ypr_in_map : Variant = _config.get_value(tw_const.param_group_camera, param_key_camera_ypr + _build)
+	
+	if camera_position_in_map == null or camera_ypr_in_map == null:
+		camera_position_in_map= _config.get_value(tw_const.param_group_camera, param_key_camera_pos)
+		camera_ypr_in_map= _config.get_value(tw_const.param_group_camera, param_key_camera_ypr)
+		
 	if camera_position_in_map != null and camera_ypr_in_map != null:
 		TWViewer()._set_camera_param_initial_pos(camera_position_in_map)
 		TWViewer()._set_camera_param_initial_yaw_pitch_roll_deg(camera_ypr_in_map)

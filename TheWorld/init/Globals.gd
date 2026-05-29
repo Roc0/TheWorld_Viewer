@@ -25,6 +25,8 @@ var tw_viewer : Node3D
 
 var cmdline_arguments : Dictionary = {}
 
+var strict_to_build_mode : bool = false
+
 func _ready():
 	#get_tree().set_auto_accept_quit(false)
 	var w : Window = get_window()

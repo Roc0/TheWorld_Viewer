@@ -193,9 +193,9 @@ uniform uint u_optimization_level = 0;
 uniform uint u_num_vertices_per_chunk;		// power of 2 + 1
 
 //uniform sampler2D u_terrain_splatmap;
-uniform vec4 u_north_west_corner_splatmap_texel;
-uniform sampler2D u_north_border_splatmap;
-uniform sampler2D u_west_border_splatmap;
+//uniform vec4 u_north_west_corner_splatmap_texel;
+//uniform sampler2D u_north_border_splatmap;
+//uniform sampler2D u_west_border_splatmap;
 
 //uniform sampler2D u_terrain_colormap;
 
@@ -1313,22 +1313,28 @@ void fragment()
 
 	// If west_border_pixel or north_border_pixel we will use neighbours texture layers so we have to use splatmap values accordingly
 	vec4 splat_pixel_computed = splat_pixel_in;
-	if (north_border_pixel || west_border_pixel) {
+	/*if (north_border_pixel || west_border_pixel) {
 		if (north_border_pixel) {
 			if (north_west_border_pixel) {
-				//vec2 pixel_uv = vec2(quadrant_uv.y, 0.5);
-				//splat_pixel_computed = texture(u_west_border_splatmap, pixel_uv);
-				splat_pixel_computed = u_north_west_corner_splatmap_texel;
+				//splat_pixel_computed = u_north_west_corner_splatmap_texel;
+				splat_pixel_computed.r = u_north_west_corner_splatmap_texel.r;
+				splat_pixel_computed.g = u_north_west_corner_splatmap_texel.g;
 			} else {
 				vec2 pixel_uv = vec2(quadrant_uv.x, 0.5);
-				splat_pixel_computed = texture(u_north_border_splatmap, pixel_uv);
+				//splat_pixel_computed = texture(u_north_border_splatmap, pixel_uv);
+				vec4 texel = texture(u_north_border_splatmap, pixel_uv);
+				splat_pixel_computed.r = texel.r;
+				splat_pixel_computed.g = texel.g;
 			}
 		}
 		else {
 			vec2 pixel_uv = vec2(quadrant_uv.y, 0.5);
-			splat_pixel_computed = texture(u_west_border_splatmap, pixel_uv);
+			//splat_pixel_computed = texture(u_west_border_splatmap, pixel_uv);
+			vec4 texel = texture(u_west_border_splatmap, pixel_uv);
+			splat_pixel_computed.r = texel.r;
+			splat_pixel_computed.g = texel.g;
 		}
-	}
+	}*/
 
 
 	//
