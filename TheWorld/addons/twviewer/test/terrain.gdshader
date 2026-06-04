@@ -890,9 +890,9 @@ void vertex()
 	vec3 vertex_modelspace_with_h = vertex_modelspace_in;
 	vec4 vertex_worldspace_with_h = vertex_worldspace_in;
 	float vertex_height;
+	bool force_height_0 = u_force_height_0;
 	{
 		vertex_height = get_height(u_terrain_heightmap, u_terrain_height_scale, heightmap_uv);		// Height displacement from heightmap
-		bool force_height_0 = u_force_height_0;
 		if (!force_height_0) {
 			if (gu_force_height_0 > 0) {
 				force_height_0 = true;
@@ -953,24 +953,27 @@ void vertex()
 	float distance_from_camera = distance(vertex_worldspace_with_h.xyz, camera_pos);
 	float distance_from_vertical_of_camera_on_terrain = distance(vertex_worldspace_with_h.xyz, vec3(camera_pos.x, camera_pos.y - camera_altitude_from_terrain, camera_pos.z));
 
-	bool _compute_normal = true;
-	bool _compute_splat = true;
+	//bool _compute_normal = true;
+	//bool _compute_splat = true;
 
-	vec3 normal_computed;
-	if (_compute_normal)
+	vec3 normal_computed = vec3(0.0, 1.0, 0.0);;
+	if (!force_height_0)
 	{
-		normal_computed = compute_normal_2(vertex_height, u_terrain_heightmap, heightmap_uv, u_extra_vertices_on_heightmap, grid_step, u_terrain_height_scale);
-		//normal_computed = vec3(0.0, 1.0, 0.0);
+		//if (_compute_normal)
+		//{
+			normal_computed = compute_normal_2(vertex_height, u_terrain_heightmap, heightmap_uv, u_extra_vertices_on_heightmap, grid_step, u_terrain_height_scale);
+			//normal_computed = vec3(0.0, 1.0, 0.0);
+		//}
+		//else
+		//{
+		//	//normal_computed = get_normal(u_terrain_normalmap, u_terrain_normal_basis, quadrant_uv);
+		//}
+		//normal_computed = normalize(vec3(1.0, 1.0, 1.0));		// DEBUG
 	}
-	else
-	{
-		//normal_computed = get_normal(u_terrain_normalmap, u_terrain_normal_basis, quadrant_uv);
-	}
-	//normal_computed = normalize(vec3(1.0, 1.0, 1.0));		// DEBUG
 
 	vec4 splat;
-	if (_compute_splat)
-	{
+	//if (_compute_splat)
+	//{
 		float splat_slope_vertical_factor = u_splat_slope_vertical_factor;
 		float splat_slope_flat_factor = u_splat_slope_flat_factor;
 		float splat_dirt_on_rocks_factor = u_splat_dirt_on_rocks_factor;
@@ -987,11 +990,11 @@ void vertex()
 		//splat_max_height = 4202.34;			// DEBUG
 		//vec3 _normal = normalize((MODELVIEW_MATRIX * vec4(normal_computed, 0.0)).xyz);
 		splat = compute_splat_1(vertex_height, u_terrain_heightmap, heightmap_uv, grid_step, u_terrain_height_scale, normal_computed, splat_slope_vertical_factor, splat_slope_flat_factor, splat_dirt_on_rocks_factor, splat_high_elevation_factor, splat_low_elevation_factor, splat_min_height, splat_max_height);
-	}
-	else
-	{
-		//splat = textureLod(u_terrain_splatmap, quadrant_uv, c_f_texture_lod_zero);
-	}
+	//}
+	//else
+	//{
+	//	//splat = textureLod(u_terrain_splatmap, quadrant_uv, c_f_texture_lod_zero);
+	//}
 	//splat = vec4(1.0);	// DEBUG
 
 	vec3 tint0 = vec3(1.0, 1.0, 1.0);
@@ -1123,6 +1126,7 @@ void fragment()
 		}
 		*/		// DEBUG
 		normal_computed = NORMAL;
+		normal_computed = vec3(0.0, 1.0, 0.0);
 		tanget_computed = normalize(cross(normal_computed, vec3(0.0, 0.0, 1.0)));
 		binormal_computed = normalize(cross(normal_computed, tanget_computed));
 	}
