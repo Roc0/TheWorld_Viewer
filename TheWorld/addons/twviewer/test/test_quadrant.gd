@@ -195,7 +195,7 @@ func render():
 	#var gt : Transform3D = Transform3D(basis, Vector3(0, 0, 0))	# upper left corner of plane on origin 
 	var gt : Transform3D = Transform3D(basis, Vector3(_pos.x, 0, _pos.y))	# upper left corner of plane on origin 
 	var inv_gt : Transform3D = gt.affine_inverse()
-	var normal_basis : Basis = gt.basis.inverse().transposed()
+	#var normal_basis : Basis = gt.basis.inverse().transposed()
 	
 	var array : Array = _plane_mesh.surface_get_arrays(0)
 	points_per_size = sqrt(array[0].size())
@@ -262,8 +262,8 @@ func render():
 		#RenderingServer.global_shader_parameter_set("gu_terrain_inverse_transform", inv_gt)
 		_logger.debug(str("u_terrain_inverse_transform = ", inv_gt))
 
-		mat.set_shader_parameter("u_terrain_normal_basis", normal_basis)
-		_logger.debug(str("u_terrain_normal_basis = ", normal_basis))
+		#mat.set_shader_parameter("u_terrain_normal_basis", normal_basis)
+		#_logger.debug(str("u_terrain_normal_basis = ", normal_basis))
 
 		mat.set_shader_parameter("u_grid_step", step)
 		RenderingServer.global_shader_parameter_set(tw_constants.global_shader_param_grid_step, step)

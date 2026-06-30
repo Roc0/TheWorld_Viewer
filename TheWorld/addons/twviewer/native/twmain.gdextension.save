@@ -1,7 +1,7 @@
 [configuration]
 
 entry_symbol = "tw_main_library_init"
-compatibility_minimum = 4.1
+compatibility_minimum = 4.3
 
 [libraries]
 
@@ -44,3 +44,23 @@ GDN_TW_Main = "res://addons/twviever/icons/Node.svg"
 GDN_TheWorld_MapViewer = "res://addons/twviever/icons/Node2D.svg"
 GDN_TW_MapViewer = "res://addons/twviever/icons/Node2D.svg"
 GDN_TheWorld_MapCamera = "res://addons/twviever/icons/Camera2D.svg"
+
+[dependencies]
+
+#macos.debug = {"res://bin/libdependency.macos.template_debug.framework" : "Contents/Frameworks"}
+#macos.release = {"res://bin/libdependency.macos.template_release.framework" : "Contents/Frameworks"}
+windows.debug = {
+    "res://addons/twviewer/native/TheWorld_MapManager_d.dll" : "",
+    "res://addons/twviewer/native/TheWorld_Utils_d.dll" : "",
+    "res://addons/twviewer/native/TheWorld_MapManager.json" : "",
+	"res://addons/twviewer/native/Export/TheWorld_GDN_Viewer.json" : ""
+}
+windows.release = {
+    "res://addons/twviewer/native/TheWorld_MapManager.dll" : "",
+    "res://addons/twviewer/native/TheWorld_Utils.dll" : "",
+    "res://addons/twviewer/native/TheWorld_MapManager.json" : "",
+	"res://addons/twviewer/native/Export/TheWorld_GDN_Viewer.json" : ""
+}
+#linux.debug = {"res://bin/libdependency.linux.template_debug.x86_64.so" : "", "res://bin/libdependency.linux.template_debug.arm64.so" : "", "res://bin/libdependency.linux.template_debug.rv64.so" : ""}
+#linux.release = {"res://bin/libdependency.linux.template_release.x86_64.so" : "", "res://bin/libdependency.linux.template_release.arm64.so" : "", "res://bin/libdependency.linux.template_release.rv64.so" : ""}
+

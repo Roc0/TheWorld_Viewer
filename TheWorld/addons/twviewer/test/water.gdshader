@@ -27,6 +27,7 @@ global uniform float gu_sea_start_camera_altitude_for_waves_attenuation = 200.0;
 global uniform float gu_sea_start_terrain_depth_for_waves_attenuation = 50.0;
 global uniform float gu_sea_scale_offset_threshold = 20.0;
 global uniform bool gu_highlight_hit_quadrant = false;
+global uniform bool gu_hold_blending = false;
 
 global uniform int gu_force_height_0 = -1;
 
@@ -378,7 +379,10 @@ void fragment() {
 	}
 
 	if (u_editmode_selected > 0.0 && is_on_the_border(UV, u_quad_border_line_thickness)) {
-		surface_color = c_apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
+		if (gu_hold_blending)
+			surface_color = c_red_salmon_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
+		else
+			surface_color = c_apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
 		alpha = 1.0; 
 		metallic = 1.0;
 		roughness = 1.0;

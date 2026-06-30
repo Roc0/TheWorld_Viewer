@@ -1,6 +1,6 @@
 @echo off
 
-echo Verificare che TheWorld sia stato compilato in Debug ...
+echo Verificare che TheWorld sia stato compilato in Debug... e che i template relativi alla versione corrente di godot siano stati scaricati usando l'editor "Editor\Manage Export Templates..."
 echo ... dopo l'esecuzione del comando di export attivare TheWorld.exe o TheWorld.console.exe da D:\TheWorld\Client\TheWorld
 
 pause
@@ -25,7 +25,7 @@ call %command% 2>&1 1>log.txt
 
 set ground_textures_path=Client\assets\textures\ground
 if not exist %curpath%%export_dir%\%ground_textures_path% mkdir %curpath%%export_dir%\%ground_textures_path%
-copy /Y ..\TheWorld\assets\textures\ground\*.ground* %curpath%%export_dir%\%ground_textures_path%
+robocopy ..\TheWorld\assets\textures\ground\ %curpath%%export_dir%\%ground_textures_path% /E /R:10 /V /MIR /XD "_src"
 
 pause
 

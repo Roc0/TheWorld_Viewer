@@ -107,8 +107,8 @@ global uniform sampler2D gu_ground_base_values_array;
 //global uniform sampler2DArray gu_ground_ao_array : hint_default_white, filter_linear_mipmap, repeat_enable;
 global uniform vec4 gu_ground_albedo_modifier : source_color = vec4(1.0, 1.0, 1.0, 1.0);
 global uniform float gu_ground_roughness_scale : hint_range(0.0, 1.0) = 1.0;
-global uniform float gu_ground_normal_scale : hint_range(1.0, 16.0, 0.1) = 3.0;
-global uniform float gu_ground_ao_light_affect : hint_range(0.0, 1.0, 0.01) = 0.0;
+global uniform float gu_ground_normal_scale : hint_range(1.0, 16.0, 0.1) = 1.0;
+global uniform float gu_ground_ao_light_affect : hint_range(0.0, 1.0, 0.01) = 1.0;
 //global uniform float gu_ground_heightmap_displ : hint_range(0.0, 5.0, 0.001) = 0.0;	//=3.871;
 global uniform float gu_texture_overflow_size = 0.3;
 //global uniform bool gu_texture_new_overflow = false;
@@ -137,6 +137,7 @@ global uniform float gu_camera_distance_uv_scale_threshold = 10000.0;
 // ********
 // uniforms
 // ********
+uniform float u_texture_overflow_size_override = -1.0;
 uniform float u_grid_step_optlvl_zero = 2;	// step in WUs between vertices at optimization level zero that is at greater resolution of the chunk
 uniform bool u_need_blending = false;
 uniform bool u_need_blending_north = false;
@@ -192,13 +193,13 @@ uniform uint u_optimization_level = 0;
 uniform uint u_num_vertices_per_chunk;		// power of 2 + 1
 
 //uniform sampler2D u_terrain_splatmap;
-uniform vec4 u_north_west_corner_splatmap_texel;
-uniform sampler2D u_north_border_splatmap;
-uniform sampler2D u_west_border_splatmap;
+//uniform vec4 u_north_west_corner_splatmap_texel;
+//uniform sampler2D u_north_border_splatmap;
+//uniform sampler2D u_west_border_splatmap;
 
 //uniform sampler2D u_terrain_colormap;
 
-uniform mat3 u_terrain_normal_basis;
+//uniform mat3 u_terrain_normal_basis;
 uniform float u_terrain_height_scale = 1.0;	// NOTSET
 uniform float u_quad_border_line_thickness = 0.005;	// NOTSET
 uniform bool u_force_height_0 = false;
@@ -757,7 +758,7 @@ vec3 compute_normal_2(float vertex_height, sampler2D heightmap, vec2 heightmap_u
 	float grid_step_uv = 1.0 / (quadrantHeightmapSize.x - 1.0);	// step in UV between vertices
 	//grid_step_uv = 1.0 / 2048.0;
 																														//float dx_uv = 1.0 / (grid_size_wu * 16.0);
-	float step_coeff = 1.0;
+	float step_coeff = 1.1;
 	float dx_uv = grid_step_uv / step_coeff;
 	float dx_wu = (grid_step / step_coeff) * 1.0;
 
@@ -889,9 +890,9 @@ void vertex()
 	vec3 vertex_modelspace_with_h = vertex_modelspace_in;
 	vec4 vertex_worldspace_with_h = vertex_worldspace_in;
 	float vertex_height;
+	bool force_height_0 = u_force_height_0;
 	{
 		vertex_height = get_height(u_terrain_heightmap, u_terrain_height_scale, heightmap_uv);		// Height displacement from heightmap
-		bool force_height_0 = u_force_height_0;
 		if (!force_height_0) {
 			if (gu_force_height_0 > 0) {
 				force_height_0 = true;
@@ -952,23 +953,27 @@ void vertex()
 	float distance_from_camera = distance(vertex_worldspace_with_h.xyz, camera_pos);
 	float distance_from_vertical_of_camera_on_terrain = distance(vertex_worldspace_with_h.xyz, vec3(camera_pos.x, camera_pos.y - camera_altitude_from_terrain, camera_pos.z));
 
-	bool _compute_normal = true;
-	bool _compute_splat = true;
+	//bool _compute_normal = true;
+	//bool _compute_splat = true;
 
-	vec3 normal_computed;
-	if (_compute_normal)
+	vec3 normal_computed = vec3(0.0, 1.0, 0.0);;
+	if (!force_height_0)
 	{
-		normal_computed = compute_normal_2(vertex_height, u_terrain_heightmap, heightmap_uv, u_extra_vertices_on_heightmap, grid_step, u_terrain_height_scale);
+		//if (_compute_normal)
+		//{
+			normal_computed = compute_normal_2(vertex_height, u_terrain_heightmap, heightmap_uv, u_extra_vertices_on_heightmap, grid_step, u_terrain_height_scale);
+			//normal_computed = vec3(0.0, 1.0, 0.0);
+		//}
+		//else
+		//{
+		//	//normal_computed = get_normal(u_terrain_normalmap, u_terrain_normal_basis, quadrant_uv);
+		//}
+		//normal_computed = normalize(vec3(1.0, 1.0, 1.0));		// DEBUG
 	}
-	else
-	{
-		//normal_computed = get_normal(u_terrain_normalmap, u_terrain_normal_basis, quadrant_uv);
-	}
-	//normal_computed = normalize(vec3(1.0, 1.0, 1.0));		// DEBUG
 
 	vec4 splat;
-	if (_compute_splat)
-	{
+	//if (_compute_splat)
+	//{
 		float splat_slope_vertical_factor = u_splat_slope_vertical_factor;
 		float splat_slope_flat_factor = u_splat_slope_flat_factor;
 		float splat_dirt_on_rocks_factor = u_splat_dirt_on_rocks_factor;
@@ -985,11 +990,11 @@ void vertex()
 		//splat_max_height = 4202.34;			// DEBUG
 		//vec3 _normal = normalize((MODELVIEW_MATRIX * vec4(normal_computed, 0.0)).xyz);
 		splat = compute_splat_1(vertex_height, u_terrain_heightmap, heightmap_uv, grid_step, u_terrain_height_scale, normal_computed, splat_slope_vertical_factor, splat_slope_flat_factor, splat_dirt_on_rocks_factor, splat_high_elevation_factor, splat_low_elevation_factor, splat_min_height, splat_max_height);
-	}
-	else
-	{
-		//splat = textureLod(u_terrain_splatmap, quadrant_uv, c_f_texture_lod_zero);
-	}
+	//}
+	//else
+	//{
+	//	//splat = textureLod(u_terrain_splatmap, quadrant_uv, c_f_texture_lod_zero);
+	//}
 	//splat = vec4(1.0);	// DEBUG
 
 	vec3 tint0 = vec3(1.0, 1.0, 1.0);
@@ -1121,6 +1126,7 @@ void fragment()
 		}
 		*/		// DEBUG
 		normal_computed = NORMAL;
+		normal_computed = vec3(0.0, 1.0, 0.0);
 		tanget_computed = normalize(cross(normal_computed, vec3(0.0, 0.0, 1.0)));
 		binormal_computed = normalize(cross(normal_computed, tanget_computed));
 	}
@@ -1272,6 +1278,8 @@ void fragment()
 	//
 	// Quadrant border pixels management
 	//
+	float local_value_factor = step(0.0, u_texture_overflow_size_override);																			// u_texture_overflow_size_override < 0.0 ? 0.0 : 1.0
+	float texture_overflow_size = u_texture_overflow_size_override * local_value_factor + gu_texture_overflow_size * (1.0 - local_value_factor);	// texture_overflow_size = (u_texture_overflow_size_override < 0.0 ? gu_texture_overflow_size : u_texture_overflow_size)
 	bool north_border_pixel = false;
 	//bool south_border_pixel = false;
 	bool west_border_pixel = false;
@@ -1280,7 +1288,7 @@ void fragment()
 	if (pixel_type == texture_pixel)
 	{
 		float distance_texel = texture(gu_terrain_quad_border_distance, quadrant_uv).x;
-		float distance_from_border = distance_texel * gu_texture_overflow_size;
+		float distance_from_border = distance_texel * texture_overflow_size;
 
 		if (is_on_upper_border(quadrant_uv, distance_from_border)) {
 			north_border_pixel = true;
@@ -1309,22 +1317,28 @@ void fragment()
 
 	// If west_border_pixel or north_border_pixel we will use neighbours texture layers so we have to use splatmap values accordingly
 	vec4 splat_pixel_computed = splat_pixel_in;
-	if (north_border_pixel || west_border_pixel) {
+	/*if (north_border_pixel || west_border_pixel) {
 		if (north_border_pixel) {
 			if (north_west_border_pixel) {
-				//vec2 pixel_uv = vec2(quadrant_uv.y, 0.5);
-				//splat_pixel_computed = texture(u_west_border_splatmap, pixel_uv);
-				splat_pixel_computed = u_north_west_corner_splatmap_texel;
+				//splat_pixel_computed = u_north_west_corner_splatmap_texel;
+				splat_pixel_computed.r = u_north_west_corner_splatmap_texel.r;
+				splat_pixel_computed.g = u_north_west_corner_splatmap_texel.g;
 			} else {
 				vec2 pixel_uv = vec2(quadrant_uv.x, 0.5);
-				splat_pixel_computed = texture(u_north_border_splatmap, pixel_uv);
+				//splat_pixel_computed = texture(u_north_border_splatmap, pixel_uv);
+				vec4 texel = texture(u_north_border_splatmap, pixel_uv);
+				splat_pixel_computed.r = texel.r;
+				splat_pixel_computed.g = texel.g;
 			}
 		}
 		else {
 			vec2 pixel_uv = vec2(quadrant_uv.y, 0.5);
-			splat_pixel_computed = texture(u_west_border_splatmap, pixel_uv);
+			//splat_pixel_computed = texture(u_west_border_splatmap, pixel_uv);
+			vec4 texel = texture(u_west_border_splatmap, pixel_uv);
+			splat_pixel_computed.r = texel.r;
+			splat_pixel_computed.g = texel.g;
 		}
-	}
+	}*/
 
 
 	//
@@ -1469,27 +1483,30 @@ void fragment()
 			//ground_normal = normal0;		// DEBUG
 			ground_normal_computed = normalize(ground_normal);
 
-			const float max_distance_for_normal_scale = 10000.0;
+			const float max_distance_for_normal_scale = 20000.0;
 			if (distance_from_camera > max_distance_for_normal_scale)
 			{
-				ground_normal_scale = 1.0;
+				ground_normal_scale = 0.0;
 			}
 			else
 			{
 				ground_normal_scale = ground_normal_scale * ((w.r * normal_map_scale0 + w.g * normal_map_scale1 + w.b * normal_map_scale2 + w.a * normal_map_scale3) / w_sum);
 				float normal_scale_increment = abs(ground_normal_scale - 1.0);
-				ground_normal_scale = 1.0 + normal_scale_increment * smoothstep(max_distance_for_normal_scale, 0.0, distance_from_camera);		// smoothstep = 0 if distance_from_camera >= max_distance_for_normal_scale, grows to 1.0 if distance_from_camera decreases to zero
+				//ground_normal_scale = 1.0 + normal_scale_increment * smoothstep(0.0, max_distance_for_normal_scale, distance_from_camera);		// smoothstep = 0 if distance_from_camera >= max_distance_for_normal_scale, grows to 1.0 if distance_from_camera decreases to zero
+				ground_normal_scale = ground_normal_scale * (1.0 - smoothstep(2000.0, max_distance_for_normal_scale, distance_from_camera));		// smoothstep = 0 if distance_from_camera >= max_distance_for_normal_scale, grows to 1.0 if distance_from_camera decreases to zero
+				ground_normal_scale = clamp(ground_normal_scale, 0.0, 1.0);
+				//ground_normal_scale = 1.0;	// DEBUG
 			}
 			//ground_normal_scale = 1.0;	// DEBUG
 
 			ao_computed = (w.r * ao.r + w.g * ao.g + w.b * ao.b + w.a * ao.a) / w_sum;;
 			//ao_computed = ao.r;		// DEBUG
+			
 			float ground_ao_light_affect = gu_ground_ao_light_affect;
 			if (ground_ao_light_affect == 0.0)
 				ground_ao_light_affect = 0.000001;
-			float max_view_distance = 40000.0 * ground_ao_light_affect;
-			//ao_light_affect_computed = clamp(0.0, 1.0, max_view_distance / distance_from_camera);
-			ao_light_affect_computed = smoothstep(0.0, max_view_distance, distance_from_camera);
+			float max_view_distance = 5000.0 * ground_ao_light_affect;
+			ao_light_affect_computed = 1.0 - smoothstep(0.0, max_view_distance, distance_from_camera);
 			//ao_light_affect_computed = 0.0;		// DEBUG
 		}
 
@@ -1782,6 +1799,7 @@ void fragment()
 	
 	//ALBEDO = v_splat.rgb;	// DEBUG
 	//ALBEDO = normal_computed;	// DEBUG
+	//ALBEDO = splat_pixel_computed.rgb;	// DEBUG
 	
 	//********************************************************************************************************************
 	//     Test PBR

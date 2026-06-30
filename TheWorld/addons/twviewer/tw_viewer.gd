@@ -121,6 +121,9 @@ var _camera3d_current_pos : Vector3
 var _camera3d_current_pos_in_map : Vector3
 var _camera3d_current_yaw_pitch_roll_rad : Vector3
 
+var _desidered_map_camera_zoom_factor : float = tw_constants.map_camera_initial_zoom_factor
+var _desidered_map_camera_zoom_factor_changed = false
+
 #@export_category("TWViewer")
 
 var _loading_screen_changed := true
@@ -138,7 +141,7 @@ func _set_full_world_deploy(full_world_deploy : bool):
 	_full_world_deploy_changed = true
 
 var _debug_mode_changed := true
-@export_enum("Default:0", "Enabled:1", "Disabled:2") var _debug_mode: int = 0:
+@export_enum("Default:-1", "Info:0", "Debug:1", "Verbose:2") var _debug_mode: int = 0:
 	set = _set_debug_mode
 func _set_debug_mode(p_debug_mode : int):
 	_debug_mode = p_debug_mode
@@ -853,6 +856,12 @@ func _process(delta):
 		gdn_viewer.toggle_edit_mode()
 		_edit_panel_visibility_changed = false
 
+	var camera2d : Camera2D = gdn_viewer.get_map_camera()
+
+	if _desidered_map_camera_zoom_factor_changed and camera2d != null and camera2d.initialized():
+		_desidered_map_camera_zoom_factor_changed = false
+		set_map_camera_zoom_factor(_desidered_map_camera_zoom_factor)
+		
 	if Engine.is_editor_hint():
 		if _world_editor_param_deploy_world_changed:
 			if _world_editor_param_deploy_world:
@@ -937,7 +946,6 @@ func _process(delta):
 		var num_element_initialized : int = GDN_globals().get_num_element_initialized()
 		_info_panel_status = "Status: " + tw_constants.status_to_string(_client_status) + " (" + str(num_element_initialized) + "/"+ str(tot_element_to_initialize) + ")" + "\n"
 		var realSceneCamera : Camera3D = gdn_viewer.get_world_camera()
-		var camera2d : Camera2D = gdn_viewer.get_map_camera()
 		var viewer_custom_camera = gdn_viewer.get_custom_camera()
 		#var viewer_custom_camera = get_tree().get_first_node_in_group(tw_constants.custom_cameras_group)	# same as above
 		var update_quads1_duration : int = gdn_viewer.get_update_quads1_duration()
@@ -956,7 +964,7 @@ func _process(delta):
 			_info_panel_draw_mode = "Draw mode: " +  gdn_viewer.get_debug_draw_mode() + "\n"
 			_info_panel_num_locks = "Locks: " + str(gdn_viewer.get_num_process_not_owns_lock()) + " debug: " + str(gdn_viewer.get_debug_visibility()) + "\n"
 			if viewer_custom_camera != null && viewer_custom_camera.has_method("get_yaw"):
-				_info_panel_camera_degree_from_north = "  Deg. north: " + str(snapped(viewer_custom_camera.get_angle_from_north_degree(), 0.01)) + " Alt: " + str(snapped(viewer_custom_camera.get_camera_altitude_from_sea(), 0.01)) + "\n"
+				_info_panel_camera_degree_from_north = "  Deg. north: " + str(snapped(viewer_custom_camera.get_angle_from_north_degree(), 0.01)) + " Alt: " + str(snapped(viewer_custom_camera.get_camera_altitude_from_sea(), 0.01)) + " (" + str(snapped(viewer_custom_camera.get_camera_altitude_from_terrain(), 0.01)) + ")" + "\n"
 				_info_panel_camera_yaw = "  Yaw: " + str(snapped(viewer_custom_camera.get_yaw(false), 0.01)) 
 				_info_panel_camera_pitch = "  Pitch: " + str(snapped(viewer_custom_camera.get_pitch(false), 0.01))
 				_info_panel_camera_roll = "  Roll: " + str(snapped(viewer_custom_camera.get_roll(false), 0.01)) + "\n"
@@ -1373,11 +1381,16 @@ func set_debug_mode(debug_mode : int):
 	if globals == null:
 		print("GDN_globals() null")
 		return
-	if !globals.has_method("set_debug_enabled"):
-		print("GDN_globals() does not have method set_debug_enabled")
+	#if !globals.has_method("set_debug_enabled"):
+	#	print("GDN_globals() does not have method set_debug_enabled")
+	#	return
+	#globals.set_debug_enabled(debug_enabled)
+	#log_debug(str("debug mode: ", debug_mode, " ", ("enabled" if debug_mode > 0 else "disabled")))
+	if !globals.has_method("set_debug_level"):
+		print("GDN_globals() does not have method set_debug_level")
 		return
-	globals.set_debug_enabled(debug_enabled)
-	log_debug(str("debug mode: ", debug_mode, " ", ("enabled" if debug_enabled else "disabled")))
+	globals.set_debug_level(debug_mode)
+	log_debug(str("debug mode: ", debug_mode))
 
 func get_clientstatus() -> int:
 	if _init_done:
@@ -1394,6 +1407,34 @@ func get_clientstatus() -> int:
 		return status
 	else:
 		return tw_constants.clientstatus_uninitialized
+
+func get_map_camera_zoom_factor() -> float:
+	var gdn_viewer = GDN_viewer()
+	if gdn_viewer == null:
+		return tw_constants.map_camera_initial_zoom_factor
+		
+	var camera2d : Camera2D = gdn_viewer.get_map_camera()
+	if camera2d == null:
+		return tw_constants.map_camera_initial_zoom_factor
+	
+	var zoom : float = camera2d.get_zoom_factor()
+	
+	return zoom
+	
+func set_map_camera_zoom_factor(zoom : float) -> void:
+	var gdn_viewer = GDN_viewer()
+	if gdn_viewer == null:
+		return
+		
+	var camera2d : Camera2D = gdn_viewer.get_map_camera()
+	if camera2d == null:
+		return
+	
+	camera2d.set_zoom_factor(zoom)
+
+func set_desidered_map_camera_zoom_factor(zoom : float) -> void:
+	_desidered_map_camera_zoom_factor = zoom
+	_desidered_map_camera_zoom_factor_changed = true
 
 func printTerrainDimensions() -> void:
 	var num_vertices_per_chunk_side = GDN_globals().get_num_vertices_per_chunk_side()
@@ -1847,6 +1888,11 @@ func full_world_deploy() -> bool:
 func save_current_camera_position(viewpoint : int) -> void:
 	var gdn_viewer = GDN_viewer()
 	var gdn_globals = GDN_globals()
+	
+	var _build : String = ""
+	if Globals.strict_to_build_mode:
+		_build = "_debug" if (gdn_globals.debug_build()) else "_release"
+
 	#_logger.debug(str(0, " "))
 	var _config_file_name : String = gdn_globals.get_config_filename(0)
 	if gdn_viewer == null or gdn_globals == null or _config_file_name == "":
@@ -1871,8 +1917,13 @@ func save_current_camera_position(viewpoint : int) -> void:
 		var _config := ConfigFile.new()
 		var _err = _config.load(_config_file_name)
 		#_logger.debug(str(3, " ", _err))
+
 		_config.set_value(tw_constants.param_group_camera, param_key_camera_pos, camera_pos)
 		_config.set_value(tw_constants.param_group_camera, param_key_camera_ypr, camera_ypr)
+		_config.set_value(tw_constants.param_group_camera, param_key_camera_pos + _build, camera_pos)
+		_config.set_value(tw_constants.param_group_camera, param_key_camera_ypr + _build, camera_ypr)
+		print("tw_viewer.save_current_camera_position _build=" + _build)
+			
 		_config.save(_config_file_name)
 
 func load_camera_position(viewpoint : int) -> void:
@@ -1884,18 +1935,31 @@ func load_camera_position(viewpoint : int) -> void:
 	#_logger.debug(str(1, " ", _config_file_name))
 	var param_key_camera_pos := ""
 	var param_key_camera_ypr := ""
+
+	var _build : String = ""
+	if Globals.strict_to_build_mode:
+		_build = "_debug" if (gdn_globals.debug_build()) else "_release"
+	print("tw_viewer.load_camera_position _build=" + _build)
+
 	if viewpoint == -1:
 		param_key_camera_pos = tw_constants.param_key_initial_camera_pos
 		param_key_camera_ypr = tw_constants.param_key_initial_camera_ypr
 	else:
 		param_key_camera_pos = tw_constants.param_key_viewpoint_camera_pos + str(viewpoint)
 		param_key_camera_ypr = tw_constants.param_key_viewpoint_camera_ypr + str(viewpoint)
+	
 	var _config := ConfigFile.new()
 	var _err = _config.load(_config_file_name)
 	#_logger.debug(str(2, " ", _err))
-	var camera_position_in_map : Variant = _config.get_value(tw_constants.param_group_camera, param_key_camera_pos)
-	var camera_ypr_in_map : Variant = _config.get_value(tw_constants.param_group_camera, param_key_camera_ypr)
-	#_logger.debug(str(3, " ", param_key_camera_pos, "=", camera_position_in_map, " ", param_key_camera_ypr, "=",camera_ypr_in_map))
+	var camera_position_in_map : Variant = _config.get_value(tw_constants.param_group_camera, param_key_camera_pos + _build)
+	var camera_ypr_in_map : Variant = _config.get_value(tw_constants.param_group_camera, param_key_camera_ypr + _build)
+	_logger.debug(str(3, " ", param_key_camera_pos + _build, "=", camera_position_in_map, " ", param_key_camera_ypr + _build, "=",camera_ypr_in_map))
+
+	if camera_position_in_map == null or camera_ypr_in_map == null:
+		camera_position_in_map = _config.get_value(tw_constants.param_group_camera, param_key_camera_pos)
+		camera_ypr_in_map = _config.get_value(tw_constants.param_group_camera, param_key_camera_ypr)
+		_logger.debug(str(3, " ", param_key_camera_pos, "=", camera_position_in_map, " ", param_key_camera_ypr, "=",camera_ypr_in_map))
+
 	if camera_position_in_map != null and camera_ypr_in_map != null:
 		_set_camera_param_initial_pos(camera_position_in_map)
 		_set_camera_param_initial_yaw_pitch_roll_deg(camera_ypr_in_map)

@@ -23,6 +23,10 @@ const appstatus_quit_in_progress = 5
 var world_main_node : Node3D
 var tw_viewer : Node3D
 
+var cmdline_arguments : Dictionary = {}
+
+var strict_to_build_mode : bool = false
+
 func _ready():
 	#get_tree().set_auto_accept_quit(false)
 	var w : Window = get_window()
@@ -30,6 +34,21 @@ func _ready():
 	appstatus = appstatus_running
 	assert(connect("tree_exiting", Callable(self, "exit_funct").bind()) == 0)
 	world_main_node = get_tree().get_root().find_child("TheWorld_Main", true, false)
+
+	for argument in OS.get_cmdline_args():
+		if argument.contains("="):
+			var key_value = argument.split("=")
+			cmdline_arguments[key_value[0].trim_prefix("--")] = key_value[1]
+		else:
+			# Options without an argument will be present in the dictionary,
+			# with the value set to an empty string.
+			cmdline_arguments[argument.trim_prefix("--")] = ""
+
+	print("*** Arguments begin ***")
+	for key in cmdline_arguments:
+		print(key, " : ", cmdline_arguments[key])
+	print("*** Arguments end ***")
+	
 	log_debug("_ready")
 	#get_tree().unload_current_scene()
 	#get_tree().current_scene.visible = false

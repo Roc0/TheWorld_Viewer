@@ -32,6 +32,10 @@ debug_running_game_global="*res://addons/debug_running_game/debug_running_game_g
 
 settings/stdout/verbose_stdout=true
 
+[editor]
+
+run/main_run_args="--StrictToBuildMode"
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/compass/plugin.cfg", "res://addons/debug_running_game/plugin.cfg", "res://addons/twviewer/plugin.cfg")
@@ -254,10 +258,6 @@ ui_toggle_map_grid={
 3d_physics/layer_2="Player"
 3d_physics/layer_3="Objects"
 
-[physics]
-
-3d/physics_engine="Jolt Physics"
-
 [shader_globals]
 
 gu_grid_step={
@@ -422,7 +422,7 @@ gu_ground_heightmap_scale={
 }
 gu_ground_ao_light_affect={
 "type": "float",
-"value": 0.1
+"value": 1.0
 }
 gu_texture_overflow_size={
 "type": "float",
