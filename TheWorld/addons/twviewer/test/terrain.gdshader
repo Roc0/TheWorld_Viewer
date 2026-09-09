@@ -1107,7 +1107,7 @@ void fragment()
 		}
 		*/		// DEBUG
 		normal_computed = NORMAL;
-		normal_computed = vec3(0.0, 1.0, 0.0);
+		//normal_computed = vec3(0.0, 1.0, 0.0);
 		tanget_computed = normalize(cross(normal_computed, vec3(0.0, 0.0, 1.0)));
 		binormal_computed = normalize(cross(normal_computed, tanget_computed));
 	}
