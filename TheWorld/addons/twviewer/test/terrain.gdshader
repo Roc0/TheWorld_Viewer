@@ -853,7 +853,7 @@ void vertex()
 	bool show_chunks = gu_show_chunks;
 	uint num_vertices_per_chunk = u_num_vertices_per_chunk;
 
-	vec2 heightmapSize = vec2(textureSize(u_terrain_heightmap, c_i_texture_lod_zero));				// Power of 2 + 1 (f.i. 1025, 2049) + 2 * extra neighbour border on each side
+	vec2 heightmapSize = vec2(textureSize(u_terrain_heightmap, c_i_texture_lod_zero));				// Power of 2 + 1 (f.i. 1025, 2049) + 2 * extra neighbour border on each side (usually 1)
 	vec2 quadrantHeightmapSize = heightmapSize - vec2(float(u_extra_vertices_on_heightmap)) * 2.0;	// to have the size of the part of the heightmap that maps on the quadrant we have to subtract the extra neighbour border texels (left/right/up/down)
 	
 	vec3 vertex_modelspace_in = VERTEX;
@@ -868,8 +868,8 @@ void vertex()
 	// (dividing by it): in the textures heights/normals are adjacent but in global/local coords are separated by the step
 	// ***  after next line vertex_cell_coords_in_heightmap ranges from 0 to heightmapSize - 1 - extra vertices * 2 (heightmapSize vertices per
 	// size of quadrant - f.i. 1025 or 2049) so it is a 0-based index of the pixel in heightmap/normalmap/splatmap etc. texture ***
-	vec2 vertex_cell_coords_in_heightmap = vertex_local_to_quadrant_pos.xz / vec2(grid_step) + vec2(float(u_extra_vertices_on_heightmap));	// vertex_cell_coords_in_heightmap ranges from 0 to heightmapSize - 1 (f.i. 1024 or 2048) 0-based index of the pixel in heightmap/normalmap/splatmap
-	vec2 vertex_cell_coords_in_quadrant = vertex_local_to_quadrant_pos.xz / vec2(grid_step);	// vertex_cell_coords_in_heightmap ranges from 0 to heightmapSize - 1 (f.i. 1024 or 2048) 0-based index of the pixel in heightmap/normalmap/splatmap
+	vec2 vertex_cell_coords_in_quadrant = vertex_local_to_quadrant_pos.xz / vec2(grid_step);	// vertex_cell_coords_in_heightmap ranges from 0 to quadrantHeightmapSize - 1 (f.i. 1024 or 2048) and is a 0-based index of the vertex in quadrant mesh
+	vec2 vertex_cell_coords_in_heightmap = vertex_cell_coords_in_quadrant + vec2(float(u_extra_vertices_on_heightmap));	// vertex_cell_coords_in_heightmap ranges from 0 to heightmapSize - 1 and is a 0-based index of the pixel in heightmap
 	
 	// Moreover must add a half-offset so that we sample the center of pixels, otherwise bilinear filtering of the textures
 	// will give us mixed results (#183): as we fetch pixels from textures with UV which is a percentage value ranging from
@@ -953,48 +953,29 @@ void vertex()
 	float distance_from_camera = distance(vertex_worldspace_with_h.xyz, camera_pos);
 	float distance_from_vertical_of_camera_on_terrain = distance(vertex_worldspace_with_h.xyz, vec3(camera_pos.x, camera_pos.y - camera_altitude_from_terrain, camera_pos.z));
 
-	//bool _compute_normal = true;
-	//bool _compute_splat = true;
-
 	vec3 normal_computed = vec3(0.0, 1.0, 0.0);;
 	if (!force_height_0)
 	{
-		//if (_compute_normal)
-		//{
-			normal_computed = compute_normal_2(vertex_height, u_terrain_heightmap, heightmap_uv, u_extra_vertices_on_heightmap, grid_step, u_terrain_height_scale);
-			//normal_computed = vec3(0.0, 1.0, 0.0);
-		//}
-		//else
-		//{
-		//	//normal_computed = get_normal(u_terrain_normalmap, u_terrain_normal_basis, quadrant_uv);
-		//}
-		//normal_computed = normalize(vec3(1.0, 1.0, 1.0));		// DEBUG
+		normal_computed = compute_normal_2(vertex_height, u_terrain_heightmap, heightmap_uv, u_extra_vertices_on_heightmap, grid_step, u_terrain_height_scale);
 	}
 
 	vec4 splat;
-	//if (_compute_splat)
-	//{
-		float splat_slope_vertical_factor = u_splat_slope_vertical_factor;
-		float splat_slope_flat_factor = u_splat_slope_flat_factor;
-		float splat_dirt_on_rocks_factor = u_splat_dirt_on_rocks_factor;
-		float splat_high_elevation_factor = u_splat_high_elevation_factor;
-		float splat_low_elevation_factor = u_splat_low_elevation_factor;
-		float splat_min_height = u_splat_min_height;
-		float splat_max_height = u_splat_max_height;
-		//splat_slope_vertical_factor = 4.0;	// DEBUG
-		//splat_slope_flat_factor = 1.0;		// DEBUG
-		//splat_dirt_on_rocks_factor = 2.0;		// DEBUG
-		//splat_high_elevation_factor = 4.0;	// DEBUG
-		//splat_low_elevation_factor = 2.0;		// DEBUG
-		//splat_min_height = 1547.23;			// DEBUG
-		//splat_max_height = 4202.34;			// DEBUG
-		//vec3 _normal = normalize((MODELVIEW_MATRIX * vec4(normal_computed, 0.0)).xyz);
-		splat = compute_splat_1(vertex_height, u_terrain_heightmap, heightmap_uv, grid_step, u_terrain_height_scale, normal_computed, splat_slope_vertical_factor, splat_slope_flat_factor, splat_dirt_on_rocks_factor, splat_high_elevation_factor, splat_low_elevation_factor, splat_min_height, splat_max_height);
-	//}
-	//else
-	//{
-	//	//splat = textureLod(u_terrain_splatmap, quadrant_uv, c_f_texture_lod_zero);
-	//}
+	float splat_slope_vertical_factor = u_splat_slope_vertical_factor;
+	float splat_slope_flat_factor = u_splat_slope_flat_factor;
+	float splat_dirt_on_rocks_factor = u_splat_dirt_on_rocks_factor;
+	float splat_high_elevation_factor = u_splat_high_elevation_factor;
+	float splat_low_elevation_factor = u_splat_low_elevation_factor;
+	float splat_min_height = u_splat_min_height;
+	float splat_max_height = u_splat_max_height;
+	//splat_slope_vertical_factor = 4.0;	// DEBUG
+	//splat_slope_flat_factor = 1.0;		// DEBUG
+	//splat_dirt_on_rocks_factor = 2.0;		// DEBUG
+	//splat_high_elevation_factor = 4.0;	// DEBUG
+	//splat_low_elevation_factor = 2.0;		// DEBUG
+	//splat_min_height = 1547.23;			// DEBUG
+	//splat_max_height = 4202.34;			// DEBUG
+	//vec3 _normal = normalize((MODELVIEW_MATRIX * vec4(normal_computed, 0.0)).xyz);
+	splat = compute_splat_1(vertex_height, u_terrain_heightmap, heightmap_uv, grid_step, u_terrain_height_scale, normal_computed, splat_slope_vertical_factor, splat_slope_flat_factor, splat_dirt_on_rocks_factor, splat_high_elevation_factor, splat_low_elevation_factor, splat_min_height, splat_max_height);
 	//splat = vec4(1.0);	// DEBUG
 
 	vec3 tint0 = vec3(1.0, 1.0, 1.0);
