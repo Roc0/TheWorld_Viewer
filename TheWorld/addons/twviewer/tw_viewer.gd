@@ -1007,8 +1007,8 @@ func _process(delta):
 		_info_map_quadrant_overrides = "Overrides: " + str(gdn_viewer.get_map_quadrant_override_num()) + " Color ovr: " + str(gdn_viewer.get_map_quadrant_color_override_num()) + " Texture ovr: " + str(gdn_viewer.get_map_quadrant_texture_override_num()) + "\n"
 		_info_map_texture_rects = "Texture Rects: " + str(gdn_viewer.get_map_quadrants_rect())
 		var toEraseQuadrants : int = gdn_viewer.get_num_toerase_quadrant()
-		var notInitializedQuadrants : int = gdn_viewer.get_num_quadrant() - gdn_viewer.get_num_initialized_quadrant() - toEraseQuadrants
-		_info_label_num_quadrants = "  Total: " + str(gdn_viewer.get_num_initialized_quadrant(), ":", gdn_viewer.get_num_quadrant()) + " To Init: " + str(notInitializedQuadrants) + " To Erase: " + str(toEraseQuadrants) + "\n"
+		var notInitializedQuadrants : int = gdn_viewer.get_num_quadrant_in_view() - gdn_viewer.get_num_initialized_quadrant()
+		_info_label_num_quadrants = "  Total: " + str(gdn_viewer.get_num_initialized_quadrant(), ":", gdn_viewer.get_num_quadrant_in_view(), " (", gdn_viewer.get_num_quadrant_in_memory(),")") + " To Init: " + str(notInitializedQuadrants) + " To Erase: " + str(toEraseQuadrants) + "\n"
 		var notInitializedVisibleQuadrants : int = gdn_viewer.get_num_visible_quadrant() - gdn_viewer.get_num_initialized_visible_quadrant()
 		_info_label_num_visible_quadrants = "  Visible: " + str(gdn_viewer.get_num_initialized_visible_quadrant(), ":", gdn_viewer.get_num_visible_quadrant()) + " To Init: " + str(notInitializedVisibleQuadrants) + " Shader: " + str(gdn_viewer.get_num_need_shader_reset_quadrant()) + "/" + str(gdn_viewer.get_num_need_shader_update_quadrant()) + "\n"
 		_info_label_num_empty_quadrants = "  Empty: " + str(gdn_viewer.get_num_empty_quadrant())
@@ -1855,11 +1855,11 @@ func get_loading_progress() -> float:
 		return -1
 	return gdn_viewer.get_loading_progress()
 
-func get_num_quadrant() -> int:
+func get_num_quadrant_in_view() -> int:
 	var gdn_viewer = GDN_viewer()
 	if gdn_viewer == null:
 		return -1
-	return gdn_viewer.get_num_quadrant()
+	return gdn_viewer.get_num_quadrant_in_view()
 	
 func get_max_num_quadrant() -> int:
 	var gdn_viewer = GDN_viewer()

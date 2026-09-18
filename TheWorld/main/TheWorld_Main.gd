@@ -509,7 +509,7 @@ func _process(_delta):
 		num_splits = gdn_viewer.get_num_splits()
 		num_joins = gdn_viewer.get_num_joins()
 		num_active_chunks = gdn_viewer.get_num_active_chunks()
-		num_quadrant = str(gdn_viewer.get_num_initialized_quadrant()) + ":" + str(gdn_viewer.get_num_quadrant())
+		num_quadrant = str(gdn_viewer.get_num_initialized_quadrant()) + ":" + str(gdn_viewer.get_num_quadrant_in_view()) + "(" + str(gdn_viewer.get_num_quadrant_in_memory()) + ")"
 		num_visible_quadrant = str(gdn_viewer.get_num_initialized_visible_quadrant()) + ":" + str(gdn_viewer.get_num_visible_quadrant())
 		num_empty_quadrant = str(gdn_viewer.get_num_empty_quadrant())
 		num_flushed_quadrant = str(gdn_viewer.get_num_flushed_quadrant())
@@ -818,8 +818,12 @@ func load_position(viewpoint : int) -> void:
 		param_key_camera_pos = tw_const.param_key_viewpoint_camera_pos + str(viewpoint)
 		param_key_camera_ypr = tw_const.param_key_viewpoint_camera_ypr + str(viewpoint)
 	
-	var camera_position_in_map : Variant = _config.get_value(tw_const.param_group_camera, param_key_camera_pos + _build)
-	var camera_ypr_in_map : Variant = _config.get_value(tw_const.param_group_camera, param_key_camera_ypr + _build)
+	var camera_position_in_map : Variant = null
+	var camera_ypr_in_map : Variant = null
+	if _config.has_section_key(tw_const.param_group_camera, param_key_camera_pos + _build):
+		camera_position_in_map = _config.get_value(tw_const.param_group_camera, param_key_camera_pos + _build)
+	if _config.has_section_key(tw_const.param_group_camera, param_key_camera_ypr + _build):
+		camera_ypr_in_map = _config.get_value(tw_const.param_group_camera, param_key_camera_ypr + _build)
 	
 	if camera_position_in_map == null or camera_ypr_in_map == null:
 		camera_position_in_map= _config.get_value(tw_const.param_group_camera, param_key_camera_pos)
