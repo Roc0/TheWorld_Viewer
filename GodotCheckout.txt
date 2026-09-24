@@ -43,3 +43,11 @@ godot		"git status" ==> HEAD detached at 4.6.1-stable
 godot-cpp	"git status" ==> HEAD detached at godot-4.5-stable NOT UPDATED
 			"git show HEAD" ==> commit e83fd0904c13356ed1d4c3d09f8bb9132bdc6b77 (HEAD, tag: godot-4.5-stable)
 			"git rev-parse --short HEAD" ==> Hash e83fd09
+
+23/09/2026 (godot 4.6.1 stable)
+godot		"git status" ==> HEAD detached at 4.7.2-stable
+			"git show HEAD" ==> commit ed1daf0bf001b61586d9930840f2f1394092c079 (HEAD, tag: 4.7.2-stable)
+			"git rev-parse --short HEAD" ==> Hash ed1daf0bf0
+godot-cpp	"git status" ==> HEAD detached at 10.0.0-stable
+			"git show HEAD" ==> commit 507ed9d840c01a3c5b2a39af8bb4000bfac30bf5 (HEAD, tag: 10.0.0-stable, origin/master, origin/HEAD, master)
+			"git rev-parse --short HEAD" ==> Hash 507ed9d

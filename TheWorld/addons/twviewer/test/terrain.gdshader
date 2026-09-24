@@ -155,7 +155,7 @@ uniform float u_uv_wire_width = 0.003;
 //uniform float u_wire_width : hint_range(0.0, 40.0) = 1.0;
 //uniform float u_wire_smoothness : hint_range(0.0, 0.1) = 0.01;
 
-uniform sampler2D u_terrain_heightmap;
+uniform sampler2D u_terrain_heightmap : hint_default_black, filter_linear_mipmap, repeat_disable;
 uniform uint u_extra_vertices_on_heightmap = 0;
 //const int c_north_quadrant_border_row = 0;	// North / Top Quadrant
 //const int c_south_quadrant_border_row = 1;	// South / Bottom Quadrant
@@ -743,12 +743,12 @@ void remove_vertex(float f)
 	f = 0.0 / 0.0;
 }
 
-vec3 compute_normal_2(float vertex_height, sampler2D heightmap, vec2 heightmap_uv, uint extra_vertices_on_heightmap, float grid_step, float terrain_height)
+vec3 compute_normal_2(float vertex_height, sampler2D heightmap, vec2 heightmap_uv, uint extra_vertices_on_heightmap, float grid_step, float terrain_height_scale)
 {
 	float h;
 	float left_h;
 	float right_h;
-	float top_h;
+	float up_h;
 	float bottom_h;
 	
 	vec2 quadrantHeightmapSize = vec2(textureSize(heightmap, c_i_texture_lod_zero)) - vec2(float(extra_vertices_on_heightmap)) * 2.0;
@@ -762,57 +762,67 @@ vec3 compute_normal_2(float vertex_height, sampler2D heightmap, vec2 heightmap_u
 	float dx_uv = grid_step_uv / step_coeff;
 	float dx_wu = (grid_step / step_coeff) * 1.0;
 
-	//h = get_height(heightmap, terrain_height, heightmap_uv);
+	//h = get_height(heightmap, terrain_height_scale, heightmap_uv);
 	h = vertex_height;
 
 	if (extra_vertices_on_heightmap > 0u)	// if we have extra vertices on border we can fetch right/left and up/bottom heights
 	{
-		//return vec3(0.0, 1.0, 0.0);
-		left_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(-dx_uv, 0));
-		right_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(dx_uv, 0));
-		top_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(0, -dx_uv));
-		bottom_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(0, dx_uv));
-		return normalize(vec3(left_h - right_h, 2.0 * dx_wu, top_h - bottom_h));	
+		left_h = get_height(heightmap, terrain_height_scale, heightmap_uv + vec2(-dx_uv, 0));
+		right_h = get_height(heightmap, terrain_height_scale, heightmap_uv + vec2(dx_uv, 0));
+		up_h = get_height(heightmap, terrain_height_scale, heightmap_uv + vec2(0, -dx_uv));
+		bottom_h = get_height(heightmap, terrain_height_scale, heightmap_uv + vec2(0, dx_uv));
+		return normalize(vec3(left_h - right_h, 2.0 * dx_wu, up_h - bottom_h));	
+		
+		/* boh
+		vec2 texel_size = 1.0 / vec2(textureSize(heightmap, 0));												// Calcola la dimensione del singolo pixel (texel) della heightmap
+		float left_h = get_height(heightmap, terrain_height_scale, heightmap_uv + vec2(-texel_size.x, 0.0));	// Height displacement from heightmap of left vertex
+		float right_h = get_height(heightmap, terrain_height_scale, heightmap_uv + vec2(texel_size.x, 0.0));	// Height displacement from heightmap of right vertex
+		float down_h = get_height(heightmap, terrain_height_scale, heightmap_uv + vec2(0.0, -texel_size.y));		// Height displacement from heightmap of down vertex
+		float up_h = get_height(heightmap, terrain_height_scale, heightmap_uv + vec2(0.0, texel_size.y));		// Height displacement from heightmap of up vertex
+		vec3 tangent_x = vec3(texel_size.x * 2.0, right_h - left_h, 0.0);
+		vec3 tangent_z = vec3(0.0, up_h - down_h, texel_size.y * 2.0);
+		return normalize(cross(tangent_z, tangent_x));
+		*/
 	}
 	else
 	{
 		if (1.0 - heightmap_uv.x > grid_step_uv && 1.0 - heightmap_uv.y > grid_step_uv)	// if we are far from right and bottom border we can fetch left and bottom heights
 		{
-			right_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(dx_uv, 0));
-			bottom_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(0, dx_uv));
+			right_h = get_height(heightmap, terrain_height_scale, heightmap_uv + vec2(dx_uv, 0));
+			bottom_h = get_height(heightmap, terrain_height_scale, heightmap_uv + vec2(0, dx_uv));
 			return normalize(vec3(h - right_h, dx_wu, h - bottom_h));
 		}
 		else
 		{
 			if (1.0 - heightmap_uv.x > grid_step_uv && 1.0 - heightmap_uv.y <= grid_step_uv)		// we are near the bottom border but not near the right border
 			{
-				right_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(dx_uv, 0));
-				top_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(0, -dx_uv));
-				return normalize(vec3(h - top_h, dx_wu, h - right_h));
+				right_h = get_height(heightmap, terrain_height_scale, heightmap_uv + vec2(dx_uv, 0));
+				up_h = get_height(heightmap, terrain_height_scale, heightmap_uv + vec2(0, -dx_uv));
+				return normalize(vec3(h - up_h, dx_wu, h - right_h));
 			}
 			else if (1.0 - heightmap_uv.x <= grid_step_uv && 1.0 - heightmap_uv.y > grid_step_uv)	// we are near the right border but not near the bottom border
 			{
-				left_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(-dx_uv, 0));
-				bottom_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(0, dx_uv));
+				left_h = get_height(heightmap, terrain_height_scale, heightmap_uv + vec2(-dx_uv, 0));
+				bottom_h = get_height(heightmap, terrain_height_scale, heightmap_uv + vec2(0, dx_uv));
 				return normalize(vec3(h - bottom_h, dx_wu, h - left_h));
 			}
 			else
 			{																						// we are near the right border and near the bottom border
-				left_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(-dx_uv, 0));
-				top_h = get_height(heightmap, terrain_height, heightmap_uv + vec2(0, -dx_uv));
-				return normalize(vec3(h - left_h, dx_wu, h - top_h));
+				left_h = get_height(heightmap, terrain_height_scale, heightmap_uv + vec2(-dx_uv, 0));
+				up_h = get_height(heightmap, terrain_height_scale, heightmap_uv + vec2(0, -dx_uv));
+				return normalize(vec3(h - left_h, dx_wu, h - up_h));
 			}
 		}
 	}
 	
 }
 
-vec4 compute_splat_1(float vertex_height, sampler2D heightmap, vec2 heightmap_uv, float grid_step, float terrain_height, vec3 _normal,
+vec4 compute_splat_1(float vertex_height, sampler2D heightmap, vec2 heightmap_uv, float grid_step, float terrain_height_scale, vec3 _normal,
 					float slope_vertical_factor, float slope_flat_factor, float dirt_on_rocks_factor, float high_elevation_factor, float low_elevation_factor, float min_height, float max_height)
 {
 	// u_slope_vertical_factor, u_slope_flat_factor, u_dirt_on_rocks_factor, u_high_elevation_factor, u_low_elevation_factor, u_min_height, u_max_height
 
-	//float h = get_height(heightmap, terrain_height, heightmap_uv);
+	//float h = get_height(heightmap, terrain_height_scale, heightmap_uv);
 	float h = vertex_height;
 	
 	float slope = (slope_vertical_factor * (1.0 - _normal.y)) - slope_flat_factor;
@@ -957,6 +967,10 @@ void vertex()
 	if (!force_height_0)
 	{
 		normal_computed = compute_normal_2(vertex_height, u_terrain_heightmap, heightmap_uv, u_extra_vertices_on_heightmap, grid_step, u_terrain_height_scale);
+		// 2. Calcola la normale smooth sui vertici vicini
+		//float delta = 0.1;
+		//float h_x = get_math_height(VERTEX.xz + vec2(delta, 0.0));
+		//float h_z = get_math_height(VERTEX.xz + vec2(0.0, delta));
 	}
 
 	vec4 splat;
@@ -1082,7 +1096,7 @@ void fragment()
 	// Terrain normals, tangents and binormals
 	vec3 normal_computed, tanget_computed, binormal_computed, ground_normal_computed;
 	{
-		/*		// DEBUG
+		/*		// DEBUG boh
 		{
 			// 1. Calcola la dimensione del pixel per campionare i vicini
 			vec2 texel_size = 1.0 / heightmapSize;
@@ -1096,16 +1110,20 @@ void fragment()
 			float h_u = textureLod(u_terrain_heightmap, quadrant_uv + vec2(0.0, -texel_size.y), 0.0).r;
 			float h_d = textureLod(u_terrain_heightmap, quadrant_uv + vec2(0.0, texel_size.y), 0.0).r;
 	
+			vec3 tangent_x = vec3(texel_size.x * 2.0, h_r - h_l, 0.0);
+			vec3 tangent_z = vec3(0.0, h_u - h_d, texel_size.y * 2.0);
+			vec3 normal = normalize(cross(tangent_z, tangent_x));
+			
 			// 3. Ricostruzione della Normale
 			// Il fattore 2.0 serve per bilanciare il campionamento centrale
-			vec3 normal;
-			normal.x = (h_l - h_r) * height_scale;
-			normal.z = (h_u - h_d) * height_scale;
-			normal.y = 2.0 * texel_size.x; // Regola l'intensità in base alla scala del mondo
+			//vec3 normal;
+			//normal.x = (h_l - h_r) * height_scale;
+			//normal.z = (h_u - h_d) * height_scale;
+			//normal.y = 2.0 * texel_size.x; // Regola l'intensità in base alla scala del mondo
 			
 			NORMAL = normalize(normal);
-		}
-		*/		// DEBUG
+		}*/
+				// DEBUG
 		normal_computed = NORMAL;
 		//normal_computed = vec3(0.0, 1.0, 0.0);
 		tanget_computed = normalize(cross(normal_computed, vec3(0.0, 0.0, 1.0)));
@@ -1525,32 +1543,73 @@ void fragment()
 
 		// Highlight grid inside grid radius
 		if (mouse_hit_in_quadrant_uv != vec2(-1)) {
-			float half_texel_size = 0.5 / heightmapSize.x;
-			vec2 uv_begin_texel = quadrant_uv - vec2(half_texel_size);
-			vec2 distance_from_vertex =	fract(vec2(uv_begin_texel.x / (half_texel_size * 2.0), uv_begin_texel.y / (half_texel_size * 2.0)));
+			float uv_grid_wire_width = u_uv_wire_width * 2.0;
+			float uv_border_wire_width = uv_grid_wire_width * 5.0;
+			float half_texel_size_in_uv_coords = 0.5 / heightmapSize.x;
+			
+			mouse_hit_radius = distance_from_camera / 100000.0;
+			if (mouse_hit_radius < u_mouse_hit_radius)
+				mouse_hit_radius = u_mouse_hit_radius;
 			float grid_radius = mouse_hit_radius * 5.0;
 			if (grid_radius != 0.0 && distance(mouse_hit_in_quadrant_uv, quadrant_uv) < grid_radius)
 			{
-				if (distance_from_vertex.x < quad_line_thickness || (1.0 - distance_from_vertex.x) < quad_line_thickness
-					|| distance_from_vertex.y < quad_line_thickness || (1.0 - distance_from_vertex.y) < quad_line_thickness) {
-					if ((distance_from_vertex.x < quad_line_thickness || (1.0 - distance_from_vertex.x) < quad_line_thickness)
-						&& (distance_from_vertex.y < quad_line_thickness || (1.0 - distance_from_vertex.y) < quad_line_thickness)) {
+				if (quadrant_uv.x < (half_texel_size_in_uv_coords + uv_border_wire_width)				// check left border of quadrant
+					|| quadrant_uv.y < (half_texel_size_in_uv_coords + uv_border_wire_width)			// check top border of quadrant
+					|| (1.0 - quadrant_uv.x) < (half_texel_size_in_uv_coords + uv_border_wire_width)	// check right border of quadrant
+					|| (1.0 - quadrant_uv.y) < (half_texel_size_in_uv_coords + uv_border_wire_width))	// check bottom border of quadrant
+				{
+					albedo_computed = vec3(0.0, 0.0, 0.0);	// black
+				}
+				else
+				{
+					float uv_distance_from_vertices = 1.0 / float(num_vertices_per_chunk - uint(1));
+					vec2 uv_distance_from_prev_x_prev_y_vertex = fract(chunk_uv / vec2(uv_distance_from_vertices)) * vec2(uv_distance_from_vertices);
+					vec2 uv_distance_from_next_x_next_y_vertex = vec2(uv_distance_from_vertices) - uv_distance_from_prev_x_prev_y_vertex;
+					int num_checks = 0;
+					if (uv_distance_from_prev_x_prev_y_vertex.x < (half_texel_size_in_uv_coords + uv_grid_wire_width))			// check left line between vertices
+						num_checks++;
+					if (uv_distance_from_prev_x_prev_y_vertex.y < (half_texel_size_in_uv_coords + uv_grid_wire_width))		// check upper line between vertices
+						num_checks++;
+					if (uv_distance_from_next_x_next_y_vertex.x < (half_texel_size_in_uv_coords + uv_grid_wire_width))		// check right line between vertices
+						num_checks++;
+					if (uv_distance_from_next_x_next_y_vertex.y < (half_texel_size_in_uv_coords + uv_grid_wire_width))			// check left line between vertices
+						num_checks++;
+					if (num_checks > 0)
+						albedo_computed = c_apricot_color.rgb;
+					if (num_checks > 1)
+						albedo_computed = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
+				}
+			}
+
+			/*vec2 uv_begin_texel = quadrant_uv - vec2(half_texel_size_in_uv_coords);
+			vec2 uv_distance_from_vertices = fract(vec2(uv_begin_texel.x / (half_texel_size_in_uv_coords * 2.0), uv_begin_texel.y / (half_texel_size_in_uv_coords * 2.0)));
+			float grid_radius = mouse_hit_radius * 5.0;
+			if (grid_radius != 0.0 && distance(mouse_hit_in_quadrant_uv, quadrant_uv) < grid_radius)
+			{
+				if (uv_distance_from_vertices.x < quad_line_thickness || (1.0 - uv_distance_from_vertices.x) < quad_line_thickness
+					|| uv_distance_from_vertices.y < quad_line_thickness || (1.0 - uv_distance_from_vertices.y) < quad_line_thickness) {
+					if ((uv_distance_from_vertices.x < quad_line_thickness || (1.0 - uv_distance_from_vertices.x) < quad_line_thickness)
+						&& (uv_distance_from_vertices.y < quad_line_thickness || (1.0 - uv_distance_from_vertices.y) < quad_line_thickness)) {
 						albedo_computed = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
 					} else {
 						albedo_computed = c_apricot_color;	// GDN_TheWorld_Globals::g_color_yellow_apricot
 					}
 				}
-			}
+			}*/
 
-			if (mouse_hit_radius != 0.0 && distance(mouse_hit_in_quadrant_uv, quadrant_uv) < mouse_hit_radius) {
+			if (mouse_hit_radius != 0.0 && distance(mouse_hit_in_quadrant_uv, quadrant_uv) < mouse_hit_radius)
+			{
 				vec3 mouse_hit_albedo = c_apricot_color;		// GDN_TheWorld_Globals::g_color_yellow_apricot
 				albedo_computed = mix(albedo_computed, mouse_hit_albedo, 0.3);
+				if (distance(mouse_hit_in_quadrant_uv, quadrant_uv) < mouse_hit_radius / 5.0)
+					albedo_computed = vec3(0.0, 0.0, 0.0);	// black
 			}
 		}
 
 		// Show grid management
-		if (grid_on) {
-			float half_texel_size_in_uv_coords = 0.5 / heightmapSize.x;
+		if (grid_on)
+		{
+			/*float half_texel_size_in_uv_coords = 0.5 / heightmapSize.x;
 			vec2 uv_begin_texel = quadrant_uv - vec2(half_texel_size_in_uv_coords);	// assuming uv is in the center of a texel for each fragment
 			vec2 distance_of_current_fragment_from_grid_vertex = fract(vec2(uv_begin_texel.x / (half_texel_size_in_uv_coords * 2.0), uv_begin_texel.y / (half_texel_size_in_uv_coords * 2.0)));
 			if (distance_of_current_fragment_from_grid_vertex.x < quad_line_thickness || (1.0 - distance_of_current_fragment_from_grid_vertex.x) < quad_line_thickness
@@ -1567,6 +1626,36 @@ void fragment()
 			if (g_uv0.x < uv_line_thickness || (1.0 - g_uv0.x) < uv_line_thickness
 				|| g_uv0.y < uv_line_thickness || (1.0 - g_uv0.y) < uv_line_thickness) {
 				albedo_computed = mix(albedo_computed, vec3(0.0, 0.0, 1.0), 0.3);		// GDN_TheWorld_Globals::g_color_blue;
+			}*/
+			
+			float uv_grid_wire_width = u_uv_wire_width * 2.0;
+			float uv_border_wire_width = uv_grid_wire_width * 5.0;
+			float half_texel_size_in_uv_coords = 0.5 / heightmapSize.x;
+			if (quadrant_uv.x < (half_texel_size_in_uv_coords + uv_border_wire_width)				// check left border of quadrant
+				|| quadrant_uv.y < (half_texel_size_in_uv_coords + uv_border_wire_width)			// check top border of quadrant
+				|| (1.0 - quadrant_uv.x) < (half_texel_size_in_uv_coords + uv_border_wire_width)	// check right border of quadrant
+				|| (1.0 - quadrant_uv.y) < (half_texel_size_in_uv_coords + uv_border_wire_width))	// check bottom border of quadrant
+			{
+				albedo_computed = vec3(0.0, 0.0, 0.0);	// black
+			}
+			else
+			{
+				float uv_distance_from_vertices = 1.0 / float(num_vertices_per_chunk - uint(1));
+				vec2 uv_distance_from_prev_x_prev_y_vertex = fract(chunk_uv / vec2(uv_distance_from_vertices)) * vec2(uv_distance_from_vertices);
+				vec2 uv_distance_from_next_x_next_y_vertex = vec2(uv_distance_from_vertices) - uv_distance_from_prev_x_prev_y_vertex;
+				int num_checks = 0;
+				if (uv_distance_from_prev_x_prev_y_vertex.x < (half_texel_size_in_uv_coords + uv_grid_wire_width))			// check left line between vertices
+					num_checks++;
+				if (uv_distance_from_prev_x_prev_y_vertex.y < (half_texel_size_in_uv_coords + uv_grid_wire_width))		// check upper line between vertices
+					num_checks++;
+				if (uv_distance_from_next_x_next_y_vertex.x < (half_texel_size_in_uv_coords + uv_grid_wire_width))		// check right line between vertices
+					num_checks++;
+				if (uv_distance_from_next_x_next_y_vertex.y < (half_texel_size_in_uv_coords + uv_grid_wire_width))			// check left line between vertices
+					num_checks++;
+				if (num_checks > 0)
+					albedo_computed = c_apricot_color.rgb;
+				if (num_checks > 1)
+					albedo_computed = vec3(1.0, 0.0, 0.0);	// GDN_TheWorld_Globals::g_color_yellow_red
 			}
 		}
 
@@ -1678,10 +1767,10 @@ void fragment()
 		else
 		{
 			float uv_distance_from_vertices = 1.0 / float(num_vertices_per_chunk - uint(1));
-			vec2 uv_distance_from_previous_vertex = fract(chunk_uv / vec2(uv_distance_from_vertices)) * vec2(uv_distance_from_vertices);
-			vec2 uv_distance_from_next_vertex = vec2(uv_distance_from_vertices) - uv_distance_from_previous_vertex;
-			if ((uv_distance_from_previous_vertex.x < (half_texel_size_in_uv_coords + uv_wire_width)) || (uv_distance_from_previous_vertex.y < (half_texel_size_in_uv_coords + uv_wire_width))
-				|| (uv_distance_from_next_vertex.x < (half_texel_size_in_uv_coords + uv_wire_width)) || (uv_distance_from_next_vertex.y < (half_texel_size_in_uv_coords + uv_wire_width)))
+			vec2 uv_distance_from_prev_x_prev_y_vertex = fract(chunk_uv / vec2(uv_distance_from_vertices)) * vec2(uv_distance_from_vertices);
+			vec2 uv_distance_from_next_x_next_y_vertex = vec2(uv_distance_from_vertices) - uv_distance_from_prev_x_prev_y_vertex;
+			if ((uv_distance_from_prev_x_prev_y_vertex.x < (half_texel_size_in_uv_coords + uv_wire_width)) || (uv_distance_from_prev_x_prev_y_vertex.y < (half_texel_size_in_uv_coords + uv_wire_width))
+				|| (uv_distance_from_next_x_next_y_vertex.x < (half_texel_size_in_uv_coords + uv_wire_width)) || (uv_distance_from_next_x_next_y_vertex.y < (half_texel_size_in_uv_coords + uv_wire_width)))
 			{
 				// pixel on a line between vertices
 				albedo_computed = u_wireframe_lines_albedo.rgb;
@@ -1699,7 +1788,20 @@ void fragment()
 					albedo_computed = u_wireframe_background_albedo.rgb;
 				}
 			}
+			
+			/*vec2 uv_distance_from_prev_x_next_y_vertex = vec2(uv_distance_from_prev_x_prev_y_vertex.x, uv_distance_from_next_x_next_y_vertex.y);
+			vec2 uv_distance_from_next_x_prev_y_vertex = vec2(uv_distance_from_next_x_next_y_vertex.x, uv_distance_from_prev_x_prev_y_vertex.y);
+			float distance_from_prev_x_prev_y_vertex = length(uv_distance_from_prev_x_prev_y_vertex);
+			float distance_from_prev_x_next_y_vertex = length(uv_distance_from_prev_x_next_y_vertex);
+			float distance_from_next_x_prev_y_vertex = length(uv_distance_from_next_x_prev_y_vertex);
+			float distance_from_next_x_next_y_vertex = length(uv_distance_from_next_x_next_y_vertex);*/
+			
 		}
+		
+		/*if (mouse_hit_in_quadrant_uv != vec2(-1))
+		{
+		}*/
+		
 		/*if (chunk_uv.x >= 0.1 && chunk_uv.x <= 0.2) {			// DEBUG
 			albedo_computed = vec3(0.0, 1.0, 0.0);				// DEBUG
 		} else {												// DEBUG
