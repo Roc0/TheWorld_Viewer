@@ -1544,7 +1544,8 @@ void fragment()
 		// Highlight grid inside grid radius
 		if (mouse_hit_in_quadrant_uv != vec2(-1)) {
 			float uv_grid_wire_width = u_uv_wire_width * 2.0;
-			float uv_border_wire_width = uv_grid_wire_width * 5.0;
+			//float uv_border_wire_width = uv_grid_wire_width;
+			float uv_border_wire_width = u_uv_wire_width;
 			float half_texel_size_in_uv_coords = 0.5 / heightmapSize.x;
 			
 			mouse_hit_radius = distance_from_camera / 100000.0;
@@ -1629,7 +1630,7 @@ void fragment()
 			}*/
 			
 			float uv_grid_wire_width = u_uv_wire_width * 2.0;
-			float uv_border_wire_width = uv_grid_wire_width * 5.0;
+			float uv_border_wire_width = u_uv_wire_width;
 			float half_texel_size_in_uv_coords = 0.5 / heightmapSize.x;
 			if (quadrant_uv.x < (half_texel_size_in_uv_coords + uv_border_wire_width)				// check left border of quadrant
 				|| quadrant_uv.y < (half_texel_size_in_uv_coords + uv_border_wire_width)			// check top border of quadrant
@@ -1720,7 +1721,7 @@ void fragment()
 		//need_blending_east = true;		// DEBUG
 		//need_blending_west = false;		// DEBUG
 		float uv_wire_width = u_uv_wire_width;
-		float uv_border_wire_width = uv_wire_width * 3.0;
+		float uv_border_wire_width = u_uv_wire_width;
 		float half_texel_size_in_uv_coords = 0.5 / heightmapSize.x;
 		//uv_border_wire_width = 0.0;
 
