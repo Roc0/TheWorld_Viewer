@@ -58,7 +58,7 @@ void vertex() {
 													// to (heightmap size - 1) + 0.5 with increment of 1.0 between each coord
 
 	vec2 terrain_uv = vertex_cell_coords_in_textures / vec2(textureSize(u_terrain_heightmap, 0));
-	float terrain_vertex_height = get_height(u_terrain_heightmap, u_terrain_height, terrain_uv);		// Height displacement from heigthmap
+	float terrain_vertex_height = get_height(u_terrain_heightmap, u_terrain_height, terrain_uv);		// Height displacement from heightmap
 
 	float sea_vertex_height = VERTEX.y;
 	if (terrain_vertex_height > sea_vertex_height) {

@@ -123,13 +123,13 @@ void vertex()
 	vertex_cell_coords_in_heightmap += vec2(0.5);	// IMPORTANT: now vertex_cell_coords_in_heightmap ranges from 0.5
 													// to (heightmap size - 1) + 0.5 with increment of 1.0 between each coord
 	vec2 terrain_uv = vertex_cell_coords_in_heightmap / heightmapSize;
-	float terrain_vertex_hight = get_height(u_terrain_heightmap, u_terrain_height_scale, terrain_uv);		// Height displacement from heigthmap
+	float terrain_vertex_hight = get_height(u_terrain_heightmap, u_terrain_height_scale, terrain_uv);		// Height displacement from heightmap
 
 	float end_camera_altitude_for_waves = gu_sea_end_camera_altitude_for_waves;
 	float start_camera_altitude_for_waves_attenuation = gu_sea_start_camera_altitude_for_waves_attenuation;
 	float start_terrain_depth_for_waves_attenuation = gu_sea_start_terrain_depth_for_waves_attenuation;
 
-	// heigth of waves only if camera is below end_camera_altitude_for_waves
+	// height of waves only if camera is below end_camera_altitude_for_waves
 	if (CAMERA_POSITION_WORLD.y - flat_sea_height < end_camera_altitude_for_waves || u_generate_global_map) {
 		// sea height in range 0.0 / 1.0 from noise texture moving uv with vertex global position and time
 		float height = textureLod(gu_sea_wave, (v_world_pos.xz / gu_sea_noise_scale) + (shader_time * gu_sea_time_scale * gu_sea_rough_factor), 0).r;
@@ -304,7 +304,7 @@ void fragment() {
 		float foam_max_test_distance_from_coast = u_sea_foam_max_test_distance_from_coast;
 		float foam_min_test_distance_from_coast = u_sea_foam_min_test_distance_from_coast;
 		//foam_min_test_distance_from_coast = 0.0;
-		// related to camera heigth: foam_min_test_distance_from_coast at foam_max_camera_height, foam_max_test_distance_from_coast at 0
+		// related to camera height: foam_min_test_distance_from_coast at foam_max_camera_height, foam_max_test_distance_from_coast at 0
 		float foam_test_distance_from_coast = foam_min_test_distance_from_coast + (foam_max_test_distance_from_coast - foam_min_test_distance_from_coast) * (1.0 - abs(CAMERA_POSITION_WORLD.y) / foam_max_camera_height);
 		//foam_test_distance_from_coast = 30.0;	// DEBUG
 		float camera_depth = clamp(1.0 - smoothstep(__depth_world_pos_ndc.z + foam_test_distance_from_coast, __depth_world_pos_ndc.z, VERTEX.z), 0.0, 1.0);
@@ -353,8 +353,8 @@ void fragment() {
 	}
 
 	// contrast z-fighting or z-clipping: at great distance we need to force sea in front of terrain in the z-buffer to avoid flickering when camera moves
-	/*float z_fighting_max_camera_heigth = 100000.0;
-	if (CAMERA_POSITION_WORLD.y <= z_fighting_max_camera_heigth) {
+	/*float z_fighting_max_camera_height = 100000.0;
+	if (CAMERA_POSITION_WORLD.y <= z_fighting_max_camera_height) {
 		// near terrain we assume not to have z-fighting
 		DEPTH = FRAGCOORD.z;
 	} else {
