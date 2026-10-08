@@ -24,8 +24,8 @@ rem set executable=..\..\Client\godot\bin\godot.windows.editor.dev.x86_64.exe
 				rem rem rem rem rem rem rem set executable=..\..\Client\godot\bin\godot.windows.editor.dev.double.x86_64.exe
 
 dir %executable%
-set command=%executable% -v %project% --WorldDepthQuads=1 --WorldCacheQuads=0 --StrictToBuildMode
-rem set command=%executable% -v %project% --WorldDepthQuads=7 --WorldCacheQuads=2 --StrictToBuildMode
+rem set command=%executable% -v %project% --WorldDepthQuads=1 --WorldCacheQuads=0 --StrictToBuildMode
+set command=%executable% -v %project% --WorldDepthQuads=7 --WorldCacheQuads=2 --StrictToBuildMode
 rem set command=%executable% -v %project% --WorldDepthQuads=12 --WorldCacheQuads=2 --StrictToBuildMode
 echo %command%
 call %command% 2>&1 1>log.txt
