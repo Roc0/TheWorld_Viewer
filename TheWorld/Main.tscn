@@ -493,8 +493,9 @@ script = ExtResource("15_6btyd")
 [node name="TWViewer" type="Node3D" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape" unique_id=342644160]
 script = ExtResource("3_yxvy6")
 _debug_mode = 2
-_world_param_cache_quad = 0
-_world_param_max_depth_quad = 3
+_world_param_depth_quad = 7
+_world_param_cache_quad = 2
+_world_param_max_depth_quad = 7
 _world_param_info_panel_visible = true
 _world_param_deploy_world = false
 _world_editor_param_depth_quad = 3
@@ -571,7 +572,7 @@ offset_bottom = 2.0
 
 [node name="GDN_TW_MapViewport" type="GDN_TheWorld_MapViewport" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer" unique_id=1975822862]
 handle_input_locally = false
-size = Vector2i(1303, 846)
+size = Vector2i(2, 2)
 render_target_update_mode = 0
 
 [node name="GDN_TW_MapCamera" type="GDN_TheWorld_MapCamera" parent="TheWorld_Main_Control/TheWorld_Main_Container/TheWorld_Main_SubViewport/TheWorld_Main/Landscape/TWViewer/GDN_TW_MapViewer/GDN_TW_MapViewportContainer/GDN_TW_MapViewport" unique_id=365856543]
