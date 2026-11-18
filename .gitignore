@@ -5,6 +5,7 @@
 *_log.*.txt
 *_Log.*.txt
 *.pdb
+*.tmp
 
 # Godot-specific ignores
 .import/
@@ -16,4 +17,5 @@ export_presets.cfg
 data_*/
 
 /TheWorld/assets/textures/*
+/TheWorld/assets/text/*
 /TheWorld/assets/text/*
