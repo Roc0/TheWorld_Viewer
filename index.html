@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#101914">
+    <link rel="icon" href="data:,">
+    <title>TheWorld Viewer — Terrain Tech Demo</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: #101914;
+        color: #eef4e9;
+      }
+
+      * { box-sizing: border-box; }
+
+      body {
+        margin: 0;
+        min-width: 320px;
+        min-height: 100vh;
+        overflow: hidden;
+      }
+
+      canvas {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+        touch-action: none;
+      }
+
+      .overlay {
+        position: fixed;
+        z-index: 1;
+        top: 28px;
+        left: 30px;
+        width: min(340px, calc(100vw - 40px));
+        padding: 22px;
+        border: 1px solid rgb(226 239 214 / 14%);
+        border-radius: 14px;
+        background: rgb(16 25 20 / 82%);
+        box-shadow: 0 16px 48px rgb(0 0 0 / 28%);
+        backdrop-filter: blur(14px);
+      }
+
+      .eyebrow {
+        margin: 0 0 8px;
+        color: #a7cb82;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 24px;
+        line-height: 1.15;
+        letter-spacing: -.03em;
+      }
+
+      .description {
+        margin: 10px 0 20px;
+        color: #b7c3b4;
+        font-size: 13px;
+        line-height: 1.55;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 9px;
+      }
+
+      button {
+        min-height: 38px;
+        padding: 0 13px;
+        border: 1px solid rgb(226 239 214 / 20%);
+        border-radius: 8px;
+        background: #26352a;
+        color: #f0f5eb;
+        font: inherit;
+        font-size: 12px;
+        font-weight: 650;
+        cursor: pointer;
+      }
+
+      button:hover { background: #354936; }
+      button:focus-visible { outline: 2px solid #b1d588; outline-offset: 2px; }
+
+      .status {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin-top: 18px;
+        padding-top: 14px;
+        border-top: 1px solid rgb(226 239 214 / 12%);
+        color: #9eac9b;
+        font-size: 11px;
+      }
+
+      .status strong {
+        color: #dce8d5;
+        font-weight: 600;
+      }
+
+      .hint {
+        position: fixed;
+        z-index: 1;
+        right: 24px;
+        bottom: 20px;
+        padding: 10px 13px;
+        border: 1px solid rgb(226 239 214 / 12%);
+        border-radius: 8px;
+        background: rgb(16 25 20 / 72%);
+        color: #c1ccbd;
+        font-size: 12px;
+        backdrop-filter: blur(10px);
+      }
+
+      @media (max-width: 520px) {
+        .overlay { top: 14px; left: 14px; padding: 18px; }
+        h1 { font-size: 21px; }
+        .hint { right: 14px; bottom: 14px; }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="terrain" aria-label="Interactive procedural terrain landscape"></canvas>
+    <main class="overlay">
+      <p class="eyebrow">TheWorld Viewer / 01</p>
+      <h1>Terrain Tech Demo</h1>
+      <p class="description">A procedurally generated alpine landscape. Drag to orbit, scroll to zoom, and explore the terrain.</p>
+      <div class="controls">
+        <button id="regenerate" type="button">Regenerate terrain</button>
+        <button id="wireframe" type="button" aria-pressed="false">Show wireframe</button>
+        <button id="reset" type="button">Reset view</button>
+      </div>
+      <div class="status">
+        <span>GENERATION <strong id="seed">—</strong></span>
+        <span>RENDER MODE <strong id="mode">SOLID</strong></span>
+      </div>
+    </main>
+    <div class="hint">Drag to orbit <span aria-hidden="true">·</span> Scroll to zoom</div>
+    <script>
+      (() => {
+        const canvas = document.querySelector("#terrain");
+        const context = canvas.getContext("2d");
+        const seedLabel = document.querySelector("#seed");
+        const modeLabel = document.querySelector("#mode");
+        const wireframeButton = document.querySelector("#wireframe");
+        const gridSize = 64;
+        const worldSize = 112;
+        const nearPlane = 1;
+        const light = normalize([-0.45, 0.82, -0.35]);
+        const view = { yaw: -0.72, pitch: 0.62, distance: 150 };
+        const initialView = { ...view };
+        let terrain = [];
+        let triangles = [];
+        let seed = 0;
+        let wireframe = false;
+        let width = 0;
+        let height = 0;
+        let pixelRatio = 1;
+        let dragging = false;
+        let lastPointer = { x: 0, y: 0 };
+
+        function normalize(vector) {
+          const length = Math.hypot(...vector) || 1;
+          return vector.map((value) => value / length);
+        }
+
+        function hash(x, z, value) {
+          let n = Math.imul(x, 374761393) + Math.imul(z, 668265263) + Math.imul(value, 1442695041);
+          n = Math.imul(n ^ (n >>> 13), 1274126177);
+          return ((n ^ (n >>> 16)) >>> 0) / 4294967295;
+        }
+
+        function smooth(value) {
+          return value * value * (3 - 2 * value);
+        }
+
+        function noise(x, z, layer) {
+          const x0 = Math.floor(x);
+          const z0 = Math.floor(z);
+          const tx = smooth(x - x0);
+          const tz = smooth(z - z0);
+          const top = hash(x0, z0, layer) * (1 - tx) + hash(x0 + 1, z0, layer) * tx;
+          const bottom = hash(x0, z0 + 1, layer) * (1 - tx) + hash(x0 + 1, z0 + 1, layer) * tx;
+          return top * (1 - tz) + bottom * tz;
+        }
+
+        function heightAt(x, z, generation) {
+          let elevation = 0;
+          let amplitude = 1;
+          let frequency = 1;
+          let amplitudeTotal = 0;
+          for (let octave = 0; octave < 5; octave += 1) {
+            const sample = noise(x * frequency + 40, z * frequency + 40, generation + octave * 97);
+            elevation += (sample * 2 - 1) * amplitude;
+            amplitudeTotal += amplitude;
+            amplitude *= 0.52;
+            frequency *= 2.03;
+          }
+          const broadShape = noise(x * 0.75 + 120, z * 0.75 + 120, generation + 701);
+          const ridge = 1 - Math.abs(noise(x * 1.4 + 8, z * 1.4 + 8, generation + 919) * 2 - 1);
+          return ((elevation / amplitudeTotal) * 0.72 + (broadShape - 0.45) * 0.62 + ridge * 0.11) * 23;
+        }
+
+        function generateTerrain() {
+          seed = Math.floor(Math.random() * 900000) + 100000;
+          seedLabel.textContent = String(seed);
+          terrain = [];
+          triangles = [];
+          const step = worldSize / gridSize;
+
+          for (let z = 0; z <= gridSize; z += 1) {
+            terrain[z] = [];
+            for (let x = 0; x <= gridSize; x += 1) {
+              const worldX = x * step - worldSize / 2;
+              const worldZ = z * step - worldSize / 2;
+              terrain[z][x] = {
+                x: worldX,
+                y: heightAt(x / gridSize * 5, z / gridSize * 5, seed),
+                z: worldZ
+              };
+            }
+          }
+
+          for (let z = 0; z < gridSize; z += 1) {
+            for (let x = 0; x < gridSize; x += 1) {
+              const a = terrain[z][x];
+              const b = terrain[z][x + 1];
+              const c = terrain[z + 1][x];
+              const d = terrain[z + 1][x + 1];
+              triangles.push([a, d, b], [a, c, d]);
+            }
+          }
+        }
+
+        function subtract(a, b) {
+          return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+        }
+
+        function dot(a, b) {
+          return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+        }
+
+        function cross(a, b) {
+          return [
+            a[1] * b[2] - a[2] * b[1],
+            a[2] * b[0] - a[0] * b[2],
+            a[0] * b[1] - a[1] * b[0]
+          ];
+        }
+
+        function project(point, camera, right, up, forward, focalLength) {
+          const relative = [point.x - camera[0], point.y - camera[1], point.z - camera[2]];
+          const depth = dot(relative, forward);
+          if (depth <= nearPlane) return null;
+          return {
+            x: width / 2 + dot(relative, right) * focalLength / depth,
+            y: height / 2 - dot(relative, up) * focalLength / depth,
+            depth
+          };
+        }
+
+        function colorFor(triangle, normal) {
+          const averageHeight = (triangle[0].y + triangle[1].y + triangle[2].y) / 3;
+          const slope = 1 - Math.max(0, normal[1]);
+          let base;
+          if (averageHeight > 12) base = [206, 211, 194];
+          else if (averageHeight > 6) base = [133, 145, 123];
+          else if (averageHeight > -2) base = [91, 119, 83];
+          else if (averageHeight > -11) base = [70, 105, 72];
+          else base = [62, 92, 68];
+          if (slope > 0.48 && averageHeight > 3) base = [117, 119, 101];
+          const illumination = 0.38 + Math.max(0, dot(normal, light)) * 0.74;
+          return base.map((channel) => Math.round(channel * illumination));
+        }
+
+        function render() {
+          const pitch = view.pitch;
+          const horizontal = Math.cos(pitch) * view.distance;
+          const camera = [
+            Math.sin(view.yaw) * horizontal,
+            Math.sin(pitch) * view.distance,
+            Math.cos(view.yaw) * horizontal
+          ];
+          const forward = normalize([-camera[0], -camera[1], -camera[2]]);
+          const right = normalize(cross(forward, [0, 1, 0]));
+          const up = normalize(cross(right, forward));
+          const focalLength = Math.min(width, height) * 0.94;
+          const visible = [];
+
+          context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+          const sky = context.createLinearGradient(0, 0, 0, height);
+          sky.addColorStop(0, "#172722");
+          sky.addColorStop(0.58, "#70816f");
+          sky.addColorStop(1, "#b5b69a");
+          context.fillStyle = sky;
+          context.fillRect(0, 0, width, height);
+
+          for (const triangle of triangles) {
+            const points = triangle.map((point) => project(point, camera, right, up, forward, focalLength));
+            if (points.some((point) => point === null)) continue;
+            const edgeA = subtract(
+              [triangle[1].x, triangle[1].y, triangle[1].z],
+              [triangle[0].x, triangle[0].y, triangle[0].z]
+            );
+            const edgeB = subtract(
+              [triangle[2].x, triangle[2].y, triangle[2].z],
+              [triangle[0].x, triangle[0].y, triangle[0].z]
+            );
+            const normal = normalize(cross(edgeA, edgeB));
+            visible.push({
+              points,
+              depth: (points[0].depth + points[1].depth + points[2].depth) / 3,
+              color: colorFor(triangle, normal)
+            });
+          }
+
+          visible.sort((a, b) => b.depth - a.depth);
+          for (const triangle of visible) {
+            context.beginPath();
+            context.moveTo(triangle.points[0].x, triangle.points[0].y);
+            context.lineTo(triangle.points[1].x, triangle.points[1].y);
+            context.lineTo(triangle.points[2].x, triangle.points[2].y);
+            context.closePath();
+            context.fillStyle = `rgb(${triangle.color.join(",")})`;
+            context.fill();
+            if (wireframe) {
+              context.strokeStyle = "rgb(24 43 34 / 48%)";
+              context.lineWidth = 0.65;
+              context.stroke();
+            }
+          }
+        }
+
+        function resize() {
+          pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+          width = window.innerWidth;
+          height = window.innerHeight;
+          canvas.width = Math.round(width * pixelRatio);
+          canvas.height = Math.round(height * pixelRatio);
+          canvas.style.width = `${width}px`;
+          canvas.style.height = `${height}px`;
+          render();
+        }
+
+        canvas.addEventListener("pointerdown", (event) => {
+          dragging = true;
+          lastPointer = { x: event.clientX, y: event.clientY };
+          canvas.setPointerCapture(event.pointerId);
+        });
+        canvas.addEventListener("pointermove", (event) => {
+          if (!dragging) return;
+          view.yaw += (event.clientX - lastPointer.x) * 0.006;
+          view.pitch = Math.max(0.18, Math.min(1.25, view.pitch + (event.clientY - lastPointer.y) * 0.005));
+          lastPointer = { x: event.clientX, y: event.clientY };
+          render();
+        });
+        canvas.addEventListener("pointerup", () => { dragging = false; });
+        canvas.addEventListener("pointercancel", () => { dragging = false; });
+        canvas.addEventListener("wheel", (event) => {
+          event.preventDefault();
+          view.distance = Math.max(90, Math.min(230, view.distance * Math.exp(event.deltaY * 0.001)));
+          render();
+        }, { passive: false });
+
+        document.querySelector("#regenerate").addEventListener("click", () => {
+          generateTerrain();
+          render();
+        });
+        wireframeButton.addEventListener("click", () => {
+          wireframe = !wireframe;
+          wireframeButton.setAttribute("aria-pressed", String(wireframe));
+          wireframeButton.textContent = wireframe ? "Hide wireframe" : "Show wireframe";
+          modeLabel.textContent = wireframe ? "WIREFRAME" : "SOLID";
+          render();
+        });
+        document.querySelector("#reset").addEventListener("click", () => {
+          Object.assign(view, initialView);
+          render();
+        });
+        window.addEventListener("resize", resize);
+
+        generateTerrain();
+        resize();
+      })();
+    </script>
+  </body>
+</html>
