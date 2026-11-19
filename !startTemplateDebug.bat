@@ -5,7 +5,7 @@ cd /D %curpath%
 
 set project=--path %curpath%TheWorld
 
-copy /Y ..\TheWorld_GDN_Viewer\x64\*.dll %curpath%TheWorld\addons\twviewer\native\
+copy /Y ..\build\x64\*.dll %curpath%TheWorld\addons\twviewer\native\
 copy /Y ..\shapelib\shapelib.dll %curpath%TheWorld\addons\twviewer\native\
 
 rem RELEASE single OFFICIAL

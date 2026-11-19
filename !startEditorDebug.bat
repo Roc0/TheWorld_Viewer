@@ -9,7 +9,7 @@ if b%1 == bnoedit set edit=
 set project=--path %curpath%TheWorld
 if b%2 == bnoproject set project=
 
-copy /Y ..\TheWorld_GDN_Viewer\x64\*.dll %curpath%TheWorld\addons\twviewer\native\
+copy /Y ..\build\x64\*.dll %curpath%TheWorld\addons\twviewer\native\
 copy /Y ..\shapelib\shapelib.dll %curpath%TheWorld\addons\twviewer\native\
 
 rem RELEASE single OFFICIAL
